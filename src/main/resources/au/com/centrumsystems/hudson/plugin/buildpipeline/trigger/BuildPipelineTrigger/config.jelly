@@ -1,0 +1,19 @@
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+  <!--
+    This jelly script is used for per-project configuration.
+
+    See global.jelly for a general discussion about jelly script.
+  -->
+
+  <!-- The URL to use for invoking the teamworks web services. --> 
+  <f:entry title="Downstream Project Name" field="downstreamProjectName">
+    <f:select name="downstreamProjectName"> 
+	</f:select>
+  </f:entry>
+  
+  <f:entry title="Require manual build execution" field="isManualBuild">
+    <f:checkbox checked="${instance.isManualBuild}"/>    
+  </f:entry>
+
+
+</j:jelly>

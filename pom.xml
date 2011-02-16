@@ -1,0 +1,186 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.jvnet.hudson.plugins</groupId>
+		<artifactId>plugin</artifactId>
+		<version>1.395</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
+
+	<groupId>org.jvnet.hudson.plugins</groupId>
+	<artifactId>build-pipeline-plugin</artifactId>
+	<version>1.0.1-SNAPSHOT</version>
+	<packaging>hpi</packaging>
+
+	<name>Build Pipeline Plugin</name>
+	<description>This plugin provides a build pipeline view within Hudson/Jenkins.</description>
+
+	
+	<scm>
+		<connection>scm:svn:https://jira.centrumsystems.com.au/svn/BPHP/trunk</connection>
+		<developerConnection>scm:svn:https://jira.centrumsystems.com.au/svn/BPHP/trunk</developerConnection>
+		<url>https://jira.centrumsystems.com.au/svn/BPHP/trunk</url>
+	</scm>
+	
+
+	<properties>
+		<junit.version>4.8.1</junit.version>
+		<code.coverage.percentage>55</code.coverage.percentage>
+		<checkstyle.rules.file>checkstyle_rules.xml</checkstyle.rules.file>
+		<pmd.config.file>pmd_rules.xml</pmd.config.file>
+		<maven-release-plugin>2.1</maven-release-plugin>
+
+	</properties>
+
+
+	<developers>
+		<developer>
+			<id>centrum</id>
+			<name>Centrum Systems</name>
+			<email>plugins@centrumsystems.com.au</email>
+			<url>http://www.centrumsystems.com.au</url>
+		</developer>
+	</developers>
+
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>${junit.version}</version>
+				<scope>test</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<configuration>
+					<configLocation>${checkstyle.rules.file}</configLocation>
+					<failsOnError>true</failsOnError>
+					<violationSeverity>warning</violationSeverity>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>check</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>cobertura-maven-plugin</artifactId>
+				<configuration>
+					<check>
+						<branchRate>${code.coverage.percentage}</branchRate>
+						<lineRate>${code.coverage.percentage}</lineRate>
+						<haltOnFailure>true</haltOnFailure>
+						<totalBranchRate>${code.coverage.percentage}</totalBranchRate>
+						<totalLineRate>${code.coverage.percentage}</totalLineRate>
+						<packageLineRate>${code.coverage.percentage}</packageLineRate>
+						<packageBranchRate>${code.coverage.percentage}</packageBranchRate>
+					</check>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>clean</goal>
+							<goal>check</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-pmd-plugin</artifactId>
+				<configuration>
+					<rulesets>
+						<ruleset>${pmd.config.file}</ruleset>
+					</rulesets>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>check</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>findbugs-maven-plugin</artifactId>
+				<configuration>
+					<effort>Max</effort>
+					<threshold>Medium</threshold>
+					<xmlOutput>true</xmlOutput>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>check</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+	
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>${maven-release-plugin}</version>
+			</plugin>
+
+		</plugins>
+
+	</build>
+
+
+	<!-- get every artifact through maven.glassfish.org, which proxies all the 
+		artifacts that we need -->
+	<repositories>
+		<repository>
+			<id>m.g.o-public</id>
+			<url>http://maven.glassfish.org/content/groups/public/</url>
+		</repository>
+	</repositories>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>m.g.o-public</id>
+			<url>http://maven.glassfish.org/content/groups/public/</url>
+		</pluginRepository>
+	</pluginRepositories>
+	
+	<profiles>
+		<profile>
+			<id>hudson-ci</id>
+			
+			<distributionManagement>
+				<repository>
+					<id>java.net-m2-repository</id>
+					<url>http://maven.hudson-labs.org:8081/content/repositories/releases/</url>	
+				</repository>
+			</distributionManagement>
+		</profile>
+		<profile>
+			<id>jenkins-ci</id>
+			
+			<distributionManagement>
+				<repository>
+					<id>maven.jenkins-ci.org</id>
+					<url>http://maven.jenkins-ci.org:8081/content/repositories/releases/</url>
+				</repository>
+			</distributionManagement>
+		</profile>
+
+	</profiles>
+</project>
+

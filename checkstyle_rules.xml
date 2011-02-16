@@ -1,0 +1,154 @@
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC
+	  "-//Puppy Crawl//DTD Check Configuration 1.2//EN"
+	  "http://www.puppycrawl.com/dtds/configuration_1_2.dtd">
+
+	  
+	  <!-- Checkstyle rules file - created by Centrum Systems-->
+	  
+<module name="Checker">
+  <!--
+      If you set the basedir property below, then all reported file
+      names will be relative to the specified directory. See
+      http://checkstyle.sourceforge.net/5.x/config.html#Checker
+
+      <property name="basedir" value="${basedir}"/>
+  -->
+
+  <metadata name="com.atlas-sw.eclipse" value="I like Sydney"/>
+
+  <property name="severity" value="error"/>
+
+  <module name="Translation">
+    <property name="severity" value="warning"/>
+  </module>
+
+  <module name="FileTabCharacter">
+    <property name="eachLine" value="false"/>
+  </module>
+
+  <module name="FileLength">
+    <property name="fileExtensions" value="java"/>
+  </module>
+
+  <module name="TreeWalker">
+    <property name="tabWidth" value="4" />
+	<property name="cacheFile" value="checkstyle-cachefile" />
+	
+    <module name="AvoidStarImport"/>
+    <module name="ConstantName"/>
+    <module name="EmptyBlock"/>
+    <module name="EmptyForIteratorPad"/>
+    <module name="EqualsHashCode"/>
+    <module name="IllegalImport"/>
+    <module name="IllegalInstantiation"/>
+    <module name="IllegalThrows"/>
+    <module name="InnerAssignment"/>
+    <module name="JavadocType">
+      <property name="authorFormat" value="\S"/>
+      <property name="severity" value="warning"/>
+    </module>
+    <module name="JavadocMethod">
+      <property name="allowUndeclaredRTE" value="true"/>
+      <property name="allowThrowsTagsForSubclasses" value="true"/>
+      <property name="allowMissingPropertyJavadoc" value="true" />
+      <property name="severity" value="warning"/>
+    </module>
+    <module name="JavadocVariable"/>
+    <module name="JavadocStyle">
+      <property name="scope" value="public"/>
+      <property name="checkFirstSentence" value="false" />
+    </module>
+
+    <module name="LeftCurly">
+      <property name="tokens" value="CLASS_DEF,INTERFACE_DEF,METHOD_DEF,CTOR_DEF"/>
+      <property name="option" value="eol"/>
+    </module>
+    <module name="LeftCurly">
+      <property name="tokens" value="LITERAL_CATCH,LITERAL_DO,LITERAL_ELSE,LITERAL_FINALLY,LITERAL_FOR,LITERAL_IF,LITERAL_SWITCH,LITERAL_SYNCHRONIZED,LITERAL_TRY,LITERAL_WHILE"/>
+      <property name="option" value="eol"/>
+    </module>
+
+    <module name="OuterTypeNumber"/>
+    <module name="LineLength">
+      <property name="ignorePattern" value="^ *\* *[^ ]+$"/>
+      <property name="max" value="140" />
+    </module>
+
+    <module name="LocalFinalVariableName"/>
+    <module name="LocalVariableName"/>
+    <module name="MemberName"/>
+    <module name="MethodLength"/>
+    <module name="MethodName"/>
+    <module name="MethodParamPad"/>
+    <module name="ModifierOrder"/>
+    <module name="NeedBraces"/>
+    <module name="NoWhitespaceAfter">
+      <property name="tokens" value="ARRAY_INIT, BNOT, DEC, DOT, INC, LNOT, UNARY_MINUS, UNARY_PLUS" />
+    </module>
+
+    <module name="NoWhitespaceBefore"/>
+    <module name="NoWhitespaceBefore">
+      <property name="tokens" value="DOT"/>
+      <property name="allowLineBreaks" value="true"/>
+    </module>
+
+    <module name="OperatorWrap"/>
+    <module name="OperatorWrap">
+      <property name="tokens" value="ASSIGN, DIV_ASSIGN, PLUS_ASSIGN, MINUS_ASSIGN, STAR_ASSIGN, MOD_ASSIGN, SR_ASSIGN, BSR_ASSIGN, SL_ASSIGN, BXOR_ASSIGN, BOR_ASSIGN, BAND_ASSIGN"/>
+      <property name="option" value="eol"/>
+    </module>
+    <module name="PackageName"/>
+    <module name="ParameterName"/>
+    <module name="ParameterNumber">
+      <property name="id" value="paramNum"/>
+    </module>
+    <module name="ParenPad"/>
+    <module name="TypecastParenPad"/>
+    <module name="RedundantImport"/>
+    <module name="RedundantModifier"/>
+    <module name="RightCurly">
+      <property name="option" value="same"/>
+    </module>
+    <module name="SimplifyBooleanExpression"/>
+    <module name="SimplifyBooleanReturn"/>
+    <module name="StaticVariableName" />
+    <module name="TypeName"/>
+    <module name="UnusedImports"/>
+    <module name="UpperEll"/>
+    <module name="VisibilityModifier">
+		<property name="protectedAllowed" value="true" />
+		<property name="packageAllowed" value="true" />
+    </module>
+    <module name="WhitespaceAfter"/>
+    <module name="WhitespaceAround"/>
+    <module name="GenericWhitespace"/>
+    <module name="FinalClass"/>
+    <module name="MissingSwitchDefault"/>
+    <module name="Indentation">
+      <property name="basicOffset" value="4"/>
+      <property name="braceAdjustment" value="0"/>
+      <property name="caseIndent" value="0"/>
+    </module>
+    <module name="ArrayTrailingComma"/>
+    <module name="FinalLocalVariable"/>
+    <module name="EqualsAvoidNull"/>
+    <!-- Generates quite a few errors -->
+    <module name="CyclomaticComplexity">
+      <property name="severity" value="warning"/>
+    </module>
+
+    <module name="NestedIfDepth">
+      <property name="max" value="3"/>
+    </module>
+    <module name="NestedTryDepth"/>
+    <module name="ExplicitInitialization"/>
+    <module name="AnnotationUseStyle"/>
+    <module name="MissingDeprecated"/>
+    <module name="MissingOverride">
+      <property name="javaFiveCompatibility" value="true"/>
+    </module>
+    <module name="PackageAnnotation"/>
+
+  </module>
+</module>

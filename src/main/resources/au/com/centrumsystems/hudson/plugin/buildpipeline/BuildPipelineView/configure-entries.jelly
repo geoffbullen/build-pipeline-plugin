@@ -1,0 +1,65 @@
+<!--
+  Edit View Page
+-->
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:i="jelly:fmt">
+	<f:entry title="Build Pipeline View Title" field="buildViewTitle">
+		<f:textbox name="buildViewTitle"/> 
+  	</f:entry>  
+    <f:entry title="Select Initial Job" field="selectedJob">    
+		<f:select name="selectedJob"> 
+		</f:select>
+  	</f:entry>
+  
+  	<f:entry title="No Of Displayed Builds" field="noOfDisplayedBuilds">
+		<f:select name="noOfDisplayedBuilds">
+    	</f:select>
+  	</f:entry>
+</j:jelly>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <!--
+  	      <f:checkbox name="${job.name}" checked="${it.contains(job)}" />
+			      <f:optionbox name="${job.name}" checked="${it.contains(job)}" />
+			      
+			      ${job.name}
+			      <br/>
+			      
+  
+  
+    <f:optionalBlock name="useincluderegex" title="${%Use a regular expression to include jobs into the view}"
+                   checked="${it.includeRegex != null}" help="/help/view-config/includeregex.html">
+    <f:entry title="${%Regular expression}">
+      <f:textbox name="includeRegex" field="includeRegex" />
+    </f:entry>
+  </f:optionalBlock>
+  <f:entry title="Dummys Job Name" field="jobName" >
+  	<f:textbox />
+  </f:entry>
+  -->
+  
+
+ 
