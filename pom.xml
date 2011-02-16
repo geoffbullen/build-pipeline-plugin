@@ -13,13 +13,17 @@
 	<packaging>hpi</packaging>
 
 	<name>Build Pipeline Plugin</name>
-	<description>This plugin provides a build pipeline view within Hudson/Jenkins.</description>
+	<description>This plugin provides build pipeline functionality to Hudson and jenkins.  This allows a chain of jobs to be visualised in a new view.  
+        Manual jobs in the pipeline can be triggered by a user with the appropriate permissions manually confirming.
+        </description>
+
+ 	<url>https://code.google.com/p/build-pipeline-plugin</url>
 
 	
 	<scm>
-		<connection>scm:svn:https://jira.centrumsystems.com.au/svn/BPHP/trunk</connection>
-		<developerConnection>scm:svn:https://jira.centrumsystems.com.au/svn/BPHP/trunk</developerConnection>
-		<url>https://jira.centrumsystems.com.au/svn/BPHP/trunk</url>
+		<connection>scm:hg:https://build-pipeline-plugin.googlecode.com/hg/</connection>
+		<developerConnection>scm:hg:https://build-pipeline-plugin.googlecode.com/hg/</developerConnection>
+		<url>https://build-pipeline-plugin.googlecode.com/hg/</url>
 	</scm>
 	
 
@@ -29,7 +33,6 @@
 		<checkstyle.rules.file>checkstyle_rules.xml</checkstyle.rules.file>
 		<pmd.config.file>pmd_rules.xml</pmd.config.file>
 		<maven-release-plugin>2.1</maven-release-plugin>
-
 	</properties>
 
 
