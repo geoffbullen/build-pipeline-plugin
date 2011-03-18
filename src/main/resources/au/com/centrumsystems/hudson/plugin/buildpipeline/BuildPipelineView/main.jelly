@@ -1,140 +1,6 @@
 
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:i="jelly:fmt">
-<style type="text/css">
-		.LegendHeader{		
-			background-color:#8b8989;
-			font-color:white;
-			vertical-align:middle;
-			horizontal-align:middle;
-			CELLSPACING:5;
-			CELLPADDING: 5;
-			font-size:10px;
-			opacity:		0.9; 
-			-moz-opacity:0.9; 
-			-webkit-opacity:0.9;
-			-moz-border-radius: 4px;
-    		-webkit-border-radius: 4px;		
-		}
-		.RevisionNo{		
-			background-color:#8b8989;
-			font-color:white;
-			vertical-align:middle;
-			CELLSPACING:5;
-			CELLPADDING: 5;
-			font-size:10px;
-			opacity:		0.9; 
-			-moz-opacity:0.9; 
-			-webkit-opacity:0.9;
-			-moz-border-radius: 10px;
-    		-webkit-border-radius: 10px;
-		
-		}
-		.BUILDING {		
-			background-color:#FFFFCC; /* DCDCDC */
-			CELLSPACING:5;
-			CELLPADDING: 5;
-			font-size:10px;
-			opacity:		0.9; 
-			-moz-opacity:0.9; 
-			-webkit-opacity:0.9;
-			-moz-border-radius: 10px;
-    		-webkit-border-radius: 10px;
-		
-		}
-		.SUCCESS	{
-			background-color:#A3FF85;
-			CELLSPACING:5;
-			CELLPADDING: 5;
-			font-size:10px;
-			opacity:		0.9; 
-			-moz-opacity:0.9; 
-			-webkit-opacity:0.9;
-			-moz-border-radius: 10px;
-    		-webkit-border-radius: 10px;
-		}
-		
-		.FAILURE {
-			background-color:#FF0000;    /* Orange : FF9933  #F4E0BC;*/
-			CELLSPACING:5;
-			CELLPADDING: 5;
-			font-size:10px;
-			-moz-border-radius: 10px;
-    		-webkit-border-radius: 10px;
-			opacity: 0.9; 
-			-moz-opacity:0.9; 
-			-webkit-opacity:0.9;
-		}
-				
-		.UNSTABLE{
-			background-color:#FCD116;	/* Yellow */
-			CELLSPACING:5;
-			CELLPADDING: 5;
-			font-size:10px;
-			-moz-border-radius: 10px;
-    		-webkit-border-radius: 10px;
-			opacity: 0.9; 
-			-moz-opacity:0.9; 
-			-webkit-opacity:0.9;
-		} 
-		
-		.NOT_BUILT{
-			background-color:#FFFFCC;
-			CELLSPACING:5;
-			CELLPADDING: 5;
-			font-size:10px;
-			-moz-border-radius: 10px;
-    		-webkit-border-radius: 10px;
-			opacity: 0.9; 
-			-moz-opacity:0.9; 
-			-webkit-opacity:0.9;
-		}
-		.ABORT	{
-			background-color:#DCDCDC;
-			CELLSPACING:5;
-			CELLPADDING: 5;
-			font-size:10px;
-			-moz-border-radius: 10px;
-    		-webkit-border-radius: 10px;
-			opacity: 0.9; 
-			-moz-opacity:0.9; 
-			-webkit-opacity:0.9;
-		}
-		.BuildViewMargin{
-			margin-left: 30px;
-			CELLSPACING:10;
-		}
-		#projectHeader{
-			
-			border-width:3px;
-			-moz-border-radius: 10px;
-    		-webkit-border-radius: 10px;			
-			CELLSPACING:5;
-			CELLPADDING: 5;
-			font-size:30px:
-		}
-		
-		/* Hide the header, main and side panel	
-		#header{
-		display:none;
-		}
-		*/
-		#side-panel{
-		display:none;
-		}
-		#view-message{
-		display:none;
-		}
-		#main-panel{
-		padding: 0px;
-		}
-		
-		a:link 		{text-decoration: none;		color:black;}
-		a:visited 	{text-decoration: none;		color:black;}
-		a:active 	{text-decoration: none;		color:black;}
-		a:hover		{text-decoration: underline;color:black;}  /* mouse over link */
-			
-	</style>
-
+<link href="/plugin/build-pipeline-plugin/css/main.css" type="text/css" rel="stylesheet" />
 <script language="javascript"> 
 function showhide(id){ 
 	if (document.getElementById){ 
@@ -156,44 +22,44 @@ function showhide(id){
 <DIV id="legendView" style="display: none;"  CLASS="BuildViewMargin"> 
 	<table CELLSPACING="5" CELLPADDING="5">
 	 	<tr>
-	 		<td class="LegendHeader" COLSPAN="2">Project Status</td>	 		
-	 		<td class="LegendHeader" COLSPAN="2">Build Stability</td> 		
-	 		<td class="LegendHeader">Build Status</td>
+	 		<td class="LegendHeader rounded" COLSPAN="2">Project Status</td>	 		
+	 		<td class="LegendHeader rounded" COLSPAN="2">Build Stability</td> 		
+	 		<td class="LegendHeader rounded">Build Status</td>
 	 	</tr>
 	  	<tr>
 	  		<td><img src="/images/16x16/blue.gif" /></td>
 	  		<td>Success</td>
 	  		<td><img src="/images/16x16/health-80plus.gif" /></td>
 	  		<td>More than 80&#37;</td>
-	  		<td class="SUCCESS">SUCCESS</td>
+	  		<td class="SUCCESS rounded">SUCCESS</td>
 	  	</tr>
 	  	<tr>
 	  		<td><img src="/images/16x16/yellow.gif" /></td>
 	  		<td>Unstable</td>
 	  		<td><img src="/images/16x16/health-60to79.gif" /></td>
 	  		<td>60-79&#37;</td>
-	  		<td class="UNSTABLE">UNSTABLE</td>
+	  		<td class="UNSTABLE rounded">UNSTABLE</td>
 	  	</tr>
 	  	<tr>
 	  		<td><img src="/images/16x16/red.gif" /></td>
 	  		<td>Failure</td>
 	  		<td><img src="/images/16x16/health-40to59.gif" /></td>
 	  		<td>40-59&#37;</td>
-	  		<td class="FAILURE">FAILURE</td>
+	  		<td class="FAILURE rounded">FAILURE</td>
 	  	</tr>
 	  	<tr>
 	  		<td><img src="/images/16x16/grey.gif" /></td>
 	  		<td>Abort</td>
 	  		<td><img src="/images/16x16/health-20to39.gif" /></td>
 	  		<td>20-39&#37;</td>
-	  		<td class="ABORT">ABORT</td>
+	  		<td class="ABORT rounded">ABORT</td>
 	  	</tr>
 	  	<tr>
 	  		<td><img src="/images/16x16/blue_anime.gif" /></td>
 	  		<td>Building</td>
 	  		<td><img src="/images/16x16/health-00to19.gif" /></td>
 	  		<td>Less than 20&#37;</td>
-	  		<td class="NOT_BUILT">BUILDING</td>
+	  		<td class="NOT_BUILT rounded">BUILDING</td>
 	  	</tr>
 	  	
 	 </table>
@@ -231,7 +97,7 @@ function showhide(id){
 		<j:set var="isArrowRequired" type="java.lang.Boolean" value="false" /> 		
 		 	
  		<tr>
-	 			<td class="RevisionNo" >
+	 			<td class="RevisionNo rounded" >
 	 				revision : ${from.getSVNRevisionNo(row)}
 	 			</td>
 	 			
@@ -241,7 +107,7 @@ function showhide(id){
 	 				<j:if test="${isArrowRequired}">
 	 					<td><img src="/images/24x24/next.gif" /></td>
 	 				</j:if>
-	 				<td class="${from.getHudsonResult(buildPipeline)}">
+	 				<td class="${from.getHudsonResult(buildPipeline)} rounded">
 	 					<a href="${from.getBuildResultURL(buildPipeline)}" target="_blank">
 	 						${buildPipeline}
 	 						<br />
@@ -256,7 +122,7 @@ function showhide(id){
  			
  			<j:if test="${from.isNextBuildRequire()}">
  				<td><img src="/images/24x24/next.gif" /></td>
- 				<td class="NOT_BUILT">
+ 				<td class="NOT_BUILT rounded">
 	 				<form method="post" action="manualExecution">
 	 					<input name="upstreamProjectName" value="${buildPipeline.getProject().getName()}" type="hidden"/>
 						<input name="upstreamBuildNumber" value="${buildPipeline.getNumber()}" type="hidden"/>

@@ -1,0 +1,126 @@
+h3 {
+	font-size: 16px;
+	font-weight: bold;
+}
+
+.rounded {
+	opacity: 0.9;
+	-moz-opacity: 0.9;
+	-webkit-opacity: 0.9;
+	border-radius: 4px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	behavior: url(/plugin/build-pipeline-plugin/css/PIE.htc);
+}
+
+.LegendHeader {
+	background-color: #8b8989;
+	font-color: white;
+	vertical-align: middle;
+	horizontal-align: middle;
+	CELLSPACING: 5;
+	CELLPADDING: 5;
+	font-size: 10px;
+}
+
+.RevisionNo {
+	background-color: #8b8989;
+	font-color: white;
+	vertical-align: middle;
+	CELLSPACING: 5;
+	CELLPADDING: 5;
+	font-size: 10px;
+}
+
+.BUILDING {
+	background-color: #FFFFCC; /* DCDCDC */
+	CELLSPACING: 5;
+	CELLPADDING: 5;
+	font-size: 10px;
+}
+
+.SUCCESS {
+	background-color: #A3FF85;
+	CELLSPACING: 5;
+	CELLPADDING: 5;
+	font-size: 10px;
+}
+
+.FAILURE {
+	background-color: #FF0000; /* Orange : FF9933  #F4E0BC;*/
+	CELLSPACING: 5;
+	CELLPADDING: 5;
+	font-size: 10px;
+}
+
+.UNSTABLE {
+	background-color: #FCD116; /* Yellow */
+	CELLSPACING: 5;
+	CELLPADDING: 5;
+	font-size: 10px;
+}
+
+.NOT_BUILT {
+	background-color: #FFFFCC;
+	CELLSPACING: 5;
+	CELLPADDING: 5;
+	font-size: 10px;
+}
+
+.ABORT {
+	background-color: #DCDCDC;
+	CELLSPACING: 5;
+	CELLPADDING: 5;
+	font-size: 10px;
+}
+
+.BuildViewMargin {
+	margin-left: 30px;
+	CELLSPACING: 10;
+}
+
+#projectHeader {
+	border-width: 10px;
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	CELLSPACING: 5;
+	CELLPADDING: 5;
+	font-size: 30px;
+}
+
+/* Hide the header, main and side panel	
+		#header{
+		display:none;
+		}
+		*/
+#side-panel {
+	display: none;
+}
+
+#view-message {
+	display: none;
+}
+
+#main-panel {
+	padding: 0px;
+}
+
+a:link {
+	text-decoration: none;
+	color: black;
+}
+
+a:visited {
+	text-decoration: none;
+	color: black;
+}
+
+a:active {
+	text-decoration: none;
+	color: black;
+}
+
+a:hover {
+	text-decoration: underline;
+	color: black;
+} /* mouse over link */
