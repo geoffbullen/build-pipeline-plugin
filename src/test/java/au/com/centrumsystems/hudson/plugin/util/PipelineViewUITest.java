@@ -46,7 +46,6 @@ public class PipelineViewUITest extends HudsonTestCase {
     private static final String TEST_EMPTY_CELL = "<table><tr><td align=\"center\" valign=\"middle\"><div class=\"EMPTY rounded\" style=\"height=40px\"></div></td><td align=\"center\" valign=\"middle\">";
     private static final String TEST_SVN_REVISION_CELL = "<table><tr><td align=\"center\" valign=\"middle\"><div class=\"RevisionNo rounded\" style=\"height=40px\">No Revision</div></td><td align=\"center\" valign=\"middle\">";
 
-
     @Override
     @Before
     public void setUp() {
@@ -78,7 +77,7 @@ public class PipelineViewUITest extends HudsonTestCase {
             builder4 = new MockBuilder(Result.SUCCESS);
 
             // Project1 -> Project2 -> Project4
-            //          -> Project3
+            // -> Project3
             project1.getPublishersList().add(new BuildTrigger(TEST_PROJECT2, true));
             project1.getPublishersList().add(new BuildTrigger(TEST_PROJECT3, true));
             project2.getPublishersList().add(new BuildTrigger(TEST_PROJECT4, true));
@@ -94,19 +93,22 @@ public class PipelineViewUITest extends HudsonTestCase {
             build1 = buildAndAssertSuccess(project1);
             // When all building is complete retrieve the last build from project2
             waitUntilNoActivity();
-            //build2 = project2.getLastBuild();
-            //build3 = project3.getLastBuild();
-            //build4 = project4.getLastBuild();
+            // build2 = project2.getLastBuild();
+            // build3 = project3.getLastBuild();
+            // build4 = project4.getLastBuild();
 
             // Test the method
             PipelineBuild pb = new PipelineBuild(build1, null, null);
             StringBuffer result = new StringBuffer();
-            //final List<PipelineBuild> builds = BuildUtil.getProjectBuildPipeline(build1);
+            // final List<PipelineBuild> builds = BuildUtil.getProjectBuildPipeline(build1);
             PipelineViewUI.getBuildPipeline("", pb, result);
-            //assertStringContains("Should contain the HTML table for " + build1, result.toString());
-            //assertStringContains("Should contain the HTML table for " + build2, PipelineViewUI.getBuildPipeline(builds.get(1)), BUILD2_TABLE);
-            //assertStringContains("Should contain the HTML table for " + build3, PipelineViewUI.getBuildPipeline(builds.get(1)), BUILD3_TABLE);
-            //assertStringContains("Should contain the HTML table for " + build4, PipelineViewUI.getBuildPipeline(builds.get(2)), BUILD4_TABLE);
+            // assertStringContains("Should contain the HTML table for " + build1, result.toString());
+            // assertStringContains("Should contain the HTML table for " + build2, PipelineViewUI.getBuildPipeline(builds.get(1)),
+            // BUILD2_TABLE);
+            // assertStringContains("Should contain the HTML table for " + build3, PipelineViewUI.getBuildPipeline(builds.get(1)),
+            // BUILD3_TABLE);
+            // assertStringContains("Should contain the HTML table for " + build4, PipelineViewUI.getBuildPipeline(builds.get(2)),
+            // BUILD4_TABLE);
         } catch (Exception e) {
             e.toString();
         }
