@@ -43,10 +43,12 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlRadioButtonInput;
 import com.gargoylesoftware.htmlunit.html.HtmlSelect;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
+
 /**
  * BuildPipelineTrigger test class
+ * 
  * @author KevinV
- *
+ * 
  */
 public class BuildPipelineTriggerTest extends HudsonTestCase {
 
@@ -102,21 +104,25 @@ public class BuildPipelineTriggerTest extends HudsonTestCase {
 
             // Save the configuration of the Downstream project
             final HtmlForm configureNewDownstreamJobForm = testDownstreamProjectConfigurePage.getFormByName("config");
-            final HtmlButton saveNewDownstreamJobButton = (HtmlButton) last(configureNewDownstreamJobForm.getHtmlElementsByTagName("button"));
+            final HtmlButton saveNewDownstreamJobButton = (HtmlButton) last(configureNewDownstreamJobForm
+                    .getHtmlElementsByTagName("button"));
             saveNewDownstreamJobButton.removeAttribute("disabled");
             configureNewDownstreamJobForm.submit(saveNewDownstreamJobButton);
 
             // Select the Build-Pipeline-Plugin radio button
             final HtmlForm configureNewUpstreamJobForm = testUpstreamProjectConfigurePage.getFormByName("config");
-            final HtmlCheckBoxInput BuildPipelinePluginCheckBox = testUpstreamProjectConfigurePage.getElementByName(BUILD_PIPELINE_PLUGIN_NAME);
+            final HtmlCheckBoxInput BuildPipelinePluginCheckBox = testUpstreamProjectConfigurePage
+                    .getElementByName(BUILD_PIPELINE_PLUGIN_NAME);
             BuildPipelinePluginCheckBox.setChecked(true);
             BuildPipelinePluginCheckBox.click();
 
             // Test that the Downstream Project Name select has the correct entries
             final HtmlSelect downstreamProjectSelect = testUpstreamProjectConfigurePage.getElementByName("downstreamProjectNames");
             assertEquals("The downstream project select should have 3 elements", 3, downstreamProjectSelect.getOptionSize());
-            assertEquals("One of the options should be " + TEST_UPSTREAM_PROJECT, TEST_UPSTREAM_PROJECT, downstreamProjectSelect.getOptionByValue(TEST_UPSTREAM_PROJECT).getValueAttribute());
-            assertEquals("One of the options should be " + TEST_DOWNSTREAM_PROJECT, TEST_DOWNSTREAM_PROJECT, downstreamProjectSelect.getOptionByValue(TEST_DOWNSTREAM_PROJECT).getValueAttribute());
+            assertEquals("One of the options should be " + TEST_UPSTREAM_PROJECT, TEST_UPSTREAM_PROJECT, downstreamProjectSelect
+                    .getOptionByValue(TEST_UPSTREAM_PROJECT).getValueAttribute());
+            assertEquals("One of the options should be " + TEST_DOWNSTREAM_PROJECT, TEST_DOWNSTREAM_PROJECT, downstreamProjectSelect
+                    .getOptionByValue(TEST_DOWNSTREAM_PROJECT).getValueAttribute());
 
             // Set the Downstream Project Name
             final HtmlButton saveNewUpstreamJobButton = (HtmlButton) last(configureNewUpstreamJobForm.getHtmlElementsByTagName("button"));
@@ -124,7 +130,8 @@ public class BuildPipelineTriggerTest extends HudsonTestCase {
 
             // Retrieve the configuration page for the Upstream project and test that the correct downstream project has been added
             final HtmlPage testUpstreamProjectFinalPage = new WebClient().goTo(".." + TEST_DOWNSTREAM_PROJECT_HREF);
-            assertEquals("The downstream project should have been " + TEST_DOWNSTREAM_PROJECT_HREF, TEST_DOWNSTREAM_PROJECT_HREF, testUpstreamProjectFinalPage.getAnchorByHref(TEST_DOWNSTREAM_PROJECT_HREF).getHrefAttribute());
+            assertEquals("The downstream project should have been " + TEST_DOWNSTREAM_PROJECT_HREF, TEST_DOWNSTREAM_PROJECT_HREF,
+                    testUpstreamProjectFinalPage.getAnchorByHref(TEST_DOWNSTREAM_PROJECT_HREF).getHrefAttribute());
         } catch (IOException e) {
             e.toString();
         } catch (SAXException e) {
