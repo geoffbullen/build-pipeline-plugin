@@ -26,12 +26,17 @@ package au.com.centrumsystems.hudson.plugin.util;
 
 import hudson.model.DependencyGraph;
 import hudson.model.AbstractProject;
+import hudson.model.Descriptor;
 import hudson.model.Hudson;
+import hudson.tasks.Publisher;
+import hudson.util.DescribableList;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+
+import au.com.centrumsystems.hudson.plugin.buildpipeline.trigger.BuildPipelineTrigger;
 
 /**
  * CentrumAbstractProject is used to build the downstream projects pipeline
@@ -92,4 +97,31 @@ public final class ProjectUtil {
         return uri.toASCIIString();
     }
 
+    /**
+     * Determines if a manual trigger of the downstream project from the current upstream project is required.
+     * @param upstreamProject - The upstream project
+     * @param downstreamProject - The downstream project
+     *
+     * @return - true: Manual trigger required; false: Manual trigger not required
+     */
+    public static boolean isManualTrigger(final AbstractProject<?, ?> upstreamProject,
+            final AbstractProject<?, ?> downstreamProject) {
+        boolean manualTrigger = false;
+        final DescribableList<Publisher, Descriptor<Publisher>> upstreamPublishersLists = upstreamProject.getPublishersList();
+
+        for (final Publisher upstreamPub : upstreamPublishersLists) {
+            if (upstreamPub instanceof BuildPipelineTrigger) {
+                final String manualDownstreamProjects = ((BuildPipelineTrigger) upstreamPub).getDownstreamProjectNames();
+                final String[] downstreamProjs = manualDownstreamProjects.split(",");
+                for (String nextProj : downstreamProjs) {
+                    if (downstreamProject.getName().equalsIgnoreCase(nextProj.trim())) {
+                        manualTrigger = true;
+                        break;
+                    }
+                }
+            }
+        }
+        return manualTrigger;
+
+    }
 }
