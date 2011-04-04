@@ -1,0 +1,95 @@
+/*
+ * The MIT License
+ *
+ * Copyright (c) 2011, Centrumsystems Pty Ltd
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ *
+ */package au.com.centrumsystems.hudson.plugin.buildpipeline.trigger;
+
+import hudson.model.FreeStyleProject;
+import hudson.model.Hudson;
+import hudson.tasks.BuildTrigger;
+
+import java.io.IOException;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.jvnet.hudson.test.HudsonTestCase;
+
+/**
+ * @author KevinV
+ * 
+ */
+public class DownstreamDependencyTest extends HudsonTestCase {
+
+    private static final String TEST_PROJECT1 = "Project 1";
+    private static final String TEST_PROJECT2 = "Downstream Project 2";
+    private static final String TEST_PROJECT3 = "Downstream Project 3";
+    private static FreeStyleProject project1, project2, project3;
+
+    @Override
+    @Before
+    public void setUp() {
+        try {
+            super.setUp();
+        } catch (Exception exception) {
+            exception.toString();
+        }
+
+    }
+
+    @Test
+    public void testDownstreamDependency() {
+        try {
+            project1 = createFreeStyleProject(TEST_PROJECT1);
+            project2 = createFreeStyleProject(TEST_PROJECT2);
+
+            DownstreamDependency myDD = new DownstreamDependency(project1, project2);
+            assertEquals("Upstream project should be " + TEST_PROJECT1, project1, myDD.getUpstreamProject());
+            assertEquals("Downstream project should be " + TEST_PROJECT2, project2, myDD.getDownstreamProject());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Test
+    public void testShouldTriggerBuild() throws Exception {
+        project1 = createFreeStyleProject(TEST_PROJECT1);
+        project2 = createFreeStyleProject(TEST_PROJECT2);
+        project3 = createFreeStyleProject(TEST_PROJECT3);
+
+        // Add TEST_PROJECT2 as a Manually executed pipeline project
+        // Add TEST_PROJECT3 as a Post-build action -> build other projects
+        project1.getPublishersList().add(new BuildPipelineTrigger(TEST_PROJECT2));
+        project1.getPublishersList().add(new BuildTrigger(TEST_PROJECT3, true));
+
+        // Important; we must do this step to ensure that the dependency graphs are updated
+        Hudson.getInstance().rebuildDependencyGraph();
+
+        // Build project1 and wait until completion
+        buildAndAssertSuccess(project1);
+        waitUntilNoActivity();
+
+        assertNull(project2.getLastBuild());
+        assertNotNull(project3.getLastBuild());
+    }
+
+}

@@ -13,7 +13,7 @@
 	<packaging>hpi</packaging>
 
 	<name>Build Pipeline Plugin</name>
-	<description>This plugin provides build pipeline functionality to Hudson and jenkins.  This allows a chain of jobs to be visualised in a new view.  
+	<description>This plugin provides build pipeline functionality to Hudson and Jenkins.  This allows a chain of jobs to be visualised in a new view.  
         Manual jobs in the pipeline can be triggered by a user with the appropriate permissions manually confirming.
     </description>
 
@@ -29,7 +29,7 @@
 
 	<properties>
 		<junit.version>4.8.1</junit.version>
-		<code.coverage.percentage>55</code.coverage.percentage>
+		<code.coverage.percentage>60</code.coverage.percentage>
 		<checkstyle.rules.file>checkstyle_rules.xml</checkstyle.rules.file>
 		<pmd.config.file>pmd_rules.xml</pmd.config.file>
 		<maven-release-plugin>2.1</maven-release-plugin>
@@ -45,24 +45,12 @@
 		</developer>
 	</developers>
 
-
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>junit</groupId>
-				<artifactId>junit</artifactId>
-				<version>${junit.version}</version>
-				<scope>test</scope>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
-
-
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-checkstyle-plugin</artifactId>
+				<version>2.6</version>
 				<configuration>
 					<configLocation>${checkstyle.rules.file}</configLocation>
 					<failsOnError>true</failsOnError>
@@ -76,7 +64,7 @@
 					</execution>
 				</executions>
 			</plugin>
-
+	 
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>cobertura-maven-plugin</artifactId>
@@ -104,6 +92,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-pmd-plugin</artifactId>
+				<version>2.5</version>
 				<configuration>
 					<rulesets>
 						<ruleset>${pmd.config.file}</ruleset>
