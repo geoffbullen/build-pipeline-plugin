@@ -265,8 +265,8 @@ public class PipelineBuild {
      * Determines the pending currentBuild status of a currentBuild in the pipeline
      * that has not been completed. (i.e. the currentBuild is null)
      *
-     * @return - BUILD_PENDING_STATUS: Current currentBuild is pending the execution of upstream builds.
-     *          BUILD_MANUAL_TRIGGER_STATUS: Current currentBuild requires a manual trigger
+     * @return - PENDING: Current currentBuild is pending the execution of upstream builds.
+     *           MANUAL: Current currentBuild requires a manual trigger
      */
     private String getPendingStatus() {
         String pendingStatus = HudsonResult.PENDING.toString();
@@ -275,7 +275,6 @@ public class PipelineBuild {
         if (upstreamPB != null) {
             if (this.getUpstreamBuild() != null) {
                 if (getUpstreamBuildResult().equals(HudsonResult.SUCCESS.toString())) {
-                    //if (isManualTrigger()) {
                     if (ProjectUtil.isManualTrigger(this.upstreamBuild.getProject(), this.project)) {
                         pendingStatus = HudsonResult.MANUAL.toString();
                     }
