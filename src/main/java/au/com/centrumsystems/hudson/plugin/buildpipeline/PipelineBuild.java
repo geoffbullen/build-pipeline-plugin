@@ -28,9 +28,6 @@ import hudson.EnvVars;
 import hudson.model.Item;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
-import hudson.model.Descriptor;
-import hudson.tasks.Publisher;
-import hudson.util.DescribableList;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -38,7 +35,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import au.com.centrumsystems.hudson.plugin.buildpipeline.trigger.BuildPipelineTrigger;
 import au.com.centrumsystems.hudson.plugin.util.BuildUtil;
 import au.com.centrumsystems.hudson.plugin.util.HudsonResult;
 import au.com.centrumsystems.hudson.plugin.util.ProjectUtil;
@@ -84,11 +80,6 @@ public class PipelineBuild {
 
     /** A Logger object is used to log messages */
     private static final Logger LOGGER = Logger.getLogger(PipelineBuild.class.getName());
-    /** Indicates a currentBuild status to be pending upstream builds completion.*/
-    public static final String BUILD_PENDING_STATUS = "PENDING";
-    /** Indicates a currentBuild status to be pending a manual trigger.*/
-    public static final String BUILD_MANUAL_TRIGGER_STATUS = "MANUAL";
-
 
     /**
      * Default constructor
@@ -210,15 +201,7 @@ public class PipelineBuild {
      * @throws URISyntaxException If the URI string constructed from the given components violates RFC 2396
      */
     public String getProjectURL() throws URISyntaxException {
-        final StringBuffer resultURL = new StringBuffer();
-        final URI uri;
-        if (this.getProject() != null) {
-            resultURL.append("/job/");
-            resultURL.append(this.getProject().getName());
-            resultURL.append('/');
-        }
-        uri = new URI(null, null, resultURL.toString(), null);
-        return uri.toASCIIString();
+        return ProjectUtil.getProjectURL(this.getProject());
     }
 
     /**
@@ -286,60 +269,21 @@ public class PipelineBuild {
      *          BUILD_MANUAL_TRIGGER_STATUS: Current currentBuild requires a manual trigger
      */
     private String getPendingStatus() {
-        String pendingStatus = BUILD_PENDING_STATUS;
+        String pendingStatus = HudsonResult.PENDING.toString();
         final PipelineBuild upstreamPB = getUpstreamPipelineBuild();
 
         if (upstreamPB != null) {
             if (this.getUpstreamBuild() != null) {
-                if (isManualTrigger()) {
-                    pendingStatus = BUILD_MANUAL_TRIGGER_STATUS;
+                if (getUpstreamBuildResult().equals(HudsonResult.SUCCESS.toString())) {
+                    //if (isManualTrigger()) {
+                    if (ProjectUtil.isManualTrigger(this.upstreamBuild.getProject(), this.project)) {
+                        pendingStatus = HudsonResult.MANUAL.toString();
+                    }
                 }
             }
         }
         return pendingStatus;
     }
-
-    /**
-     * Determines if a manual trigger of the current build is required.
-     *
-     * @return - true: Manual trigger required; false: Manual trigger not required
-     */
-    private boolean isManualTrigger() {
-        boolean buildPipelineTrigger = false;
-        if (this.upstreamBuild != null) {
-            if (this.upstreamBuildResult.equals(HudsonResult.SUCCESS.toString())) {
-                final AbstractProject<?, ?> upstreamProject = this.upstreamBuild.getProject();
-                final DescribableList<Publisher, Descriptor<Publisher>> upstreamPublishersLists = upstreamProject.getPublishersList();
-
-                for (final Publisher upstreamPub : upstreamPublishersLists) {
-                    if (upstreamPub instanceof BuildPipelineTrigger) {
-                        final String manualDownstreamProjects = ((BuildPipelineTrigger) upstreamPub).getDownstreamProjectNames();
-                        final String[] downstreamProjs = manualDownstreamProjects.split(",");
-                        for (String nextProj : downstreamProjs) {
-                            if (this.project.getName().equalsIgnoreCase(nextProj.trim())) {
-                                    //&& (this.upstreamBuildResult.equals(HudsonResult.SUCCESS.toString()))) {
-                                buildPipelineTrigger = true;
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-
-        }
-        return buildPipelineTrigger;
-    }
-
-    /*
-    private PipelineBuild getNextPipelineBuild() {
-        final List<PipelineBuild> downstreamPipeline = this.getDownstreamPipeline();
-        PipelineBuild nextPB = new PipelineBuild();
-        if (downstreamPipeline.size() > 0) {
-            nextPB = downstreamPipeline.get(0);
-        }
-        return nextPB;
-    }*/
-
 
     /**
      * Returns the upstream PipelineBuild object from the current PipelineBuild object.
