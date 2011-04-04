@@ -1,0 +1,912 @@
+Listening for transport dt_socket at address: 8000
+[INFO] Scanning for projects...
+[INFO] ------------------------------------------------------------------------
+[INFO] Building Build Pipeline Plugin
+[INFO]    task-segment: [hpi:run]
+[INFO] ------------------------------------------------------------------------
+[INFO] Preparing hpi:run
+[INFO] [enforcer:display-info {execution: default}]
+[INFO] Maven Version: 2.2.1
+[INFO] JDK Version: 1.6.0_24 normalized as: 1.6.0-24
+[INFO] OS Info: Arch: amd64 Family: windows Name: windows 7 Version: 6.1
+[INFO] [localizer:generate {execution: default}]
+[INFO] [resources:resources {execution: default-resources}]
+[WARNING] Using platform encoding (Cp1252 actually) to copy filtered resources, i.e. build is platform dependent!
+[INFO] Copying 10 resources
+[INFO] [hpi:apt-compile {execution: default-apt-compile}]
+[INFO] Nothing to compile - all classes are up to date
+[INFO] [hpi:run {execution: default-cli}]
+[INFO] Generating .\work\plugins\build-pipeline-plugin.hpl
+[INFO] Copying dependency hudson plugin C:\Users\KevinV\.m2\repository\org\jvnet\hudson\main\maven-plugin\1.395\maven-plugin-1.395.jar
+[INFO] Copying dependency hudson plugin C:\Users\KevinV\.m2\repository\org\jvnet\hudson\plugins\subversion\1.11\subversion-1.11.jar
+[INFO] Copying dependency hudson plugin C:\Users\KevinV\.m2\repository\org\jvnet\hudson\main\ui-samples-plugin\1.395\ui-samples-plugin-1.395.jar
+[INFO] Configuring Jetty for project: Build Pipeline Plugin
+2011-04-01 15:28:09.414::INFO:  Logging to STDERR via org.mortbay.log.StdErrLog
+[INFO] Context path = /
+[INFO] Tmp directory = C:\workspace\springsource\BuildPipelinePlugin-Google\build-pipeline-plugin\target\work
+[INFO] Web defaults =  jetty default
+[INFO] Starting jetty 6.1.1 ...
+2011-04-01 15:28:09.577::INFO:  jetty-6.1.1
+hudson home directory: C:\workspace\springsource\BuildPipelinePlugin-Google\build-pipeline-plugin\.\work
+01/04/2011 3:28:10 PM hudson.util.CharacterEncodingFilter init
+INFO: CharacterEncodingFilter initialized. DISABLE_FILTER: false FORCE_ENCODING: false
+2011-04-01 15:28:11.439::INFO:  Started SelectChannelConnector @ 0.0.0.0:8080
+[INFO] Started Jetty Server
+01/04/2011 3:28:11 PM hudson.model.Hudson$5 onAttained
+INFO: Started initialization
+01/04/2011 3:28:11 PM hudson.PluginManager$1$3$1 isDuplicate
+INFO: Ignoring C:\workspace\springsource\BuildPipelinePlugin-Google\build-pipeline-plugin\.\work\plugins\build-pipeline-plugin.hpl because C:\workspace\springsource\BuildPipelinePlugin-Google\build-pipeline-plugin\.\work\plugins\build-pipeline-plugin.hpl is already loaded
+01/04/2011 3:28:11 PM hudson.model.Hudson$5 onAttained
+INFO: Listed all plugins
+01/04/2011 3:28:11 PM hudson.model.Hudson$5 onAttained
+INFO: Prepared all plugins
+01/04/2011 3:28:11 PM hudson.model.Hudson$5 onAttained
+INFO: Started all plugins
+01/04/2011 3:28:11 PM hudson.model.Hudson$5 onAttained
+INFO: Augmented all extensions
+01/04/2011 3:28:11 PM hudson.util.RobustReflectionConverter doUnmarshal
+WARNING: Skipping a non-existent field lastBuildOfAPipeline
+com.thoughtworks.xstream.converters.reflection.NonExistentFieldException: No such field au.com.centrumsystems.hudson.plugin.buildpipeline.BuildPipelineView.lastBuildOfAPipeline
+	at com.thoughtworks.xstream.converters.reflection.FieldDictionary.field(FieldDictionary.java:106)
+	at com.thoughtworks.xstream.converters.reflection.PureJavaReflectionProvider.getFieldType(PureJavaReflectionProvider.java:152)
+	at hudson.util.RobustReflectionConverter.determineType(RobustReflectionConverter.java:356)
+	at hudson.util.RobustReflectionConverter.doUnmarshal(RobustReflectionConverter.java:229)
+	at hudson.util.RobustReflectionConverter.unmarshal(RobustReflectionConverter.java:180)
+	at com.thoughtworks.xstream.core.TreeUnmarshaller.convert(TreeUnmarshaller.java:82)
+	at com.thoughtworks.xstream.core.AbstractReferenceUnmarshaller.convert(AbstractReferenceUnmarshaller.java:63)
+	at com.thoughtworks.xstream.core.TreeUnmarshaller.convertAnother(TreeUnmarshaller.java:76)
+	at com.thoughtworks.xstream.core.TreeUnmarshaller.convertAnother(TreeUnmarshaller.java:60)
+	at com.thoughtworks.xstream.converters.collections.AbstractCollectionConverter.readItem(AbstractCollectionConverter.java:71)
+	at hudson.util.RobustCollectionConverter.populateCollection(RobustCollectionConverter.java:85)
+	at com.thoughtworks.xstream.converters.collections.CollectionConverter.unmarshal(CollectionConverter.java:61)
+	at hudson.util.RobustCollectionConverter.unmarshal(RobustCollectionConverter.java:76)
+	at com.thoughtworks.xstream.core.TreeUnmarshaller.convert(TreeUnmarshaller.java:82)
+	at com.thoughtworks.xstream.core.AbstractReferenceUnmarshaller.convert(AbstractReferenceUnmarshaller.java:63)
+	at com.thoughtworks.xstream.core.TreeUnmarshaller.convertAnother(TreeUnmarshaller.java:76)
+	at com.thoughtworks.xstream.core.TreeUnmarshaller.convertAnother(TreeUnmarshaller.java:60)
+	at hudson.util.RobustReflectionConverter.unmarshalField(RobustReflectionConverter.java:290)
+	at hudson.util.RobustReflectionConverter.doUnmarshal(RobustReflectionConverter.java:233)
+	at hudson.util.RobustReflectionConverter.unmarshal(RobustReflectionConverter.java:180)
+	at com.thoughtworks.xstream.core.TreeUnmarshaller.convert(TreeUnmarshaller.java:82)
+	at com.thoughtworks.xstream.core.AbstractReferenceUnmarshaller.convert(AbstractReferenceUnmarshaller.java:63)
+	at com.thoughtworks.xstream.core.TreeUnmarshaller.convertAnother(TreeUnmarshaller.java:76)
+	at com.thoughtworks.xstream.core.TreeUnmarshaller.convertAnother(TreeUnmarshaller.java:60)
+	at com.thoughtworks.xstream.core.TreeUnmarshaller.start(TreeUnmarshaller.java:137)
+	at com.thoughtworks.xstream.core.AbstractTreeMarshallingStrategy.unmarshal(AbstractTreeMarshallingStrategy.java:33)
+	at com.thoughtworks.xstream.XStream.unmarshal(XStream.java:926)
+	at hudson.util.XStream2.unmarshal(XStream2.java:80)
+	at com.thoughtworks.xstream.XStream.unmarshal(XStream.java:912)
+	at hudson.XmlFile.unmarshal(XmlFile.java:148)
+	at hudson.model.Hudson$12.run(Hudson.java:2254)
+	at org.jvnet.hudson.reactor.TaskGraphBuilder$TaskImpl.run(TaskGraphBuilder.java:146)
+	at org.jvnet.hudson.reactor.Reactor.runTask(Reactor.java:259)
+	at hudson.model.Hudson$4.runTask(Hudson.java:734)
+	at org.jvnet.hudson.reactor.Reactor$2.run(Reactor.java:187)
+	at org.jvnet.hudson.reactor.Reactor$Node.run(Reactor.java:94)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.runTask(ThreadPoolExecutor.java:886)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:908)
+	at java.lang.Thread.run(Thread.java:662)
+01/04/2011 3:28:11 PM hudson.util.RobustReflectionConverter doUnmarshal
+WARNING: Skipping a non-existent field lastBuildOfAPipeline
+com.thoughtworks.xstream.converters.reflection.NonExistentFieldException: No such field au.com.centrumsystems.hudson.plugin.buildpipeline.BuildPipelineView.lastBuildOfAPipeline
+	at com.thoughtworks.xstream.converters.reflection.FieldDictionary.field(FieldDictionary.java:106)
+	at com.thoughtworks.xstream.converters.reflection.PureJavaReflectionProvider.getFieldType(PureJavaReflectionProvider.java:152)
+	at hudson.util.RobustReflectionConverter.determineType(RobustReflectionConverter.java:356)
+	at hudson.util.RobustReflectionConverter.doUnmarshal(RobustReflectionConverter.java:229)
+	at hudson.util.RobustReflectionConverter.unmarshal(RobustReflectionConverter.java:180)
+	at com.thoughtworks.xstream.core.TreeUnmarshaller.convert(TreeUnmarshaller.java:82)
+	at com.thoughtworks.xstream.core.AbstractReferenceUnmarshaller.convert(AbstractReferenceUnmarshaller.java:63)
+	at com.thoughtworks.xstream.core.TreeUnmarshaller.convertAnother(TreeUnmarshaller.java:76)
+	at com.thoughtworks.xstream.core.TreeUnmarshaller.convertAnother(TreeUnmarshaller.java:60)
+	at com.thoughtworks.xstream.converters.collections.AbstractCollectionConverter.readItem(AbstractCollectionConverter.java:71)
+	at hudson.util.RobustCollectionConverter.populateCollection(RobustCollectionConverter.java:85)
+	at com.thoughtworks.xstream.converters.collections.CollectionConverter.unmarshal(CollectionConverter.java:61)
+	at hudson.util.RobustCollectionConverter.unmarshal(RobustCollectionConverter.java:76)
+	at com.thoughtworks.xstream.core.TreeUnmarshaller.convert(TreeUnmarshaller.java:82)
+	at com.thoughtworks.xstream.core.AbstractReferenceUnmarshaller.convert(AbstractReferenceUnmarshaller.java:63)
+	at com.thoughtworks.xstream.core.TreeUnmarshaller.convertAnother(TreeUnmarshaller.java:76)
+	at com.thoughtworks.xstream.core.TreeUnmarshaller.convertAnother(TreeUnmarshaller.java:60)
+	at hudson.util.RobustReflectionConverter.unmarshalField(RobustReflectionConverter.java:290)
+	at hudson.util.RobustReflectionConverter.doUnmarshal(RobustReflectionConverter.java:233)
+	at hudson.util.RobustReflectionConverter.unmarshal(RobustReflectionConverter.java:180)
+	at com.thoughtworks.xstream.core.TreeUnmarshaller.convert(TreeUnmarshaller.java:82)
+	at com.thoughtworks.xstream.core.AbstractReferenceUnmarshaller.convert(AbstractReferenceUnmarshaller.java:63)
+	at com.thoughtworks.xstream.core.TreeUnmarshaller.convertAnother(TreeUnmarshaller.java:76)
+	at com.thoughtworks.xstream.core.TreeUnmarshaller.convertAnother(TreeUnmarshaller.java:60)
+	at com.thoughtworks.xstream.core.TreeUnmarshaller.start(TreeUnmarshaller.java:137)
+	at com.thoughtworks.xstream.core.AbstractTreeMarshallingStrategy.unmarshal(AbstractTreeMarshallingStrategy.java:33)
+	at com.thoughtworks.xstream.XStream.unmarshal(XStream.java:926)
+	at hudson.util.XStream2.unmarshal(XStream2.java:80)
+	at com.thoughtworks.xstream.XStream.unmarshal(XStream.java:912)
+	at hudson.XmlFile.unmarshal(XmlFile.java:148)
+	at hudson.model.Hudson$12.run(Hudson.java:2254)
+	at org.jvnet.hudson.reactor.TaskGraphBuilder$TaskImpl.run(TaskGraphBuilder.java:146)
+	at org.jvnet.hudson.reactor.Reactor.runTask(Reactor.java:259)
+	at hudson.model.Hudson$4.runTask(Hudson.java:734)
+	at org.jvnet.hudson.reactor.Reactor$2.run(Reactor.java:187)
+	at org.jvnet.hudson.reactor.Reactor$Node.run(Reactor.java:94)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.runTask(ThreadPoolExecutor.java:886)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:908)
+	at java.lang.Thread.run(Thread.java:662)
+01/04/2011 3:28:11 PM hudson.util.RobustReflectionConverter doUnmarshal
+WARNING: Skipping a non-existent field lastBuildOfAPipeline
+com.thoughtworks.xstream.converters.reflection.NonExistentFieldException: No such field au.com.centrumsystems.hudson.plugin.buildpipeline.BuildPipelineView.lastBuildOfAPipeline
+	at com.thoughtworks.xstream.converters.reflection.FieldDictionary.field(FieldDictionary.java:106)
+	at com.thoughtworks.xstream.converters.reflection.PureJavaReflectionProvider.getFieldType(PureJavaReflectionProvider.java:152)
+	at hudson.util.RobustReflectionConverter.determineType(RobustReflectionConverter.java:356)
+	at hudson.util.RobustReflectionConverter.doUnmarshal(RobustReflectionConverter.java:229)
+	at hudson.util.RobustReflectionConverter.unmarshal(RobustReflectionConverter.java:180)
+	at com.thoughtworks.xstream.core.TreeUnmarshaller.convert(TreeUnmarshaller.java:82)
+	at com.thoughtworks.xstream.core.AbstractReferenceUnmarshaller.convert(AbstractReferenceUnmarshaller.java:63)
+	at com.thoughtworks.xstream.core.TreeUnmarshaller.convertAnother(TreeUnmarshaller.java:76)
+	at com.thoughtworks.xstream.core.TreeUnmarshaller.convertAnother(TreeUnmarshaller.java:60)
+	at com.thoughtworks.xstream.converters.collections.AbstractCollectionConverter.readItem(AbstractCollectionConverter.java:71)
+	at hudson.util.RobustCollectionConverter.populateCollection(RobustCollectionConverter.java:85)
+	at com.thoughtworks.xstream.converters.collections.CollectionConverter.unmarshal(CollectionConverter.java:61)
+	at hudson.util.RobustCollectionConverter.unmarshal(RobustCollectionConverter.java:76)
+	at com.thoughtworks.xstream.core.TreeUnmarshaller.convert(TreeUnmarshaller.java:82)
+	at com.thoughtworks.xstream.core.AbstractReferenceUnmarshaller.convert(AbstractReferenceUnmarshaller.java:63)
+	at com.thoughtworks.xstream.core.TreeUnmarshaller.convertAnother(TreeUnmarshaller.java:76)
+	at com.thoughtworks.xstream.core.TreeUnmarshaller.convertAnother(TreeUnmarshaller.java:60)
+	at hudson.util.RobustReflectionConverter.unmarshalField(RobustReflectionConverter.java:290)
+	at hudson.util.RobustReflectionConverter.doUnmarshal(RobustReflectionConverter.java:233)
+	at hudson.util.RobustReflectionConverter.unmarshal(RobustReflectionConverter.java:180)
+	at com.thoughtworks.xstream.core.TreeUnmarshaller.convert(TreeUnmarshaller.java:82)
+	at com.thoughtworks.xstream.core.AbstractReferenceUnmarshaller.convert(AbstractReferenceUnmarshaller.java:63)
+	at com.thoughtworks.xstream.core.TreeUnmarshaller.convertAnother(TreeUnmarshaller.java:76)
+	at com.thoughtworks.xstream.core.TreeUnmarshaller.convertAnother(TreeUnmarshaller.java:60)
+	at com.thoughtworks.xstream.core.TreeUnmarshaller.start(TreeUnmarshaller.java:137)
+	at com.thoughtworks.xstream.core.AbstractTreeMarshallingStrategy.unmarshal(AbstractTreeMarshallingStrategy.java:33)
+	at com.thoughtworks.xstream.XStream.unmarshal(XStream.java:926)
+	at hudson.util.XStream2.unmarshal(XStream2.java:80)
+	at com.thoughtworks.xstream.XStream.unmarshal(XStream.java:912)
+	at hudson.XmlFile.unmarshal(XmlFile.java:148)
+	at hudson.model.Hudson$12.run(Hudson.java:2254)
+	at org.jvnet.hudson.reactor.TaskGraphBuilder$TaskImpl.run(TaskGraphBuilder.java:146)
+	at org.jvnet.hudson.reactor.Reactor.runTask(Reactor.java:259)
+	at hudson.model.Hudson$4.runTask(Hudson.java:734)
+	at org.jvnet.hudson.reactor.Reactor$2.run(Reactor.java:187)
+	at org.jvnet.hudson.reactor.Reactor$Node.run(Reactor.java:94)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.runTask(ThreadPoolExecutor.java:886)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:908)
+	at java.lang.Thread.run(Thread.java:662)
+01/04/2011 3:28:11 PM hudson.util.RobustReflectionConverter doUnmarshal
+WARNING: Skipping a non-existent field lastBuildOfAPipeline
+com.thoughtworks.xstream.converters.reflection.NonExistentFieldException: No such field au.com.centrumsystems.hudson.plugin.buildpipeline.BuildPipelineView.lastBuildOfAPipeline
+	at com.thoughtworks.xstream.converters.reflection.FieldDictionary.field(FieldDictionary.java:106)
+	at com.thoughtworks.xstream.converters.reflection.PureJavaReflectionProvider.getFieldType(PureJavaReflectionProvider.java:152)
+	at hudson.util.RobustReflectionConverter.determineType(RobustReflectionConverter.java:356)
+	at hudson.util.RobustReflectionConverter.doUnmarshal(RobustReflectionConverter.java:229)
+	at hudson.util.RobustReflectionConverter.unmarshal(RobustReflectionConverter.java:180)
+	at com.thoughtworks.xstream.core.TreeUnmarshaller.convert(TreeUnmarshaller.java:82)
+	at com.thoughtworks.xstream.core.AbstractReferenceUnmarshaller.convert(AbstractReferenceUnmarshaller.java:63)
+	at com.thoughtworks.xstream.core.TreeUnmarshaller.convertAnother(TreeUnmarshaller.java:76)
+	at com.thoughtworks.xstream.core.TreeUnmarshaller.convertAnother(TreeUnmarshaller.java:60)
+	at com.thoughtworks.xstream.converters.collections.AbstractCollectionConverter.readItem(AbstractCollectionConverter.java:71)
+	at hudson.util.RobustCollectionConverter.populateCollection(RobustCollectionConverter.java:85)
+	at com.thoughtworks.xstream.converters.collections.CollectionConverter.unmarshal(CollectionConverter.java:61)
+	at hudson.util.RobustCollectionConverter.unmarshal(RobustCollectionConverter.java:76)
+	at com.thoughtworks.xstream.core.TreeUnmarshaller.convert(TreeUnmarshaller.java:82)
+	at com.thoughtworks.xstream.core.AbstractReferenceUnmarshaller.convert(AbstractReferenceUnmarshaller.java:63)
+	at com.thoughtworks.xstream.core.TreeUnmarshaller.convertAnother(TreeUnmarshaller.java:76)
+	at com.thoughtworks.xstream.core.TreeUnmarshaller.convertAnother(TreeUnmarshaller.java:60)
+	at hudson.util.RobustReflectionConverter.unmarshalField(RobustReflectionConverter.java:290)
+	at hudson.util.RobustReflectionConverter.doUnmarshal(RobustReflectionConverter.java:233)
+	at hudson.util.RobustReflectionConverter.unmarshal(RobustReflectionConverter.java:180)
+	at com.thoughtworks.xstream.core.TreeUnmarshaller.convert(TreeUnmarshaller.java:82)
+	at com.thoughtworks.xstream.core.AbstractReferenceUnmarshaller.convert(AbstractReferenceUnmarshaller.java:63)
+	at com.thoughtworks.xstream.core.TreeUnmarshaller.convertAnother(TreeUnmarshaller.java:76)
+	at com.thoughtworks.xstream.core.TreeUnmarshaller.convertAnother(TreeUnmarshaller.java:60)
+	at com.thoughtworks.xstream.core.TreeUnmarshaller.start(TreeUnmarshaller.java:137)
+	at com.thoughtworks.xstream.core.AbstractTreeMarshallingStrategy.unmarshal(AbstractTreeMarshallingStrategy.java:33)
+	at com.thoughtworks.xstream.XStream.unmarshal(XStream.java:926)
+	at hudson.util.XStream2.unmarshal(XStream2.java:80)
+	at com.thoughtworks.xstream.XStream.unmarshal(XStream.java:912)
+	at hudson.XmlFile.unmarshal(XmlFile.java:148)
+	at hudson.model.Hudson$12.run(Hudson.java:2254)
+	at org.jvnet.hudson.reactor.TaskGraphBuilder$TaskImpl.run(TaskGraphBuilder.java:146)
+	at org.jvnet.hudson.reactor.Reactor.runTask(Reactor.java:259)
+	at hudson.model.Hudson$4.runTask(Hudson.java:734)
+	at org.jvnet.hudson.reactor.Reactor$2.run(Reactor.java:187)
+	at org.jvnet.hudson.reactor.Reactor$Node.run(Reactor.java:94)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.runTask(ThreadPoolExecutor.java:886)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:908)
+	at java.lang.Thread.run(Thread.java:662)
+01/04/2011 3:28:12 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: org.jvnet.hudson.plugins.DownStreamProjectActionFactory@49498526 adds DownStreamProjectAction for hudson.model.FreeStyleProject@79c4a760[Test3]
+01/04/2011 3:28:12 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Test3 #1 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@1f140cf6]
+01/04/2011 3:28:12 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Test3 #1:[hudson.model.CauseAction@5d5efa6a, org.jvnet.hudson.plugins.DownstreamBuildViewAction@1f140cf6]
+01/04/2011 3:28:12 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: org.jvnet.hudson.plugins.DownStreamProjectActionFactory@49498526 adds DownStreamProjectAction for hudson.model.FreeStyleProject@68a750a[C]
+01/04/2011 3:28:12 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: C #2 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@5b809715]
+01/04/2011 3:28:12 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: C #2:[hudson.model.CauseAction@573f12a1, org.jvnet.hudson.plugins.DownstreamBuildViewAction@5b809715]
+01/04/2011 3:28:12 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: C #1 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@6de034c6]
+01/04/2011 3:28:12 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: C #1:[hudson.model.CauseAction@1aa8eb85, org.jvnet.hudson.plugins.DownstreamBuildViewAction@6de034c6]
+01/04/2011 3:28:12 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: org.jvnet.hudson.plugins.DownStreamProjectActionFactory@49498526 adds DownStreamProjectAction for hudson.model.FreeStyleProject@47fe766f[DS2]
+01/04/2011 3:28:12 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: DS2 #5 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@13119656]
+01/04/2011 3:28:12 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: DS2 #5:[hudson.model.CauseAction@67a4f1e1, org.jvnet.hudson.plugins.DownstreamBuildViewAction@13119656]
+01/04/2011 3:28:12 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: DS2 #4 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@7e041fef]
+01/04/2011 3:28:12 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: DS2 #4:[hudson.model.CauseAction@40ccc48b, org.jvnet.hudson.plugins.DownstreamBuildViewAction@7e041fef]
+01/04/2011 3:28:12 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: DS2 #3 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@437ba2e9]
+01/04/2011 3:28:12 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: DS2 #3:[hudson.model.CauseAction@6a04919b, org.jvnet.hudson.plugins.DownstreamBuildViewAction@437ba2e9]
+01/04/2011 3:28:12 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: DS2 #2 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@51f38d7d]
+01/04/2011 3:28:12 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: DS2 #2:[hudson.model.CauseAction@4cce3393, org.jvnet.hudson.plugins.DownstreamBuildViewAction@51f38d7d]
+01/04/2011 3:28:12 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: DS2 #1 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@759c1f49]
+01/04/2011 3:28:12 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: DS2 #1:[hudson.model.CauseAction@5cca2df1, org.jvnet.hudson.plugins.DownstreamBuildViewAction@759c1f49]
+01/04/2011 3:28:12 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: org.jvnet.hudson.plugins.DownStreamProjectActionFactory@49498526 adds DownStreamProjectAction for hudson.model.FreeStyleProject@5d8e58ce[Job 2]
+01/04/2011 3:28:12 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Job 2 #2 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@2c686c5e]
+01/04/2011 3:28:12 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Job 2 #2:[hudson.model.CauseAction@7ba2a618, org.jvnet.hudson.plugins.DownstreamBuildViewAction@2c686c5e]
+01/04/2011 3:28:12 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: org.jvnet.hudson.plugins.DownStreamProjectActionFactory@49498526 adds DownStreamProjectAction for hudson.model.FreeStyleProject@3a151cc3[Test5]
+01/04/2011 3:28:12 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Test5 #2 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@401363ff]
+01/04/2011 3:28:12 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Test5 #2:[hudson.model.CauseAction@390a1b36, org.jvnet.hudson.plugins.DownstreamBuildViewAction@401363ff]
+01/04/2011 3:28:12 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: org.jvnet.hudson.plugins.DownStreamProjectActionFactory@49498526 adds DownStreamProjectAction for hudson.model.FreeStyleProject@4680937b[UnitTest]
+01/04/2011 3:28:12 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: UnitTest #5 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@23529466]
+01/04/2011 3:28:12 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: UnitTest #5:[hudson.model.CauseAction@28cc6a8, org.jvnet.hudson.plugins.DownstreamBuildViewAction@23529466]
+01/04/2011 3:28:12 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: UnitTest DS Build View already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@684640e6]
+01/04/2011 3:28:12 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: UnitTest DS Build View:[hudson.model.CauseAction@5c4ef185, org.jvnet.hudson.plugins.DownstreamBuildViewAction@684640e6]
+01/04/2011 3:28:12 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: org.jvnet.hudson.plugins.DownStreamProjectActionFactory@49498526 adds DownStreamProjectAction for hudson.model.FreeStyleProject@6c09e6e0[Job 1]
+01/04/2011 3:28:12 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: org.jvnet.hudson.plugins.DownStreamProjectActionFactory@49498526 adds DownStreamProjectAction for hudson.model.FreeStyleProject@78090631[junk]
+01/04/2011 3:28:12 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: junk #1 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@1875b888]
+01/04/2011 3:28:12 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: junk #1:[hudson.model.CauseAction@58a5f543, org.jvnet.hudson.plugins.DownstreamBuildViewAction@1875b888]
+01/04/2011 3:28:12 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: org.jvnet.hudson.plugins.DownStreamProjectActionFactory@49498526 adds DownStreamProjectAction for hudson.model.FreeStyleProject@74ee003d[Test8]
+01/04/2011 3:28:12 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Test8 #2 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@127b7f35]
+01/04/2011 3:28:12 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Test8 #2:[hudson.model.CauseAction@9d121c7, org.jvnet.hudson.plugins.DownstreamBuildViewAction@127b7f35]
+01/04/2011 3:28:12 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: org.jvnet.hudson.plugins.DownStreamProjectActionFactory@49498526 adds DownStreamProjectAction for hudson.model.FreeStyleProject@ba59e87[Test6]
+01/04/2011 3:28:12 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Test6 #4 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@213401d7]
+01/04/2011 3:28:12 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Test6 #4:[hudson.model.CauseAction@87883df, org.jvnet.hudson.plugins.DownstreamBuildViewAction@213401d7]
+01/04/2011 3:28:12 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: org.jvnet.hudson.plugins.DownStreamProjectActionFactory@49498526 adds DownStreamProjectAction for hudson.model.FreeStyleProject@3b87bd31[B]
+01/04/2011 3:28:12 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: B #2 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@4c95fa7f]
+01/04/2011 3:28:12 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: B #2:[hudson.model.CauseAction@742e84e1, org.jvnet.hudson.plugins.DownstreamBuildViewAction@4c95fa7f]
+01/04/2011 3:28:12 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: org.jvnet.hudson.plugins.DownStreamProjectActionFactory@49498526 adds DownStreamProjectAction for hudson.model.FreeStyleProject@4079d7b3[Proj1]
+01/04/2011 3:28:12 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj1 #8 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@55afc1de]
+01/04/2011 3:28:12 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj1 #8:[hudson.model.CauseAction@5e101c5, org.jvnet.hudson.plugins.DownstreamBuildViewAction@55afc1de]
+01/04/2011 3:28:12 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj1 #7 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@512f0cf1]
+01/04/2011 3:28:12 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj1 #7:[hudson.model.CauseAction@67facbda, org.jvnet.hudson.plugins.DownstreamBuildViewAction@512f0cf1]
+01/04/2011 3:28:12 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj1 #6 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@25d8a8b]
+01/04/2011 3:28:12 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj1 #6:[hudson.model.CauseAction@6bf491a6, org.jvnet.hudson.plugins.DownstreamBuildViewAction@25d8a8b]
+01/04/2011 3:28:12 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj1 #5 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@58660a9]
+01/04/2011 3:28:12 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj1 #5:[hudson.model.CauseAction@3933fa14, org.jvnet.hudson.plugins.DownstreamBuildViewAction@58660a9]
+01/04/2011 3:28:12 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj1 #4 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@3675463]
+01/04/2011 3:28:12 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj1 #4:[hudson.model.CauseAction@58997c11, org.jvnet.hudson.plugins.DownstreamBuildViewAction@3675463]
+01/04/2011 3:28:12 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj1 #3 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@44a06d88]
+01/04/2011 3:28:12 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj1 #3:[hudson.model.CauseAction@771eeb, org.jvnet.hudson.plugins.DownstreamBuildViewAction@44a06d88]
+01/04/2011 3:28:12 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj1 #2 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@c8ed68a]
+01/04/2011 3:28:12 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj1 #2:[hudson.model.CauseAction@75a70476, org.jvnet.hudson.plugins.DownstreamBuildViewAction@c8ed68a]
+01/04/2011 3:28:12 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj1 #1 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@435bb90d]
+01/04/2011 3:28:12 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj1 #1:[hudson.model.CauseAction@3ad22707, org.jvnet.hudson.plugins.DownstreamBuildViewAction@435bb90d]
+01/04/2011 3:28:12 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: org.jvnet.hudson.plugins.DownStreamProjectActionFactory@49498526 adds DownStreamProjectAction for hudson.model.FreeStyleProject@2576829e[Test1]
+01/04/2011 3:28:12 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Test1 #11 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@332a4674]
+01/04/2011 3:28:12 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Test1 #11:[hudson.model.CauseAction@1c7783ea, org.jvnet.hudson.plugins.DownstreamBuildViewAction@332a4674]
+01/04/2011 3:28:12 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Test1 #10 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@6a75863f]
+01/04/2011 3:28:12 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Test1 #10:[hudson.model.CauseAction@49c0c8b3, org.jvnet.hudson.plugins.DownstreamBuildViewAction@6a75863f]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Adding org.jvnet.hudson.plugins.DownstreamBuildViewAction@27aed7c1 to Job 2 #1
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Adding org.jvnet.hudson.plugins.DownstreamBuildViewAction@551da1f8 to Test6 #3
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Adding org.jvnet.hudson.plugins.DownstreamBuildViewAction@4819d373 to Test8 #1
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Adding org.jvnet.hudson.plugins.DownstreamBuildViewAction@17894800 to Job 1 #2
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Adding org.jvnet.hudson.plugins.DownstreamBuildViewAction@69091c3f to Test1 #9
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Adding org.jvnet.hudson.plugins.DownstreamBuildViewAction@47d6d441 to B #1
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Test1 #9:[hudson.model.CauseAction@3eb14efc, org.jvnet.hudson.plugins.DownstreamBuildViewAction@69091c3f]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Job 1 #2:[hudson.model.CauseAction@3986c40d, org.jvnet.hudson.plugins.DownstreamBuildViewAction@17894800]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Adding org.jvnet.hudson.plugins.DownstreamBuildViewAction@7fb78a69 to Test1 #8
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Adding org.jvnet.hudson.plugins.DownstreamBuildViewAction@35d60412 to Test5 #1
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Test5 #1:[hudson.model.CauseAction@25b7c9d1, org.jvnet.hudson.plugins.DownstreamBuildViewAction@35d60412]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Adding org.jvnet.hudson.plugins.DownstreamBuildViewAction@75a5555a to UnitTest #3
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: UnitTest #3:[hudson.model.CauseAction@4522cbaf, org.jvnet.hudson.plugins.DownstreamBuildViewAction@75a5555a]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Adding org.jvnet.hudson.plugins.DownstreamBuildViewAction@6f6a719e to UnitTest #2
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: UnitTest #2:[hudson.model.CauseAction@35497537, org.jvnet.hudson.plugins.DownstreamBuildViewAction@6f6a719e]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Adding org.jvnet.hudson.plugins.DownstreamBuildViewAction@69ae8935 to UnitTest #1
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: UnitTest #1:[hudson.model.CauseAction@41b22cc7, org.jvnet.hudson.plugins.DownstreamBuildViewAction@69ae8935]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: org.jvnet.hudson.plugins.DownStreamProjectActionFactory@49498526 adds DownStreamProjectAction for hudson.model.FreeStyleProject@1899de83[Test7]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Test7 #2 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@1ddf7713]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Test7 #2:[hudson.model.CauseAction@3a028fb7, org.jvnet.hudson.plugins.DownstreamBuildViewAction@1ddf7713]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Adding org.jvnet.hudson.plugins.DownstreamBuildViewAction@7e295521 to Test7 #1
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Test7 #1:[hudson.model.CauseAction@4b942a3c, org.jvnet.hudson.plugins.DownstreamBuildViewAction@7e295521]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: org.jvnet.hudson.plugins.DownStreamProjectActionFactory@49498526 adds DownStreamProjectAction for hudson.model.FreeStyleProject@332b24bc[Proj2]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj2 #7 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@5578cce2]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj2 #7:[hudson.model.CauseAction@6dd33544, org.jvnet.hudson.plugins.DownstreamBuildViewAction@5578cce2]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj2 #6 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@454e3bb0]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj2 #6:[hudson.model.CauseAction@1330c35c, org.jvnet.hudson.plugins.DownstreamBuildViewAction@454e3bb0]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj2 #5 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@6669d6db]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj2 #5:[hudson.model.CauseAction@2e98f864, org.jvnet.hudson.plugins.DownstreamBuildViewAction@6669d6db]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj2 #4 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@3cdb8522]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj2 #4:[hudson.model.CauseAction@70019a64, org.jvnet.hudson.plugins.DownstreamBuildViewAction@3cdb8522]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj2 #3 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@793f54ae]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj2 #3:[hudson.model.CauseAction@3734fc1a, org.jvnet.hudson.plugins.DownstreamBuildViewAction@793f54ae]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj2 #2 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@77932b46]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj2 #2:[hudson.model.CauseAction@5efe3dfe, org.jvnet.hudson.plugins.DownstreamBuildViewAction@77932b46]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj2 #1 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@5981f6b]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj2 #1:[hudson.model.CauseAction@4636acab, org.jvnet.hudson.plugins.DownstreamBuildViewAction@5981f6b]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Test8 #1:[hudson.model.CauseAction@2f823290, org.jvnet.hudson.plugins.DownstreamBuildViewAction@4819d373]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: org.jvnet.hudson.plugins.DownStreamProjectActionFactory@49498526 adds DownStreamProjectAction for hudson.model.FreeStyleProject@39223bf0[DS3]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: DS3 #5 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@768d26dd]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: DS3 #5:[hudson.model.CauseAction@2cf2b3f9, org.jvnet.hudson.plugins.DownstreamBuildViewAction@768d26dd]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: DS3 #4 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@7205b77c]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: DS3 #4:[hudson.model.CauseAction@5551685f, org.jvnet.hudson.plugins.DownstreamBuildViewAction@7205b77c]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: DS3 #3 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@539b60bb]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: DS3 #3:[hudson.model.CauseAction@7debbfde, org.jvnet.hudson.plugins.DownstreamBuildViewAction@539b60bb]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: DS3 #2 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@81c868]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: DS3 #2:[hudson.model.CauseAction@488c241a, org.jvnet.hudson.plugins.DownstreamBuildViewAction@81c868]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: DS3 #1 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@68964c2b]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: DS3 #1:[hudson.model.CauseAction@6362d0b1, org.jvnet.hudson.plugins.DownstreamBuildViewAction@68964c2b]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Job 2 #1:[hudson.model.CauseAction@c74cc70, org.jvnet.hudson.plugins.DownstreamBuildViewAction@27aed7c1]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: org.jvnet.hudson.plugins.DownStreamProjectActionFactory@49498526 adds DownStreamProjectAction for hudson.model.FreeStyleProject@20d2b470[DS5]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: DS5 #12 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@694435e5]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: DS5 #12:[hudson.model.CauseAction@7d2e8360, org.jvnet.hudson.plugins.DownstreamBuildViewAction@694435e5]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: DS5 #11 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@78b353d4]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: DS5 #11:[hudson.model.CauseAction@4544c134, org.jvnet.hudson.plugins.DownstreamBuildViewAction@78b353d4]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: DS5 #10 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@24e86073]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: DS5 #10:[hudson.model.CauseAction@141430f3, org.jvnet.hudson.plugins.DownstreamBuildViewAction@24e86073]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: DS5 #9 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@3999abd1]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: DS5 #9:[hudson.model.CauseAction@17df43e2, org.jvnet.hudson.plugins.DownstreamBuildViewAction@3999abd1]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: DS5 #8 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@42e1b6ac]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: DS5 #8:[hudson.model.CauseAction@709ff881, org.jvnet.hudson.plugins.DownstreamBuildViewAction@42e1b6ac]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: DS5 #7 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@167416eb]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: DS5 #7:[hudson.model.CauseAction@1f8ca9d1, org.jvnet.hudson.plugins.DownstreamBuildViewAction@167416eb]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: DS5 #6 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@4be0e885]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: DS5 #6:[hudson.model.CauseAction@1ac19aae, org.jvnet.hudson.plugins.DownstreamBuildViewAction@4be0e885]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: DS5 #5 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@1c92233b]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: DS5 #5:[hudson.model.CauseAction@3e470524, org.jvnet.hudson.plugins.DownstreamBuildViewAction@1c92233b]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: DS5 #4 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@28a29e6d]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: DS5 #4:[hudson.model.CauseAction@4c4f1af2, org.jvnet.hudson.plugins.DownstreamBuildViewAction@28a29e6d]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: DS5 #3 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@5d722d01]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: DS5 #3:[hudson.model.CauseAction@72e8cc94, org.jvnet.hudson.plugins.DownstreamBuildViewAction@5d722d01]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: DS5 #2 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@11cf437c]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: DS5 #2:[hudson.model.CauseAction@3e578b06, org.jvnet.hudson.plugins.DownstreamBuildViewAction@11cf437c]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: DS5 #1 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@656856e3]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: DS5 #1:[hudson.model.CauseAction@25208518, org.jvnet.hudson.plugins.DownstreamBuildViewAction@656856e3]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: org.jvnet.hudson.plugins.DownStreamProjectActionFactory@49498526 adds DownStreamProjectAction for hudson.model.FreeStyleProject@18b6efb2[Test4]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Test4 #4 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@12329bcb]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Test4 #4:[hudson.model.CauseAction@389235c2, org.jvnet.hudson.plugins.DownstreamBuildViewAction@12329bcb]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Adding org.jvnet.hudson.plugins.DownstreamBuildViewAction@7077092 to Test4 #3
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Test4 #3:[hudson.model.CauseAction@796f84d8, org.jvnet.hudson.plugins.DownstreamBuildViewAction@7077092]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Adding org.jvnet.hudson.plugins.DownstreamBuildViewAction@87abf31 to Test4 #2
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Test4 #2:[hudson.model.CauseAction@329e2e50, org.jvnet.hudson.plugins.DownstreamBuildViewAction@87abf31]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Adding org.jvnet.hudson.plugins.DownstreamBuildViewAction@2ef2a026 to Test4 #1
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Test4 #1:[hudson.model.CauseAction@3af036de, org.jvnet.hudson.plugins.DownstreamBuildViewAction@2ef2a026]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: org.jvnet.hudson.plugins.DownStreamProjectActionFactory@49498526 adds DownStreamProjectAction for hudson.model.FreeStyleProject@3d191056[A]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: A #2 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@387f9d70]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: A #2:[hudson.model.CauseAction@4239410a, org.jvnet.hudson.plugins.DownstreamBuildViewAction@387f9d70]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Adding org.jvnet.hudson.plugins.DownstreamBuildViewAction@3cdd197d to A #1
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: A #1:[hudson.model.CauseAction@57b47cc2, org.jvnet.hudson.plugins.DownstreamBuildViewAction@3cdd197d]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Test1 #8:[hudson.model.CauseAction@6ae03500, org.jvnet.hudson.plugins.DownstreamBuildViewAction@7fb78a69]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Adding org.jvnet.hudson.plugins.DownstreamBuildViewAction@2ad965ea to Test1 #7
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Test1 #7:[hudson.model.CauseAction@26b1fba0, org.jvnet.hudson.plugins.DownstreamBuildViewAction@2ad965ea]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Adding org.jvnet.hudson.plugins.DownstreamBuildViewAction@6efed938 to Test1 #6
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Test1 #6:[hudson.model.CauseAction@1d672476, org.jvnet.hudson.plugins.DownstreamBuildViewAction@6efed938]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Adding org.jvnet.hudson.plugins.DownstreamBuildViewAction@5e8ace0e to Test1 #5
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Test1 #5:[hudson.model.CauseAction@6ade299f, org.jvnet.hudson.plugins.DownstreamBuildViewAction@5e8ace0e]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Adding org.jvnet.hudson.plugins.DownstreamBuildViewAction@1f7ebc89 to Test1 #4
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Test1 #4:[hudson.model.CauseAction@398bd686, org.jvnet.hudson.plugins.DownstreamBuildViewAction@1f7ebc89]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Adding org.jvnet.hudson.plugins.DownstreamBuildViewAction@bb114ee to Test1 #3
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Test1 #3:[hudson.model.CauseAction@16d51b41, org.jvnet.hudson.plugins.DownstreamBuildViewAction@bb114ee]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Adding org.jvnet.hudson.plugins.DownstreamBuildViewAction@f0541d to Test1 #2
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Test1 #2:[hudson.model.CauseAction@22223c66, org.jvnet.hudson.plugins.DownstreamBuildViewAction@f0541d]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Adding org.jvnet.hudson.plugins.DownstreamBuildViewAction@75ab5e0b to Test1 #1
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Test1 #1:[hudson.model.CauseAction@45ab6087, org.jvnet.hudson.plugins.DownstreamBuildViewAction@75ab5e0b]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: org.jvnet.hudson.plugins.DownStreamProjectActionFactory@49498526 adds DownStreamProjectAction for hudson.model.FreeStyleProject@14387bc2[DS 1]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: DS 1 #8 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@84507ed]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: DS 1 #8:[hudson.model.CauseAction@6c0b5cd8, org.jvnet.hudson.plugins.DownstreamBuildViewAction@84507ed]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: DS 1 #7 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@5dfca052]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: DS 1 #7:[hudson.model.CauseAction@748197b2, org.jvnet.hudson.plugins.DownstreamBuildViewAction@5dfca052]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: DS 1 #6 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@680e62df]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: DS 1 #6:[hudson.model.CauseAction@87d53d8, org.jvnet.hudson.plugins.DownstreamBuildViewAction@680e62df]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: DS 1 #5 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@5c0b8e42]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: DS 1 #5:[hudson.model.CauseAction@7aa8be43, org.jvnet.hudson.plugins.DownstreamBuildViewAction@5c0b8e42]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: DS 1 #4 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@5c635f9e]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: DS 1 #4:[hudson.model.CauseAction@1aad75, org.jvnet.hudson.plugins.DownstreamBuildViewAction@5c635f9e]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: DS 1 #3 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@5771dc60]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: DS 1 #3:[hudson.model.CauseAction@743b4f79, org.jvnet.hudson.plugins.DownstreamBuildViewAction@5771dc60]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: DS 1 #2 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@61decc8c]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: DS 1 #2:[hudson.model.CauseAction@6a472d86, org.jvnet.hudson.plugins.DownstreamBuildViewAction@61decc8c]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: DS 1 #1 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@66fdeeec]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: DS 1 #1:[hudson.model.CauseAction@2950fcc7, org.jvnet.hudson.plugins.DownstreamBuildViewAction@66fdeeec]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: org.jvnet.hudson.plugins.DownStreamProjectActionFactory@49498526 adds DownStreamProjectAction for hudson.model.FreeStyleProject@4038202[Proj5]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj5 #8 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@24c535d]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj5 #8:[hudson.model.CauseAction@60f4ffd8, org.jvnet.hudson.plugins.DownstreamBuildViewAction@24c535d]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj5 #7 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@74c8efa2]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj5 #7:[hudson.model.CauseAction@33ecb094, org.jvnet.hudson.plugins.DownstreamBuildViewAction@74c8efa2]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj5 #6 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@783cdf2d]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj5 #6:[hudson.model.CauseAction@64604106, org.jvnet.hudson.plugins.DownstreamBuildViewAction@783cdf2d]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj5 #5 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@6b4d2465]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj5 #5:[hudson.model.CauseAction@159099ec, org.jvnet.hudson.plugins.DownstreamBuildViewAction@6b4d2465]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj5 #4 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@48696003]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj5 #4:[hudson.model.CauseAction@7e1e8a18, org.jvnet.hudson.plugins.DownstreamBuildViewAction@48696003]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj5 #3 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@6fc6e58]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj5 #3:[hudson.model.CauseAction@26b056fd, org.jvnet.hudson.plugins.DownstreamBuildViewAction@6fc6e58]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj5 #2 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@31f0fe3]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj5 #2:[hudson.model.CauseAction@6c4c01ae, org.jvnet.hudson.plugins.DownstreamBuildViewAction@31f0fe3]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj5 #1 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@72027e0d]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj5 #1:[hudson.model.CauseAction@1a1c1f5, org.jvnet.hudson.plugins.DownstreamBuildViewAction@72027e0d]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: org.jvnet.hudson.plugins.DownStreamProjectActionFactory@49498526 adds DownStreamProjectAction for hudson.model.FreeStyleProject@223e0d14[Base Test]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: org.jvnet.hudson.plugins.DownStreamProjectActionFactory@49498526 adds DownStreamProjectAction for hudson.model.FreeStyleProject@17ccad9c[Proj7]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj7 #8 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@2a8e32b7]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj7 #8:[hudson.model.CauseAction@5da3a234, org.jvnet.hudson.plugins.DownstreamBuildViewAction@2a8e32b7]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj7 #7 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@21ee33f3]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj7 #7:[hudson.model.CauseAction@1d94a7ec, org.jvnet.hudson.plugins.DownstreamBuildViewAction@21ee33f3]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj7 #6 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@a9c8620]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj7 #6:[hudson.model.CauseAction@2a29a451, org.jvnet.hudson.plugins.DownstreamBuildViewAction@a9c8620]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj7 #5 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@13e2d777]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj7 #5:[hudson.model.CauseAction@11afcfd4, org.jvnet.hudson.plugins.DownstreamBuildViewAction@13e2d777]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj7 #4 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@2d75705e]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj7 #4:[hudson.model.CauseAction@792442a2, org.jvnet.hudson.plugins.DownstreamBuildViewAction@2d75705e]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj7 #3 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@3b92d7d0]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj7 #3:[hudson.model.CauseAction@2596b73e, org.jvnet.hudson.plugins.DownstreamBuildViewAction@3b92d7d0]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj7 #2 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@49d85ab9]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj7 #2:[hudson.model.CauseAction@1b2c4d8f, org.jvnet.hudson.plugins.DownstreamBuildViewAction@49d85ab9]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj7 #1 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@7997f538]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj7 #1:[hudson.model.CauseAction@67646de5, org.jvnet.hudson.plugins.DownstreamBuildViewAction@7997f538]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: org.jvnet.hudson.plugins.DownStreamProjectActionFactory@49498526 adds DownStreamProjectAction for hudson.model.FreeStyleProject@7a07f1ac[Proj3]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj3 #9 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@1f8b91cb]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj3 #9:[hudson.model.CauseAction@410b69b, org.jvnet.hudson.plugins.DownstreamBuildViewAction@1f8b91cb]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj3 #8 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@65447c32]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj3 #8:[hudson.model.CauseAction@7335ea8e, org.jvnet.hudson.plugins.DownstreamBuildViewAction@65447c32]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj3 #7 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@58ba4bb9]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj3 #7:[hudson.model.CauseAction@2ec18c31, org.jvnet.hudson.plugins.DownstreamBuildViewAction@58ba4bb9]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj3 #6 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@24dafcf2]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj3 #6:[hudson.model.CauseAction@251486c5, org.jvnet.hudson.plugins.DownstreamBuildViewAction@24dafcf2]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj3 #5 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@669c0287]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj3 #5:[hudson.model.CauseAction@c6a21b2, org.jvnet.hudson.plugins.DownstreamBuildViewAction@669c0287]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj3 #4 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@bca337c]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj3 #4:[hudson.model.CauseAction@7fa17f0, org.jvnet.hudson.plugins.DownstreamBuildViewAction@bca337c]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj3 #3 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@343991a7]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj3 #3:[hudson.model.CauseAction@2f8985ba, org.jvnet.hudson.plugins.DownstreamBuildViewAction@343991a7]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj3 #2 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@6daa8eb7]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: B #1:[hudson.model.CauseAction@6ab8a28b, org.jvnet.hudson.plugins.DownstreamBuildViewAction@47d6d441]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj3 #2:[hudson.model.CauseAction@2d4cadc4, org.jvnet.hudson.plugins.DownstreamBuildViewAction@6daa8eb7]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj3 #1 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@5243618]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj3 #1:[hudson.model.CauseAction@c5b644b, org.jvnet.hudson.plugins.DownstreamBuildViewAction@5243618]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Adding org.jvnet.hudson.plugins.DownstreamBuildViewAction@587fc8a0 to Job 1 #1
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Job 1 #1:[hudson.model.CauseAction@44157e43, org.jvnet.hudson.plugins.DownstreamBuildViewAction@587fc8a0]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Base Test #6 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@7e99e8f8]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: org.jvnet.hudson.plugins.DownStreamProjectActionFactory@49498526 adds DownStreamProjectAction for hudson.model.FreeStyleProject@4cc3507d[Top Level Job]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Test6 #3:[hudson.model.CauseAction@6ae2c05d, org.jvnet.hudson.plugins.DownstreamBuildViewAction@551da1f8]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Adding org.jvnet.hudson.plugins.DownstreamBuildViewAction@3c63dc28 to Test6 #2
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Test6 #2:[hudson.model.CauseAction@400ae511, org.jvnet.hudson.plugins.DownstreamBuildViewAction@3c63dc28]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Adding org.jvnet.hudson.plugins.DownstreamBuildViewAction@b44dff0 to Test6 #1
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Test6 #1:[hudson.model.CauseAction@56ca0b57, org.jvnet.hudson.plugins.DownstreamBuildViewAction@b44dff0]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: org.jvnet.hudson.plugins.DownStreamProjectActionFactory@49498526 adds DownStreamProjectAction for hudson.model.FreeStyleProject@6aaea944[DS4]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: DS4 #5 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@70eae613]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: DS4 #5:[hudson.model.CauseAction@4da7234f, org.jvnet.hudson.plugins.DownstreamBuildViewAction@70eae613]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: DS4 #4 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@17ff3f5d]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: DS4 #4:[hudson.model.CauseAction@7698fef9, org.jvnet.hudson.plugins.DownstreamBuildViewAction@17ff3f5d]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: DS4 #3 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@368bca43]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: DS4 #3:[hudson.model.CauseAction@138c10af, org.jvnet.hudson.plugins.DownstreamBuildViewAction@368bca43]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: DS4 #2 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@509b5b2f]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: DS4 #2:[hudson.model.CauseAction@77f9401, org.jvnet.hudson.plugins.DownstreamBuildViewAction@509b5b2f]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: DS4 #1 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@48cdd17f]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: DS4 #1:[hudson.model.CauseAction@40750e30, org.jvnet.hudson.plugins.DownstreamBuildViewAction@48cdd17f]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: org.jvnet.hudson.plugins.DownStreamProjectActionFactory@49498526 adds DownStreamProjectAction for hudson.model.FreeStyleProject@3a9ae1ab[Proj4]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj4 #8 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@e55bf9c]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj4 #8:[hudson.model.CauseAction@1f96a21e, org.jvnet.hudson.plugins.DownstreamBuildViewAction@e55bf9c]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj4 #7 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@5a6d6fc5]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj4 #7:[hudson.model.CauseAction@46c51ce4, org.jvnet.hudson.plugins.DownstreamBuildViewAction@5a6d6fc5]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj4 #6 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@36ebe108]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj4 #6:[hudson.model.CauseAction@3802f063, org.jvnet.hudson.plugins.DownstreamBuildViewAction@36ebe108]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj4 #5 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@48f4104f]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj4 #5:[hudson.model.CauseAction@f5ad7f4, org.jvnet.hudson.plugins.DownstreamBuildViewAction@48f4104f]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj4 #4 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@1517dc0c]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj4 #4:[hudson.model.CauseAction@516fa2a5, org.jvnet.hudson.plugins.DownstreamBuildViewAction@1517dc0c]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj4 #3 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@781f2867]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj4 #3:[hudson.model.CauseAction@4595bfcd, org.jvnet.hudson.plugins.DownstreamBuildViewAction@781f2867]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj4 #2 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@6a634f6b]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj4 #2:[hudson.model.CauseAction@1df3305e, org.jvnet.hudson.plugins.DownstreamBuildViewAction@6a634f6b]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj4 #1 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@48ec7aae]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj4 #1:[hudson.model.CauseAction@1d6a5ae9, org.jvnet.hudson.plugins.DownstreamBuildViewAction@48ec7aae]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Top Level Job #14 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@3bcdae24]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Base Test #6:[hudson.model.CauseAction@5f1483a0, org.jvnet.hudson.plugins.DownstreamBuildViewAction@7e99e8f8]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Base Test #5 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@5c5ce611]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Base Test #5:[hudson.model.CauseAction@57049576, org.jvnet.hudson.plugins.DownstreamBuildViewAction@5c5ce611]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Adding org.jvnet.hudson.plugins.DownstreamBuildViewAction@5143a680 to Base Test #4
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Base Test #4:[hudson.model.CauseAction@3068472e, org.jvnet.hudson.plugins.DownstreamBuildViewAction@5143a680]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Adding org.jvnet.hudson.plugins.DownstreamBuildViewAction@e1935d6 to Base Test #3
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Base Test #3:[hudson.model.CauseAction@191d7bd5, org.jvnet.hudson.plugins.DownstreamBuildViewAction@e1935d6]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Adding org.jvnet.hudson.plugins.DownstreamBuildViewAction@5eace9d4 to Base Test #2
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Base Test #2:[hudson.model.CauseAction@2a2b8ddb, org.jvnet.hudson.plugins.DownstreamBuildViewAction@5eace9d4]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Adding org.jvnet.hudson.plugins.DownstreamBuildViewAction@116e3a7e to Base Test #1
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Base Test #1:[hudson.model.CauseAction@5bc22f22, org.jvnet.hudson.plugins.DownstreamBuildViewAction@116e3a7e]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Top Level Job #14:[hudson.model.CauseAction@31768615, org.jvnet.hudson.plugins.DownstreamBuildViewAction@3bcdae24]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Top Level Job #13 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@29a4903e]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: org.jvnet.hudson.plugins.DownStreamProjectActionFactory@49498526 adds DownStreamProjectAction for hudson.model.FreeStyleProject@6df0a29b[Proj6]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj6 #8 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@75e81ab3]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj6 #8:[hudson.model.CauseAction@59311a3e, org.jvnet.hudson.plugins.DownstreamBuildViewAction@75e81ab3]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj6 #7 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@26b20a31]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj6 #7:[hudson.model.CauseAction@72bb2acf, org.jvnet.hudson.plugins.DownstreamBuildViewAction@26b20a31]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj6 #6 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@5df7b6e1]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj6 #6:[hudson.model.CauseAction@32079df9, org.jvnet.hudson.plugins.DownstreamBuildViewAction@5df7b6e1]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj6 #5 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@12146018]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj6 #5:[hudson.model.CauseAction@77b0d0ed, org.jvnet.hudson.plugins.DownstreamBuildViewAction@12146018]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Top Level Job #13:[hudson.model.CauseAction@72f9ebcd, org.jvnet.hudson.plugins.DownstreamBuildViewAction@29a4903e]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Top Level Job #12 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@42a6cdf5]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Top Level Job #12:[hudson.model.CauseAction@551bb202, org.jvnet.hudson.plugins.DownstreamBuildViewAction@42a6cdf5]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj6 #4 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@7964b4fe]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Top Level Job #11 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@d43ccf5]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj6 #4:[hudson.model.CauseAction@5e44efa0, org.jvnet.hudson.plugins.DownstreamBuildViewAction@7964b4fe]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Top Level Job #11:[hudson.model.CauseAction@7fd021b9, org.jvnet.hudson.plugins.DownstreamBuildViewAction@d43ccf5]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj6 #3 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@39563a3d]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj6 #3:[hudson.model.CauseAction@9e76345, org.jvnet.hudson.plugins.DownstreamBuildViewAction@39563a3d]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Top Level Job #10 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@4c099833]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Top Level Job #10:[hudson.model.CauseAction@36264c17, org.jvnet.hudson.plugins.DownstreamBuildViewAction@4c099833]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj6 #2 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@c4d95c7]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj6 #2:[hudson.model.CauseAction@4ef16070, org.jvnet.hudson.plugins.DownstreamBuildViewAction@c4d95c7]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj6 #1 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@48f2818d]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Proj6 #1:[hudson.model.CauseAction@29177565, org.jvnet.hudson.plugins.DownstreamBuildViewAction@48f2818d]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Top Level Job #9 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@39a44220]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Top Level Job #9:[hudson.model.CauseAction@431c4ef6, org.jvnet.hudson.plugins.DownstreamBuildViewAction@39a44220]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Top Level Job #8 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@77841ae5]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Top Level Job #8:[hudson.model.CauseAction@201edb0, org.jvnet.hudson.plugins.DownstreamBuildViewAction@77841ae5]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Top Level Job #7 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@4c9bbed7]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Top Level Job #7:[hudson.model.CauseAction@50e3c8c, org.jvnet.hudson.plugins.DownstreamBuildViewAction@4c9bbed7]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Top Level Job #6 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@69a90deb]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Top Level Job #6:[hudson.model.CauseAction@59d0f57e, org.jvnet.hudson.plugins.DownstreamBuildViewAction@69a90deb]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Top Level Job #5 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@25a55143]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Top Level Job #5:[hudson.model.CauseAction@87a1904, org.jvnet.hudson.plugins.DownstreamBuildViewAction@25a55143]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Top Level Job #4 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@80059f5]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Top Level Job #4:[hudson.model.CauseAction@4f11e7ed, org.jvnet.hudson.plugins.DownstreamBuildViewAction@80059f5]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Top Level Job #3 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@2091a129]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Top Level Job #3:[hudson.model.CauseAction@38eb9b73, org.jvnet.hudson.plugins.DownstreamBuildViewAction@2091a129]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Top Level Job #2 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@742ab836]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Top Level Job #2:[hudson.model.CauseAction@20a41ccf, org.jvnet.hudson.plugins.DownstreamBuildViewAction@742ab836]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Top Level Job #1 already has [org.jvnet.hudson.plugins.DownstreamBuildViewAction@765f6ac6]
+01/04/2011 3:28:13 PM org.jvnet.hudson.plugins.DownStreamProjectActionFactory createFor
+INFO: Top Level Job #1:[hudson.model.CauseAction@725b29e0, org.jvnet.hudson.plugins.DownstreamBuildViewAction@765f6ac6]
+01/04/2011 3:28:13 PM hudson.model.Hudson$5 onAttained
+INFO: Loaded all jobs
+01/04/2011 3:28:13 PM hudson.model.Hudson$5 onAttained
+INFO: Completed initialization
+01/04/2011 3:28:14 PM org.springframework.context.support.AbstractApplicationContext prepareRefresh
+INFO: Refreshing org.springframework.web.context.support.StaticWebApplicationContext@39b4e557: display name [Root WebApplicationContext]; startup date [Fri Apr 01 15:28:14 EST 2011]; root of context hierarchy
+01/04/2011 3:28:14 PM org.springframework.context.support.AbstractApplicationContext obtainFreshBeanFactory
+INFO: Bean factory for application context [org.springframework.web.context.support.StaticWebApplicationContext@39b4e557]: org.springframework.beans.factory.support.DefaultListableBeanFactory@661aeeec
+01/04/2011 3:28:14 PM org.springframework.beans.factory.support.DefaultListableBeanFactory preInstantiateSingletons
+INFO: Pre-instantiating singletons in org.springframework.beans.factory.support.DefaultListableBeanFactory@661aeeec: defining beans [authenticationManager]; root of factory hierarchy
+01/04/2011 3:28:15 PM org.springframework.context.support.AbstractApplicationContext prepareRefresh
+INFO: Refreshing org.springframework.web.context.support.StaticWebApplicationContext@4c583f4c: display name [Root WebApplicationContext]; startup date [Fri Apr 01 15:28:15 EST 2011]; root of context hierarchy
+01/04/2011 3:28:15 PM org.springframework.context.support.AbstractApplicationContext obtainFreshBeanFactory
+INFO: Bean factory for application context [org.springframework.web.context.support.StaticWebApplicationContext@4c583f4c]: org.springframework.beans.factory.support.DefaultListableBeanFactory@1dbc21fd
+01/04/2011 3:28:15 PM org.springframework.beans.factory.support.DefaultListableBeanFactory preInstantiateSingletons
+INFO: Pre-instantiating singletons in org.springframework.beans.factory.support.DefaultListableBeanFactory@1dbc21fd: defining beans [filter,legacy]; root of factory hierarchy
+01/04/2011 3:28:15 PM hudson.TcpSlaveAgentListener <init>
+INFO: JNLP slave agent listener started on TCP port 50533
+2011-04-01 15:28:47.529::INFO:  Shutdown hook executing
+2011-04-01 15:28:50.075::INFO:  Shutdown hook complete
+[INFO] Jetty server exiting.
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESSFUL
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 49 seconds
+[INFO] Finished at: Fri Apr 01 15:28:50 EST 2011
+[INFO] Final Memory: 52M/224M
+[INFO] ------------------------------------------------------------------------
+Terminate batch job (Y/N)? 
+Terminate batch job (Y/N)? ^C
