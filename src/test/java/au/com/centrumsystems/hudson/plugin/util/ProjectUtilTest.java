@@ -68,8 +68,8 @@ public class ProjectUtilTest extends HudsonTestCase {
             dsTestProject1 = createFreeStyleProject(TEST_PROJECT3);
 
             // Add project2 as a post build action: build other project
-            mainTestProject.getPublishersList().add(new BuildPipelineTrigger(TEST_PROJECT2, true));
-            mainTestProject.getPublishersList().add(new BuildPipelineTrigger(TEST_PROJECT3, true));
+            mainTestProject.getPublishersList().add(new BuildPipelineTrigger(TEST_PROJECT2));
+            mainTestProject.getPublishersList().add(new BuildPipelineTrigger(TEST_PROJECT3));
 
 
             // Important; we must do this step to ensure that the dependency graphs are updated
@@ -94,7 +94,7 @@ public class ProjectUtilTest extends HudsonTestCase {
 
             // Add TEST_PROJECT2 as a Manually executed pipeline project
             // Add TEST_PROJECT3 as a Post-build action -> build other projects
-            mainTestProject.getPublishersList().add(new BuildPipelineTrigger(TEST_PROJECT2, true));
+            mainTestProject.getPublishersList().add(new BuildPipelineTrigger(TEST_PROJECT2));
             mainTestProject.getPublishersList().add(new BuildTrigger(TEST_PROJECT3, true));
 
 
