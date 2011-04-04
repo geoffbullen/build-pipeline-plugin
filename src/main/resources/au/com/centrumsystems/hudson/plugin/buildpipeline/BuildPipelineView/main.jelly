@@ -1,139 +1,97 @@
 
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:i="jelly:fmt">
-<link href="/plugin/build-pipeline-plugin/css/main.css" type="text/css" rel="stylesheet" />
-<script language="javascript"> 
-function showhide(id){ 
-	if (document.getElementById){ 
-		obj = document.getElementById(id); 
-		if (obj.style.display == "none"){ 
-			obj.style.display = ""; 
-		} else { 
-			obj.style.display = "none"; 
+	<link href="/plugin/build-pipeline-plugin/css/main.css" type="text/css" rel="stylesheet" />
+	<script language="javascript"> 
+	function showhide(id){ 
+		if (document.getElementById){ 
+			obj = document.getElementById(id); 
+			if (obj.style.display == "none"){ 
+				obj.style.display = ""; 
+			} else { 
+				obj.style.display = "none"; 
+			} 
 		} 
 	} 
-} 
-</script> 
-
-<DIV><H3 CLASS="BuildViewMargin">${from.getBuildViewTitle()}</H3></DIV>
-
-<DIV href="#" ONCLICK="showhide('legendView');"> 
- 	<a href="#"><h4 style="text-decoration : underline;" CLASS="BuildViewMargin" > View/Hide Build Pipeline Icon Legend</h4></a>
-</DIV>
-<DIV id="legendView" style="display: none;"  CLASS="BuildViewMargin"> 
-	<table CELLSPACING="5" CELLPADDING="5">
-	 	<tr>
-	 		<td class="LegendHeader rounded" COLSPAN="2">Project Status</td>	 		
-	 		<td class="LegendHeader rounded" COLSPAN="2">Build Stability</td> 		
-	 		<td class="LegendHeader rounded">Build Status</td>
-	 	</tr>
-	  	<tr>
-	  		<td><img src="/images/16x16/blue.gif" /></td>
-	  		<td>Success</td>
-	  		<td><img src="/images/16x16/health-80plus.gif" /></td>
-	  		<td>More than 80&#37;</td>
-	  		<td class="SUCCESS rounded">SUCCESS</td>
-	  	</tr>
-	  	<tr>
-	  		<td><img src="/images/16x16/yellow.gif" /></td>
-	  		<td>Unstable</td>
-	  		<td><img src="/images/16x16/health-60to79.gif" /></td>
-	  		<td>60-79&#37;</td>
-	  		<td class="UNSTABLE rounded">UNSTABLE</td>
-	  	</tr>
-	  	<tr>
-	  		<td><img src="/images/16x16/red.gif" /></td>
-	  		<td>Failure</td>
-	  		<td><img src="/images/16x16/health-40to59.gif" /></td>
-	  		<td>40-59&#37;</td>
-	  		<td class="FAILURE rounded">FAILURE</td>
-	  	</tr>
-	  	<tr>
-	  		<td><img src="/images/16x16/grey.gif" /></td>
-	  		<td>Abort</td>
-	  		<td><img src="/images/16x16/health-20to39.gif" /></td>
-	  		<td>20-39&#37;</td>
-	  		<td class="ABORT rounded">ABORT</td>
-	  	</tr>
-	  	<tr>
-	  		<td><img src="/images/16x16/blue_anime.gif" /></td>
-	  		<td>Building</td>
-	  		<td><img src="/images/16x16/health-00to19.gif" /></td>
-	  		<td>Less than 20&#37;</td>
-	  		<td class="NOT_BUILT rounded">BUILDING</td>
-	  	</tr>
-	  	
-	 </table>
-</DIV>
-  
-<j:if test="${empty(items)}">
-	<st:include page="noJob.jelly" />
-</j:if>
- 
-<table CELLSPACING="5" CELLPADDING="5" CLASS="BuildViewMargin">
- 	<tr>
-		<j:set var="isArrowRequired" type="java.lang.Boolean" value="false" /> 		
-		<td></td> 	
-		<j:forEach var="project" items="${from.getProjectPipeline()}" >   
-			<j:if test="${!project.isEmpty()}">
-			 	
-				<j:if test="${isArrowRequired}">
-	 				<td><img src="/images/24x24/next.gif" /></td>
-	 			</j:if>		
-	   			<td id="projectHeader">
-	   				<H3>
-	    				${project.getName()}
-	    				<br />
-	    				<img src="/images/24x24/${project.getBuildStatusUrl()}" />
-	    				<img src="/images/24x24/${project.getBuildHealth().getIconUrl()}" />
-	    			</H3>
-	   			</td>  
-	   			<j:set var="isArrowRequired" type="java.lang.Boolean" value="true" /> 		 	
-	   		</j:if>
-   		</j:forEach>
- 	</tr>
- 	 	
- 	<j:set var="previousBuildRevNo" type="java.lang.String" value="" />
- 	<j:forEach var="row" items="${from.getBuildsHistory()}">
-		<j:set var="isArrowRequired" type="java.lang.Boolean" value="false" /> 		
-		 	
- 		<tr>
-	 			<td class="RevisionNo rounded" >
-	 				revision : ${from.getSVNRevisionNo(row)}
-	 			</td>
-	 			
- 			<j:forEach var="buildPipeline" items="${row}">
- 				<j:if test="${!buildPipeline.isEmpty()}">
- 			
-	 				<j:if test="${isArrowRequired}">
-	 					<td><img src="/images/24x24/next.gif" /></td>
-	 				</j:if>
-	 				<td class="${from.getHudsonResult(buildPipeline)} rounded">
-	 					<a href="${from.getBuildResultURL(buildPipeline)}" target="_blank">
-	 						${buildPipeline}
-	 						<br />
-	 						Duration: 
-	 						${buildPipeline.getDurationString()}	 						
-	 					</a>
-	 				</td>
-	 				<j:set var="isArrowRequired" type="java.lang.Boolean" value="true" /> 
-	 				${from.setLastBuildOfAPipeline(buildPipeline)}
-	 			</j:if>		 	
- 			</j:forEach>
- 			
- 			<j:if test="${from.isNextBuildRequire()}">
- 				<td><img src="/images/24x24/next.gif" /></td>
- 				<td class="NOT_BUILT rounded">
-	 				<form method="post" action="manualExecution">
-	 					<input name="upstreamProjectName" value="${buildPipeline.getProject().getName()}" type="hidden"/>
-						<input name="upstreamBuildNumber" value="${buildPipeline.getNumber()}" type="hidden"/>
-						<input name="triggerProjectName" value="${from.getNextProject(buildPipeline).getName()}" type="hidden"/>	 						 				
-						<f:submit value="Manual Execution" />
-					</form>
-	 			</td>
- 			</j:if>
- 			
- 		</tr>
- 	</j:forEach> 	
- 	
-</table>
+	</script> 
+	
+	<div><h1>Build Pipeline View: ${from.getBuildViewTitle()}</h1></div>
+	
+	<!-- If the user has the Configure View permission include a hyperlink to configure this view.-->
+	<j:if test="${from.hasConfigurePermission()}">
+		<a href="configure"><img height="24" style="margin: 2px;" alt="" width="24" src="${rootURL}/images/24x24/setting.gif" /></a>
+		<a href="configure">Configure View</a>
+	</j:if>
+	<div>
+		<!-- If the user has the Build Project permission include a hyperlink to build the base project.-->
+		<j:if test="${from.hasSelectedProject()}">
+			<j:if test="${from.hasBuildPermission(from.getSelectedProject())}">
+				<a href="/job/${from.getSelectedProject().getName()}/build?delay=0sec"><img height="24" style="margin: 2px;" alt="" width="24" src="${rootURL}/images/24x24/clock.gif" /></a>
+				<a href="/job/${from.getSelectedProject().getName()}/build?delay=0sec">Start Build of Pipeline for ${from.getSelectedProject().getName()}</a>
+			</j:if>
+		</j:if>
+	</div>
+	<!-- Hyperlink to show/hide the legend-->
+	<div href="#" ONCLICK="showhide('legendView');"> 
+		<a href="#"><img height="24" style="margin: 2px;" alt="" width="24" src="${rootURL}/images/24x24/help.gif" CLASS="BuildViewMargin"/></a> <a href="#">View/Hide Build Pipeline Icon Legend</a>
+	</div>
+		<div id="legendView" style="display: none;"  CLASS="BuildViewMargin"> 
+			<table CELLSPACING="5" CELLPADDING="5">
+			 	<tr>
+			 		<td class="LegendHeader rounded" COLSPAN="2">Project Status</td>	 		
+			 		<td class="LegendHeader rounded" COLSPAN="2">Build Stability</td> 		
+			 		<td class="LegendHeader rounded">Build Status</td>
+			 	</tr>
+			  	<tr>
+			  		<td><img src="${rootURL}/images/16x16/blue.gif" /></td>
+			  		<td>Success</td>
+			  		<td><img src="${rootURL}/images/16x16/health-80plus.gif" /></td>
+			  		<td>More than 80&#37;</td>
+			  		<td class="SUCCESS rounded">SUCCESS</td>
+			  	</tr>
+			  	<tr>
+			  		<td><img src="${rootURL}/images/16x16/yellow.gif" /></td>
+			  		<td>Unstable</td>
+			  		<td><img src="${rootURL}/images/16x16/health-60to79.gif" /></td>
+			  		<td>60-79&#37;</td>
+			  		<td class="UNSTABLE rounded">UNSTABLE</td>
+			  	</tr>
+			  	<tr>
+			  		<td><img src="${rootURL}/images/16x16/red.gif" /></td>
+			  		<td>Failure</td>
+			  		<td><img src="${rootURL}/images/16x16/health-40to59.gif" /></td>
+			  		<td>40-59&#37;</td>
+			  		<td class="FAILURE rounded">FAILURE</td>
+			  	</tr>
+			  	<tr>
+			  		<td><img src="${rootURL}/images/16x16/grey.gif" /></td>
+			  		<td>Abort</td>
+			  		<td><img src="${rootURL}/images/16x16/health-20to39.gif" /></td>
+			  		<td>20-39&#37;</td>
+			  		<td class="ABORT rounded">ABORT</td>
+			  	</tr>
+			  	<tr>
+			  		<td><img src="${rootURL}/images/16x16/blue_anime.gif" /></td>
+			  		<td>Building</td>
+			  		<td><img src="${rootURL}/images/16x16/health-00to19.gif" /></td>
+			  		<td>Less than 20&#37;</td>
+			  		<td class="NOT_BUILT rounded">BUILDING</td>
+			  	</tr>
+			  	<tr>
+			  		<td></td>
+			  		<td>Pending a build being triggered either manually or automatically.</td>
+			  		<td></td>
+			  		<td></td>
+			  		<td class="PENDING rounded">PENDING</td>
+			  	</tr>
+			 </table>
+		</div>
+	
+	<j:if test="${empty(items)}">
+		<st:include page="noJob.jelly" />
+	</j:if>
+	
+	
+	
+ 	<j:set var="resultsTable" type="java.lang.String" value="${from.getBuildPipelineHTML()}"/>
+ 	${resultsTable}
 </j:jelly>
