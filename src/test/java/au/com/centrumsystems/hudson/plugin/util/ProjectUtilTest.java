@@ -36,6 +36,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.jvnet.hudson.test.HudsonTestCase;
 
+import au.com.centrumsystems.hudson.plugin.buildpipeline.trigger.BuildPipelineTrigger;
+
 public class ProjectUtilTest extends HudsonTestCase {
 
     private static FreeStyleProject mainTestProject;
@@ -44,7 +46,7 @@ public class ProjectUtilTest extends HudsonTestCase {
     private static final String TEST_PROJECT1 = "Main Project";
     private static final String TEST_PROJECT2 = "Downstream Project";
     private static final String TEST_PROJECT3 = "Downstream Project 1";
-    private static final String TEST_PROJECT1_URL = "/job/Main%20Project/1/";
+    private static final String TEST_PROJECT1_URL = "/job/Main%20Project/";
 
     @Override
     @Before
@@ -66,8 +68,8 @@ public class ProjectUtilTest extends HudsonTestCase {
             dsTestProject1 = createFreeStyleProject(TEST_PROJECT3);
 
             // Add project2 as a post build action: build other project
-            mainTestProject.getPublishersList().add(new BuildTrigger(TEST_PROJECT2, true));
-            mainTestProject.getPublishersList().add(new BuildTrigger(TEST_PROJECT3, true));
+            mainTestProject.getPublishersList().add(new BuildPipelineTrigger(TEST_PROJECT2, true));
+            mainTestProject.getPublishersList().add(new BuildPipelineTrigger(TEST_PROJECT3, true));
 
 
             // Important; we must do this step to ensure that the dependency graphs are updated
@@ -90,6 +92,32 @@ public class ProjectUtilTest extends HudsonTestCase {
             dsTestProject = createFreeStyleProject(TEST_PROJECT2);
             dsTestProject1 = createFreeStyleProject(TEST_PROJECT3);
 
+            // Add TEST_PROJECT2 as a Manually executed pipeline project
+            // Add TEST_PROJECT3 as a Post-build action -> build other projects
+            mainTestProject.getPublishersList().add(new BuildPipelineTrigger(TEST_PROJECT2, true));
+            mainTestProject.getPublishersList().add(new BuildTrigger(TEST_PROJECT3, true));
+
+
+            // Important; we must do this step to ensure that the dependency graphs are updated
+            Hudson.getInstance().rebuildDependencyGraph();
+
+            // Test the method
+            assertTrue(TEST_PROJECT2 + " should be a manual trigger", ProjectUtil.isManualTrigger(mainTestProject, dsTestProject));
+            assertFalse(TEST_PROJECT3 + " should be an automatic trigger", ProjectUtil.isManualTrigger(mainTestProject, dsTestProject1));
+
+        } catch (IOException ioException) {
+            ioException.toString();
+        }
+    }
+
+    @Test
+    public void testIsManualTrigger() {
+        try {
+            // Create a test project
+            mainTestProject = createFreeStyleProject(TEST_PROJECT1);
+            dsTestProject = createFreeStyleProject(TEST_PROJECT2);
+            dsTestProject1 = createFreeStyleProject(TEST_PROJECT3);
+
             // Add project2 as a post build action: build other project
             mainTestProject.getPublishersList().add(new BuildTrigger(TEST_PROJECT2, true));
             mainTestProject.getPublishersList().add(new BuildTrigger(TEST_PROJECT3, true));
@@ -105,7 +133,6 @@ public class ProjectUtilTest extends HudsonTestCase {
             ioException.toString();
         }
     }
-
 
     @Test
     public void testGetProjectURL() {
