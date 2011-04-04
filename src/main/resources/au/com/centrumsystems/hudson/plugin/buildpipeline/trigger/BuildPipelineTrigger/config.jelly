@@ -5,15 +5,8 @@
     See global.jelly for a general discussion about jelly script.
   -->
 
-  <!-- The URL to use for invoking the teamworks web services. --> 
-  <f:entry title="Downstream Project Name" field="downstreamProjectName">
-    <f:select name="downstreamProjectName"> 
-	</f:select>
+  <f:entry title="Downstream Project Name" field="downstreamProjectNames">
+  	<f:textbox name="downstreamProjectNames"/> 
   </f:entry>
   
-  <f:entry title="Require manual build execution" field="isManualBuild">
-    <f:checkbox checked="${instance.isManualBuild}"/>    
-  </f:entry>
-
-
 </j:jelly>
