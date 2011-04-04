@@ -15,17 +15,17 @@
 	<name>Build Pipeline Plugin</name>
 	<description>This plugin provides build pipeline functionality to Hudson and jenkins.  This allows a chain of jobs to be visualised in a new view.  
         Manual jobs in the pipeline can be triggered by a user with the appropriate permissions manually confirming.
-        </description>
+    </description>
 
- 	<url>https://code.google.com/p/build-pipeline-plugin</url>
+	<url>https://code.google.com/p/build-pipeline-plugin</url>
 
-	
+
 	<scm>
 		<connection>scm:hg:https://build-pipeline-plugin.googlecode.com/hg/</connection>
 		<developerConnection>scm:hg:https://build-pipeline-plugin.googlecode.com/hg/</developerConnection>
 		<url>https://build-pipeline-plugin.googlecode.com/hg/</url>
 	</scm>
-	
+
 
 	<properties>
 		<junit.version>4.8.1</junit.version>
@@ -134,7 +134,7 @@
 					</execution>
 				</executions>
 			</plugin>
-	
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-release-plugin</artifactId>
@@ -146,8 +146,7 @@
 	</build>
 
 
-	<!-- get every artifact through maven.glassfish.org, which proxies all the 
-		artifacts that we need -->
+	<!-- get every artifact through maven.glassfish.org, which proxies all the artifacts that we need -->
 	<repositories>
 		<repository>
 			<id>m.g.o-public</id>
@@ -161,21 +160,21 @@
 			<url>http://maven.glassfish.org/content/groups/public/</url>
 		</pluginRepository>
 	</pluginRepositories>
-	
+
 	<profiles>
 		<profile>
 			<id>hudson-ci</id>
-			
+
 			<distributionManagement>
 				<repository>
 					<id>java.net-m2-repository</id>
-					<url>http://maven.hudson-labs.org:8081/content/repositories/releases/</url>	
+					<url>http://maven.hudson-labs.org:8081/content/repositories/releases/</url>
 				</repository>
 			</distributionManagement>
 		</profile>
 		<profile>
 			<id>jenkins-ci</id>
-			
+
 			<distributionManagement>
 				<repository>
 					<id>maven.jenkins-ci.org</id>
