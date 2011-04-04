@@ -68,19 +68,13 @@ public class PipelineBuildTest extends HudsonTestCase {
         MockBuilder builder1, builder2, builder3, builder4, builder5;
         FreeStyleBuild build1, build2, build3, build4 = null;
         BuildTrigger trigger2, trigger3, trigger4, trigger5;
-        final String RESULT1 = "-Project: Main Project1 : Build: 1\n" +
-            "--Project: Downstream Project2 : Build: 1\n" +
-            "---Project: Downstream Project4 : Build: 1\n" +
-            "--Project: Downstream Project3 : Build: 1\n";
-        final String RESULT2 = "-Project: Main Project1 : Build: 2\n" +
-            "--Project: Downstream Project2 : Build: 2\n" +
-            "--Project: Downstream Project3 : Build: 2\n" +
-            "---Project: Downstream Project4 : Build: 2\n";
-        final String RESULT3 = "-Project: Main Project1 : Build: 3\n" +
-            "--Project: Downstream Project2 : Build: 3\n" +
-            "--Project: Downstream Project3 : Build: 3\n" +
-            "---Project: Downstream Project4 : Build: 3\n" +
-            "---Project: Downstream Project5 : Build: 1\n";
+        final String RESULT1 = "-Project: Main Project1 : Build: 1\n" + "--Project: Downstream Project2 : Build: 1\n"
+                + "---Project: Downstream Project4 : Build: 1\n" + "--Project: Downstream Project3 : Build: 1\n";
+        final String RESULT2 = "-Project: Main Project1 : Build: 2\n" + "--Project: Downstream Project2 : Build: 2\n"
+                + "--Project: Downstream Project3 : Build: 2\n" + "---Project: Downstream Project4 : Build: 2\n";
+        final String RESULT3 = "-Project: Main Project1 : Build: 3\n" + "--Project: Downstream Project2 : Build: 3\n"
+                + "--Project: Downstream Project3 : Build: 3\n" + "---Project: Downstream Project4 : Build: 3\n"
+                + "---Project: Downstream Project5 : Build: 1\n";
 
         // Create test projects and associated builders
         try {
@@ -107,7 +101,7 @@ public class PipelineBuildTest extends HudsonTestCase {
             project5.getBuildersList().add(builder5);
 
             // Project 1 -> Project 2 -> Project 4
-            //           -> Project 3
+            // -> Project 3
             project1.getPublishersList().add(trigger2);
             project1.getPublishersList().add(trigger3);
             project2.getPublishersList().add(trigger4);
@@ -124,7 +118,7 @@ public class PipelineBuildTest extends HudsonTestCase {
             assertEquals(RESULT1, result.toString());
 
             // Project 1 -> Project 2
-            //           -> Project 3 -> Project 4
+            // -> Project 3 -> Project 4
             project1.getPublishersList().add(trigger2);
             project1.getPublishersList().add(trigger3);
             project2.getPublishersList().remove(trigger4);
@@ -142,8 +136,8 @@ public class PipelineBuildTest extends HudsonTestCase {
             assertEquals(RESULT2, result.toString());
 
             // Project 1 -> Project 2
-            //           -> Project 3 -> Project 4
-            //                        -> Project 5
+            // -> Project 3 -> Project 4
+            // -> Project 5
             project1.getPublishersList().add(trigger2);
             project1.getPublishersList().add(trigger3);
             project3.getPublishersList().add(trigger4);
@@ -165,7 +159,7 @@ public class PipelineBuildTest extends HudsonTestCase {
     }
 
     private void printDownstreamPipeline(final String prefix, PipelineBuild pb, StringBuffer result) {
-        String newPrefix = prefix +  "-";
+        String newPrefix = prefix + "-";
 
         result.append(newPrefix + pb.toString() + "\n");
         for (PipelineBuild child : pb.getDownstreamPipeline()) {
@@ -201,7 +195,7 @@ public class PipelineBuildTest extends HudsonTestCase {
         } catch (Exception e) {
             e.toString();
         }
-     }
+    }
 
     @Test
     public void testGetUpstreamPipelineBuild() {
@@ -233,7 +227,7 @@ public class PipelineBuildTest extends HudsonTestCase {
         } catch (Exception e) {
             e.toString();
         }
-     }
+    }
 
     @Test
     public void testGetUpstreamBuildResult() {
@@ -260,11 +254,12 @@ public class PipelineBuildTest extends HudsonTestCase {
             build2 = project2.getLastBuild();
 
             PipelineBuild pb1 = new PipelineBuild(build2, null, null);
-            assertEquals(build2 + " should have been " + HudsonResult.SUCCESS, HudsonResult.SUCCESS.toString(), pb1.getUpstreamBuildResult());
+            assertEquals(build2 + " should have been " + HudsonResult.SUCCESS, HudsonResult.SUCCESS.toString(),
+                    pb1.getUpstreamBuildResult());
         } catch (Exception e) {
             e.toString();
         }
-     }
+    }
 
     @Test
     public void testGetBuildResultURL() {
@@ -310,14 +305,16 @@ public class PipelineBuildTest extends HudsonTestCase {
             project1 = createFreeStyleProject(TEST_PROJECT1);
             PipelineBuild pb = new PipelineBuild(null, project1, null);
 
-            assertEquals("The build description should have been " + TEST_BUILD_DESCRIPTION_FAIL, TEST_BUILD_DESCRIPTION_FAIL, pb.getBuildDescription());
+            assertEquals("The build description should have been " + TEST_BUILD_DESCRIPTION_FAIL, TEST_BUILD_DESCRIPTION_FAIL,
+                    pb.getBuildDescription());
 
             build1 = buildAndAssertSuccess(project1);
             // When all building is complete retrieve the last builds
             waitUntilNoActivity();
             pb.setCurrentBuild(build1);
 
-            assertEquals("The build description should have been " + TEST_BUILD_DESCRIPTION_SUCCESS, TEST_BUILD_DESCRIPTION_SUCCESS, pb.getBuildDescription());
+            assertEquals("The build description should have been " + TEST_BUILD_DESCRIPTION_SUCCESS, TEST_BUILD_DESCRIPTION_SUCCESS,
+                    pb.getBuildDescription());
         } catch (Exception e) {
             e.toString();
         }
