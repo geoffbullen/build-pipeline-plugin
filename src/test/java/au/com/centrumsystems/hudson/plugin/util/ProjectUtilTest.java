@@ -71,13 +71,13 @@ public class ProjectUtilTest extends HudsonTestCase {
             mainTestProject.getPublishersList().add(new BuildPipelineTrigger(TEST_PROJECT2));
             mainTestProject.getPublishersList().add(new BuildPipelineTrigger(TEST_PROJECT3));
 
-
             // Important; we must do this step to ensure that the dependency graphs are updated
             Hudson.getInstance().rebuildDependencyGraph();
 
             // Test the method
             final List<AbstractProject<?, ?>> dsProjects = ProjectUtil.getDownstreamProjects(mainTestProject);
-            assertEquals(mainTestProject.getName() + " should have a downstream project " + dsTestProject.getName(), dsTestProject, dsProjects.get(0));
+            assertEquals(mainTestProject.getName() + " should have a downstream project " + dsTestProject.getName(), dsTestProject,
+                    dsProjects.get(0));
 
         } catch (IOException ioException) {
             ioException.toString();
@@ -96,7 +96,6 @@ public class ProjectUtilTest extends HudsonTestCase {
             // Add TEST_PROJECT3 as a Post-build action -> build other projects
             mainTestProject.getPublishersList().add(new BuildPipelineTrigger(TEST_PROJECT2));
             mainTestProject.getPublishersList().add(new BuildTrigger(TEST_PROJECT3, true));
-
 
             // Important; we must do this step to ensure that the dependency graphs are updated
             Hudson.getInstance().rebuildDependencyGraph();
@@ -122,7 +121,6 @@ public class ProjectUtilTest extends HudsonTestCase {
             mainTestProject.getPublishersList().add(new BuildTrigger(TEST_PROJECT2, true));
             mainTestProject.getPublishersList().add(new BuildTrigger(TEST_PROJECT3, true));
 
-
             // Important; we must do this step to ensure that the dependency graphs are updated
             Hudson.getInstance().rebuildDependencyGraph();
 
@@ -138,7 +136,8 @@ public class ProjectUtilTest extends HudsonTestCase {
     public void testGetProjectURL() {
         try {
             mainTestProject = createFreeStyleProject(TEST_PROJECT1);
-            assertEquals("The project URL should have been " + TEST_PROJECT1_URL, TEST_PROJECT1_URL, ProjectUtil.getProjectURL(mainTestProject));
+            assertEquals("The project URL should have been " + TEST_PROJECT1_URL, TEST_PROJECT1_URL,
+                    ProjectUtil.getProjectURL(mainTestProject));
         } catch (Exception e) {
             e.toString();
         }
