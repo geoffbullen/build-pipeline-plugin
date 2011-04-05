@@ -188,11 +188,11 @@ public class PipelineBuild {
             resultURL.append('/');
             resultURL.append(this.currentBuild.getNumber());
             resultURL.append('/');
+            uri = new URI(null, null, resultURL.toString(), null);
+            return uri.toASCIIString();
         } else {
-            resultURL.append(getProjectURL());
+            return resultURL.append(getProjectURL()).toString();
         }
-        uri = new URI(null, null, resultURL.toString(), null);
-        return uri.toASCIIString();
     }
 
     /**
