@@ -15,6 +15,8 @@
 	</script> 
 	
 	<div><h1>Build Pipeline View: ${from.getBuildViewTitle()}</h1></div>
+	<div>${from.getDescription()}</div>
+	<br/>
 	
 	<!-- If the user has the Configure View permission include a hyperlink to configure this view.-->
 	<j:if test="${from.hasConfigurePermission()}">

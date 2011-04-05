@@ -1,5 +1,7 @@
 ^target$
 ^work$
+^bin
 ^.classpath
 ^.project
 ^.settings
+^.checkstyle
