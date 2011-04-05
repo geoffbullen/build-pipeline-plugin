@@ -55,6 +55,7 @@
 					<configLocation>${checkstyle.rules.file}</configLocation>
 					<failsOnError>true</failsOnError>
 					<violationSeverity>warning</violationSeverity>
+					<propertyExpansion>basedir=${basedir}</propertyExpansion>
 				</configuration>
 				<executions>
 					<execution>

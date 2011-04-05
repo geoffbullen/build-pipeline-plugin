@@ -122,7 +122,6 @@ public class BuildPipelineTrigger extends BuildTrigger implements DependecyDecla
          * @param req - stapler request
          * @param formData JSONObject
          * @return BuildTrigger build trigger
-         * @throws FormException e
          */
         @Override
         public BuildTrigger newInstance(final StaplerRequest req, final JSONObject formData) throws FormException {
