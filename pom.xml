@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.jvnet.hudson.plugins</groupId>
@@ -28,7 +29,6 @@
 
 
 	<properties>
-		<junit.version>4.8.1</junit.version>
 		<code.coverage.percentage>60</code.coverage.percentage>
 		<checkstyle.rules.file>checkstyle_rules.xml</checkstyle.rules.file>
 		<pmd.config.file>pmd_rules.xml</pmd.config.file>
@@ -44,6 +44,15 @@
 			<url>http://www.centrumsystems.com.au</url>
 		</developer>
 	</developers>
+
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.8.2</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
 
 	<build>
 		<plugins>
@@ -65,7 +74,7 @@
 					</execution>
 				</executions>
 			</plugin>
-	 
+
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>cobertura-maven-plugin</artifactId>
@@ -136,7 +145,8 @@
 	</build>
 
 
-	<!-- get every artifact through maven.glassfish.org, which proxies all the artifacts that we need -->
+	<!-- get every artifact through maven.glassfish.org, which proxies all the 
+		artifacts that we need -->
 	<repositories>
 		<repository>
 			<id>m.g.o-public</id>
