@@ -28,6 +28,7 @@ import hudson.EnvVars;
 import hudson.model.Item;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
+import hudson.model.Hudson;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -360,10 +361,13 @@ public class PipelineBuild {
      */
     public boolean hasBuildPermission() {
         boolean buildPermission = false;
-        if (this.project != null) {
+        // If no security is enabled then allow builds
+        if (!Hudson.getInstance().isUseSecurity()) {
+            buildPermission = true;
+        } else if  (this.project != null) {
+            // If security is enabled check if BUILD is enabled
             buildPermission = this.project.hasPermission(Item.BUILD);
         }
         return buildPermission;
     }
-
 }
