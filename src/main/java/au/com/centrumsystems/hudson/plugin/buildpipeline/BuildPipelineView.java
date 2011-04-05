@@ -196,21 +196,23 @@ public class BuildPipelineView extends View {
         final StringBuffer result = new StringBuffer();
 
 
-        if ((project != null) && (project.getLastBuild() != null)) {
+        if (project != null) {
             PipelineViewUI.addEmptyCell(result);
-            final PipelineBuild initialPB = new PipelineBuild(project.getLastBuild(), null, null);
+            final PipelineBuild initialPB = new PipelineBuild(null, project, null);
             PipelineViewUI.getProjectPipeline("", initialPB, result);
             result.append(PipelineViewUI.CELL_SUFFIX);
 
-            for (final AbstractBuild<?, ?> currentBuild : project.getBuilds()) {
-                final PipelineBuild pb = new PipelineBuild(currentBuild, null, null);
+            if (project.getLastBuild() != null) {
+                for (final AbstractBuild<?, ?> currentBuild : project.getBuilds()) {
+                    final PipelineBuild pb = new PipelineBuild(currentBuild, null, null);
 
-                PipelineViewUI.addRevisionCell(pb, result);
-                PipelineViewUI.getBuildPipeline("", pb, result);
-                result.append(PipelineViewUI.CELL_SUFFIX);
-                rowsAppended++;
-                if (rowsAppended >= maxNoOfDisplayBuilds) {
-                    break;
+                    PipelineViewUI.addRevisionCell(pb, result);
+                    PipelineViewUI.getBuildPipeline("", pb, result);
+                    result.append(PipelineViewUI.CELL_SUFFIX);
+                    rowsAppended++;
+                    if (rowsAppended >= maxNoOfDisplayBuilds) {
+                        break;
+                    }
                 }
             }
         }
