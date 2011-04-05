@@ -24,6 +24,8 @@
  */
 package au.com.centrumsystems.hudson.plugin.buildpipeline.trigger;
 
+import hudson.model.DependencyGraph;
+import hudson.model.DependencyGraph.Dependency;
 import hudson.model.FreeStyleProject;
 import hudson.model.Hudson;
 
@@ -46,9 +48,9 @@ import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 
 /**
  * BuildPipelineTrigger test class
- * 
+ *
  * @author KevinV
- * 
+ *
  */
 public class BuildPipelineTriggerTest extends HudsonTestCase {
 
@@ -68,14 +70,6 @@ public class BuildPipelineTriggerTest extends HudsonTestCase {
     public void setUp() {
         try {
             super.setUp();
-            project1 = createFreeStyleProject(TEST_PROJECT1);
-
-            // Add TEST_PROJECT2 as a post build action: build other project
-            project1.getPublishersList().add(new BuildPipelineTrigger(TEST_PROJECT2));
-
-            // Important; we must do this step to ensure that the dependency graphs are updated
-            Hudson.getInstance().rebuildDependencyGraph();
-
         } catch (Exception exception) {
             exception.toString();
         }
@@ -84,16 +78,32 @@ public class BuildPipelineTriggerTest extends HudsonTestCase {
 
     @Test
     public void testBuildPipelineTrigger() {
-        BuildPipelineTrigger myBPTrigger = new BuildPipelineTrigger(TEST_PROJECT1);
+        try {
+            project1 = createFreeStyleProject(TEST_PROJECT1);
+            // Add TEST_PROJECT2 as a post build action: build other project
+            project1.getPublishersList().add(new BuildPipelineTrigger(TEST_PROJECT2));
+            // Important; we must do this step to ensure that the dependency graphs are updated
+            Hudson.getInstance().rebuildDependencyGraph();
 
-        assertNotNull("A valid BuildPipelineTrigger should have been created.", myBPTrigger);
+            BuildPipelineTrigger myBPTrigger = new BuildPipelineTrigger(TEST_PROJECT1);
 
-        assertEquals("BuildPipelineTrigger downstream project is " + TEST_PROJECT1, TEST_PROJECT1, myBPTrigger.getDownstreamProjectNames());
+            assertNotNull("A valid BuildPipelineTrigger should have been created.", myBPTrigger);
+
+            assertEquals("BuildPipelineTrigger downstream project is " + TEST_PROJECT1, TEST_PROJECT1, myBPTrigger.getDownstreamProjectNames());
+        } catch (IOException e) {
+            e.toString();
+        }
     }
 
     @Test
     public void testProjectConfigurePage() {
         try {
+            project1 = createFreeStyleProject(TEST_PROJECT1);
+            // Add TEST_PROJECT2 as a post build action: build other project
+            project1.getPublishersList().add(new BuildPipelineTrigger(TEST_PROJECT2));
+            // Important; we must do this step to ensure that the dependency graphs are updated
+            Hudson.getInstance().rebuildDependencyGraph();
+
             // Create two new projects
             final HtmlPage testDownstreamProjectConfigurePage = createNewJobPage(TEST_DOWNSTREAM_PROJECT);
             final HtmlPage testUpstreamProjectConfigurePage = createNewJobPage(TEST_UPSTREAM_PROJECT);
@@ -138,6 +148,26 @@ public class BuildPipelineTriggerTest extends HudsonTestCase {
             e.toString();
         } catch (ElementNotFoundException e) {
             e.toString();
+        } catch (Exception e) {
+            e.toString();
+        }
+    }
+
+    @Test
+    public void testBuildDependencyGraph() {
+        try {
+            project1 = createFreeStyleProject(TEST_PROJECT1);
+            BuildPipelineTrigger trigger2 = new BuildPipelineTrigger(TEST_PROJECT2);
+            // Add TEST_PROJECT2 as a post build action: build other project
+            project1.getPublishersList().add(trigger2);
+            // Important; we must do this step to ensure that the dependency graphs are updated
+            //Hudson.getInstance().rebuildDependencyGraph();
+            DependencyGraph graph = new DependencyGraph();
+
+            trigger2.buildDependencyGraph(project1, graph);
+
+            List<Dependency> dsDependencies = graph.getDownstreamDependencies(project1);
+            assertEquals(project1, dsDependencies.get(0).getUpstreamProject());
         } catch (Exception e) {
             e.toString();
         }
