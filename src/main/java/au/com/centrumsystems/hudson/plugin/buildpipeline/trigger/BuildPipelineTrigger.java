@@ -25,34 +25,38 @@
 package au.com.centrumsystems.hudson.plugin.buildpipeline.trigger;
 
 import hudson.Extension;
+import hudson.Launcher;
 import hudson.Util;
+import hudson.model.BuildListener;
 import hudson.model.DependecyDeclarer;
 import hudson.model.DependencyGraph;
 import hudson.model.Item;
-import hudson.model.Result;
+import hudson.model.Items;
+import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.Hudson;
+import hudson.tasks.BuildStepDescriptor;
+import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Messages;
-import hudson.tasks.BuildTrigger;
+import hudson.tasks.Notifier;
+import hudson.tasks.Publisher;
 import hudson.util.FormValidation;
 
+import java.io.IOException;
 import java.util.StringTokenizer;
-
-import net.sf.json.JSONObject;
 
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
-import org.kohsuke.stapler.StaplerRequest;
 
 /**
  * The build pipeline trigger allows the creation of downstream jobs which aren't triggered automatically. This allows us to have manual
  * "approval" steps in the process where jobs are manually promoted along the pipeline by a user pressing a button on the view.
- *
+ * 
  * @author Centrum Systems
- *
+ * 
  */
 @SuppressWarnings("unchecked")
-public class BuildPipelineTrigger extends BuildTrigger implements DependecyDeclarer {
+public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer {
 
     /** downstream project name */
     private String downstreamProjectNames;
@@ -67,12 +71,12 @@ public class BuildPipelineTrigger extends BuildTrigger implements DependecyDecla
 
     /**
      * Construct the trigger setting the project name and manual build promotion option
-     *
-     * @param downstreamProjectNames - the job name of the downstream build
+     * 
+     * @param downstreamProjectNames
+     *            - the job name of the downstream build
      */
     @DataBoundConstructor
     public BuildPipelineTrigger(final String downstreamProjectNames) {
-        super(downstreamProjectNames, Result.SUCCESS);
         if (downstreamProjectNames == null) {
             throw new IllegalArgumentException();
         }
@@ -81,15 +85,58 @@ public class BuildPipelineTrigger extends BuildTrigger implements DependecyDecla
     }
 
     /**
+     * this method is required to rebuild the dependency graph of the downstream project
+     * 
+     * @param owner
+     *            owner
+     * @param graph
+     *            graph
+     */
+    @SuppressWarnings("rawtypes")
+    public void buildDependencyGraph(final AbstractProject owner, final DependencyGraph graph) {
+        for (final Object o : Items.fromNameList(downstreamProjectNames, AbstractProject.class)) {
+            final AbstractProject downstream = (AbstractProject) o;
+
+            graph.addDependency(createDownstreamDependency(owner, downstream));
+        }
+    }
+
+    /**
+     * Create a new DownstreamDependency
+     * 
+     * @param owner
+     *            - upstream project
+     * @param downstream
+     *            - downstream project
+     * @return downstream dependency
+     */
+    private DownstreamDependency createDownstreamDependency(final AbstractProject<?, ?> owner, final AbstractProject<?, ?> downstream) {
+        return new DownstreamDependency(owner, downstream);
+    }
+
+    @Override
+    public boolean needsToRunAfterFinalized() {
+        return true;
+    }
+
+    public BuildStepMonitor getRequiredMonitorService() {
+        return BuildStepMonitor.NONE;
+    }
+
+    @Override
+    public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
+        return true;
+    }
+
+    /**
      * Set the descriptor for build pipeline trigger class This descriptor is only attached to Build Trigger Post Build action in JOB
      * configuration page
-     *
+     * 
      * @author Centrum Systems
-     *
+     * 
      */
     @Extension
-    @SuppressWarnings("unchecked")
-    public static class DescriptorImpl extends hudson.tasks.BuildTrigger.DescriptorImpl {
+    public static class DescriptorImpl extends BuildStepDescriptor<Publisher> {
 
         @Override
         public boolean isApplicable(Class<? extends AbstractProject> jobType) {
@@ -98,7 +145,7 @@ public class BuildPipelineTrigger extends BuildTrigger implements DependecyDecla
 
         /**
          * set the display name in post build action section of the job configuration page
-         *
+         * 
          * @return display name
          */
         @Override
@@ -108,7 +155,7 @@ public class BuildPipelineTrigger extends BuildTrigger implements DependecyDecla
 
         /**
          * Set help text to "Build Pipeline Plugin -> Manually Execute Downstream Project" Post Build action in JOB configuration page
-         *
+         * 
          * @return location of the help file
          */
         @Override
@@ -117,25 +164,10 @@ public class BuildPipelineTrigger extends BuildTrigger implements DependecyDecla
         }
 
         /**
-         * This method is called when downstream build pipeline is created
-         *
-         * @param req - stapler request
-         * @param formData JSONObject
-         * @return BuildTrigger build trigger
-         */
-        @Override
-        public BuildTrigger newInstance(final StaplerRequest req, final JSONObject formData) throws FormException {
-            final String downstreamProjectNames = formData.getString("downstreamProjectNames");
-            String cleanProjectNames = downstreamProjectNames.replace("[", "");
-            cleanProjectNames = cleanProjectNames.replace("]", "");
-            cleanProjectNames = cleanProjectNames.replace("\"", "");
-
-            return new BuildPipelineTrigger(cleanProjectNames);
-        }
-
-        /**
          * Validates that the downstream project names entered are valid projects.
-         * @param value - The entered project names
+         * 
+         * @param value
+         *            - The entered project names
          * @return hudson.util.FormValidation
          */
         public FormValidation doCheckDownstreamProjectNames(@QueryParameter("downstreamProjectNames") String value) {
@@ -154,32 +186,5 @@ public class BuildPipelineTrigger extends BuildTrigger implements DependecyDecla
 
             return FormValidation.ok();
         }
-    }
-
-    /**
-     * this method is required to rebuild the dependency graph of the downstream project
-     *
-     * @param owner
-     *            owner
-     * @param graph
-     *            graph
-     */
-    @SuppressWarnings("rawtypes")
-    @Override
-    public void buildDependencyGraph(final AbstractProject owner, final DependencyGraph graph) {
-        for (final AbstractProject<?, ?> downstream : getChildProjects()) {
-            graph.addDependency(createDownstreamDependency(owner, downstream));
-        }
-    }
-
-    /**
-     * Create a new DownstreamDependency
-     *
-     * @param owner - upstream project
-     * @param downstream - downstream project
-     * @return downstream dependency
-     */
-    private DownstreamDependency createDownstreamDependency(final AbstractProject<?, ?> owner, final AbstractProject<?, ?> downstream) {
-        return new DownstreamDependency(owner, downstream);
     }
 }
