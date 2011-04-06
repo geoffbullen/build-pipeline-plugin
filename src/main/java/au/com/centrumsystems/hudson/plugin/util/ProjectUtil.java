@@ -40,9 +40,9 @@ import au.com.centrumsystems.hudson.plugin.buildpipeline.trigger.BuildPipelineTr
 
 /**
  * CentrumAbstractProject is used to build the downstream projects pipeline
- *
+ * 
  * @author Centrum Systems
- *
+ * 
  */
 public final class ProjectUtil {
 
@@ -55,8 +55,9 @@ public final class ProjectUtil {
 
     /**
      * Given a Project get a List of all of its Downstream projects
-     *
-     * @param currentProject Current project
+     * 
+     * @param currentProject
+     *            Current project
      * @return List of Downstream projects
      */
     public static List<AbstractProject<?, ?>> getDownstreamProjects(final AbstractProject<?, ?> currentProject) {
@@ -71,7 +72,9 @@ public final class ProjectUtil {
 
     /**
      * Determines whether a project has any downstream projects.
-     * @param currentProject - The project in question
+     * 
+     * @param currentProject
+     *            - The project in question
      * @return - true: Current project has downstream projects; false: Current project does not have any downstream projects
      */
     public static boolean hasDownstreamProjects(final AbstractProject<?, ?> currentProject) {
@@ -80,10 +83,12 @@ public final class ProjectUtil {
 
     /**
      * Builds a URL of the input project
-     *
-     * @param project - The project for which the URL was requested.
+     * 
+     * @param project
+     *            - The project for which the URL was requested.
      * @return String - of the project
-     * @throws URISyntaxException If the URI string constructed from the given components violates RFC 2396
+     * @throws URISyntaxException
+     *             If the URI string constructed from the given components violates RFC 2396
      */
     public static String getProjectURL(final AbstractProject<?, ?> project) throws URISyntaxException {
         final StringBuffer resultURL = new StringBuffer();
@@ -99,13 +104,16 @@ public final class ProjectUtil {
 
     /**
      * Determines if a manual trigger of the downstream project from the current upstream project is required.
-     * @param upstreamProject - The upstream project
-     * @param downstreamProject - The downstream project
-     *
+     * 
+     * @param upstreamProject
+     *            - The upstream project
+     * @param downstreamProject
+     *            - The downstream project
+     * 
      * @return - true: Manual trigger required; false: Manual trigger not required
      */
-    public static boolean isManualTrigger(final AbstractProject<?, ?> upstreamProject,
-            final AbstractProject<?, ?> downstreamProject) {
+    public static boolean isManualTrigger(final AbstractProject<?, ?> upstreamProject, final AbstractProject<?, ?> downstreamProject) {
+
         boolean manualTrigger = false;
         final DescribableList<Publisher, Descriptor<Publisher>> upstreamPublishersLists = upstreamProject.getPublishersList();
 
@@ -121,6 +129,7 @@ public final class ProjectUtil {
                 }
             }
         }
+
         return manualTrigger;
 
     }
