@@ -35,6 +35,8 @@ import hudson.model.Items;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.Hudson;
+import hudson.model.Project;
+import hudson.model.listeners.ItemListener;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Messages;
@@ -44,9 +46,14 @@ import hudson.util.FormValidation;
 
 import java.io.IOException;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import net.sf.json.JSONObject;
 
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
+import org.kohsuke.stapler.StaplerRequest;
 
 /**
  * The build pipeline trigger allows the creation of downstream jobs which aren't triggered automatically. This allows us to have manual
@@ -129,6 +136,51 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
     }
 
     /**
+     * Renames a project contained in downstreamProjectNames
+     * 
+     * @param oldName
+     *            - The old name of the project
+     * @param newName
+     *            - The new name of the project
+     * @return - true: A downstream project has been renamed; false No downstream projects were renamed
+     */
+    public boolean onDownstreamProjectRenamed(String oldName, String newName) {
+        boolean changed = false;
+        final String[] existingDownstreamProjects = this.getDownstreamProjectNames().split(",");
+        for (int i = 0; i < existingDownstreamProjects.length; i++) {
+            if (existingDownstreamProjects[i].trim().equals(oldName)) {
+                existingDownstreamProjects[i] = newName;
+                changed = true;
+            }
+        }
+        if (changed) {
+            final StringBuilder newDownstreamProjects = new StringBuilder();
+            for (int i = 0; i < existingDownstreamProjects.length; i++) {
+                if (existingDownstreamProjects[i] == null) {
+                    continue;
+                }
+                if (newDownstreamProjects.length() > 0) {
+                    newDownstreamProjects.append(',');
+                }
+                newDownstreamProjects.append(existingDownstreamProjects[i].trim());
+            }
+            this.setDownstreamProjectNames(newDownstreamProjects.toString());
+        }
+        return changed;
+    }
+
+    /**
+     * Deletes a project from downstreamProjectNames.
+     * 
+     * @param oldName
+     *            - Project to be deleted
+     * @return - true; project deleted: false; project not deleted {@link #onDownstreamProjectRenamed(String, String)}
+     */
+    public boolean onDownstreamProjectDeleted(String oldName) {
+        return onDownstreamProjectRenamed(oldName, null);
+    }
+
+    /**
      * Set the descriptor for build pipeline trigger class This descriptor is only attached to Build Trigger Post Build action in JOB
      * configuration page
      * 
@@ -163,6 +215,11 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
             return "/descriptor/au.com.centrumsystems.hudson.plugin.buildpipeline.trigger.BuildPipelineTrigger/help/buildPipeline.html";
         }
 
+        @Override
+        public Publisher newInstance(StaplerRequest req, JSONObject formData) throws FormException {
+            return new BuildPipelineTrigger(formData.getString("downstreamProjectNames"));
+        }
+
         /**
          * Validates that the downstream project names entered are valid projects.
          * 
@@ -185,6 +242,61 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
             }
 
             return FormValidation.ok();
+        }
+
+        /**
+         * If a job is renamed, update all BuildPipelineTriggers with the new name.
+         */
+        @Extension
+        public static final class ItemListenerImpl extends ItemListener {
+            @Override
+            public void onRenamed(Item item, String oldName, String newName) {
+                for (Project<?, ?> p : Hudson.getInstance().getProjects()) {
+                    final BuildPipelineTrigger bpTrigger = p.getPublishersList().get(BuildPipelineTrigger.class);
+                    if (bpTrigger != null) {
+                        boolean changed = false;
+                        changed = bpTrigger.onDownstreamProjectRenamed(oldName, newName);
+
+                        if (changed) {
+                            try {
+                                p.save();
+                            } catch (IOException e) {
+                                Logger.getLogger(ItemListenerImpl.class.getName()).log(
+                                        Level.WARNING,
+                                        "Failed to persist project BuildPipelineTrigger setting during rename from " + oldName + " to "
+                                                + newName, e);
+                            }
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onDeleted(Item item) {
+                for (Project<?, ?> p : Hudson.getInstance().getProjects()) {
+                    final String oldName = item.getName();
+                    final BuildPipelineTrigger bpTrigger = p.getPublishersList().get(BuildPipelineTrigger.class);
+                    if (bpTrigger != null) {
+                        boolean changed = false;
+
+                        if (bpTrigger.onDownstreamProjectDeleted(oldName)) {
+                            changed = true;
+                        }
+
+                        if (changed) {
+                            try {
+                                if (bpTrigger.getDownstreamProjectNames().isEmpty()) {
+                                    p.getPublishersList().remove(bpTrigger);
+                                }
+                                p.save();
+                            } catch (IOException e) {
+                                Logger.getLogger(ItemListenerImpl.class.getName()).log(Level.WARNING,
+                                        "Failed to persist project BuildPipelineTrigger setting during remove of " + oldName, e);
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }
