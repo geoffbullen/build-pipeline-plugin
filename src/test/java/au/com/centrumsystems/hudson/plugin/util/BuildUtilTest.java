@@ -25,7 +25,6 @@
 package au.com.centrumsystems.hudson.plugin.util;
 
 import hudson.model.FreeStyleBuild;
-import hudson.model.Result;
 import hudson.model.AbstractBuild;
 import hudson.model.FreeStyleProject;
 import hudson.model.Hudson;
@@ -34,7 +33,6 @@ import hudson.tasks.BuildTrigger;
 import org.junit.Before;
 import org.junit.Test;
 import org.jvnet.hudson.test.HudsonTestCase;
-import org.jvnet.hudson.test.MockBuilder;
 
 public class BuildUtilTest extends HudsonTestCase {
 
@@ -51,15 +49,12 @@ public class BuildUtilTest extends HudsonTestCase {
         String proj3 = "Proj3";
 
         FreeStyleProject project1, project2, project3;
-        MockBuilder builder1, builder2, builder3;
         FreeStyleBuild build1, build2, build3;
 
         // Create test projects and associated builders
         project1 = createFreeStyleProject(proj1);
         project2 = createFreeStyleProject(proj2);
-        builder2 = new MockBuilder(Result.SUCCESS);
         project3 = createFreeStyleProject(proj3);
-        builder3 = new MockBuilder(Result.SUCCESS);
 
         // Add project2 as a post build action: build other project
         project1.getPublishersList().add(new BuildTrigger(proj2, true));
@@ -68,13 +63,7 @@ public class BuildUtilTest extends HudsonTestCase {
         // Important; we must do this step to ensure that the dependency graphs are updated
         Hudson.getInstance().rebuildDependencyGraph();
 
-        // Add the builders to the respective project's builder lists
-        project1.getBuildersList().add(builder1);
-        project2.getBuildersList().add(builder2);
-        project3.getBuildersList().add(builder3);
-
         // Build project1, upon completion project2 will be built
-
         build1 = buildAndAssertSuccess(project1);
         // When all building is complete retrieve the last build from project2
         waitUntilNoActivity();
