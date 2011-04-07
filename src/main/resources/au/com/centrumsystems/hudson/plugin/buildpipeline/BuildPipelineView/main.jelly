@@ -93,7 +93,82 @@
 	</j:if>
 	
 	
-	
- 	<j:set var="resultsTable" type="java.lang.String" value="${from.getBuildPipelineHTML()}"/>
- 	${resultsTable}
+ 	<j:set var="buildPipelineForm" type="au.com.centrumsystems.hudson.plugin.buildpipeline.BuildPipelineForm" value="${from.getBuildPipelineHTML()}"/>
+	<table>
+		<tbody>
+			<tr>
+				<td></td>
+				<td align="center" valign="middle">
+					<table>
+						<tbody>
+							<tr>
+								<td align="center" valign="middle">
+									<div class="PROJECT rounded" style="">
+										<a href="/job/1/" target="_blank">1</a>
+										<br />
+										<img src="/images/24x24/blue.png" />
+										<img src="/images/24x24/health-80plus.gif" />
+									</div>
+								</td>
+								<td>
+									<img src="/images/24x24/next.gif" />
+								</td>
+								<td>
+									<table>
+										<tbody>
+											<tr>
+												<td align="center" valign="middle">
+													<div class="PROJECT rounded" style="">
+														<a href="/job/2/" target="_blank">2</a>
+														<br />
+														<img src="/images/24x24/blue.png" />
+														<img src="/images/24x24/health-80plus.gif" />
+													</div>
+												</td>
+												<td>
+													<img src="/images/24x24/next.gif" />
+												</td>
+												<td>
+													<table>
+														<tbody>
+															<tr>
+																<td align="center" valign="middle">
+																	<div class="PROJECT rounded" style="">
+																		<a href="/job/4/" target="_blank">4</a>
+																		<br />
+																		<img src="/images/24x24/blue.png" />
+																		<img src="/images/24x24/health-80plus.gif" />
+																	</div>
+																</td>
+																<td></td>
+															</tr>
+														</tbody>
+													</table>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+									<table>
+										<tbody>
+											<tr>
+												<td align="center" valign="middle">
+													<div class="PROJECT rounded" style="">
+														<a href="/job/3/" target="_blank">3</a>
+														<br />
+														<img src="/images/24x24/blue.png" />
+														<img src="/images/24x24/health-60to79.gif" />
+													</div>
+												</td>
+												<td></td>
+											</tr>
+										</tbody>
+									</table>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</td>
+			</tr>
+		</tbody>
+	</table>
 </j:jelly>
