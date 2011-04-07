@@ -41,121 +41,105 @@ import au.com.centrumsystems.hudson.plugin.util.HudsonResult;
 
 public class PipelineBuildTest extends HudsonTestCase {
 
-    private static final String TEST_PROJECT1 = "Main Project1";
-    private static final String TEST_PROJECT2 = "Downstream Project2";
-    private static final String TEST_PROJECT3 = "Downstream Project3";
-    private static final String TEST_PROJECT4 = "Downstream Project4";
-    private static final String TEST_PROJECT5 = "Downstream Project5";
-    private static final String TEST_PROJECT1_BUILD_URL = "/job/Main%20Project1/1/";
-    private static final String TEST_TO_STRING_RESULT = "Project: " + TEST_PROJECT1 + " : Build: 1";
-    private static final String TEST_BUILD_DESCRIPTION_FAIL = "Pending build of project: " + TEST_PROJECT1;
-    private static final String TEST_BUILD_DESCRIPTION_SUCCESS = TEST_PROJECT1 + " #1";
-    private static final String TEST_GET_SVN = "No Revision";
-
     @Override
     @Before
-    public void setUp() {
-        try {
-            super.setUp();
-        } catch (Exception e) {
-            e.toString();
-        }
+    public void setUp() throws Exception {
+        super.setUp();
     }
 
     @Test
-    public void testGetDownstreamPipeline() {
+    public void testGetDownstreamPipeline() throws Exception {
+        String proj1 = "Proj1";
+        String proj2 = "Proj2";
+        String proj3 = "Proj3";
+        String proj4 = "Proj4";
+        String proj5 = "Proj5";
         FreeStyleProject project1, project2, project3, project4, project5;
         MockBuilder builder1, builder2, builder3, builder4, builder5;
-        FreeStyleBuild build1, build2, build3, build4 = null;
+        FreeStyleBuild build1 = null;
         BuildTrigger trigger2, trigger3, trigger4, trigger5;
-        final String RESULT1 = "-Project: Main Project1 : Build: 1\n" + "--Project: Downstream Project2 : Build: 1\n"
-                + "---Project: Downstream Project4 : Build: 1\n" + "--Project: Downstream Project3 : Build: 1\n";
-        final String RESULT2 = "-Project: Main Project1 : Build: 2\n" + "--Project: Downstream Project2 : Build: 2\n"
-                + "--Project: Downstream Project3 : Build: 2\n" + "---Project: Downstream Project4 : Build: 2\n";
-        final String RESULT3 = "-Project: Main Project1 : Build: 3\n" + "--Project: Downstream Project2 : Build: 3\n"
-                + "--Project: Downstream Project3 : Build: 3\n" + "---Project: Downstream Project4 : Build: 3\n"
-                + "---Project: Downstream Project5 : Build: 1\n";
+        final String RESULT1 = "-Project: " + proj1 + " : Build: 1\n" + "--Project: " + proj2 + " : Build: 1\n" + "---Project: " + proj4
+                + " : Build: 1\n" + "--Project: " + proj3 + " : Build: 1\n";
+        final String RESULT2 = "-Project: " + proj1 + " : Build: 2\n" + "--Project: " + proj2 + " : Build: 2\n" + "--Project: " + proj3
+                + " : Build: 2\n" + "---Project: " + proj4 + " : Build: 2\n";
+        final String RESULT3 = "-Project: " + proj1 + " : Build: 3\n" + "--Project: " + proj2 + " : Build: 3\n" + "--Project: " + proj3
+                + " : Build: 3\n" + "---Project: " + proj4 + " : Build: 3\n" + "---Project: " + proj5 + " : Build: 1\n";
 
-        // Create test projects and associated builders
-        try {
-            project1 = createFreeStyleProject(TEST_PROJECT1);
-            builder1 = new MockBuilder(Result.SUCCESS);
-            project2 = createFreeStyleProject(TEST_PROJECT2);
-            builder2 = new MockBuilder(Result.SUCCESS);
-            trigger2 = new BuildTrigger(TEST_PROJECT2, true);
-            project3 = createFreeStyleProject(TEST_PROJECT3);
-            builder3 = new MockBuilder(Result.SUCCESS);
-            trigger3 = new BuildTrigger(TEST_PROJECT3, true);
-            project4 = createFreeStyleProject(TEST_PROJECT4);
-            builder4 = new MockBuilder(Result.SUCCESS);
-            trigger4 = new BuildTrigger(TEST_PROJECT4, true);
-            project5 = createFreeStyleProject(TEST_PROJECT5);
-            builder5 = new MockBuilder(Result.SUCCESS);
-            trigger5 = new BuildTrigger(TEST_PROJECT5, true);
+        project1 = createFreeStyleProject(proj1);
+        builder1 = new MockBuilder(Result.SUCCESS);
+        project2 = createFreeStyleProject(proj2);
+        builder2 = new MockBuilder(Result.SUCCESS);
+        trigger2 = new BuildTrigger(proj2, true);
+        project3 = createFreeStyleProject(proj3);
+        builder3 = new MockBuilder(Result.SUCCESS);
+        trigger3 = new BuildTrigger(proj3, true);
+        project4 = createFreeStyleProject(proj4);
+        builder4 = new MockBuilder(Result.SUCCESS);
+        trigger4 = new BuildTrigger(proj4, true);
+        project5 = createFreeStyleProject(proj5);
+        builder5 = new MockBuilder(Result.SUCCESS);
+        trigger5 = new BuildTrigger(proj5, true);
 
-            // Add the builders to the respective project's builder lists
-            project1.getBuildersList().add(builder1);
-            project2.getBuildersList().add(builder2);
-            project3.getBuildersList().add(builder3);
-            project4.getBuildersList().add(builder4);
-            project5.getBuildersList().add(builder5);
+        // Add the builders to the respective project's builder lists
+        project1.getBuildersList().add(builder1);
+        project2.getBuildersList().add(builder2);
+        project3.getBuildersList().add(builder3);
+        project4.getBuildersList().add(builder4);
+        project5.getBuildersList().add(builder5);
 
-            // Project 1 -> Project 2 -> Project 4
-            // -> Project 3
-            project1.getPublishersList().add(trigger2);
-            project1.getPublishersList().add(trigger3);
-            project2.getPublishersList().add(trigger4);
-            // Important; we must do this step to ensure that the dependency graphs are updated
-            Hudson.getInstance().rebuildDependencyGraph();
+        // Project 1 -> Project 2 -> Project 4
+        // -> Project 3
+        project1.getPublishersList().add(trigger2);
+        project1.getPublishersList().add(trigger3);
+        project2.getPublishersList().add(trigger4);
+        // Important; we must do this step to ensure that the dependency graphs are updated
+        Hudson.getInstance().rebuildDependencyGraph();
 
-            // Build project1
-            build1 = buildAndAssertSuccess(project1);
-            // When all building is complete retrieve the last builds
-            waitUntilNoActivity();
-            PipelineBuild pb1 = new PipelineBuild(build1, null, null);
-            StringBuffer result = new StringBuffer();
-            printDownstreamPipeline("", pb1, result);
-            assertEquals(RESULT1, result.toString());
+        // Build project1
+        build1 = buildAndAssertSuccess(project1);
+        // When all building is complete retrieve the last builds
+        waitUntilNoActivity();
+        PipelineBuild pb1 = new PipelineBuild(build1, null, null);
+        StringBuffer result = new StringBuffer();
+        printDownstreamPipeline("", pb1, result);
+        assertEquals(RESULT1, result.toString());
 
-            // Project 1 -> Project 2
-            // -> Project 3 -> Project 4
-            project1.getPublishersList().add(trigger2);
-            project1.getPublishersList().add(trigger3);
-            project2.getPublishersList().remove(trigger4);
-            project3.getPublishersList().add(trigger4);
-            // Important; we must do this step to ensure that the dependency graphs are updated
-            Hudson.getInstance().rebuildDependencyGraph();
+        // Project 1 -> Project 2
+        // -> Project 3 -> Project 4
+        project1.getPublishersList().add(trigger2);
+        project1.getPublishersList().add(trigger3);
+        project2.getPublishersList().remove(trigger4);
+        project3.getPublishersList().add(trigger4);
+        // Important; we must do this step to ensure that the dependency graphs are updated
+        Hudson.getInstance().rebuildDependencyGraph();
 
-            // Build project1
-            build1 = buildAndAssertSuccess(project1);
-            // When all building is complete retrieve the last builds
-            waitUntilNoActivity();
-            pb1 = new PipelineBuild(build1, null, null);
-            result.delete(0, result.length());
-            printDownstreamPipeline("", pb1, result);
-            assertEquals(RESULT2, result.toString());
+        // Build project1
+        build1 = buildAndAssertSuccess(project1);
+        // When all building is complete retrieve the last builds
+        waitUntilNoActivity();
+        pb1 = new PipelineBuild(build1, null, null);
+        result.delete(0, result.length());
+        printDownstreamPipeline("", pb1, result);
+        assertEquals(RESULT2, result.toString());
 
-            // Project 1 -> Project 2
-            // -> Project 3 -> Project 4
-            // -> Project 5
-            project1.getPublishersList().add(trigger2);
-            project1.getPublishersList().add(trigger3);
-            project3.getPublishersList().add(trigger4);
-            project3.getPublishersList().add(trigger5);
-            // Important; we must do this step to ensure that the dependency graphs are updated
-            Hudson.getInstance().rebuildDependencyGraph();
+        // Project 1 -> Project 2
+        // -> Project 3 -> Project 4
+        // -> Project 5
+        project1.getPublishersList().add(trigger2);
+        project1.getPublishersList().add(trigger3);
+        project3.getPublishersList().add(trigger4);
+        project3.getPublishersList().add(trigger5);
+        // Important; we must do this step to ensure that the dependency graphs are updated
+        Hudson.getInstance().rebuildDependencyGraph();
 
-            // Build project1
-            build1 = buildAndAssertSuccess(project1);
-            // When all building is complete retrieve the last builds
-            waitUntilNoActivity();
-            pb1 = new PipelineBuild(build1, null, null);
-            result.delete(0, result.length());
-            printDownstreamPipeline("", pb1, result);
-            assertEquals(RESULT3, result.toString());
-        } catch (Exception e) {
-            e.toString();
-        }
+        // Build project1
+        build1 = buildAndAssertSuccess(project1);
+        // When all building is complete retrieve the last builds
+        waitUntilNoActivity();
+        pb1 = new PipelineBuild(build1, null, null);
+        result.delete(0, result.length());
+        printDownstreamPipeline("", pb1, result);
+        assertEquals(RESULT3, result.toString());
     }
 
     private void printDownstreamPipeline(final String prefix, PipelineBuild pb, StringBuffer result) {
@@ -168,172 +152,146 @@ public class PipelineBuildTest extends HudsonTestCase {
     }
 
     @Test
-    public void testGetCurrentBuildResult() {
-        FreeStyleProject project1, project2;
-        MockBuilder builder1, builder2;
+    public void testGetCurrentBuildResult() throws Exception {
+        String proj1 = "Proj1";
+        String proj2 = "Proj2";
+        FreeStyleProject project1;
         FreeStyleBuild build1 = null;
         BuildPipelineTrigger trigger2;
 
-        try {
-            project1 = createFreeStyleProject(TEST_PROJECT1);
-            builder1 = new MockBuilder(Result.SUCCESS);
-            project2 = createFreeStyleProject(TEST_PROJECT2);
-            builder2 = new MockBuilder(Result.SUCCESS);
-            trigger2 = new BuildPipelineTrigger(TEST_PROJECT2);
+        project1 = createFreeStyleProject(proj1);
+        trigger2 = new BuildPipelineTrigger(proj2);
 
-            project1.getPublishersList().add(trigger2);
-            // Important; we must do this step to ensure that the dependency graphs are updated
-            Hudson.getInstance().rebuildDependencyGraph();
+        project1.getPublishersList().add(trigger2);
+        // Important; we must do this step to ensure that the dependency graphs are updated
+        Hudson.getInstance().rebuildDependencyGraph();
 
-            // Build project1
-            build1 = buildAndAssertSuccess(project1);
-            // When all building is complete retrieve the last builds
-            waitUntilNoActivity();
+        // Build project1
+        build1 = buildAndAssertSuccess(project1);
+        // When all building is complete retrieve the last builds
+        waitUntilNoActivity();
 
-            PipelineBuild pb1 = new PipelineBuild(build1, null, null);
-            assertEquals(build1 + " should have been " + HudsonResult.SUCCESS, HudsonResult.SUCCESS.toString(), pb1.getCurrentBuildResult());
-        } catch (Exception e) {
-            e.toString();
-        }
+        PipelineBuild pb1 = new PipelineBuild(build1, null, null);
+        assertEquals(build1 + " should have been " + HudsonResult.SUCCESS, HudsonResult.SUCCESS.toString(), pb1.getCurrentBuildResult());
     }
 
     @Test
-    public void testGetUpstreamPipelineBuild() {
+    public void testGetUpstreamPipelineBuild() throws Exception {
+        String proj1 = "Proj1";
+        String proj2 = "Proj2";
         FreeStyleProject project1, project2;
-        MockBuilder builder1, builder2;
         FreeStyleBuild build1, build2 = null;
         BuildPipelineTrigger trigger2;
 
-        try {
-            project1 = createFreeStyleProject(TEST_PROJECT1);
-            builder1 = new MockBuilder(Result.SUCCESS);
-            project2 = createFreeStyleProject(TEST_PROJECT2);
-            builder2 = new MockBuilder(Result.SUCCESS);
-            trigger2 = new BuildPipelineTrigger(TEST_PROJECT2);
+        project1 = createFreeStyleProject(proj1);
+        project2 = createFreeStyleProject(proj2);
+        trigger2 = new BuildPipelineTrigger(proj2);
 
-            project1.getPublishersList().add(trigger2);
-            // Important; we must do this step to ensure that the dependency graphs are updated
-            Hudson.getInstance().rebuildDependencyGraph();
+        project1.getPublishersList().add(trigger2);
+        // Important; we must do this step to ensure that the dependency graphs are updated
+        Hudson.getInstance().rebuildDependencyGraph();
 
-            // Build project1
-            build1 = buildAndAssertSuccess(project1);
-            // When all building is complete retrieve the last builds
-            waitUntilNoActivity();
-            build2 = project2.getLastBuild();
+        // Build project1
+        build1 = buildAndAssertSuccess(project1);
+        // When all building is complete retrieve the last builds
+        waitUntilNoActivity();
+        build2 = project2.getLastBuild();
 
-            PipelineBuild pb1 = new PipelineBuild(build1, null, null);
-            PipelineBuild pb2 = new PipelineBuild(build2, null, null);
-            assertEquals("Upstream PipelineBuild should have been " + pb1.toString(), pb1, pb2.getUpstreamPipelineBuild());
-        } catch (Exception e) {
-            e.toString();
-        }
+        PipelineBuild pb1 = new PipelineBuild(build1, null, null);
+        PipelineBuild pb2 = new PipelineBuild(build2, null, null);
+        assertEquals("Upstream PipelineBuild should have been " + pb1.toString(), pb1, pb2.getUpstreamPipelineBuild());
     }
 
     @Test
-    public void testGetUpstreamBuildResult() {
+    public void testGetUpstreamBuildResult() throws Exception {
+        String proj1 = "Proj1";
+        String proj2 = "Proj2";
         FreeStyleProject project1, project2;
-        MockBuilder builder1, builder2;
-        FreeStyleBuild build1, build2 = null;
+        FreeStyleBuild build2 = null;
         BuildPipelineTrigger trigger2;
 
-        try {
-            project1 = createFreeStyleProject(TEST_PROJECT1);
-            builder1 = new MockBuilder(Result.SUCCESS);
-            project2 = createFreeStyleProject(TEST_PROJECT2);
-            builder2 = new MockBuilder(Result.SUCCESS);
-            trigger2 = new BuildPipelineTrigger(TEST_PROJECT2);
+        project1 = createFreeStyleProject(proj1);
+        project2 = createFreeStyleProject(proj2);
+        trigger2 = new BuildPipelineTrigger(proj2);
 
-            project1.getPublishersList().add(trigger2);
-            // Important; we must do this step to ensure that the dependency graphs are updated
-            Hudson.getInstance().rebuildDependencyGraph();
+        project1.getPublishersList().add(trigger2);
+        // Important; we must do this step to ensure that the dependency graphs are updated
+        Hudson.getInstance().rebuildDependencyGraph();
 
-            // Build project1
-            build1 = buildAndAssertSuccess(project1);
-            // When all building is complete retrieve the last builds
-            waitUntilNoActivity();
-            build2 = project2.getLastBuild();
+        // Build project1
+        buildAndAssertSuccess(project1);
+        // When all building is complete retrieve the last builds
+        waitUntilNoActivity();
+        build2 = project2.getLastBuild();
 
-            PipelineBuild pb1 = new PipelineBuild(build2, null, null);
-            assertEquals(build2 + " should have been " + HudsonResult.SUCCESS, HudsonResult.SUCCESS.toString(),
-                    pb1.getUpstreamBuildResult());
-        } catch (Exception e) {
-            e.toString();
-        }
+        PipelineBuild pb1 = new PipelineBuild(build2, null, null);
+        assertEquals(build2 + " should have been " + HudsonResult.SUCCESS, HudsonResult.SUCCESS.toString(), pb1.getUpstreamBuildResult());
     }
 
     @Test
-    public void testGetBuildResultURL() {
+    public void testGetBuildResultURL() throws Exception {
+        String proj1 = "Proj 1";
+        String proj1Url = "/job/Proj%201/1/";
         FreeStyleProject project1;
         FreeStyleBuild build1;
-        try {
-            project1 = createFreeStyleProject(TEST_PROJECT1);
-            build1 = buildAndAssertSuccess(project1);
-            // When all building is complete retrieve the last builds
-            waitUntilNoActivity();
+        project1 = createFreeStyleProject(proj1);
+        build1 = buildAndAssertSuccess(project1);
+        // When all building is complete retrieve the last builds
+        waitUntilNoActivity();
 
-            PipelineBuild pb = new PipelineBuild(build1, null, null);
+        PipelineBuild pb = new PipelineBuild(build1, null, null);
 
-            assertEquals("The build URL should have been " + TEST_PROJECT1_BUILD_URL, TEST_PROJECT1_BUILD_URL, pb.getBuildResultURL());
-        } catch (Exception e) {
-            e.toString();
-        }
+        assertEquals("The build URL should have been " + proj1Url, proj1Url, pb.getBuildResultURL());
     }
 
     @Test
-    public void testToString() {
+    public void testToString() throws Exception {
+        String proj1 = "Proj1";
+        String proj1ToString = "Project: " + proj1 + " : Build: 1";
         FreeStyleProject project1;
         FreeStyleBuild build1;
-        try {
-            project1 = createFreeStyleProject(TEST_PROJECT1);
-            build1 = buildAndAssertSuccess(project1);
-            // When all building is complete retrieve the last builds
-            waitUntilNoActivity();
+        project1 = createFreeStyleProject(proj1);
+        build1 = buildAndAssertSuccess(project1);
+        // When all building is complete retrieve the last builds
+        waitUntilNoActivity();
 
-            PipelineBuild pb = new PipelineBuild(build1, null, null);
+        PipelineBuild pb = new PipelineBuild(build1, null, null);
 
-            assertEquals("The toString should have been " + TEST_TO_STRING_RESULT, TEST_TO_STRING_RESULT, pb.toString());
-        } catch (Exception e) {
-            e.toString();
-        }
+        assertEquals("The toString should have been " + proj1ToString, proj1ToString, pb.toString());
     }
 
     @Test
-    public void testGetBuildDescription() {
+    public void testGetBuildDescription() throws Exception {
+        String proj1 = "Proj1";
+        String proj1BuildDescFail = "Pending build of project: " + proj1;
+        String proj1BuildDescSuccess = proj1 + " #1";
         FreeStyleProject project1;
         FreeStyleBuild build1;
-        try {
-            project1 = createFreeStyleProject(TEST_PROJECT1);
-            PipelineBuild pb = new PipelineBuild(null, project1, null);
+        project1 = createFreeStyleProject(proj1);
+        PipelineBuild pb = new PipelineBuild(null, project1, null);
 
-            assertEquals("The build description should have been " + TEST_BUILD_DESCRIPTION_FAIL, TEST_BUILD_DESCRIPTION_FAIL,
-                    pb.getBuildDescription());
+        assertEquals("The build description should have been " + proj1BuildDescFail, proj1BuildDescFail, pb.getBuildDescription());
 
-            build1 = buildAndAssertSuccess(project1);
-            // When all building is complete retrieve the last builds
-            waitUntilNoActivity();
-            pb.setCurrentBuild(build1);
+        build1 = buildAndAssertSuccess(project1);
+        // When all building is complete retrieve the last builds
+        waitUntilNoActivity();
+        pb.setCurrentBuild(build1);
 
-            assertEquals("The build description should have been " + TEST_BUILD_DESCRIPTION_SUCCESS, TEST_BUILD_DESCRIPTION_SUCCESS,
-                    pb.getBuildDescription());
-        } catch (Exception e) {
-            e.toString();
-        }
+        assertEquals("The build description should have been " + proj1BuildDescSuccess, proj1BuildDescSuccess, pb.getBuildDescription());
     }
 
     @Test
-    public void testGetSVNRevisionNo() {
+    public void testGetSVNRevisionNo() throws Exception {
+        String proj1 = "Proj1";
+        String proj1GetSVN = "No Revision";
         FreeStyleProject project1;
         FreeStyleBuild build1;
-        try {
-            project1 = createFreeStyleProject(TEST_PROJECT1);
-            build1 = buildAndAssertSuccess(project1);
-            // When all building is complete retrieve the last builds
-            waitUntilNoActivity();
+        project1 = createFreeStyleProject(proj1);
+        build1 = buildAndAssertSuccess(project1);
+        // When all building is complete retrieve the last builds
+        waitUntilNoActivity();
 
-            PipelineBuild pb = new PipelineBuild(build1, null, null);
-            assertEquals("The SVN Revision text should have been " + TEST_GET_SVN, TEST_GET_SVN, pb.getSVNRevisionNo());
-        } catch (Exception e) {
-            e.toString();
-        }
+        PipelineBuild pb = new PipelineBuild(build1, null, null);
+        assertEquals("The SVN Revision text should have been " + proj1GetSVN, proj1GetSVN, pb.getSVNRevisionNo());
     }
 }
