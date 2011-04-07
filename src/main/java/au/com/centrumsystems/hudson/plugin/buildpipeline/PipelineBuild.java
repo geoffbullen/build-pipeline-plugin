@@ -42,42 +42,25 @@ import au.com.centrumsystems.hudson.plugin.util.ProjectUtil;
 
 /**
  * @author KevinV
- *
+ * 
  */
 public class PipelineBuild {
-    /** Represents the current build*/
+    /** Represents the current build */
     private AbstractBuild<?, ?> currentBuild;
-    /** Represents the current project*/
+    /** Represents the current project */
     private AbstractProject<?, ?> project;
-    /** Represents the upstream build*/
+    /** Represents the upstream build */
     private AbstractBuild<?, ?> upstreamBuild;
     /**
-     * Contains the upstreamBuild result.
-     * Can be one of the following:
-     *  - BUILDING
-     *  - SUCCESS
-     *  - FAILURE
-     *  - UNSTABLE
-     *  - NOT_BUILT
-     *  - ABORT
-     *  - PENDING
-     *  - MANUAL
+     * Contains the upstreamBuild result. Can be one of the following: - BUILDING - SUCCESS - FAILURE - UNSTABLE - NOT_BUILT - ABORT -
+     * PENDING - MANUAL
      */
     private String upstreamBuildResult;
     /**
-     * Contains the currentBuild result.
-     * Can be one of the following:
-     *  - BUILDING
-     *  - SUCCESS
-     *  - FAILURE
-     *  - UNSTABLE
-     *  - NOT_BUILT
-     *  - ABORT
-     *  - PENDING
-     *  - MANUAL
+     * Contains the currentBuild result. Can be one of the following: - BUILDING - SUCCESS - FAILURE - UNSTABLE - NOT_BUILT - ABORT -
+     * PENDING - MANUAL
      */
     private String currentBuildResult;
-
 
     /** A Logger object is used to log messages */
     private static final Logger LOGGER = Logger.getLogger(PipelineBuild.class.getName());
@@ -90,9 +73,13 @@ public class PipelineBuild {
 
     /**
      * Creates a new PipelineBuild with currentBuild, project and upstreamBuild set.
-     * @param build - current build
-     * @param project - current project
-     * @param previousBuild - upstream build
+     * 
+     * @param build
+     *            - current build
+     * @param project
+     *            - current project
+     * @param previousBuild
+     *            - upstream build
      */
     public PipelineBuild(AbstractBuild<?, ?> build, AbstractProject<?, ?> project, AbstractBuild<?, ?> previousBuild) {
         this.currentBuild = build;
@@ -105,7 +92,6 @@ public class PipelineBuild {
     public AbstractBuild<?, ?> getCurrentBuild() {
         return currentBuild;
     }
-
 
     public void setCurrentBuild(AbstractBuild<?, ?> currentBuild) {
         this.currentBuild = currentBuild;
@@ -124,8 +110,8 @@ public class PipelineBuild {
     }
 
     /**
-     * Returns the project name. If the current project is null the project name
-     * is determined using the current build.
+     * Returns the project name. If the current project is null the project name is determined using the current build.
+     * 
      * @return - Project name
      */
     public AbstractProject<?, ?> getProject() {
@@ -140,6 +126,7 @@ public class PipelineBuild {
 
     /**
      * Returns the current build number.
+     * 
      * @return - Current build number or empty String is the current build is null.
      */
     private String getCurrentBuildNumber() {
@@ -152,6 +139,7 @@ public class PipelineBuild {
 
     /**
      * Constructs a List of downstream PipelineBuild objects that make up the current pipeline.
+     * 
      * @return - List of downstream PipelineBuild objects that make up the current pipeline.
      */
     public List<PipelineBuild> getDownstreamPipeline() {
@@ -175,9 +163,10 @@ public class PipelineBuild {
 
     /**
      * Build a URL of the currentBuild
-     *
+     * 
      * @return URL of the currentBuild
-     * @throws URISyntaxException If the URI string constructed from the given components violates RFC 2396
+     * @throws URISyntaxException
+     *             If the URI string constructed from the given components violates RFC 2396
      */
     public String getBuildResultURL() throws URISyntaxException {
         final StringBuffer resultURL = new StringBuffer();
@@ -197,9 +186,10 @@ public class PipelineBuild {
 
     /**
      * Builds a URL of the current project
-     *
+     * 
      * @return URL - of the project
-     * @throws URISyntaxException If the URI string constructed from the given components violates RFC 2396
+     * @throws URISyntaxException
+     *             If the URI string constructed from the given components violates RFC 2396
      */
     public String getProjectURL() throws URISyntaxException {
         return ProjectUtil.getProjectURL(this.getProject());
@@ -207,8 +197,9 @@ public class PipelineBuild {
 
     /**
      * Determines the result of the current build.
-     *  @return - String representing the build result
-     *  @see PipelineBuild#getBuildResult(AbstractBuild)
+     * 
+     * @return - String representing the build result
+     * @see PipelineBuild#getBuildResult(AbstractBuild)
      */
     public String getCurrentBuildResult() {
         if (this.currentBuildResult.isEmpty()) {
@@ -219,8 +210,9 @@ public class PipelineBuild {
 
     /**
      * Determines the result of the upstream build.
-     *  @return - String representing the build result
-     *  @see PipelineBuild#getBuildResult(AbstractBuild)
+     * 
+     * @return - String representing the build result
+     * @see PipelineBuild#getBuildResult(AbstractBuild)
      */
     public String getUpstreamBuildResult() {
         if (this.upstreamBuildResult.isEmpty()) {
@@ -230,19 +222,12 @@ public class PipelineBuild {
     }
 
     /**
-     * Determines the result for a particular build.
-     * Can be one of the following:
-     *  - BUILDING
-     *  - SUCCESS
-     *  - FAILURE
-     *  - UNSTABLE
-     *  - NOT_BUILT
-     *  - ABORT
-     *  - PENDING
-     *  - MANUAL
-     *
-     *  @param build - The build for which a result is requested.
-     *  @return - String representing the build result
+     * Determines the result for a particular build. Can be one of the following: - BUILDING - SUCCESS - FAILURE - UNSTABLE - NOT_BUILT -
+     * ABORT - PENDING - MANUAL
+     * 
+     * @param build
+     *            - The build for which a result is requested.
+     * @return - String representing the build result
      */
     private String getBuildResult(AbstractBuild<?, ?> build) {
         String buildResult;
@@ -261,13 +246,12 @@ public class PipelineBuild {
         return buildResult;
     }
 
-
     /**
-     * Determines the pending currentBuild status of a currentBuild in the pipeline
-     * that has not been completed. (i.e. the currentBuild is null)
-     *
-     * @return - PENDING: Current currentBuild is pending the execution of upstream builds.
-     *           MANUAL: Current currentBuild requires a manual trigger
+     * Determines the pending currentBuild status of a currentBuild in the pipeline that has not been completed. (i.e. the currentBuild is
+     * null)
+     * 
+     * @return - PENDING: Current currentBuild is pending the execution of upstream builds. MANUAL: Current currentBuild requires a manual
+     *         trigger
      */
     private String getPendingStatus() {
         String pendingStatus = HudsonResult.PENDING.toString();
@@ -287,10 +271,11 @@ public class PipelineBuild {
 
     /**
      * Returns the upstream PipelineBuild object from the current PipelineBuild object.
+     * 
      * @return - Upstream PipelineBuild object from the current PipelineBuild object
      */
     public PipelineBuild getUpstreamPipelineBuild() {
-        final List<AbstractProject> upstreamProjects = this.project.getUpstreamProjects();
+        final List<AbstractProject> upstreamProjects = getProject().getUpstreamProjects();
         final AbstractProject<?, ?> previousProject;
         final PipelineBuild previousPB = new PipelineBuild();
         if (upstreamProjects.size() > 0) {
@@ -303,6 +288,7 @@ public class PipelineBuild {
 
     /**
      * Returns the current build duration.
+     * 
      * @return - Current build duration or an empty String if the current build is null.
      */
     public String getBuildDuration() {
@@ -323,6 +309,7 @@ public class PipelineBuild {
 
     /**
      * Returns the current build description.
+     * 
      * @return - Current build description or the project name if the current build is null.
      */
     public String getBuildDescription() {
@@ -335,7 +322,7 @@ public class PipelineBuild {
 
     /**
      * Get the SVN revision no of a particular currentBuild
-     *
+     * 
      * @return The revision number of the currentBuild or "No Revision"
      */
     public String getSVNRevisionNo() {
@@ -355,7 +342,7 @@ public class PipelineBuild {
 
     /**
      * Checks whether the user has Build permission for the current project.
-     *
+     * 
      * @return - true: Has Build permission; false: Does not have Build permission
      * @see hudson.model.Item
      */
@@ -364,10 +351,11 @@ public class PipelineBuild {
         // If no security is enabled then allow builds
         if (!Hudson.getInstance().isUseSecurity()) {
             buildPermission = true;
-        } else if  (this.project != null) {
+        } else if (this.project != null) {
             // If security is enabled check if BUILD is enabled
             buildPermission = this.project.hasPermission(Item.BUILD);
         }
         return buildPermission;
     }
+
 }
