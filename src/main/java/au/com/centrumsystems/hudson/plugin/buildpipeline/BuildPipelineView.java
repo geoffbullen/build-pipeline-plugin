@@ -50,15 +50,14 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
-import au.com.centrumsystems.hudson.plugin.util.PipelineViewUI;
 import au.com.centrumsystems.hudson.plugin.util.ProjectUtil;
 
 /**
  * This view displays the set of jobs that are related based on their upstream\downstream relationships as a pipeline. Each build pipeline
  * becomes a row on the view.
- *
+ * 
  * @author Centrum Systems
- *
+ * 
  */
 public class BuildPipelineView extends View {
 
@@ -81,7 +80,7 @@ public class BuildPipelineView extends View {
     private static final String REQ_UPSTREAM_PROJECT_NAME = "upstreamProjectName";
 
     /**
-     *
+     * 
      * @param name
      *            the name of the pipeline build view.
      * @param buildViewTitle
@@ -101,7 +100,7 @@ public class BuildPipelineView extends View {
 
     /**
      * Handles the configuration submission
-     *
+     * 
      * @param req
      *            Stapler Request
      * @throws FormException
@@ -120,7 +119,7 @@ public class BuildPipelineView extends View {
 
     /**
      * Gets the selected project
-     *
+     * 
      * @return - The selected project in the current view
      */
     public AbstractProject<?, ?> getSelectedProject() {
@@ -131,9 +130,9 @@ public class BuildPipelineView extends View {
         return selectedProject;
     }
 
-
     /**
      * Tests if the selected project exists.
+     * 
      * @return - true: Selected project exists; false: Selected project does not exist.
      */
     public boolean hasSelectedProject() {
@@ -147,8 +146,9 @@ public class BuildPipelineView extends View {
 
     /**
      * Checks whether the user has Build permission for the current project.
-     *
-     * @param currentProject - The project being viewed.
+     * 
+     * @param currentProject
+     *            - The project being viewed.
      * @return - true: Has Build permission; false: Does not have Build permission
      * @see hudson.model.Item
      */
@@ -158,7 +158,7 @@ public class BuildPipelineView extends View {
 
     /**
      * Checks whether the user has Configure permission for the current project.
-     *
+     * 
      * @return - true: Has Configure permission; false: Does not have Configure permission
      */
     public boolean hasConfigurePermission() {
@@ -167,9 +167,10 @@ public class BuildPipelineView extends View {
 
     /**
      * Get a List of downstream projects.
-     *
-     * @param currentProject - The project from which we want the downstream projects
-     * @return - A List of  downstream projects
+     * 
+     * @param currentProject
+     *            - The project from which we want the downstream projects
+     * @return - A List of downstream projects
      */
     public List<AbstractProject<?, ?>> getDownstreamProjects(final AbstractProject<?, ?> currentProject) {
         return ProjectUtil.getDownstreamProjects(currentProject);
@@ -177,7 +178,9 @@ public class BuildPipelineView extends View {
 
     /**
      * Determines if the current project has any downstream projects
-     * @param currentProject - The project from wwhich we are testing.
+     * 
+     * @param currentProject
+     *            - The project from wwhich we are testing.
      * @return - true; has downstream projects; false: does not have downstream projects
      */
     public boolean hasDownstreamProjects(final AbstractProject<?, ?> currentProject) {
@@ -186,47 +189,52 @@ public class BuildPipelineView extends View {
 
     /**
      * Returns the HTML containing the build pipeline to display.
+     * 
      * @return A STring containing the HTML code for the project and build pipelines.
-     * @throws URISyntaxException {@link URISyntaxException}
+     * @throws URISyntaxException
+     *             {@link URISyntaxException}
      */
-    public String getBuildPipelineHTML() throws URISyntaxException {
-        final int maxNoOfDisplayBuilds = (noOfDisplayedBuilds == null ? 0 : Integer.parseInt(noOfDisplayedBuilds));
-        int rowsAppended = 0;
+    public BuildPipelineForm getBuildPipelineHTML() throws URISyntaxException {
         final AbstractProject<?, ?> project = getSelectedProject();
-        final StringBuffer result = new StringBuffer();
 
-
-        if (project != null) {
-            PipelineViewUI.addEmptyCell(result);
-            final PipelineBuild initialPB = new PipelineBuild(null, project, null);
-            PipelineViewUI.getProjectPipeline("", initialPB, result);
-            result.append(PipelineViewUI.CELL_SUFFIX);
-
-            if (project.getLastBuild() != null) {
-                for (final AbstractBuild<?, ?> currentBuild : project.getBuilds()) {
-                    final PipelineBuild pb = new PipelineBuild(currentBuild, null, null);
-
-                    PipelineViewUI.addRevisionCell(pb, result);
-                    PipelineViewUI.getBuildPipeline("", pb, result);
-                    result.append(PipelineViewUI.CELL_SUFFIX);
-                    rowsAppended++;
-                    if (rowsAppended >= maxNoOfDisplayBuilds) {
-                        break;
-                    }
-                }
-            }
-        }
-        return result.toString();
+        BuildPipelineForm buildPipelineForm = new BuildPipelineForm(project);
+        return buildPipelineForm;
+        // final StringBuffer result = new StringBuffer();
+        //
+        //
+        // if (project != null) {
+        // PipelineViewUI.addEmptyCell(result);
+        // final PipelineBuild initialPB = new PipelineBuild(null, project, null);
+        // PipelineViewUI.getProjectPipeline("", initialPB, result);
+        // result.append(PipelineViewUI.CELL_SUFFIX);
+        //
+        // if (project.getLastBuild() != null) {
+        // for (final AbstractBuild<?, ?> currentBuild : project.getBuilds()) {
+        // final PipelineBuild pb = new PipelineBuild(currentBuild, null, null);
+        //
+        // PipelineViewUI.addRevisionCell(pb, result);
+        // PipelineViewUI.getBuildPipeline("", pb, result);
+        // result.append(PipelineViewUI.CELL_SUFFIX);
+        // rowsAppended++;
+        // if (rowsAppended >= maxNoOfDisplayBuilds) {
+        // break;
+        // }
+        // }
+        // }
+        // }
+        // return result.toString();
     }
 
     /**
      * Retrieves the project URL
-     *
-     * @param project - The project
+     * 
+     * @param project
+     *            - The project
      * @return URL - of the project
      * @throws URISyntaxException
      * @see {@link ProjectUtil#getProjectURL(AbstractProject)}
-     * @throws URISyntaxException {@link URISyntaxException}
+     * @throws URISyntaxException
+     *             {@link URISyntaxException}
      */
     public String getProjectURL(final AbstractProject<?, ?> project) throws URISyntaxException {
         return ProjectUtil.getProjectURL(project);
@@ -234,9 +242,11 @@ public class BuildPipelineView extends View {
 
     /**
      * Invoke this method when the URL(/manualExecution/) is called
-     *
-     * @param req - Stapler Request
-     * @param rsp - Stapler Response
+     * 
+     * @param req
+     *            - Stapler Request
+     * @param rsp
+     *            - Stapler Response
      */
     @SuppressWarnings("unchecked")
     public void doManualExecution(final StaplerRequest req, final StaplerResponse rsp) {
@@ -281,11 +291,12 @@ public class BuildPipelineView extends View {
                 buildActions.toArray(new Action[buildActions.size()]));
 
     }
+
     /**
      * This descriptor class is required to configure the View Page
-     *
+     * 
      * @author rayc
-     *
+     * 
      */
     @Extension
     public static final class DescriptorImpl extends ViewDescriptor {
@@ -300,7 +311,7 @@ public class BuildPipelineView extends View {
 
         /**
          * get the display name
-         *
+         * 
          * @return display name
          */
         @Override
@@ -310,7 +321,7 @@ public class BuildPipelineView extends View {
 
         /**
          * Display Job List Item in the Edit View Page
-         *
+         * 
          * @return ListBoxModel
          */
         public hudson.util.ListBoxModel doFillSelectedJobItems() {
@@ -323,7 +334,7 @@ public class BuildPipelineView extends View {
 
         /**
          * Display No Of Builds Items in the Edit View Page
-         *
+         * 
          * @return ListBoxModel
          */
         public hudson.util.ListBoxModel doFillNoOfDisplayedBuildsItems() {
@@ -381,7 +392,7 @@ public class BuildPipelineView extends View {
     public boolean contains(TopLevelItem item) {
         // TODO Auto-generated method stub
         return this.getItems().contains(item);
-        //return false;
+        // return false;
     }
 
     @Override
