@@ -24,15 +24,13 @@
  */
 package au.com.centrumsystems.hudson.plugin.buildpipeline.trigger;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import hudson.model.Descriptor;
 import hudson.model.FreeStyleProject;
 import hudson.model.Hudson;
-import hudson.tasks.BuildTrigger;
+import hudson.tasks.Publisher;
+import hudson.util.DescribableList;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Before;
@@ -56,15 +54,8 @@ import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
  */
 public class BuildPipelineTriggerTest extends HudsonTestCase {
 
-    private static final String VALUE = "value";
-    private static final String TEST_UPSTREAM_PROJECT = "TestUpstreamProject";
-    private static final String TEST_DOWNSTREAM_PROJECT = "TestDownstreamProject";
-    private static final String TEST_DOWNSTREAM_PROJECT_HREF = "/job/" + TEST_DOWNSTREAM_PROJECT + "/";
     private static final String BUILD_PIPELINE_PLUGIN_NAME = "au-com-centrumsystems-hudson-plugin-buildpipeline-trigger-BuildPipelineTrigger";
     private static final String CREATE_NEW_JOB_PAGE = "../view/All/newJob";
-
-    private static final String TEST_PROJECT1 = "Project 1";
-    private static final String TEST_PROJECT2 = "Downstream Project 2";
 
     @Override
     @Before
@@ -74,33 +65,30 @@ public class BuildPipelineTriggerTest extends HudsonTestCase {
 
     @Test
     public void testBuildPipelineTrigger() throws IOException {
-
-        FreeStyleProject project1 = createFreeStyleProject(TEST_PROJECT1);
+        String proj1 = "Proj1";
+        String proj2 = "Proj2";
+        FreeStyleProject project1 = createFreeStyleProject(proj1);
         // Add TEST_PROJECT2 as a post build action: build other project
-        project1.getPublishersList().add(new BuildPipelineTrigger(TEST_PROJECT2));
+        project1.getPublishersList().add(new BuildPipelineTrigger(proj2));
         // Important; we must do this step to ensure that the dependency graphs are updated
         Hudson.getInstance().rebuildDependencyGraph();
 
-        BuildPipelineTrigger myBPTrigger = new BuildPipelineTrigger(TEST_PROJECT1);
+        BuildPipelineTrigger myBPTrigger = new BuildPipelineTrigger(proj1);
 
         assertNotNull("A valid BuildPipelineTrigger should have been created.", myBPTrigger);
 
-        assertEquals("BuildPipelineTrigger downstream project is " + TEST_PROJECT1, TEST_PROJECT1, myBPTrigger.getDownstreamProjectNames());
-
+        assertEquals("BuildPipelineTrigger downstream project is " + proj1, proj1, myBPTrigger.getDownstreamProjectNames());
     }
 
     @Test
     public void testProjectConfigurePage() throws IOException, SAXException, ElementNotFoundException {
-
-        FreeStyleProject project1 = createFreeStyleProject(TEST_PROJECT1);
-        // Add TEST_PROJECT2 as a post build action: build other project
-        project1.getPublishersList().add(new BuildPipelineTrigger(TEST_PROJECT2));
-        // Important; we must do this step to ensure that the dependency graphs are updated
-        Hudson.getInstance().rebuildDependencyGraph();
+        String proj1 = "Proj1";
+        String proj2 = "Proj2";
+        String proj2Href = ".." + "/job/" + proj2;
 
         // Create two new projects
-        final HtmlPage testDownstreamProjectConfigurePage = createNewJobPage(TEST_DOWNSTREAM_PROJECT);
-        final HtmlPage testUpstreamProjectConfigurePage = createNewJobPage(TEST_UPSTREAM_PROJECT);
+        final HtmlPage testDownstreamProjectConfigurePage = createNewFreeStyleProjectHtmlPage(proj1);
+        final HtmlPage testUpstreamProjectConfigurePage = createNewFreeStyleProjectHtmlPage(proj2);
 
         // Test if the HTML pages were successfully returned
         assertNotNull("Create New Upstream Job Form Return Page failed", testUpstreamProjectConfigurePage);
@@ -123,61 +111,79 @@ public class BuildPipelineTriggerTest extends HudsonTestCase {
         saveNewUpstreamJobButton.removeAttribute("disabled");
 
         // Retrieve the configuration page for the Upstream project and test that the correct downstream project has been added
-        final HtmlPage testUpstreamProjectFinalPage = new WebClient().goTo(".." + TEST_DOWNSTREAM_PROJECT_HREF);
-        assertEquals("The downstream project should have been " + TEST_DOWNSTREAM_PROJECT_HREF, TEST_DOWNSTREAM_PROJECT_HREF,
-                testUpstreamProjectFinalPage.getAnchorByHref(TEST_DOWNSTREAM_PROJECT_HREF).getHrefAttribute());
+        final HtmlPage testUpstreamProjectFinalPage = new WebClient().goTo(proj2Href);
+        assertEquals("The downstream project should have been " + proj2Href, proj2Href,
+                testUpstreamProjectFinalPage.getAnchorByHref(proj2Href).getHrefAttribute());
 
     }
 
     @Test
-    public void testBuildDependencyGraphAndUnrelatedProjectsDontAffectEachother() throws IOException {
-        // SETUP
-        FreeStyleProject project1 = createFreeStyleProject("Proj1");
+    public void testOnDownstreamProjectRenamed() throws IOException {
+        String proj1 = "Proj1";
         String proj2 = "Proj2";
-        createFreeStyleProject(proj2);
         String proj3 = "Proj3";
-        createFreeStyleProject(proj3);
-        FreeStyleProject project4 = createFreeStyleProject("Proj4");
-        String proj5 = "Proj5";
-        createFreeStyleProject(proj5);
-        String proj6 = "Proj6";
-        createFreeStyleProject(proj6);
+        BuildPipelineTrigger bpTrigger = new BuildPipelineTrigger(proj1);
+        bpTrigger.setDownstreamProjectNames(proj2 + ", " + proj3);
+        assertTrue(bpTrigger.onDownstreamProjectRenamed(proj2, proj2 + "NEW"));
 
-        BuildTrigger trigger2 = new BuildTrigger(proj2, false);
-        BuildPipelineTrigger trigger3 = new BuildPipelineTrigger(proj3);
-
-        // add 2 downstream builds for project1, one auto and one build pipeline one
-        project1.getPublishersList().add(trigger2);
-        project1.getPublishersList().add(trigger3);
-        // project1.save();
-        // Important; we must do this step to ensure that the dependency graphs are updated
-        hudson.rebuildDependencyGraph();
-
-        BuildTrigger trigger5 = new BuildTrigger(proj5, false);
-        BuildPipelineTrigger trigger6 = new BuildPipelineTrigger(proj6);
-
-        // Add TEST_PROJECT2 as a post build action: build other project
-        project4.getPublishersList().add(trigger5);
-        project4.getPublishersList().add(trigger6);
-        // project4.save();
-        // Important; we must do this step to ensure that the dependency graphs are updated
-        hudson.rebuildDependencyGraph();
-
-        // VERIFY
-        List<String> projectNames = new ArrayList<String>();
-        for (BuildTrigger buildTrigger : project1.getPublishersList().getAll(BuildTrigger.class)) {
-            projectNames.add(buildTrigger.getChildProjectsValue());
-        }
-        assertThat(projectNames, is(Arrays.asList(proj2, proj3)));
-
-        projectNames = new ArrayList<String>();
-        for (BuildTrigger buildTrigger : project4.getPublishersList().getAll(BuildTrigger.class)) {
-            projectNames.add(buildTrigger.getChildProjectsValue());
-        }
-        assertThat(projectNames, is(Arrays.asList(proj5, proj6)));
+        assertEquals(proj2 + "NEW, " + proj3, bpTrigger.getDownstreamProjectNames());
     }
 
-    private HtmlPage createNewJobPage(String newProjectName) throws SAXException, IOException {
+    @Test
+    public void testOnDownstreamProjectDeleted() {
+        String proj1 = "Proj1";
+        String proj2 = "Proj2";
+        String proj3 = "Proj3";
+        BuildPipelineTrigger bpTrigger = new BuildPipelineTrigger(proj1);
+        bpTrigger.setDownstreamProjectNames(proj2 + ", " + proj3);
+        assertTrue(bpTrigger.onDownstreamProjectDeleted(proj2));
+
+        assertEquals(proj3, bpTrigger.getDownstreamProjectNames());
+    }
+
+    @Test
+    public void testOnRenamed() throws IOException {
+        String proj1 = "Proj1";
+        String proj2 = "Proj2";
+        String proj3 = "Proj3";
+        FreeStyleProject project1 = createFreeStyleProject(proj1);
+        FreeStyleProject project2 = createFreeStyleProject(proj2);
+        project1.getPublishersList().add(new BuildPipelineTrigger(proj2 + "," + proj3));
+        Hudson.getInstance().rebuildDependencyGraph();
+
+        project2.renameTo(proj2 + "NEW");
+
+        final DescribableList<Publisher, Descriptor<Publisher>> downstreamPublishersList = project1.getPublishersList();
+        for (final Publisher downstreamPub : downstreamPublishersList) {
+            if (downstreamPub instanceof BuildPipelineTrigger) {
+                final String manualDownstreamProjects = ((BuildPipelineTrigger) downstreamPub).getDownstreamProjectNames();
+                assertEquals(proj2 + "NEW," + proj3, manualDownstreamProjects);
+            }
+        }
+    }
+
+    @Test
+    public void testOnDeleted() throws IOException, InterruptedException {
+        String proj1 = "Proj1";
+        String proj2 = "Proj2";
+        String proj3 = "Proj3";
+        FreeStyleProject project1 = createFreeStyleProject(proj1);
+        FreeStyleProject project2 = createFreeStyleProject(proj2);
+        project1.getPublishersList().add(new BuildPipelineTrigger(proj2 + "," + proj3));
+        Hudson.getInstance().rebuildDependencyGraph();
+
+        project2.delete();
+
+        final DescribableList<Publisher, Descriptor<Publisher>> downstreamPublishersList = project1.getPublishersList();
+        for (final Publisher downstreamPub : downstreamPublishersList) {
+            if (downstreamPub instanceof BuildPipelineTrigger) {
+                final String manualDownstreamProjects = ((BuildPipelineTrigger) downstreamPub).getDownstreamProjectNames();
+                assertEquals(proj3, manualDownstreamProjects);
+            }
+        }
+    }
+
+    private HtmlPage createNewFreeStyleProjectHtmlPage(String newProjectName) throws SAXException, IOException {
 
         final HtmlPage testProjectConfigurePage = new WebClient().goTo(CREATE_NEW_JOB_PAGE);
 
@@ -193,7 +199,7 @@ public class BuildPipelineTriggerTest extends HudsonTestCase {
 
         // Enter the New Job Name
         final HtmlTextInput newJobName = (HtmlTextInput) testProjectConfigurePage.getElementById("name");
-        newJobName.setAttribute(VALUE, newProjectName);
+        newJobName.setAttribute("value", newProjectName);
         newJobName.click();
 
         // Select a Free Style Job
