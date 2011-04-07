@@ -26,7 +26,6 @@
 package au.com.centrumsystems.hudson.plugin.buildpipeline;
 
 import hudson.model.FreeStyleBuild;
-import hudson.model.Result;
 import hudson.model.FreeStyleProject;
 import hudson.model.Hudson;
 import hudson.tasks.BuildTrigger;
@@ -34,7 +33,6 @@ import hudson.tasks.BuildTrigger;
 import org.junit.Before;
 import org.junit.Test;
 import org.jvnet.hudson.test.HudsonTestCase;
-import org.jvnet.hudson.test.MockBuilder;
 
 import au.com.centrumsystems.hudson.plugin.buildpipeline.trigger.BuildPipelineTrigger;
 import au.com.centrumsystems.hudson.plugin.util.HudsonResult;
@@ -54,10 +52,6 @@ public class PipelineBuildTest extends HudsonTestCase {
         String proj3 = "Proj3";
         String proj4 = "Proj4";
         String proj5 = "Proj5";
-        FreeStyleProject project1, project2, project3, project4, project5;
-        MockBuilder builder1, builder2, builder3, builder4, builder5;
-        FreeStyleBuild build1 = null;
-        BuildTrigger trigger2, trigger3, trigger4, trigger5;
         final String RESULT1 = "-Project: " + proj1 + " : Build: 1\n" + "--Project: " + proj2 + " : Build: 1\n" + "---Project: " + proj4
                 + " : Build: 1\n" + "--Project: " + proj3 + " : Build: 1\n";
         final String RESULT2 = "-Project: " + proj1 + " : Build: 2\n" + "--Project: " + proj2 + " : Build: 2\n" + "--Project: " + proj3
@@ -65,27 +59,15 @@ public class PipelineBuildTest extends HudsonTestCase {
         final String RESULT3 = "-Project: " + proj1 + " : Build: 3\n" + "--Project: " + proj2 + " : Build: 3\n" + "--Project: " + proj3
                 + " : Build: 3\n" + "---Project: " + proj4 + " : Build: 3\n" + "---Project: " + proj5 + " : Build: 1\n";
 
-        project1 = createFreeStyleProject(proj1);
-        builder1 = new MockBuilder(Result.SUCCESS);
-        project2 = createFreeStyleProject(proj2);
-        builder2 = new MockBuilder(Result.SUCCESS);
-        trigger2 = new BuildTrigger(proj2, true);
-        project3 = createFreeStyleProject(proj3);
-        builder3 = new MockBuilder(Result.SUCCESS);
-        trigger3 = new BuildTrigger(proj3, true);
-        project4 = createFreeStyleProject(proj4);
-        builder4 = new MockBuilder(Result.SUCCESS);
-        trigger4 = new BuildTrigger(proj4, true);
-        project5 = createFreeStyleProject(proj5);
-        builder5 = new MockBuilder(Result.SUCCESS);
-        trigger5 = new BuildTrigger(proj5, true);
-
-        // Add the builders to the respective project's builder lists
-        project1.getBuildersList().add(builder1);
-        project2.getBuildersList().add(builder2);
-        project3.getBuildersList().add(builder3);
-        project4.getBuildersList().add(builder4);
-        project5.getBuildersList().add(builder5);
+        FreeStyleProject project1 = createFreeStyleProject(proj1);
+        FreeStyleProject project2 = createFreeStyleProject(proj2);
+        BuildTrigger trigger2 = new BuildTrigger(proj2, true);
+        FreeStyleProject project3 = createFreeStyleProject(proj3);
+        BuildTrigger trigger3 = new BuildTrigger(proj3, true);
+        createFreeStyleProject(proj4);
+        BuildTrigger trigger4 = new BuildTrigger(proj4, true);
+        createFreeStyleProject(proj5);
+        BuildTrigger trigger5 = new BuildTrigger(proj5, true);
 
         // Project 1 -> Project 2 -> Project 4
         // -> Project 3
@@ -96,7 +78,7 @@ public class PipelineBuildTest extends HudsonTestCase {
         Hudson.getInstance().rebuildDependencyGraph();
 
         // Build project1
-        build1 = buildAndAssertSuccess(project1);
+        FreeStyleBuild build1 = buildAndAssertSuccess(project1);
         // When all building is complete retrieve the last builds
         waitUntilNoActivity();
         PipelineBuild pb1 = new PipelineBuild(build1, null, null);
@@ -155,11 +137,9 @@ public class PipelineBuildTest extends HudsonTestCase {
     public void testGetCurrentBuildResult() throws Exception {
         String proj1 = "Proj1";
         String proj2 = "Proj2";
-        FreeStyleProject project1;
-        FreeStyleBuild build1 = null;
         BuildPipelineTrigger trigger2;
 
-        project1 = createFreeStyleProject(proj1);
+        FreeStyleProject project1 = createFreeStyleProject(proj1);
         trigger2 = new BuildPipelineTrigger(proj2);
 
         project1.getPublishersList().add(trigger2);
@@ -167,7 +147,7 @@ public class PipelineBuildTest extends HudsonTestCase {
         Hudson.getInstance().rebuildDependencyGraph();
 
         // Build project1
-        build1 = buildAndAssertSuccess(project1);
+        FreeStyleBuild build1 = buildAndAssertSuccess(project1);
         // When all building is complete retrieve the last builds
         waitUntilNoActivity();
 
@@ -179,21 +159,19 @@ public class PipelineBuildTest extends HudsonTestCase {
     public void testGetUpstreamPipelineBuild() throws Exception {
         String proj1 = "Proj1";
         String proj2 = "Proj2";
-        FreeStyleProject project1, project2;
-        FreeStyleBuild build1, build2 = null;
 
-        project1 = createFreeStyleProject(proj1);
-        project2 = createFreeStyleProject(proj2);
+        FreeStyleProject project1 = createFreeStyleProject(proj1);
+        FreeStyleProject project2 = createFreeStyleProject(proj2);
 
         project1.getPublishersList().add(new BuildTrigger(proj2, false));
         // Important; we must do this step to ensure that the dependency graphs are updated
         Hudson.getInstance().rebuildDependencyGraph();
 
         // Build project1
-        build1 = buildAndAssertSuccess(project1);
+        FreeStyleBuild build1 = buildAndAssertSuccess(project1);
         // When all building is complete retrieve the last builds
         waitUntilNoActivity();
-        build2 = project2.getLastBuild();
+        FreeStyleBuild build2 = project2.getLastBuild();
 
         PipelineBuild pb1 = new PipelineBuild(build1, null, null);
         PipelineBuild pb2 = new PipelineBuild(build2, null, build1);
@@ -204,24 +182,20 @@ public class PipelineBuildTest extends HudsonTestCase {
     public void testGetUpstreamBuildResult() throws Exception {
         String proj1 = "Proj1";
         String proj2 = "Proj2";
-        FreeStyleProject project1, project2;
-        FreeStyleBuild build1 = null;
-        FreeStyleBuild build2 = null;
-        BuildPipelineTrigger trigger2;
 
-        project1 = createFreeStyleProject(proj1);
-        project2 = createFreeStyleProject(proj2);
-        trigger2 = new BuildPipelineTrigger(proj2);
+        FreeStyleProject project1 = createFreeStyleProject(proj1);
+        FreeStyleProject project2 = createFreeStyleProject(proj2);
+        BuildPipelineTrigger trigger2 = new BuildPipelineTrigger(proj2);
 
         project1.getPublishersList().add(trigger2);
         // Important; we must do this step to ensure that the dependency graphs are updated
         Hudson.getInstance().rebuildDependencyGraph();
 
         // Build project1
-        build1 = buildAndAssertSuccess(project1);
+        FreeStyleBuild build1 = buildAndAssertSuccess(project1);
         // When all building is complete retrieve the last builds
         waitUntilNoActivity();
-        build2 = project2.getLastBuild();
+        FreeStyleBuild build2 = project2.getLastBuild();
 
         PipelineBuild pb1 = new PipelineBuild(build2, null, build1);
         assertEquals(build2 + " should have been " + HudsonResult.SUCCESS, HudsonResult.SUCCESS.toString(), pb1.getUpstreamBuildResult());
@@ -231,9 +205,8 @@ public class PipelineBuildTest extends HudsonTestCase {
     public void testGetBuildResultURL() throws Exception {
         String proj1 = "Proj 1";
         String proj1Url = "/job/Proj%201/1/";
-        FreeStyleProject project1;
         FreeStyleBuild build1;
-        project1 = createFreeStyleProject(proj1);
+        FreeStyleProject project1 = createFreeStyleProject(proj1);
         build1 = buildAndAssertSuccess(project1);
         // When all building is complete retrieve the last builds
         waitUntilNoActivity();
@@ -247,9 +220,8 @@ public class PipelineBuildTest extends HudsonTestCase {
     public void testToString() throws Exception {
         String proj1 = "Proj1";
         String proj1ToString = "Project: " + proj1 + " : Build: 1";
-        FreeStyleProject project1;
         FreeStyleBuild build1;
-        project1 = createFreeStyleProject(proj1);
+        FreeStyleProject project1 = createFreeStyleProject(proj1);
         build1 = buildAndAssertSuccess(project1);
         // When all building is complete retrieve the last builds
         waitUntilNoActivity();
@@ -264,9 +236,8 @@ public class PipelineBuildTest extends HudsonTestCase {
         String proj1 = "Proj1";
         String proj1BuildDescFail = "Pending build of project: " + proj1;
         String proj1BuildDescSuccess = proj1 + " #1";
-        FreeStyleProject project1;
         FreeStyleBuild build1;
-        project1 = createFreeStyleProject(proj1);
+        FreeStyleProject project1 = createFreeStyleProject(proj1);
         PipelineBuild pb = new PipelineBuild(null, project1, null);
 
         assertEquals("The build description should have been " + proj1BuildDescFail, proj1BuildDescFail, pb.getBuildDescription());
@@ -277,6 +248,29 @@ public class PipelineBuildTest extends HudsonTestCase {
         pb.setCurrentBuild(build1);
 
         assertEquals("The build description should have been " + proj1BuildDescSuccess, proj1BuildDescSuccess, pb.getBuildDescription());
+    }
+
+    @Test
+    public void testGetBuildDuration() throws Exception {
+        String proj1 = "Proj1";
+        FreeStyleBuild build1;
+        FreeStyleProject project1 = createFreeStyleProject(proj1);
+
+        build1 = buildAndAssertSuccess(project1);
+        waitUntilNoActivity();
+        PipelineBuild pb = new PipelineBuild(build1, project1, null);
+
+        assertEquals("The build duration should have been " + build1.getDurationString(), build1.getDurationString(), pb.getBuildDuration());
+    }
+
+    @Test
+    public void testHasBuildPermission() throws Exception {
+        String proj1 = "Proj1";
+        FreeStyleProject project1 = createFreeStyleProject(proj1);
+        PipelineBuild pb = new PipelineBuild(null, project1, null);
+
+        // Since no Hudson security is in place this method should return true
+        assertTrue(pb.hasBuildPermission());
     }
 
     @Test
