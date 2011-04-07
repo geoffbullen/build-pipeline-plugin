@@ -30,6 +30,7 @@ import hudson.model.Hudson;
 import hudson.tasks.BuildTrigger;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.List;
 
 import org.junit.Before;
@@ -40,107 +41,90 @@ import au.com.centrumsystems.hudson.plugin.buildpipeline.trigger.BuildPipelineTr
 
 public class ProjectUtilTest extends HudsonTestCase {
 
-    private static FreeStyleProject mainTestProject;
-    private static FreeStyleProject dsTestProject;
-    private static FreeStyleProject dsTestProject1;
-    private static final String TEST_PROJECT1 = "Main Project";
-    private static final String TEST_PROJECT2 = "Downstream Project";
-    private static final String TEST_PROJECT3 = "Downstream Project 1";
-    private static final String TEST_PROJECT1_URL = "/job/Main%20Project/";
-
     @Override
     @Before
-    public void setUp() {
-
-        try {
-            super.setUp();
-        } catch (Exception e) {
-            e.toString();
-        }
+    public void setUp() throws Exception {
+        super.setUp();
     }
 
     @Test
-    public void testGetDownstreamProjects() {
-        try {
-            // Create a test project
-            mainTestProject = createFreeStyleProject(TEST_PROJECT1);
-            dsTestProject = createFreeStyleProject(TEST_PROJECT2);
-            dsTestProject1 = createFreeStyleProject(TEST_PROJECT3);
+    public void testGetDownstreamProjects() throws IOException {
+        String proj1 = "Proj1";
+        String proj2 = "Proj2";
+        String proj3 = "Proj3";
 
-            // Add project2 as a post build action: build other project
-            mainTestProject.getPublishersList().add(new BuildPipelineTrigger(TEST_PROJECT2));
-            mainTestProject.getPublishersList().add(new BuildPipelineTrigger(TEST_PROJECT3));
+        // Create a test project
+        FreeStyleProject project1 = createFreeStyleProject(proj1);
+        FreeStyleProject project2 = createFreeStyleProject(proj2);
 
-            // Important; we must do this step to ensure that the dependency graphs are updated
-            Hudson.getInstance().rebuildDependencyGraph();
+        // Add project2 as a post build action: build other project
+        project1.getPublishersList().add(new BuildPipelineTrigger(proj2));
+        project1.getPublishersList().add(new BuildPipelineTrigger(proj3));
 
-            // Test the method
-            final List<AbstractProject<?, ?>> dsProjects = ProjectUtil.getDownstreamProjects(mainTestProject);
-            assertEquals(mainTestProject.getName() + " should have a downstream project " + dsTestProject.getName(), dsTestProject,
-                    dsProjects.get(0));
+        // Important; we must do this step to ensure that the dependency graphs are updated
+        Hudson.getInstance().rebuildDependencyGraph();
 
-        } catch (IOException ioException) {
-            ioException.toString();
-        }
+        // Test the method
+        final List<AbstractProject<?, ?>> dsProjects = ProjectUtil.getDownstreamProjects(project1);
+        assertEquals(project1.getName() + " should have a downstream project " + project2.getName(), project2, dsProjects.get(0));
     }
 
     @Test
-    public void testHasDownstreamProjects() {
-        try {
-            // Create a test project
-            mainTestProject = createFreeStyleProject(TEST_PROJECT1);
-            dsTestProject = createFreeStyleProject(TEST_PROJECT2);
-            dsTestProject1 = createFreeStyleProject(TEST_PROJECT3);
+    public void testIsManualTrigger() throws IOException {
+        String proj1 = "Proj1";
+        String proj2 = "Proj2";
+        String proj3 = "Proj3";
 
-            // Add TEST_PROJECT2 as a Manually executed pipeline project
-            // Add TEST_PROJECT3 as a Post-build action -> build other projects
-            mainTestProject.getPublishersList().add(new BuildPipelineTrigger(TEST_PROJECT2));
-            mainTestProject.getPublishersList().add(new BuildTrigger(TEST_PROJECT3, true));
+        // Create a test project
+        FreeStyleProject project1 = createFreeStyleProject(proj1);
+        FreeStyleProject project2 = createFreeStyleProject(proj2);
+        FreeStyleProject project3 = createFreeStyleProject(proj3);
 
-            // Important; we must do this step to ensure that the dependency graphs are updated
-            Hudson.getInstance().rebuildDependencyGraph();
+        // Add TEST_PROJECT2 as a Manually executed pipeline project
+        // Add TEST_PROJECT3 as a Post-build action -> build other projects
+        project1.getPublishersList().add(new BuildPipelineTrigger(proj2));
+        project1.getPublishersList().add(new BuildTrigger(proj3, true));
 
-            // Test the method
-            assertTrue(TEST_PROJECT2 + " should be a manual trigger", ProjectUtil.isManualTrigger(mainTestProject, dsTestProject));
-            assertFalse(TEST_PROJECT3 + " should be an automatic trigger", ProjectUtil.isManualTrigger(mainTestProject, dsTestProject1));
+        // Important; we must do this step to ensure that the dependency graphs are updated
+        Hudson.getInstance().rebuildDependencyGraph();
 
-        } catch (IOException ioException) {
-            ioException.toString();
-        }
+        // Test the method
+        assertTrue(proj2 + " should be a manual trigger", ProjectUtil.isManualTrigger(project1, project2));
+        assertFalse(proj3 + " should be an automatic trigger", ProjectUtil.isManualTrigger(project1, project3));
+
     }
 
     @Test
-    public void testIsManualTrigger() {
-        try {
-            // Create a test project
-            mainTestProject = createFreeStyleProject(TEST_PROJECT1);
-            dsTestProject = createFreeStyleProject(TEST_PROJECT2);
-            dsTestProject1 = createFreeStyleProject(TEST_PROJECT3);
+    public void testHasDownstreamProjects() throws IOException {
+        String proj1 = "Proj1";
+        String proj2 = "Proj2";
+        String proj3 = "Proj3";
 
-            // Add project2 as a post build action: build other project
-            mainTestProject.getPublishersList().add(new BuildTrigger(TEST_PROJECT2, true));
-            mainTestProject.getPublishersList().add(new BuildTrigger(TEST_PROJECT3, true));
+        // Create a test project
+        FreeStyleProject project1 = createFreeStyleProject(proj1);
+        createFreeStyleProject(proj2);
+        createFreeStyleProject(proj3);
 
-            // Important; we must do this step to ensure that the dependency graphs are updated
-            Hudson.getInstance().rebuildDependencyGraph();
+        // Add project2 as a post build action: build other project
+        project1.getPublishersList().add(new BuildPipelineTrigger(proj2));
+        project1.getPublishersList().add(new BuildTrigger(proj3, true));
 
-            // Test the method
-            assertTrue(mainTestProject.getName() + " should have downstream projects", ProjectUtil.hasDownstreamProjects(mainTestProject));
+        // Important; we must do this step to ensure that the dependency graphs are updated
+        Hudson.getInstance().rebuildDependencyGraph();
 
-        } catch (IOException ioException) {
-            ioException.toString();
-        }
+        // Test the method
+        assertTrue(project1.getName() + " should have downstream projects", ProjectUtil.hasDownstreamProjects(project1));
     }
 
     @Test
-    public void testGetProjectURL() {
-        try {
-            mainTestProject = createFreeStyleProject(TEST_PROJECT1);
-            assertEquals("The project URL should have been " + TEST_PROJECT1_URL, TEST_PROJECT1_URL,
-                    ProjectUtil.getProjectURL(mainTestProject));
-        } catch (Exception e) {
-            e.toString();
-        }
+    public void testGetProjectURL() throws URISyntaxException, IOException {
+        String proj1 = "Proj 1";
+        String proj1Url = "/job/Proj%201/";
+
+        // Create a test project
+        FreeStyleProject project1 = createFreeStyleProject(proj1);
+
+        assertEquals("The project URL should have been " + proj1Url, proj1Url, ProjectUtil.getProjectURL(project1));
     }
 
 }
