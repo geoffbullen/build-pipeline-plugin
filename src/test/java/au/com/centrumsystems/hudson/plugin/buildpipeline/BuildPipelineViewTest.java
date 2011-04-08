@@ -106,13 +106,31 @@ public class BuildPipelineViewTest extends HudsonTestCase {
         BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds);
         Job<?, ?> testSelectedProject = testView.getSelectedProject();
 
-        assertEquals("Check Abstract Project Name", proj1, testSelectedProject.getName());
+        assertEquals(proj1, testSelectedProject.getName());
 
         // Test the null case
         testView = new BuildPipelineView(bpViewName, bpViewTitle, "", noOfBuilds);
         testSelectedProject = testView.getSelectedProject();
 
-        assertNull("Check testJob ", testSelectedProject);
+        assertNull(testSelectedProject);
+    }
+
+    @Test
+    public void testHasSelectedProject() throws IOException {
+        String bpViewName = "MyTestView";
+        String bpViewTitle = "MyTestViewTitle";
+        String proj1 = "Proj1";
+        String noOfBuilds = "5";
+        createFreeStyleProject(proj1);
+
+        // Test a valid case
+        BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds);
+
+        assertTrue(testView.hasSelectedProject());
+
+        // Test the null case
+        testView = new BuildPipelineView(bpViewName, bpViewTitle, "", noOfBuilds);
+        assertFalse(testView.hasSelectedProject());
     }
 
     @Test
