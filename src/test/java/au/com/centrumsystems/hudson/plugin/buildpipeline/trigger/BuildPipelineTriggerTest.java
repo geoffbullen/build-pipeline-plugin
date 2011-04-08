@@ -24,11 +24,14 @@
  */
 package au.com.centrumsystems.hudson.plugin.buildpipeline.trigger;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 import hudson.model.Descriptor;
 import hudson.model.FreeStyleProject;
 import hudson.model.Hudson;
 import hudson.tasks.Publisher;
 import hudson.util.DescribableList;
+import hudson.util.FormValidation;
 
 import java.io.IOException;
 
@@ -143,4 +146,16 @@ public class BuildPipelineTriggerTest extends HudsonTestCase {
         }
     }
 
+    @Test
+    public void testDoCheckDownstreamProjectNames() throws IOException, InterruptedException {
+        final String proj1 = "Proj1";
+        final String proj2 = "Proj2";
+        createFreeStyleProject(proj1);
+
+        BuildPipelineTrigger.DescriptorImpl di = new BuildPipelineTrigger.DescriptorImpl();
+
+        assertEquals(FormValidation.ok(), di.doCheckDownstreamProjectNames(proj1));
+        assertThat(FormValidation.error("No such project '" + proj2 + "'. Did you mean '" + proj1 + "'?").toString(), is(di
+                .doCheckDownstreamProjectNames(proj2).toString()));
+    }
 }
