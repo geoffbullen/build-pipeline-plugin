@@ -51,8 +51,13 @@ public class ProjectFormTest extends HudsonTestCase {
         ProjectForm pf = new ProjectForm(project1);
         ProjectForm pf1 = new ProjectForm(project1);
         ProjectForm pf2 = new ProjectForm(project2);
+        String proj3 = null;
+        ProjectForm pf3 = new ProjectForm(proj3);
 
         assertTrue(pf.equals(pf1));
         assertFalse(pf.equals(pf2));
+        assertFalse(pf.equals(null));
+        assertFalse(pf.equals(pf3));
+
     }
 }
