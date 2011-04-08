@@ -61,6 +61,16 @@ public class BuildPipelineTriggerTest extends HudsonTestCase {
         super.setUp();
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testInvalidConstructor() {
+        try {
+            BuildPipelineTrigger bp = new BuildPipelineTrigger(null);
+            fail("An IllegalArgumentException should have been thrown.");
+        } catch (IllegalArgumentException e) {
+
+        }
+    }
+
     @Test
     public void testBuildPipelineTrigger() throws IOException {
         String proj1 = "Proj1";
