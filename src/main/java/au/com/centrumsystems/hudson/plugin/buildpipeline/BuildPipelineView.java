@@ -152,7 +152,7 @@ public class BuildPipelineView extends View {
      * @return - true: Has Build permission; false: Does not have Build permission
      * @see hudson.model.Item
      */
-    public boolean hasBuildPermission(AbstractProject<?, ?> currentProject) {
+    public boolean hasBuildPermission(final AbstractProject<?, ?> currentProject) {
         return currentProject.hasPermission(Item.BUILD);
     }
 
@@ -196,33 +196,21 @@ public class BuildPipelineView extends View {
      */
     public BuildPipelineForm getBuildPipelineHTML() throws URISyntaxException {
         final AbstractProject<?, ?> project = getSelectedProject();
-
-        BuildPipelineForm buildPipelineForm = new BuildPipelineForm(project);
+        BuildPipelineForm buildPipelineForm = null;
+        if (project != null) {
+            final int maxNoOfDisplayBuilds = Integer.valueOf(noOfDisplayedBuilds);
+            int rowsAppended = 0;
+            final List<BuildForm> buildForms = new ArrayList<BuildForm>();
+            for (final AbstractBuild<?, ?> currentBuild : project.getBuilds()) {
+                buildForms.add(new BuildForm(new PipelineBuild(currentBuild, null, null)));
+                rowsAppended++;
+                if (rowsAppended >= maxNoOfDisplayBuilds) {
+                    break;
+                }
+            }
+            buildPipelineForm = new BuildPipelineForm(new ProjectForm(project), buildForms);
+        }
         return buildPipelineForm;
-        // final StringBuffer result = new StringBuffer();
-        //
-        //
-        // if (project != null) {
-        // PipelineViewUI.addEmptyCell(result);
-        // final PipelineBuild initialPB = new PipelineBuild(null, project, null);
-        // PipelineViewUI.getProjectPipeline("", initialPB, result);
-        // result.append(PipelineViewUI.CELL_SUFFIX);
-        //
-        // if (project.getLastBuild() != null) {
-        // for (final AbstractBuild<?, ?> currentBuild : project.getBuilds()) {
-        // final PipelineBuild pb = new PipelineBuild(currentBuild, null, null);
-        //
-        // PipelineViewUI.addRevisionCell(pb, result);
-        // PipelineViewUI.getBuildPipeline("", pb, result);
-        // result.append(PipelineViewUI.CELL_SUFFIX);
-        // rowsAppended++;
-        // if (rowsAppended >= maxNoOfDisplayBuilds) {
-        // break;
-        // }
-        // }
-        // }
-        // }
-        // return result.toString();
     }
 
     /**
@@ -275,7 +263,7 @@ public class BuildPipelineView extends View {
         // redirect to the view page.
         try {
             rsp.sendRedirect2(".");
-        } catch (IOException e) {
+        } catch (final IOException e) {
             LOGGER.info(e.toString());
         }
     }
@@ -389,19 +377,17 @@ public class BuildPipelineView extends View {
     }
 
     @Override
-    public boolean contains(TopLevelItem item) {
-        // TODO Auto-generated method stub
+    public boolean contains(final TopLevelItem item) {
         return this.getItems().contains(item);
         // return false;
     }
 
     @Override
-    public void onJobRenamed(Item item, String oldName, String newName) {
-        // TODO Auto-generated method stub
+    public void onJobRenamed(final Item item, final String oldName, final String newName) {
     }
 
     @Override
-    public Item doCreateItem(StaplerRequest req, StaplerResponse rsp) throws IOException, ServletException {
+    public Item doCreateItem(final StaplerRequest req, final StaplerResponse rsp) throws IOException, ServletException {
         return Hudson.getInstance().doCreateItem(req, rsp);
     }
 
