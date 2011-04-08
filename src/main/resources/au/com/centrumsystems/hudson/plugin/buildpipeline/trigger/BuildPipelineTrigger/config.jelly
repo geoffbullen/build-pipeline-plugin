@@ -5,7 +5,7 @@
     See global.jelly for a general discussion about jelly script.
   -->
 
-  <f:entry title="Downstream Project Name" field="downstreamProjectNames">
+  <f:entry title="Downstream Project Names" field="downstreamProjectNames">
   	<f:textbox name="downstreamProjectNames"/> 
   </f:entry>
   
