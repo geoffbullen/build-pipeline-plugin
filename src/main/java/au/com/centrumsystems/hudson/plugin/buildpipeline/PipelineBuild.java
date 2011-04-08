@@ -81,7 +81,7 @@ public class PipelineBuild {
      * @param previousBuild
      *            - upstream build
      */
-    public PipelineBuild(AbstractBuild<?, ?> build, AbstractProject<?, ?> project, AbstractBuild<?, ?> previousBuild) {
+    public PipelineBuild(final AbstractBuild<?, ?> build, final AbstractProject<?, ?> project, final AbstractBuild<?, ?> previousBuild) {
         this.currentBuild = build;
         this.project = project;
         this.upstreamBuild = previousBuild;
@@ -93,7 +93,7 @@ public class PipelineBuild {
         return currentBuild;
     }
 
-    public void setCurrentBuild(AbstractBuild<?, ?> currentBuild) {
+    public void setCurrentBuild(final AbstractBuild<?, ?> currentBuild) {
         this.currentBuild = currentBuild;
     }
 
@@ -101,11 +101,11 @@ public class PipelineBuild {
         return upstreamBuild;
     }
 
-    public void setUpstreamBuild(AbstractBuild<?, ?> upstreamBuild) {
+    public void setUpstreamBuild(final AbstractBuild<?, ?> upstreamBuild) {
         this.upstreamBuild = upstreamBuild;
     }
 
-    public void setProject(AbstractProject<?, ?> currentProject) {
+    public void setProject(final AbstractProject<?, ?> currentProject) {
         this.project = currentProject;
     }
 
@@ -149,7 +149,7 @@ public class PipelineBuild {
         currentProject = getProject();
 
         final List<AbstractProject<?, ?>> downstreamProjects = ProjectUtil.getDownstreamProjects(currentProject);
-        for (AbstractProject<?, ?> proj : downstreamProjects) {
+        for (final AbstractProject<?, ?> proj : downstreamProjects) {
             AbstractBuild<?, ?> returnedBuild = null;
             if (this.currentBuild != null) {
                 returnedBuild = BuildUtil.getDownstreamBuild(proj, currentBuild);
@@ -168,19 +168,23 @@ public class PipelineBuild {
      * @throws URISyntaxException
      *             If the URI string constructed from the given components violates RFC 2396
      */
-    public String getBuildResultURL() throws URISyntaxException {
-        final StringBuffer resultURL = new StringBuffer();
-        final URI uri;
-        if (this.currentBuild != null) {
-            resultURL.append("/job/");
-            resultURL.append(this.currentBuild.getProject().getName());
-            resultURL.append('/');
-            resultURL.append(this.currentBuild.getNumber());
-            resultURL.append('/');
-            uri = new URI(null, null, resultURL.toString(), null);
-            return uri.toASCIIString();
-        } else {
-            return resultURL.append(getProjectURL()).toString();
+    public String getBuildResultURL() {
+        try {
+            final StringBuffer resultURL = new StringBuffer();
+            final URI uri;
+            if (this.currentBuild != null) {
+                resultURL.append("/job/");
+                resultURL.append(this.currentBuild.getProject().getName());
+                resultURL.append('/');
+                resultURL.append(this.currentBuild.getNumber());
+                resultURL.append('/');
+                uri = new URI(null, null, resultURL.toString(), null);
+                return uri.toASCIIString();
+            } else {
+                return resultURL.append(getProjectURL()).toString();
+            }
+        } catch (final URISyntaxException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -188,11 +192,13 @@ public class PipelineBuild {
      * Builds a URL of the current project
      * 
      * @return URL - of the project
-     * @throws URISyntaxException
-     *             If the URI string constructed from the given components violates RFC 2396
      */
-    public String getProjectURL() throws URISyntaxException {
-        return ProjectUtil.getProjectURL(this.getProject());
+    public String getProjectURL() {
+        try {
+            return ProjectUtil.getProjectURL(this.getProject());
+        } catch (final URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -229,7 +235,7 @@ public class PipelineBuild {
      *            - The build for which a result is requested.
      * @return - String representing the build result
      */
-    private String getBuildResult(AbstractBuild<?, ?> build) {
+    private String getBuildResult(final AbstractBuild<?, ?> build) {
         String buildResult;
         // If AbstractBuild exists determine its current status
         if (build != null) {
@@ -357,5 +363,4 @@ public class PipelineBuild {
         }
         return buildPermission;
     }
-
 }
