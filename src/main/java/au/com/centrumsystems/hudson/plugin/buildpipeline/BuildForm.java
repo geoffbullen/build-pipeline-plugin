@@ -3,19 +3,47 @@ package au.com.centrumsystems.hudson.plugin.buildpipeline;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author marcin
+ * 
+ *         Representation of a build results pipeline
+ * 
+ */
 public class BuildForm {
+    /**
+     * scn revision
+     */
     private final String revision;
+    /**
+     * build name
+     */
     private final String name;
+    /**
+     * status
+     */
     private final String status;
-    private final String URL;
+    /**
+     * url
+     */
+    private final String url;
+    /**
+     * duration
+     */
     private final String duration;
+    /**
+     * downstream builds
+     */
     private final List<BuildForm> dependencies;
 
+    /**
+     * @param pipelineBuild
+     *            pipeline build domain used to see the form
+     */
     public BuildForm(final PipelineBuild pipelineBuild) {
         name = pipelineBuild.getBuildDescription();
         status = pipelineBuild.getCurrentBuildResult();
         revision = pipelineBuild.getSVNRevisionNo();
-        URL = pipelineBuild.getBuildResultURL();
+        url = pipelineBuild.getBuildResultURL();
         duration = pipelineBuild.getBuildDuration();
         dependencies = new ArrayList<BuildForm>();
         for (final PipelineBuild downstream : pipelineBuild.getDownstreamPipeline()) {
@@ -23,11 +51,15 @@ public class BuildForm {
         }
     }
 
+    /**
+     * @param name
+     *            build name
+     */
     public BuildForm(final String name) {
         this.name = name;
         status = "";
         revision = "";
-        URL = "";
+        url = "";
         duration = "";
         dependencies = new ArrayList<BuildForm>();
     }
@@ -44,8 +76,8 @@ public class BuildForm {
         return revision;
     }
 
-    public String getURL() {
-        return URL;
+    public String getUrl() {
+        return url;
     }
 
     public String getDuration() {

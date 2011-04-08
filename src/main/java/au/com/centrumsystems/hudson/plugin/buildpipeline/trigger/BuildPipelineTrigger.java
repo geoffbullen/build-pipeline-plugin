@@ -131,7 +131,8 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
     }
 
     @Override
-    public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
+    public boolean perform(final AbstractBuild<?, ?> build, final Launcher launcher, final BuildListener listener)
+        throws InterruptedException, IOException {
         return true;
     }
 
@@ -144,7 +145,7 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
      *            - The new name of the project
      * @return - true: A downstream project has been renamed; false No downstream projects were renamed
      */
-    public boolean onDownstreamProjectRenamed(String oldName, String newName) {
+    public boolean onDownstreamProjectRenamed(final String oldName, final String newName) {
         boolean changed = false;
         final String[] existingDownstreamProjects = this.getDownstreamProjectNames().split(",");
         for (int i = 0; i < existingDownstreamProjects.length; i++) {
@@ -176,7 +177,7 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
      *            - Project to be deleted
      * @return - true; project deleted: false; project not deleted {@link #onDownstreamProjectRenamed(String, String)}
      */
-    public boolean onDownstreamProjectDeleted(String oldName) {
+    public boolean onDownstreamProjectDeleted(final String oldName) {
         return onDownstreamProjectRenamed(oldName, null);
     }
 
@@ -191,7 +192,7 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
     public static class DescriptorImpl extends BuildStepDescriptor<Publisher> {
 
         @Override
-        public boolean isApplicable(Class<? extends AbstractProject> jobType) {
+        public boolean isApplicable(final Class<? extends AbstractProject> jobType) {
             return true;
         }
 
@@ -216,7 +217,7 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
         }
 
         @Override
-        public Publisher newInstance(StaplerRequest req, JSONObject formData) throws FormException {
+        public Publisher newInstance(final StaplerRequest req, final JSONObject formData) throws FormException {
             return new BuildPipelineTrigger(formData.getString("downstreamProjectNames"));
         }
 
@@ -227,14 +228,14 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
          *            - The entered project names
          * @return hudson.util.FormValidation
          */
-        public FormValidation doCheckDownstreamProjectNames(@QueryParameter("downstreamProjectNames") String value) {
+        public FormValidation doCheckDownstreamProjectNames(@QueryParameter("downstreamProjectNames") final String value) {
             final StringTokenizer tokens = new StringTokenizer(Util.fixNull(value), ",");
             while (tokens.hasMoreTokens()) {
                 final String projectName = tokens.nextToken().trim();
                 final Item item = Hudson.getInstance().getItemByFullName(projectName, Item.class);
                 if (item == null) {
                     return FormValidation.error(Messages.BuildTrigger_NoSuchProject(projectName, AbstractProject.findNearest(projectName)
-                            .getName()));
+                        .getName()));
                 }
                 if (!(item instanceof AbstractProject)) {
                     return FormValidation.error(Messages.BuildTrigger_NotBuildable(projectName));
@@ -250,8 +251,8 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
         @Extension
         public static final class ItemListenerImpl extends ItemListener {
             @Override
-            public void onRenamed(Item item, String oldName, String newName) {
-                for (Project<?, ?> p : Hudson.getInstance().getProjects()) {
+            public void onRenamed(final Item item, final String oldName, final String newName) {
+                for (final Project<?, ?> p : Hudson.getInstance().getProjects()) {
                     final BuildPipelineTrigger bpTrigger = p.getPublishersList().get(BuildPipelineTrigger.class);
                     if (bpTrigger != null) {
                         boolean changed = false;
@@ -260,11 +261,11 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
                         if (changed) {
                             try {
                                 p.save();
-                            } catch (IOException e) {
+                            } catch (final IOException e) {
                                 Logger.getLogger(ItemListenerImpl.class.getName()).log(
-                                        Level.WARNING,
-                                        "Failed to persist project BuildPipelineTrigger setting during rename from " + oldName + " to "
-                                                + newName, e);
+                                    Level.WARNING,
+                                    "Failed to persist project BuildPipelineTrigger setting during rename from " + oldName + " to "
+                                        + newName, e);
                             }
                         }
                     }
@@ -272,8 +273,8 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
             }
 
             @Override
-            public void onDeleted(Item item) {
-                for (Project<?, ?> p : Hudson.getInstance().getProjects()) {
+            public void onDeleted(final Item item) {
+                for (final Project<?, ?> p : Hudson.getInstance().getProjects()) {
                     final String oldName = item.getName();
                     final BuildPipelineTrigger bpTrigger = p.getPublishersList().get(BuildPipelineTrigger.class);
                     if (bpTrigger != null) {
@@ -289,9 +290,9 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
                                     p.getPublishersList().remove(bpTrigger);
                                 }
                                 p.save();
-                            } catch (IOException e) {
+                            } catch (final IOException e) {
                                 Logger.getLogger(ItemListenerImpl.class.getName()).log(Level.WARNING,
-                                        "Failed to persist project BuildPipelineTrigger setting during remove of " + oldName, e);
+                                    "Failed to persist project BuildPipelineTrigger setting during remove of " + oldName, e);
                             }
                         }
                     }

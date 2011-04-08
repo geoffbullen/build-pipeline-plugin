@@ -165,8 +165,6 @@ public class PipelineBuild {
      * Build a URL of the currentBuild
      * 
      * @return URL of the currentBuild
-     * @throws URISyntaxException
-     *             If the URI string constructed from the given components violates RFC 2396
      */
     public String getBuildResultURL() {
         try {

@@ -106,7 +106,7 @@
 					<j:set var="project" type="au.com.centrumsystems.hudson.plugin.buildpipeline.ProjectForm" value="${projectGrid.get(x).get(y)}"/>
 						<j:if test="${project != null}">
 							<td class="PROJECT rounded">
-								<a href="${project.getURL()}" target="_blank">${project.getName()}</a>
+								<a href="${project.getUrl()}" target="_blank">${project.getName()}</a>
 								<div>
 									<span class="${project.getResult()}">
 										<img src="/images/24x24/blue.png" />
@@ -147,7 +147,7 @@
 							<j:if test="${build != null}">
 								<td align="center" valign="middle">
 									<div class="${build.getStatus()} rounded">
-										<a href="${build.getURL()}" target="_blank">
+										<a href="${build.getUrl()}" target="_blank">
 											<div>${build.getName()}</div>
 											<div>${build.getDuration()}</div>
 										</a>

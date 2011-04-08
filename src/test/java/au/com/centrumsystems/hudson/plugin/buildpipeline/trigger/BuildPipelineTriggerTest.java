@@ -31,18 +31,10 @@ import hudson.tasks.Publisher;
 import hudson.util.DescribableList;
 
 import java.io.IOException;
-import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.jvnet.hudson.test.HudsonTestCase;
-import org.xml.sax.SAXException;
-
-import com.gargoylesoftware.htmlunit.html.HtmlButton;
-import com.gargoylesoftware.htmlunit.html.HtmlForm;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.gargoylesoftware.htmlunit.html.HtmlRadioButtonInput;
-import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 
 /**
  * BuildPipelineTrigger test class
@@ -51,9 +43,6 @@ import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
  * 
  */
 public class BuildPipelineTriggerTest extends HudsonTestCase {
-
-    private static final String BUILD_PIPELINE_PLUGIN_NAME = "au-com-centrumsystems-hudson-plugin-buildpipeline-trigger-BuildPipelineTrigger";
-    private static final String CREATE_NEW_JOB_PAGE = "../view/All/newJob";
 
     @Override
     @Before
@@ -64,24 +53,24 @@ public class BuildPipelineTriggerTest extends HudsonTestCase {
     @Test(expected = IllegalArgumentException.class)
     public void testInvalidConstructor() {
         try {
-            BuildPipelineTrigger bp = new BuildPipelineTrigger(null);
+            new BuildPipelineTrigger(null);
             fail("An IllegalArgumentException should have been thrown.");
-        } catch (IllegalArgumentException e) {
+        } catch (final IllegalArgumentException e) {
 
         }
     }
 
     @Test
     public void testBuildPipelineTrigger() throws IOException {
-        String proj1 = "Proj1";
-        String proj2 = "Proj2";
-        FreeStyleProject project1 = createFreeStyleProject(proj1);
+        final String proj1 = "Proj1";
+        final String proj2 = "Proj2";
+        final FreeStyleProject project1 = createFreeStyleProject(proj1);
         // Add TEST_PROJECT2 as a post build action: build other project
         project1.getPublishersList().add(new BuildPipelineTrigger(proj2));
         // Important; we must do this step to ensure that the dependency graphs are updated
         Hudson.getInstance().rebuildDependencyGraph();
 
-        BuildPipelineTrigger myBPTrigger = new BuildPipelineTrigger(proj1);
+        final BuildPipelineTrigger myBPTrigger = new BuildPipelineTrigger(proj1);
 
         assertNotNull("A valid BuildPipelineTrigger should have been created.", myBPTrigger);
 
@@ -90,10 +79,10 @@ public class BuildPipelineTriggerTest extends HudsonTestCase {
 
     @Test
     public void testOnDownstreamProjectRenamed() throws IOException {
-        String proj1 = "Proj1";
-        String proj2 = "Proj2";
-        String proj3 = "Proj3";
-        BuildPipelineTrigger bpTrigger = new BuildPipelineTrigger(proj1);
+        final String proj1 = "Proj1";
+        final String proj2 = "Proj2";
+        final String proj3 = "Proj3";
+        final BuildPipelineTrigger bpTrigger = new BuildPipelineTrigger(proj1);
         bpTrigger.setDownstreamProjectNames(proj2 + ", " + proj3);
         assertTrue(bpTrigger.onDownstreamProjectRenamed(proj2, proj2 + "NEW"));
 
@@ -102,10 +91,10 @@ public class BuildPipelineTriggerTest extends HudsonTestCase {
 
     @Test
     public void testOnDownstreamProjectDeleted() {
-        String proj1 = "Proj1";
-        String proj2 = "Proj2";
-        String proj3 = "Proj3";
-        BuildPipelineTrigger bpTrigger = new BuildPipelineTrigger(proj1);
+        final String proj1 = "Proj1";
+        final String proj2 = "Proj2";
+        final String proj3 = "Proj3";
+        final BuildPipelineTrigger bpTrigger = new BuildPipelineTrigger(proj1);
         bpTrigger.setDownstreamProjectNames(proj2 + ", " + proj3);
         assertTrue(bpTrigger.onDownstreamProjectDeleted(proj2));
 
@@ -114,11 +103,11 @@ public class BuildPipelineTriggerTest extends HudsonTestCase {
 
     @Test
     public void testOnRenamed() throws IOException {
-        String proj1 = "Proj1";
-        String proj2 = "Proj2";
-        String proj3 = "Proj3";
-        FreeStyleProject project1 = createFreeStyleProject(proj1);
-        FreeStyleProject project2 = createFreeStyleProject(proj2);
+        final String proj1 = "Proj1";
+        final String proj2 = "Proj2";
+        final String proj3 = "Proj3";
+        final FreeStyleProject project1 = createFreeStyleProject(proj1);
+        final FreeStyleProject project2 = createFreeStyleProject(proj2);
         project1.getPublishersList().add(new BuildPipelineTrigger(proj2 + "," + proj3));
         Hudson.getInstance().rebuildDependencyGraph();
 
@@ -135,11 +124,11 @@ public class BuildPipelineTriggerTest extends HudsonTestCase {
 
     @Test
     public void testOnDeleted() throws IOException, InterruptedException {
-        String proj1 = "Proj1";
-        String proj2 = "Proj2";
-        String proj3 = "Proj3";
-        FreeStyleProject project1 = createFreeStyleProject(proj1);
-        FreeStyleProject project2 = createFreeStyleProject(proj2);
+        final String proj1 = "Proj1";
+        final String proj2 = "Proj2";
+        final String proj3 = "Proj3";
+        final FreeStyleProject project1 = createFreeStyleProject(proj1);
+        final FreeStyleProject project2 = createFreeStyleProject(proj2);
         project1.getPublishersList().add(new BuildPipelineTrigger(proj2 + "," + proj3));
         Hudson.getInstance().rebuildDependencyGraph();
 
@@ -152,36 +141,6 @@ public class BuildPipelineTriggerTest extends HudsonTestCase {
                 assertEquals(proj3, manualDownstreamProjects);
             }
         }
-    }
-
-    private HtmlPage createNewFreeStyleProjectHtmlPage(String newProjectName) throws SAXException, IOException {
-
-        final HtmlPage testProjectConfigurePage = new WebClient().goTo(CREATE_NEW_JOB_PAGE);
-
-        HtmlForm createNewJobForm = null;
-        // Retrieve the New Job form
-        List<HtmlForm> formsList = testProjectConfigurePage.getForms();
-        for (HtmlForm currentForm : formsList) {
-            if (currentForm.getActionAttribute().equalsIgnoreCase("createItem")) {
-                createNewJobForm = currentForm;
-                break;
-            }
-        }
-
-        // Enter the New Job Name
-        final HtmlTextInput newJobName = (HtmlTextInput) testProjectConfigurePage.getElementById("name");
-        newJobName.setAttribute("value", newProjectName);
-        newJobName.click();
-
-        // Select a Free Style Job
-        final HtmlRadioButtonInput freeStyleProjectRadioButton = testProjectConfigurePage.getElementByName("mode");
-        freeStyleProjectRadioButton.setChecked(true);
-        freeStyleProjectRadioButton.click();
-
-        final HtmlButton createNewJobButton = (HtmlButton) last(createNewJobForm.getHtmlElementsByTagName("button"));
-        createNewJobButton.removeAttribute("disabled");
-
-        return (HtmlPage) createNewJobForm.submit(createNewJobButton);
     }
 
 }

@@ -5,11 +5,31 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author marcinp
+ * 
+ *         Representation of the projects and their related builds making up the build pipeline view
+ * 
+ */
 public class BuildPipelineForm {
 
+    /**
+     * projects laid out in a grid using maps to ease accessing (or maybe I made it way too complicated by not using a 2-dimensional array)
+     * Outside map holds rows and inner map has ProjectForm at a particular position (defined with key)
+     */
     private final Map<Integer, Map<Integer, ProjectForm>> projectGrid;
+    /**
+     * a list of maps of map represents build pipelines laid out in grids, similar to projectGrid, but we have many of these grids
+     */
     private final List<Map<Integer, Map<Integer, BuildForm>>> buildGrids;
 
+    /**
+     * 
+     * @param projectForm
+     *            Project to be laid out in a grid
+     * @param buildForms
+     *            builds to be laid out in a grid
+     */
     public BuildPipelineForm(final ProjectForm projectForm, final BuildForm... buildForms) {
         projectGrid = new HashMap<Integer, Map<Integer, ProjectForm>>();
         // recurse through projects and dependencies and place them in grid
@@ -28,10 +48,28 @@ public class BuildPipelineForm {
         }
     }
 
-    public BuildPipelineForm(final ProjectForm projectForm, final List<BuildForm> buildPipeForms) {
-        this(projectForm, buildPipeForms.toArray(new BuildForm[buildPipeForms.size()]));
+    /**
+     * 
+     * @param projectForm
+     *            Project to be laid out in a grid
+     * @param buildForms
+     *            builds to be laid out in a grid
+     */
+    public BuildPipelineForm(final ProjectForm projectForm, final List<BuildForm> buildForms) {
+        this(projectForm, buildForms.toArray(new BuildForm[buildForms.size()]));
     }
 
+    /**
+     * Function called recursively to place a project form in a grid
+     * 
+     * @param startingRow
+     *            project will be placed in the starting row and 1st child as well. Each subsequent child will be placed in a row below the
+     *            previous.
+     * @param startingColumn
+     *            project will be placed in starting column. All children will be placed in next column.
+     * @param projectForm
+     *            project to be placed
+     */
     private void placeProjectInGrid(final int startingRow, final int startingColumn, final ProjectForm projectForm) {
         int row = startingRow;
         if (projectGrid.get(row) == null) {
@@ -45,6 +83,19 @@ public class BuildPipelineForm {
         }
     }
 
+    /**
+     * Function called recursively to place a build form in a grid
+     * 
+     * @param startingRow
+     *            build will be placed in the starting row and 1st child as well. Each subsequent child will be placed in a row below the
+     *            previous.
+     * @param startingColumn
+     *            build will be placed in starting column. All children will be placed in next column.
+     * @param buildForm
+     *            build to be placed
+     * @param buildGrid
+     *            build grid to place build in
+     */
     private void placeBuildInGrid(final int startingRow, final int startingColumn, final BuildForm buildForm,
             final Map<Integer, Map<Integer, BuildForm>> buildGrid) {
         int row = startingRow;
@@ -63,6 +114,11 @@ public class BuildPipelineForm {
         return projectGrid;
     }
 
+    /**
+     * grid width is the longest column map counting empties (keys represent position, so they are used to determine width)
+     * 
+     * @return width
+     */
     public Integer getGridWidth() {
         int maxHeight = 0;
         for (final Integer key : projectGrid.keySet()) {

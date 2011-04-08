@@ -5,21 +5,50 @@ import hudson.model.AbstractProject;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author marcin
+ * 
+ *         Representation of a set of projects
+ * 
+ */
 public class ProjectForm {
+    /**
+     * project name
+     */
     private final String name;
+    /**
+     * last build result
+     */
     private final String result;
+    /**
+     * overall health
+     */
     private final String health;
-    private final String URL;
+    /**
+     * project url
+     */
+    private final String url;
+    /**
+     * downstream projects
+     */
     private final List<ProjectForm> dependencies;
 
+    /**
+     * @param name
+     *            project name
+     */
     public ProjectForm(final String name) {
         this.name = name;
         result = "";
         health = "";
-        URL = "";
+        url = "";
         dependencies = new ArrayList<ProjectForm>();
     }
 
+    /**
+     * @param project
+     *            project
+     */
     public ProjectForm(final AbstractProject<?, ?> project) {
 
         final PipelineBuild pipelineBuild = new PipelineBuild(project.getLastBuild(), project, null);
@@ -27,7 +56,7 @@ public class ProjectForm {
         name = pipelineBuild.getProject().getName();
         result = pipelineBuild.getCurrentBuildResult();
         health = pipelineBuild.getUpstreamBuildResult();
-        URL = pipelineBuild.getProjectURL();
+        url = pipelineBuild.getProjectURL();
         dependencies = new ArrayList<ProjectForm>();
         for (final AbstractProject<?, ?> dependency : project.getDownstreamProjects()) {
             dependencies.add(new ProjectForm(dependency));
@@ -47,8 +76,8 @@ public class ProjectForm {
         return result;
     }
 
-    public String getURL() {
-        return URL;
+    public String getUrl() {
+        return url;
     }
 
     public List<ProjectForm> getDependencies() {
