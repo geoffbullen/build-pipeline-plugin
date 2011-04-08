@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author marcin
+ * @author marcinp
  * 
  *         Representation of a build results pipeline
  * 
@@ -13,27 +13,47 @@ public class BuildForm {
     /**
      * scn revision
      */
-    private final String revision;
+    private String revision = "";
     /**
      * build name
      */
-    private final String name;
+    private String name = "";
     /**
      * status
      */
-    private final String status;
+    private String status = "";
     /**
      * url
      */
-    private final String url;
+    private String url = "";
     /**
      * duration
      */
-    private final String duration;
+    private String duration = "";
+
+    /**
+     * upstream project
+     */
+    private String upstreamProjectName = "";
+
+    /**
+     * upstream build number
+     */
+    private String upstreamBuildNumber = "";
+
+    /**
+     * project name
+     */
+    private String projectName = "";
+
+    /**
+     * indicates if it is a build that needs to be triggered manually
+     */
+    private boolean manual;
     /**
      * downstream builds
      */
-    private final List<BuildForm> dependencies;
+    private List<BuildForm> dependencies = new ArrayList<BuildForm>();
 
     /**
      * @param pipelineBuild
@@ -45,6 +65,18 @@ public class BuildForm {
         revision = pipelineBuild.getSVNRevisionNo();
         url = pipelineBuild.getBuildResultURL();
         duration = pipelineBuild.getBuildDuration();
+        manual = pipelineBuild.isManual();
+
+        if (pipelineBuild.getUpstreamPipelineBuild() != null) {
+            if (pipelineBuild.getUpstreamPipelineBuild().getProject() != null) {
+                projectName = pipelineBuild.getProject().getName();
+                upstreamProjectName = pipelineBuild.getUpstreamPipelineBuild().getProject().getName();
+            }
+            if (pipelineBuild.getUpstreamBuild() != null) {
+                upstreamBuildNumber = String.valueOf(pipelineBuild.getUpstreamBuild().getNumber());
+            }
+        }
+
         dependencies = new ArrayList<BuildForm>();
         for (final PipelineBuild downstream : pipelineBuild.getDownstreamPipeline()) {
             dependencies.add(new BuildForm(downstream));
@@ -57,10 +89,6 @@ public class BuildForm {
      */
     public BuildForm(final String name) {
         this.name = name;
-        status = "";
-        revision = "";
-        url = "";
-        duration = "";
         dependencies = new ArrayList<BuildForm>();
     }
 
@@ -82,6 +110,22 @@ public class BuildForm {
 
     public String getDuration() {
         return duration;
+    }
+
+    public boolean isManual() {
+        return manual;
+    }
+
+    public String getProjectName() {
+        return projectName;
+    }
+
+    public String getUpstreamBuildNumber() {
+        return upstreamBuildNumber;
+    }
+
+    public String getUpstreamProjectName() {
+        return upstreamProjectName;
     }
 
     public List<BuildForm> getDependencies() {

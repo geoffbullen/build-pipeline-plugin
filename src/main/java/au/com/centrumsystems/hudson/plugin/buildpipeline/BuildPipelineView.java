@@ -194,7 +194,7 @@ public class BuildPipelineView extends View {
      * @throws URISyntaxException
      *             {@link URISyntaxException}
      */
-    public BuildPipelineForm getBuildPipelineHTML() throws URISyntaxException {
+    public BuildPipelineForm getBuildPipelineForm() throws URISyntaxException {
         final AbstractProject<?, ?> project = getSelectedProject();
         BuildPipelineForm buildPipelineForm = null;
         if (project != null) {
@@ -276,7 +276,7 @@ public class BuildPipelineView extends View {
         final UserCause userInvokedCause = new UserCause();
 
         getSelectedProject().scheduleBuild(getSelectedProject().getQuietPeriod(), userInvokedCause,
-                buildActions.toArray(new Action[buildActions.size()]));
+            buildActions.toArray(new Action[buildActions.size()]));
 
     }
 

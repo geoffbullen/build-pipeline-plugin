@@ -55,7 +55,7 @@ public class ProjectForm {
 
         name = pipelineBuild.getProject().getName();
         result = pipelineBuild.getCurrentBuildResult();
-        health = pipelineBuild.getUpstreamBuildResult();
+        health = pipelineBuild.getProject().getBuildHealth().getIconUrl().replaceAll("\\.gif", "\\.png");
         url = pipelineBuild.getProjectURL();
         dependencies = new ArrayList<ProjectForm>();
         for (final AbstractProject<?, ?> dependency : project.getDownstreamProjects()) {

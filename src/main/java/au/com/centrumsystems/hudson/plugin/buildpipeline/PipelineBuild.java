@@ -116,7 +116,7 @@ public class PipelineBuild {
      */
     public AbstractProject<?, ?> getProject() {
         final AbstractProject<?, ?> currentProject;
-        if (this.project == null) {
+        if (this.project == null && this.currentBuild != null) {
             currentProject = this.currentBuild.getProject();
         } else {
             currentProject = this.project;
@@ -335,7 +335,7 @@ public class PipelineBuild {
             if (this.currentBuild != null) {
                 final EnvVars environmentVars = this.currentBuild.getEnvironment(null);
                 if (environmentVars.get("SVN_REVISION") != null) {
-                    revNo = environmentVars.get("SVN_REVISION");
+                    revNo = "SVN revision: " + environmentVars.get("SVN_REVISION");
                 }
             }
         } catch (final Exception e) {
@@ -360,5 +360,9 @@ public class PipelineBuild {
             buildPermission = this.project.hasPermission(Item.BUILD);
         }
         return buildPermission;
+    }
+
+    public boolean isManual() {
+        return getCurrentBuildResult().equals(HudsonResult.MANUAL.toString());
     }
 }
