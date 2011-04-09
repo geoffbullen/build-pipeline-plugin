@@ -9,24 +9,6 @@
 	background: rgba(6, 72, 131, 0.1);
 }
 
-.build-pipeline {
-	background-color: #5dbc61;
-	border-radius: 10px;
-	-moz-border-radius: 10px;
-	-webkit-border-radius: 10px;
-	padding: 10px;
-	margin: 3px;
-}
-
-.project-pipeline {
-	background: rgba(252, 175, 62, 0.9);
-	border-radius: 10px;
-	-moz-border-radius: 10px;
-	-webkit-border-radius: 10px;
-	padding: 10px;
-	margin: 3px;
-}
-
 .projectHeading {
 	font-size: 12px;
 	font-weight: bold;
@@ -34,6 +16,7 @@
 
 .rounded {
 	height: 60px;
+	width: 100px;
 	opacity: 0.9;
 	-moz-opacity: 0.9;
 	-webkit-opacity: 0.9;
@@ -41,27 +24,63 @@
 	-moz-border-radius: 4px;
 	-webkit-border-radius: 4px;
 	padding: 4px;
-	text-align: center;
-	vertical-align: middle;
 	font-size: 10px;
 	color: #444;
 	font-weight: bold;
-	behavior: url(/plugin/build-pipeline-plugin/css/PIE.htc);
+	margin-left: auto;
+	margin-right: auto;
 }
 
-div.cell {
-	display: table-cell;
-	width: 100px;
+#pipelines {
+	width: 100%;
+	text-align: center;
+	border-collapse: collapse;
 }
 
-div.row {
-	margin-top: 3px;
+#legendView td {
+	vertical-align: middle;
+	text-align: center;
 }
 
-div.next {
-	display: table-cell;
+td.next {
 	width: 40px;
 	vertical-align: middle;
+}
+
+tr.build-pipeline {
+	background-color: #fcae3f;
+}
+
+tr.build-pipeline td {
+	padding: 4px;
+}
+
+tr.build-pipeline td.top-left {
+	border-radius: 4px 0px 0px 0px;
+	-moz-border-radius: 4px 0px 0px 0px;
+	-webkit-border-radius: 4px 0px 0px 0px;
+}
+
+tr.build-pipeline td.top-right {
+	border-radius: 0px 4px 0px 0px;
+	-moz-border-radius: 0px 4px 0px 0px;
+	-webkit-border-radius: 0px 4px 0px 0px;
+}
+
+tr.build-pipeline td.bottom-right {
+	border-radius: 0px 0px 4px 0px;
+	-moz-border-radius: 0px 0px 4px 0px;
+	-webkit-border-radius: 0px 0px 4px 0px;
+}
+
+tr.build-pipeline td.bottom-left {
+	border-radius: 0px 0px 0px 4px;
+	-moz-border-radius: 0px 0px 0px 4px;
+	-webkit-border-radius: 0px 0px 0px 4px;
+}
+
+tr.spacerRow {
+	height: 10px;
 }
 
 .legend {
@@ -71,9 +90,9 @@ div.next {
 }
 
 .revision {
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#5d7ba0', endColorstr='#8b8989'); /* for IE */
-	background: -webkit-gradient(linear, left top, right bottom, from(#5d7ba0), to(#8b8989)); /* for webkit browsers */
-	background: -moz-linear-gradient(left top 315deg,  #5d7ba0,  #8b8989); /* for firefox 3.6+ */ 
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#aba8a8', endColorstr='#8b8989'); /* for IE */
+	background: -webkit-gradient(linear, left top, right bottom, from(#aba8a8), to(#8b8989)); /* for webkit browsers */
+	background: -moz-linear-gradient(left top 315deg,  #aba8a8,  #8b8989); /* for firefox 3.6+ */ 
 }
 
 span.status {
@@ -88,18 +107,17 @@ span.next {
 	background:url("/images/24x24/next.png") no-repeat center center;
 }
 
-.SUCCESS {
-	color: white;
+.build-pipeline .SUCCESS, #legendView .SUCCESS {
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#4e74a4', endColorstr='#3465a4'); /* for IE */
 	background: -webkit-gradient(linear, left top, right bottom, from(#4e74a4), to(#3465a4)); /* for webkit browsers */
 	background: -moz-linear-gradient(left top 315deg,  #4e74a4,  #3465a4); /* for firefox 3.6+ */ 
 }
 
 span.SUCCESS {
-	background:url("/images/24x24/blue.png") no-repeat center center;
+	background:url("/images/24x24/blue.png") no-repeat center center !important;
 }
 
-.FAILURE {
+.build-pipeline .FAILURE, #legendView .FAILURE {
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ef6868', endColorstr='#ef2929'); /* for IE */
 	background: -webkit-gradient(linear, left top, right bottom, from(#ef6868), to(#ef2929)); /* for webkit browsers */
 	background: -moz-linear-gradient(left top 315deg,  #ef6868,  #ef2929); /* for firefox 3.6+ */ 
@@ -109,7 +127,7 @@ span.FAILURE {
 	background:url("/images/24x24/red.png") no-repeat center center;
 }
 
-.UNSTABLE {
+.build-pipeline .UNSTABLE, #legendView .UNSTABLE {
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f9e275', endColorstr='#fcd116'); /* for IE */
 	background: -webkit-gradient(linear, left top, right bottom, from(#f9e275), to(#fcd116)); /* for webkit browsers */
 	background: -moz-linear-gradient(left top 315deg,  #f9e275,  #fcd116); /* for firefox 3.6+ */ 
@@ -119,7 +137,7 @@ span.UNSTABLE {
 	background:url("/images/24x24/yellow.png") no-repeat center center;
 }
 
-.BUILDING {
+.build-pipeline .BUILDING, #legendView .BUILDING {
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffcc', endColorstr='#f7f94b'); /* for IE */
 	background: -webkit-gradient(linear, left top, right bottom, from(#ffffcc), to(#f7f94b)); /* for webkit browsers */
 	background: -moz-linear-gradient(left top 315deg,  #ffffcc,  #f7f94b); /* for firefox 3.6+ */ 
@@ -129,7 +147,7 @@ span.BUILDING {
 	background:url("/images/24x24/blue_anime.gif") no-repeat center center;
 }
 
-.NOT_BUILT {
+.build-pipeline .NOT_BUILT, #legendView .NOT_BUILT {
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffcc', endColorstr='#f7f94b'); /* for IE */
 	background: -webkit-gradient(linear, left top, right bottom, from(#ffffcc), to(#f7f94b)); /* for webkit browsers */
 	background: -moz-linear-gradient(left top 315deg,  #ffffcc,  #f7f94b); /* for firefox 3.6+ */ 
@@ -139,7 +157,7 @@ span.NOT_BUILT {
 	background:url("/images/24x24/blue_anime.gif") no-repeat center center;
 }
 
-.ABORT {
+.build-pipeline .ABORT, #legendView .ABORT {
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#dcdcdc', endColorstr='#bab4b4'); /* for IE */
 	background: -webkit-gradient(linear, left top, right bottom, from(#dcdcdc), to(#bab4b4)); /* for webkit browsers */
 	background: -moz-linear-gradient(left top 315deg,  #dcdcdc,  #bab4b4); /* for firefox 3.6+ */ 
@@ -149,7 +167,7 @@ span.ABORT {
 	background:url("/images/24x24/grey.png") no-repeat center center;
 }
 
-.PENDING {
+.build-pipeline .PENDING, #legendView .PENDING {
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#96e6fa', endColorstr='#00ccff'); /* for IE */
 	background: -webkit-gradient(linear, left top, right bottom, from(#96e6fa), to(#00ccff)); /* for webkit browsers */
 	background: -moz-linear-gradient(left top 315deg,  #96e6fa,  #00ccff); /* for firefox 3.6+ */ 
@@ -159,7 +177,7 @@ span.PENDING {
 	background:url("/images/24x24/health-80plus.png") no-repeat center center;
 }
 
-.MANUAL {
+.build-pipeline .MANUAL, #legendView .MANUAL {
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#96e6fa', endColorstr='#00ccff'); /* for IE */
 	background: -webkit-gradient(linear, left top, right bottom, from(#96e6fa), to(#00ccff)); /* for webkit browsers */
 	background: -moz-linear-gradient(left top 315deg,  #96e6fa,  #00ccff); /* for firefox 3.6+ */
@@ -170,6 +188,7 @@ span.PENDING {
 }
 
 .PROJECT {
+	background-color: #aba8a8;
 	font-size: 12px;
 	font-weight: bold;
 }

@@ -111,60 +111,63 @@
 			</j:if>
 	
 		 	<j:set var="buildPipelineForm" type="au.com.centrumsystems.hudson.plugin.buildpipeline.BuildPipelineForm" value="${from.getBuildPipelineForm()}"/>
-			<div id="pipelines">
+			<table id="pipelines">
 				<j:set var="projectGrid" value="${buildPipelineForm.getProjectGrid()}"/>
 				<!-- projects -->
-				<div class="project-pipeline">
+				<tbody>
 					<j:forEach begin="${0}" end="${buildPipelineForm.getGridHeight() - 1}" indexVar="x">
-						<div class="row">
+						<tr id='project-pipeline'>
 							<!-- 1st cell empty, that's where revision will go for the builds -->
-							<div class="cell"></div>
-							<div class="next"></div>
+							<td></td>
+							<td class="next"></td>
 							<j:forEach begin="${0}" end="${buildPipelineForm.getGridWidth() - 1}" indexVar="y">
 							<j:set var="project" type="au.com.centrumsystems.hudson.plugin.buildpipeline.ProjectForm" value="${projectGrid.get(x).get(y)}"/>
 								<j:if test="${project != null}">
-									<div class="cell">
-										<div class="PROJECT legend rounded">
+									<td>
+										<div class="PROJECT rounded">
 											<a href="${project.getUrl()}" target="_blank">${project.getName()}</a>
 											<div>
 												<span class="status ${project.getResult()}"></span>
 												<img src="${rootURL}/images/24x24/${project.getHealth()}" />
 											</div>
 										</div>
-									</div>
+									</td>
 									<j:if test="${(y + 1 != buildPipelineForm.getGridWidth())}">
-										<div class="next">
+										<td class="next">
 											<j:if test="${!project.getDependencies().isEmpty()}">
 												<span class="status next" />
 											</j:if>
-										</div>
+										</td>
 									</j:if>
 								</j:if>
 								<j:if test="${project == null}">
-									<div class="cell"></div>
+									<td></td>
 									<j:if test="${y + 1 != buildPipelineForm.getGridWidth()}">
-										<div class="next"></div>
+										<j:set var="nextIndex" value="${y + 1}"/>
+											<td class="next">
+												<j:if test="${projectGrid.get(x).containsKey(nextIndex.intValue())}">
+													<span class="status next" />
+												</j:if>
+											</td>
 									</j:if>
 								</j:if>
 							</j:forEach>
-						</div>
+						</tr>
 					</j:forEach>
-				</div>
-				<!-- builds -->
-				<j:forEach items="${buildPipelineForm.getBuildGrids()}" var="buildGrid">
-					<div class="build-pipeline">
+					<!-- builds -->
+					<j:forEach items="${buildPipelineForm.getBuildGrids()}" var="buildGrid">
 						<j:forEach begin="${0}" end="${buildGrid.keySet().size() - 1}" indexVar="x">
-							<div class="row">
-								<div class="cell">
+							<tr class='build-pipeline'>
+								<td class='${x == 0 ? "top-left" : ""} ${x == buildPipelineForm.getGridHeight() - 1 ? "bottom-left" : ""}'>
 									<j:if test="${x == 0}">
 										<div class="revision rounded">${buildGrid.get(x).get(buildGrid.get(x).keySet().iterator().next()).getRevision()}</div>
 									</j:if>
-								</div>
-								<div class="next"></div>
+								</td>
+								<td class="next"></td>
 								<j:forEach begin="${0}" end="${buildPipelineForm.getGridWidth() - 1}" indexVar="y">
 								<j:set var="build" type="au.com.centrumsystems.hudson.plugin.buildpipeline.BuildForm" value="${buildGrid.get(x).get(y)}"/>
 									<j:if test="${build != null}">
-										<div class="cell">
+										<td class='${!(x != 0 || y != buildPipelineForm.getGridWidth() - 1) ? "top-right" : ""} ${!(x != buildPipelineForm.getGridHeight() - 1 || y != buildPipelineForm.getGridWidth() - 1) ? "bottom-right" : ""}'>
 											<div class="${build.getStatus()} rounded">
 												<a href="${build.getUrl()}" target="_blank">
 													<div>${build.getName()}</div>
@@ -174,32 +177,35 @@
 													<button class="triggerButton" onclick="triggerBuild('${build.getUpstreamProjectName()}', '${build.getUpstreamBuildNumber()}', '${build.getProjectName()}')">Trigger</button>
 												</j:if>
 											</div>
-										</div>
+										</td>
 										<j:if test="${(y + 1 != buildPipelineForm.getGridWidth())}">
-											<div class="next">
+											<td class="next">
 												<j:if test="${!build.getDependencies().isEmpty()}">
 													<span class="status next" />	
 												</j:if>
-											</div>
+											</td>
 										</j:if>
 									</j:if>
 									<j:if test="${build == null}">
-										<div class="cell"></div>
+										<td class='${!(x != 0 || y != buildPipelineForm.getGridWidth() - 1) ? "top-right" : ""} ${!(x != buildPipelineForm.getGridHeight() - 1 || y != buildPipelineForm.getGridWidth() - 1) ? "bottom-right" : ""}'></td>
 										<j:if test="${y + 1 != buildPipelineForm.getGridWidth()}">
 											<j:set var="nextIndex" value="${y + 1}"/>
-											<div class="next">
+											<td class="next">
 												<j:if test="${buildGrid.get(x).containsKey(nextIndex.intValue())}">
 													<span class="status next" />
 												</j:if>
-											</div>
+											</td>
 										</j:if>
 									</j:if>
 								</j:forEach>
-							</div>
+							</tr>
 						</j:forEach>
-					</div>
-				</j:forEach>
-			</div>			
+						<tr class="spacerRow">
+							<td colspan="${(buildPipelineForm.getGridWidth() + 1) * 2 - 1}" />
+						</tr>
+					</j:forEach>
+				</tbody>
+			</table>			
 		</div>
 	</form>
 	
