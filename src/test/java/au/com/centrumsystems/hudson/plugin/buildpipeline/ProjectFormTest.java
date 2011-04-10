@@ -35,7 +35,7 @@ public class ProjectFormTest extends HudsonTestCase {
         assertEquals(project1.getName(), pf.getName());
         assertEquals(pb.getCurrentBuildResult(), pf.getResult());
         assertEquals(pb.getProjectURL(), pf.getUrl());
-        assertEquals(pb.getUpstreamBuildResult(), pf.getHealth());
+        assertEquals(pb.getProject().getBuildHealth().getIconUrl().replaceAll("\\.gif", "\\.png"), pf.getHealth());
         assertThat(pf.getDependencies().get(0).getName(), is(project2.getName()));
     }
 
