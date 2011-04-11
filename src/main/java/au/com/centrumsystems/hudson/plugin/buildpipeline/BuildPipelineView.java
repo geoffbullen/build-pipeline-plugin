@@ -202,7 +202,7 @@ public class BuildPipelineView extends View {
             int rowsAppended = 0;
             final List<BuildForm> buildForms = new ArrayList<BuildForm>();
             for (final AbstractBuild<?, ?> currentBuild : project.getBuilds()) {
-                buildForms.add(new BuildForm(new PipelineBuild(currentBuild, null, null)));
+                buildForms.add(new BuildForm(new PipelineBuild(currentBuild, project, null)));
                 rowsAppended++;
                 if (rowsAppended >= maxNoOfDisplayBuilds) {
                     break;

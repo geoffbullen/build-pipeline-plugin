@@ -33,7 +33,6 @@
 		<div id="build-pipeline-plugin-content">
 			<div><h1>Build Pipeline View: ${from.getBuildViewTitle()}</h1></div>
 			<div>${from.getDescription()}</div>
-			<br/>
 			
 			<!-- If the user has the Configure View permission include a hyperlink to configure this view.-->
 			<j:if test="${from.hasConfigurePermission()}">
@@ -134,7 +133,9 @@
 								<j:if test="${(y + 1 != buildPipelineForm.getGridWidth())}">
 									<td class="next">
 										<j:if test="${!project.getDependencies().isEmpty()}">
-											<span class="status next" />
+											<span class="status next">
+												<img src="${rootURL}/images/24x24/next.png" />
+											</span>
 										</j:if>
 									</td>
 								</j:if>
@@ -145,7 +146,9 @@
 									<j:set var="nextIndex" value="${y + 1}"/>
 										<td class="next">
 											<j:if test="${projectGrid.get(x).containsKey(nextIndex.intValue())}">
-												<span class="status next" />
+												<span class="status next">
+													<img src="${rootURL}/images/24x24/next.png" />
+												</span>
 											</j:if>
 										</td>
 								</j:if>
@@ -160,7 +163,7 @@
 							<tr class='build-pipeline'>
 								<td>
 									<j:if test="${x == 0}">
-										<div class="revision rounded">${buildGrid.get(x).get(buildGrid.get(x).keySet().iterator().next()).getRevision()}</div>
+										<div class="revision rounded">${buildGrid.get(x).get(0).getRevision()}</div>
 									</j:if>
 								</td>
 								<td class="next"></td>
@@ -181,7 +184,9 @@
 										<j:if test="${(y + 1 != buildPipelineForm.getGridWidth())}">
 											<td class="next">
 												<j:if test="${!build.getDependencies().isEmpty()}">
-													<span class="status next" />	
+													<span class="status next">
+														<img src="${rootURL}/images/24x24/next.png" />
+													</span>
 												</j:if>
 											</td>
 										</j:if>
@@ -192,7 +197,9 @@
 											<j:set var="nextIndex" value="${y + 1}"/>
 											<td class="next">
 												<j:if test="${buildGrid.get(x).containsKey(nextIndex.intValue())}">
-													<span class="status next" />
+													<span class="status next">
+														<img src="${rootURL}/images/24x24/next.png" />
+													</span>
 												</j:if>
 											</td>
 										</j:if>

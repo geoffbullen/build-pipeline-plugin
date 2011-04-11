@@ -24,17 +24,27 @@
  */
 package au.com.centrumsystems.hudson.plugin.buildpipeline;
 
-import hudson.EnvVars;
 import hudson.model.Item;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.Hudson;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONException;
+import net.sf.json.JSONObject;
+import net.sf.json.JSONSerializer;
+
+import org.apache.commons.io.IOUtils;
 
 import au.com.centrumsystems.hudson.plugin.util.BuildUtil;
 import au.com.centrumsystems.hudson.plugin.util.HudsonResult;
@@ -331,17 +341,102 @@ public class PipelineBuild {
      */
     public String getSVNRevisionNo() {
         String revNo = "No Revision";
-        try {
-            if (this.currentBuild != null) {
-                final EnvVars environmentVars = this.currentBuild.getEnvironment(null);
-                if (environmentVars.get("SVN_REVISION") != null) {
-                    revNo = "SVN revision: " + environmentVars.get("SVN_REVISION");
+        if (currentBuild != null) {
+            if ("hudson.scm.SubversionSCM".equals(project.getScm().getType())) {
+                final String svnNo = svnNo();
+                if (svnNo != null) {
+                    revNo = svnNo;
+                }
+            } else if ("hudson.plugins.git.GitSCM".equals(project.getScm().getType())) {
+                final String gitNo = gitNo();
+                if (gitNo != null) {
+                    revNo = gitNo;
                 }
             }
-        } catch (final Exception e) {
-            LOGGER.info(e.toString());
         }
         return revNo;
+    }
+
+    /**
+     * Get the Git revision no of a particular currentBuild
+     * 
+     * @return The revision number of the currentBuild or "No Revision"
+     */
+    private String gitNo() {
+        InputStream inputStream = null;
+        try {
+            String revNo = null;
+            final URL url = new URL(currentBuild.getEnvironment(null).get("BUILD_URL") + "/api/json?tree=actions[lastBuiltRevision[SHA1]]");
+            inputStream = url.openStream();
+            final JSONObject json = (JSONObject) JSONSerializer.toJSON(IOUtils.toString(inputStream));
+            if (json != null) {
+                try {
+                    final JSONArray actions = json.getJSONArray("actions");
+                    if (actions.size() >= 2) {
+                        revNo = "Git revision: " + actions.getJSONObject(1).getJSONObject("lastBuiltRevision").getString("SHA1");
+                    }
+                } catch (final JSONException e) {
+                    // This is not great, but swallow jquery parsing exceptions assuming that some element did not exist, will have a better
+                    // solution one I find a JSON query lib or method
+                    LOGGER.finest("did not find git revision in " + json);
+                }
+            }
+            return revNo;
+        } catch (final MalformedURLException e) {
+            throw new RuntimeException(e);
+        } catch (final IOException e) {
+            throw new RuntimeException(e);
+        } catch (final InterruptedException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (final IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+    }
+
+    /**
+     * Using the hudson api get the subversion info (yes, it is going the long way around)
+     * 
+     * @return subversion revision
+     */
+    private String svnNo() {
+        InputStream inputStream = null;
+        try {
+            String revNo = null;
+            final URL url = new URL(currentBuild.getEnvironment(null).get("BUILD_URL") + "/api/json?tree=changeSet[revisions[revision]]");
+            inputStream = url.openStream();
+            final JSONObject json = (JSONObject) JSONSerializer.toJSON(IOUtils.toString(inputStream));
+            if (json != null) {
+                try {
+                    revNo = "SVN revision: "
+                        + json.getJSONObject("changeSet").getJSONArray("revisions").getJSONObject(0).getString("revision");
+                } catch (final JSONException e) {
+                    // This is not great, but swallow jquery parsing exceptions assuming that some element did not exist, will have a better
+                    // solution one I find a JSON query lib or method
+                    LOGGER.finest("did not find svn revision in " + json);
+                }
+            }
+            return revNo;
+        } catch (final MalformedURLException e) {
+            throw new RuntimeException(e);
+        } catch (final IOException e) {
+            throw new RuntimeException(e);
+        } catch (final InterruptedException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (final IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
     }
 
     /**

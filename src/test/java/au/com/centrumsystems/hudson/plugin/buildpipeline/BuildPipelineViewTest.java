@@ -32,14 +32,6 @@ import java.io.IOException;
 import org.junit.Before;
 import org.junit.Test;
 import org.jvnet.hudson.test.HudsonTestCase;
-import org.xml.sax.SAXException;
-
-import com.gargoylesoftware.htmlunit.html.HtmlButton;
-import com.gargoylesoftware.htmlunit.html.HtmlElement;
-import com.gargoylesoftware.htmlunit.html.HtmlForm;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.gargoylesoftware.htmlunit.html.HtmlRadioButtonInput;
-import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 
 /**
  * Test Build Pipeline View
@@ -56,50 +48,11 @@ public class BuildPipelineViewTest extends HudsonTestCase {
     }
 
     @Test
-    public void testBuildPipelineViewPage() throws IOException, SAXException {
-        String bpViewName = "MyTestView";
-
-        final HtmlPage testViewPage = new WebClient().goTo("../newView");
-
-        final HtmlForm form = testViewPage.getFormByName("createView");
-
-        final HtmlTextInput viewName = (HtmlTextInput) testViewPage.getElementByName("name");
-        viewName.setAttribute("value", bpViewName);
-        viewName.click();
-
-        final HtmlRadioButtonInput radioButton = testViewPage.getElementByName("mode");
-        radioButton.setChecked(true);
-        radioButton.click();
-
-        final HtmlButton addViewButton = (HtmlButton) last(form.getHtmlElementsByTagName("button"));
-        addViewButton.removeAttribute("disabled");
-
-        final HtmlPage formReturnPage = (HtmlPage) form.submit(addViewButton);
-
-        assertNotNull("Form Return Page", formReturnPage);
-        assertNotNull("Add view button found", addViewButton);
-
-        final HtmlPage testViewConfigPage = new WebClient().goTo("../view/" + bpViewName + "/configure");
-        final HtmlElement buildViewTitle = testViewConfigPage.getElementByName("buildViewTitle");
-        buildViewTitle.setAttribute("value", "My Build View Title");
-        final HtmlElement selectedJob = testViewConfigPage.getElementByName("selectedJob");
-        selectedJob.setAttribute("value", "TEST_PROJECT1");
-        final HtmlElement noOfDisplayedBuilds = testViewConfigPage.getElementByName("noOfDisplayedBuilds");
-        noOfDisplayedBuilds.setAttribute("value", "3");
-
-        final HtmlForm viewConfigForm = testViewConfigPage.getFormByName("viewConfig");
-        final HtmlButton viewConfigFormButton = (HtmlButton) last(viewConfigForm.getHtmlElementsByTagName("button"));
-        viewConfigForm.submit(viewConfigFormButton);
-
-        assertNotNull("noOfDisplayedBuilds", noOfDisplayedBuilds);
-    }
-
-    @Test
     public void testGetSelectedProject() throws IOException {
-        String bpViewName = "MyTestView";
-        String bpViewTitle = "MyTestViewTitle";
-        String proj1 = "Proj1";
-        String noOfBuilds = "5";
+        final String bpViewName = "MyTestView";
+        final String bpViewTitle = "MyTestViewTitle";
+        final String proj1 = "Proj1";
+        final String noOfBuilds = "5";
         createFreeStyleProject(proj1);
 
         // Test a valid case
@@ -117,10 +70,10 @@ public class BuildPipelineViewTest extends HudsonTestCase {
 
     @Test
     public void testHasSelectedProject() throws IOException {
-        String bpViewName = "MyTestView";
-        String bpViewTitle = "MyTestViewTitle";
-        String proj1 = "Proj1";
-        String noOfBuilds = "5";
+        final String bpViewName = "MyTestView";
+        final String bpViewTitle = "MyTestViewTitle";
+        final String proj1 = "Proj1";
+        final String noOfBuilds = "5";
         createFreeStyleProject(proj1);
 
         // Test a valid case
@@ -135,13 +88,13 @@ public class BuildPipelineViewTest extends HudsonTestCase {
 
     @Test
     public void testHasBuildPermission() throws IOException {
-        String bpViewName = "MyTestView";
-        String bpViewTitle = "MyTestViewTitle";
-        String proj1 = "Proj1";
-        String noOfBuilds = "5";
-        FreeStyleProject project1 = createFreeStyleProject(proj1);
+        final String bpViewName = "MyTestView";
+        final String bpViewTitle = "MyTestViewTitle";
+        final String proj1 = "Proj1";
+        final String noOfBuilds = "5";
+        final FreeStyleProject project1 = createFreeStyleProject(proj1);
 
-        BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds);
+        final BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds);
         assertTrue(testView.hasBuildPermission(project1));
     }
 

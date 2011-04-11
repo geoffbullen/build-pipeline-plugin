@@ -152,10 +152,10 @@ public class BuildPipelineTriggerTest extends HudsonTestCase {
         final String proj2 = "Proj2";
         createFreeStyleProject(proj1);
 
-        BuildPipelineTrigger.DescriptorImpl di = new BuildPipelineTrigger.DescriptorImpl();
+        final BuildPipelineTrigger.DescriptorImpl di = new BuildPipelineTrigger.DescriptorImpl();
 
         assertEquals(FormValidation.ok(), di.doCheckDownstreamProjectNames(proj1));
         assertThat(FormValidation.error("No such project '" + proj2 + "'. Did you mean '" + proj1 + "'?").toString(), is(di
-                .doCheckDownstreamProjectNames(proj2).toString()));
+            .doCheckDownstreamProjectNames(proj2).toString()));
     }
 }

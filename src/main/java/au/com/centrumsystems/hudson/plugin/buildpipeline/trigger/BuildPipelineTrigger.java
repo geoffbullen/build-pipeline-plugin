@@ -101,10 +101,12 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
      */
     @SuppressWarnings("rawtypes")
     public void buildDependencyGraph(final AbstractProject owner, final DependencyGraph graph) {
-        for (final Object o : Items.fromNameList(downstreamProjectNames, AbstractProject.class)) {
-            final AbstractProject downstream = (AbstractProject) o;
+        if (downstreamProjectNames != null && downstreamProjectNames.length() > 0) {
+            for (final Object o : Items.fromNameList(downstreamProjectNames, AbstractProject.class)) {
+                final AbstractProject downstream = (AbstractProject) o;
 
-            graph.addDependency(createDownstreamDependency(owner, downstream));
+                graph.addDependency(createDownstreamDependency(owner, downstream));
+            }
         }
     }
 

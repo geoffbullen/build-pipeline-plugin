@@ -27,12 +27,12 @@
 	-webkit-box-shadow: 4px 4px 4px #555;
 	box-shadow: 4px 4px 4px #555;
 	font-size: 10px;
-	color: #eee;
+	color: white;
 	font-weight: bold;
 	margin: 4px;
 	vertical-align: middle;
 	display: table-cell;
-	behavior: url(/plugin/build-pipeline-plugin/css/PIE.htc);
+	overflow : hidden;
 }
 
 #pipelines {
@@ -55,10 +55,6 @@ tr.build-pipeline {
 	background-color: #fcae3f;
 }
 
-tr.build-pipeline {
-	background-color: #fcae3f;
-}
-
 tbody > tr:first-child > td:first-child {
 	border-top-left-radius: 4px; 
 	-moz-border-radius-topleft: 4px;
@@ -70,11 +66,13 @@ tbody >  tr:first-child > td:last-child {
 	-moz-border-radius-topright: 4px;
 	-webkit-border-top-right-radius: 4px; 
 }
+
 tbody >  tr:last-child > td:first-child { 
 	border-bottom-left-radius: 4px; 
 	-moz-border-radius-bottomleft: 4px;
 	-webkit-border-bottom-left-radius: 4px;  
 }
+
 tbody >  tr:last-child > td:last-child { 
 	border-bottom-right-radius: 4px; 
 	-moz-border-radius-bottomlright: 4px;
@@ -106,10 +104,6 @@ span.status {
 	margin-right: auto;
 }
 
-span.next {
-	background:url("/images/24x24/next.png") no-repeat center center;
-}
-
 .SUCCESS {
 	background-color: #3465a4;
 }
@@ -128,7 +122,7 @@ span.FAILURE {
 
 .UNSTABLE {
 	background-color: #fcd116;
-	color: #444;
+	color: #222;
 }
 
 span.UNSTABLE {
@@ -137,7 +131,7 @@ span.UNSTABLE {
 
 .BUILDING {
 	background-color: #f7f94b;
-	color: #444;
+	color: #222;
 }
 
 span.BUILDING {
@@ -146,7 +140,7 @@ span.BUILDING {
 
 .NOT_BUILT {
 	background-color: #f7f94b;
-	color: #444;
+	color: #222;
 }
 
 span.NOT_BUILT {
@@ -163,7 +157,7 @@ span.ABORT {
 
 .PENDING {
 	background-color: #00ccff;
-	color: #444;
+	color: #222;
 }
 
 span.PENDING {
@@ -172,7 +166,7 @@ span.PENDING {
 
 .MANUAL {
 	background-color: #00ccff;
-	color: #444;
+	color: #222;
 }
 
 .trigger {
@@ -205,30 +199,16 @@ span.PENDING {
 	display: none;
 }
 
-#main-panel {
-	padding: 0px;
-}
-
-a:link {
+a:link, a:visited, a:active {
 	text-decoration: none;
 	color: inherit;
-	font-weight: inherit;
-}
-
-a:visited {
-	text-decoration: none;
-	color: inherit;
-	font-weight: inherit;
-}
-
-a:active {
-	text-decoration: none;
-	color: inherit;
+	color: expression(this.parentNode.currentStyle['color']); /* IE fix */
 	font-weight: inherit;
 }
 
 a:hover {
 	text-decoration: underline;
 	color: inherit;
+	color: expression(this.parentNode.currentStyle['color']);
 	font-weight: inherit;
 }
