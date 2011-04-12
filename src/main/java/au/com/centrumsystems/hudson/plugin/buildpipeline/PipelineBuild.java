@@ -185,7 +185,15 @@ public class PipelineBuild {
      */
     public String getBuildResultURL() {
         try {
-            return currentBuild != null ? currentBuild.getEnvironment(null).get("BUILD_URL") : "";
+            String url = "";
+            if (currentBuild != null) {
+                if (currentBuild.getEnvironment(null).get("BUILD_URL") != null) {
+                    url = currentBuild.getEnvironment(null).get("BUILD_URL");
+                } else {
+                    url = currentBuild.getProject().getUrl();
+                }
+            }
+            return url;
         } catch (final IOException e) {
             throw new RuntimeException(e);
         } catch (final InterruptedException e) {
