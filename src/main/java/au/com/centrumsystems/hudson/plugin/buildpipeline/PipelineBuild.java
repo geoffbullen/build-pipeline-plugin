@@ -185,13 +185,15 @@ public class PipelineBuild {
      */
     public String getBuildResultURL() {
         try {
-            String url = "";
+            String url;
             if (currentBuild != null) {
                 if (currentBuild.getEnvironment(null).get("BUILD_URL") != null) {
                     url = currentBuild.getEnvironment(null).get("BUILD_URL");
                 } else {
                     url = currentBuild.getProject().getUrl();
                 }
+            } else {
+                url = project.getUrl();
             }
             return url;
         } catch (final IOException e) {
