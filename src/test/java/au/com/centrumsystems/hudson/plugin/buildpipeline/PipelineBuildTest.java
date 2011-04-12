@@ -202,21 +202,6 @@ public class PipelineBuildTest extends HudsonTestCase {
     }
 
     @Test
-    public void testGetBuildResultURL() throws Exception {
-        final String proj1 = "Proj 1";
-        final String proj1Url = "/job/Proj%201/1/";
-        FreeStyleBuild build1;
-        final FreeStyleProject project1 = createFreeStyleProject(proj1);
-        build1 = buildAndAssertSuccess(project1);
-        // When all building is complete retrieve the last builds
-        waitUntilNoActivity();
-
-        final PipelineBuild pb = new PipelineBuild(build1, null, null);
-
-        assertEquals("The build URL should have been " + proj1Url, proj1Url, pb.getBuildResultURL());
-    }
-
-    @Test
     public void testToString() throws Exception {
         final String proj1 = "Proj1";
         final String proj1ToString = "Project: " + proj1 + " : Build: 1";
