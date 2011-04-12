@@ -166,6 +166,15 @@ public class BuildPipelineView extends View {
     }
 
     /**
+     * Checks whether the user has Configure permission for the current project.
+     * 
+     * @return - true: Has Configure permission; false: Does not have Configure permission
+     */
+    public boolean hasBuildPermission() {
+        return this.hasPermission(CONFIGURE);
+    }
+
+    /**
      * Get a List of downstream projects.
      * 
      * @param currentProject
@@ -225,7 +234,7 @@ public class BuildPipelineView extends View {
      *             {@link URISyntaxException}
      */
     public String getProjectURL(final AbstractProject<?, ?> project) throws URISyntaxException {
-        return ProjectUtil.getProjectURL(project);
+        return project.getUrl();
     }
 
     /**

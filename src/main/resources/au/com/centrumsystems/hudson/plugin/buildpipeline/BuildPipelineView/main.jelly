@@ -1,6 +1,6 @@
 
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:i="jelly:fmt">
-	<link href="/plugin/build-pipeline-plugin/css/main.css" type="text/css" rel="stylesheet" />
+	<link href="${rootURL}/plugin/build-pipeline-plugin/css/main.css" type="text/css" rel="stylesheet" />
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.11/jquery-ui.min.js"></script>
 	<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.11/themes/redmond/jquery-ui.css"></link>
@@ -25,6 +25,32 @@
 	        });
 		});
 	</script>
+	<style>
+		span.SUCCESS {
+			background:url("${rootURL}/images/24x24/blue.png") no-repeat center center !important;
+		}
+		span.FAILURE {
+			background:url("${rootURL}/images/24x24/red.png") no-repeat center center;
+		}
+		span.UNSTABLE {
+			background:url("${rootURL}/images/24x24/yellow.png") no-repeat center center;
+		}
+		span.BUILDING {
+			background:url("${rootURL}/images/24x24/blue_anime.gif") no-repeat center center;
+		}
+		span.NOT_BUILT {
+			background:url("${rootURL}/images/24x24/blue_anime.gif") no-repeat center center;
+		}
+		span.PENDING {
+			background:url("${rootURL}/images/24x24/health-80plus.png") no-repeat center center;
+		}
+		span.ABORT {
+			background:url("${rootURL}/images/24x24/grey.png") no-repeat center center;
+		}
+		.trigger {
+			background:url("${rootURL}/images/16x16/clock.png") no-repeat center center !important;
+		}
+	</style>
 	
 	<form method="post" action="manualExecution" id="manualExecutionForm">
 		<input name="upstreamProjectName" id="upstreamProjectName" type="hidden" />
@@ -43,8 +69,8 @@
 				<!-- If the user has the Build Project permission include a hyperlink to build the base project.-->
 				<j:if test="${from.hasSelectedProject()}">
 					<j:if test="${from.hasBuildPermission(from.getSelectedProject())}">
-						<a href="/job/${from.getSelectedProject().getName()}/build?delay=0sec"><img height="24" style="margin: 2px;" alt="" width="24" src="${rootURL}/images/24x24/clock.png" /></a>
-						<a href="/job/${from.getSelectedProject().getName()}/build?delay=0sec">Start Build of Pipeline for ${from.getSelectedProject().getName()}</a>
+						<a href="${rootURL}/job/${from.getSelectedProject().getName()}/build?delay=0sec"><img height="24" style="margin: 2px;" alt="" width="24" src="${rootURL}/images/24x24/clock.png" /></a>
+						<a href="${rootURL}/job/${from.getSelectedProject().getName()}/build?delay=0sec">Start Build of Pipeline for ${from.getSelectedProject().getName()}</a>
 					</j:if>
 				</j:if>
 			</div>
@@ -177,7 +203,9 @@
 													<div>${build.getDuration()}</div>
 												</a>
 												<j:if test="${build.isManual()}">
-													<button class="triggerButton" onclick="triggerBuild('${build.getUpstreamProjectName()}', '${build.getUpstreamBuildNumber()}', '${build.getProjectName()}')">Trigger</button>
+													<j:if test="${from.hasConfigurePermission()}">
+														<button class="triggerButton" onclick="triggerBuild('${build.getUpstreamProjectName()}', '${build.getUpstreamBuildNumber()}', '${build.getProjectName()}')">Trigger</button>
+													</j:if>
 												</j:if>
 											</div>
 										</td>

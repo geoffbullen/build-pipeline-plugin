@@ -31,8 +31,6 @@ import hudson.model.Hudson;
 import hudson.tasks.Publisher;
 import hudson.util.DescribableList;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,7 +62,7 @@ public final class ProjectUtil {
         final DependencyGraph myDependencyGraph = Hudson.getInstance().getDependencyGraph();
 
         final List<AbstractProject<?, ?>> downstreamProjectsList = new ArrayList<AbstractProject<?, ?>>();
-        for (AbstractProject<?, ?> proj : myDependencyGraph.getDownstream(currentProject)) {
+        for (final AbstractProject<?, ?> proj : myDependencyGraph.getDownstream(currentProject)) {
             downstreamProjectsList.add(proj);
         }
         return downstreamProjectsList;
@@ -79,27 +77,6 @@ public final class ProjectUtil {
      */
     public static boolean hasDownstreamProjects(final AbstractProject<?, ?> currentProject) {
         return (getDownstreamProjects(currentProject).size() > 0);
-    }
-
-    /**
-     * Builds a URL of the input project
-     * 
-     * @param project
-     *            - The project for which the URL was requested.
-     * @return String - of the project
-     * @throws URISyntaxException
-     *             If the URI string constructed from the given components violates RFC 2396
-     */
-    public static String getProjectURL(final AbstractProject<?, ?> project) throws URISyntaxException {
-        final StringBuffer resultURL = new StringBuffer();
-        final URI uri;
-        if (project != null) {
-            resultURL.append("/job/");
-            resultURL.append(project.getName());
-            resultURL.append('/');
-        }
-        uri = new URI(null, null, resultURL.toString(), null);
-        return uri.toASCIIString();
     }
 
     /**
@@ -121,7 +98,7 @@ public final class ProjectUtil {
             if (upstreamPub instanceof BuildPipelineTrigger) {
                 final String manualDownstreamProjects = ((BuildPipelineTrigger) upstreamPub).getDownstreamProjectNames();
                 final String[] downstreamProjs = manualDownstreamProjects.split(",");
-                for (String nextProj : downstreamProjs) {
+                for (final String nextProj : downstreamProjs) {
                     if (downstreamProject.getName().equalsIgnoreCase(nextProj.trim())) {
                         manualTrigger = true;
                         break;

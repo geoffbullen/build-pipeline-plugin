@@ -27,13 +27,12 @@ package au.com.centrumsystems.hudson.plugin.buildpipeline;
 import hudson.model.Item;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
+import hudson.model.FreeStyleProject;
 import hudson.model.Hudson;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -97,6 +96,14 @@ public class PipelineBuild {
         this.upstreamBuild = previousBuild;
         this.currentBuildResult = "";
         this.upstreamBuildResult = "";
+    }
+
+    /**
+     * @param project
+     *            project
+     */
+    public PipelineBuild(final FreeStyleProject project) {
+        this(null, project, null);
     }
 
     public AbstractBuild<?, ?> getCurrentBuild() {
@@ -178,20 +185,10 @@ public class PipelineBuild {
      */
     public String getBuildResultURL() {
         try {
-            final StringBuffer resultURL = new StringBuffer();
-            final URI uri;
-            if (this.currentBuild != null) {
-                resultURL.append("/job/");
-                resultURL.append(this.currentBuild.getProject().getName());
-                resultURL.append('/');
-                resultURL.append(this.currentBuild.getNumber());
-                resultURL.append('/');
-                uri = new URI(null, null, resultURL.toString(), null);
-                return uri.toASCIIString();
-            } else {
-                return resultURL.append(getProjectURL()).toString();
-            }
-        } catch (final URISyntaxException e) {
+            return currentBuild != null ? currentBuild.getEnvironment(null).get("BUILD_URL") : "";
+        } catch (final IOException e) {
+            throw new RuntimeException(e);
+        } catch (final InterruptedException e) {
             throw new RuntimeException(e);
         }
     }
@@ -202,11 +199,7 @@ public class PipelineBuild {
      * @return URL - of the project
      */
     public String getProjectURL() {
-        try {
-            return ProjectUtil.getProjectURL(this.getProject());
-        } catch (final URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
+        return project != null ? project.getUrl() : "";
     }
 
     /**
@@ -339,7 +332,7 @@ public class PipelineBuild {
      * 
      * @return The revision number of the currentBuild or "No Revision"
      */
-    public String getSVNRevisionNo() {
+    public String getScmRevision() {
         String revNo = "No Revision";
         if (currentBuild != null) {
             if ("hudson.scm.SubversionSCM".equals(project.getScm().getType())) {

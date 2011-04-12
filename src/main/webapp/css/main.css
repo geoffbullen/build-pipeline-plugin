@@ -108,16 +108,9 @@ span.status {
 	background-color: #3465a4;
 }
 
-span.SUCCESS {
-	background:url("/images/24x24/blue.png") no-repeat center center !important;
-}
 
 .FAILURE {
 	background-color: #ef2929;
-}
-
-span.FAILURE {
-	background:url("/images/24x24/red.png") no-repeat center center;
 }
 
 .UNSTABLE {
@@ -125,17 +118,9 @@ span.FAILURE {
 	color: #222;
 }
 
-span.UNSTABLE {
-	background:url("/images/24x24/yellow.png") no-repeat center center;
-}
-
 .BUILDING {
 	background-color: #f7f94b;
 	color: #222;
-}
-
-span.BUILDING {
-	background:url("/images/24x24/blue_anime.gif") no-repeat center center;
 }
 
 .NOT_BUILT {
@@ -143,16 +128,8 @@ span.BUILDING {
 	color: #222;
 }
 
-span.NOT_BUILT {
-	background:url("/images/24x24/blue_anime.gif") no-repeat center center;
-}
-
 .ABORT {
 	background-color: #bab4b4;
-}
-
-span.ABORT {
-	background:url("/images/24x24/grey.png") no-repeat center center;
 }
 
 .PENDING {
@@ -160,17 +137,9 @@ span.ABORT {
 	color: #222;
 }
 
-span.PENDING {
-	background:url("/images/24x24/health-80plus.png") no-repeat center center;
-}
-
 .MANUAL {
 	background-color: #00ccff;
 	color: #222;
-}
-
-.trigger {
-	background:url("/images/16x16/clock.png") no-repeat center center !important;
 }
 
 .PROJECT {

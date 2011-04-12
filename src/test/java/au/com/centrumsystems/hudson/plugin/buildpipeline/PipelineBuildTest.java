@@ -285,6 +285,6 @@ public class PipelineBuildTest extends HudsonTestCase {
         waitUntilNoActivity();
 
         final PipelineBuild pb = new PipelineBuild(build1, project1, null);
-        assertEquals("The SVN Revision text should have been " + proj1GetSVN, proj1GetSVN, pb.getSVNRevisionNo());
+        assertEquals("The SVN Revision text should have been " + proj1GetSVN, proj1GetSVN, pb.getScmRevision());
     }
 }

@@ -62,7 +62,7 @@ public class BuildForm {
     public BuildForm(final PipelineBuild pipelineBuild) {
         name = pipelineBuild.getBuildDescription();
         status = pipelineBuild.getCurrentBuildResult();
-        revision = pipelineBuild.getSVNRevisionNo();
+        revision = pipelineBuild.getScmRevision();
         url = pipelineBuild.getBuildResultURL();
         duration = pipelineBuild.getBuildDuration();
         manual = pipelineBuild.isManual();

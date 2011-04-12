@@ -37,6 +37,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.jvnet.hudson.test.HudsonTestCase;
 
+import au.com.centrumsystems.hudson.plugin.buildpipeline.PipelineBuild;
 import au.com.centrumsystems.hudson.plugin.buildpipeline.trigger.BuildPipelineTrigger;
 
 public class ProjectUtilTest extends HudsonTestCase {
@@ -49,13 +50,13 @@ public class ProjectUtilTest extends HudsonTestCase {
 
     @Test
     public void testGetDownstreamProjects() throws IOException {
-        String proj1 = "Proj1";
-        String proj2 = "Proj2";
-        String proj3 = "Proj3";
+        final String proj1 = "Proj1";
+        final String proj2 = "Proj2";
+        final String proj3 = "Proj3";
 
         // Create a test project
-        FreeStyleProject project1 = createFreeStyleProject(proj1);
-        FreeStyleProject project2 = createFreeStyleProject(proj2);
+        final FreeStyleProject project1 = createFreeStyleProject(proj1);
+        final FreeStyleProject project2 = createFreeStyleProject(proj2);
 
         // Add project2 as a post build action: build other project
         project1.getPublishersList().add(new BuildPipelineTrigger(proj2));
@@ -71,14 +72,14 @@ public class ProjectUtilTest extends HudsonTestCase {
 
     @Test
     public void testIsManualTrigger() throws IOException {
-        String proj1 = "Proj1";
-        String proj2 = "Proj2";
-        String proj3 = "Proj3";
+        final String proj1 = "Proj1";
+        final String proj2 = "Proj2";
+        final String proj3 = "Proj3";
 
         // Create a test project
-        FreeStyleProject project1 = createFreeStyleProject(proj1);
-        FreeStyleProject project2 = createFreeStyleProject(proj2);
-        FreeStyleProject project3 = createFreeStyleProject(proj3);
+        final FreeStyleProject project1 = createFreeStyleProject(proj1);
+        final FreeStyleProject project2 = createFreeStyleProject(proj2);
+        final FreeStyleProject project3 = createFreeStyleProject(proj3);
 
         // Add TEST_PROJECT2 as a Manually executed pipeline project
         // Add TEST_PROJECT3 as a Post-build action -> build other projects
@@ -96,12 +97,12 @@ public class ProjectUtilTest extends HudsonTestCase {
 
     @Test
     public void testHasDownstreamProjects() throws IOException {
-        String proj1 = "Proj1";
-        String proj2 = "Proj2";
-        String proj3 = "Proj3";
+        final String proj1 = "Proj1";
+        final String proj2 = "Proj2";
+        final String proj3 = "Proj3";
 
         // Create a test project
-        FreeStyleProject project1 = createFreeStyleProject(proj1);
+        final FreeStyleProject project1 = createFreeStyleProject(proj1);
         createFreeStyleProject(proj2);
         createFreeStyleProject(proj3);
 
@@ -118,13 +119,14 @@ public class ProjectUtilTest extends HudsonTestCase {
 
     @Test
     public void testGetProjectURL() throws URISyntaxException, IOException {
-        String proj1 = "Proj 1";
-        String proj1Url = "/job/Proj%201/";
+        final String proj1 = "Proj 1";
+        final String proj1Url = "job/Proj%201/";
 
         // Create a test project
-        FreeStyleProject project1 = createFreeStyleProject(proj1);
+        final FreeStyleProject project1 = createFreeStyleProject(proj1);
+        final PipelineBuild pipelineBuild = new PipelineBuild(project1);
 
-        assertEquals("The project URL should have been " + proj1Url, proj1Url, ProjectUtil.getProjectURL(project1));
+        assertEquals("The project URL should have been " + proj1Url, proj1Url, pipelineBuild.getProjectURL());
     }
 
 }
