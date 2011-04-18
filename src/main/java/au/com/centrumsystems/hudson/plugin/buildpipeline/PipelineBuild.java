@@ -34,6 +34,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -184,23 +185,7 @@ public class PipelineBuild {
      * @return URL of the currentBuild
      */
     public String getBuildResultURL() {
-        try {
-            String url;
-            if (currentBuild != null) {
-                if (currentBuild.getEnvironment(null).get("BUILD_URL") != null) {
-                    url = currentBuild.getEnvironment(null).get("BUILD_URL");
-                } else {
-                    url = currentBuild.getProject().getUrl();
-                }
-            } else {
-                url = project.getUrl();
-            }
-            return url;
-        } catch (final IOException e) {
-            throw new RuntimeException(e);
-        } catch (final InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        return currentBuild != null ? currentBuild.getUrl() : "";
     }
 
     /**
@@ -355,29 +340,82 @@ public class PipelineBuild {
                 if (gitNo != null) {
                     revNo = gitNo;
                 }
+            } else if ("hudson.plugins.mercurial.MercurialSCM".equals(project.getScm().getType())) {
+                final String hgNo = hgNo();
+                if (hgNo != null) {
+                    revNo = hgNo;
+                }
             }
         }
         return revNo;
     }
 
     /**
+     * Returns the last hg rev
+     * 
+     * @return revision number of the current build
+     */
+    private String hgNo() {
+        InputStream inputStream = null;
+        try {
+            String revNo = null;
+            final URL url = new URL(Hudson.getInstance().getRootUrl() + currentBuild.getUrl() + "api/json?tree=changeSet[items[node,rev]]");
+            inputStream = url.openStream();
+            final JSONObject json = (JSONObject) JSONSerializer.toJSON(IOUtils.toString(inputStream));
+            if (json != null) {
+                try {
+
+                    final JSONArray items = json.getJSONObject("changeSet").getJSONArray("items");
+                    if (items != null && items.size() >= 1) {
+                        revNo = "Hg: " + items.getJSONObject(0).getString("rev") + ":" + items.getJSONObject(0).getString("node");
+                    }
+                } catch (final JSONException e) {
+                    // This is not great, but swallow jquery parsing exceptions assuming that some element did not exist, will have a better
+                    // solution one I find a JSON query lib or method
+                    LOGGER.finest("did not find svn revision in " + json);
+                }
+            }
+            return revNo;
+        } catch (final MalformedURLException e) {
+            throw new RuntimeException(e);
+        } catch (final IOException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (final IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+    }
+
+    /**
      * Get the Git revision no of a particular currentBuild
      * 
-     * @return The revision number of the currentBuild or "No Revision"
+     * @return The revision number of the currentBuild
      */
     private String gitNo() {
         InputStream inputStream = null;
         try {
             String revNo = null;
-            final URL url = new URL(currentBuild.getEnvironment(null).get("BUILD_URL") + "/api/json?tree=actions[lastBuiltRevision[SHA1]]");
+            final URL url = new URL(Hudson.getInstance().getRootUrl() + currentBuild.getUrl()
+                + "api/json?tree=actions[lastBuiltRevision[SHA1]]");
             inputStream = url.openStream();
             final JSONObject json = (JSONObject) JSONSerializer.toJSON(IOUtils.toString(inputStream));
             if (json != null) {
                 try {
                     final JSONArray actions = json.getJSONArray("actions");
-                    if (actions.size() >= 2) {
-                        revNo = "Git revision: " + actions.getJSONObject(1).getJSONObject("lastBuiltRevision").getString("SHA1");
+                    for (final Object object : actions) {
+                        if (object instanceof JSONObject) {
+                            final JSONObject jsonObject = (JSONObject) object;
+                            if (jsonObject.containsKey("lastBuiltRevision")) {
+                                revNo = "Git: " + jsonObject.getJSONObject("lastBuiltRevision").getString("SHA1");
+                            }
+                        }
                     }
+
                 } catch (final JSONException e) {
                     // This is not great, but swallow jquery parsing exceptions assuming that some element did not exist, will have a better
                     // solution one I find a JSON query lib or method
@@ -388,8 +426,6 @@ public class PipelineBuild {
         } catch (final MalformedURLException e) {
             throw new RuntimeException(e);
         } catch (final IOException e) {
-            throw new RuntimeException(e);
-        } catch (final InterruptedException e) {
             throw new RuntimeException(e);
         } finally {
             if (inputStream != null) {
@@ -411,12 +447,13 @@ public class PipelineBuild {
         InputStream inputStream = null;
         try {
             String revNo = null;
-            final URL url = new URL(currentBuild.getEnvironment(null).get("BUILD_URL") + "/api/json?tree=changeSet[revisions[revision]]");
+            final URL url = new URL(Hudson.getInstance().getRootUrl() + currentBuild.getUrl()
+                + "api/json?tree=changeSet[revisions[revision]]");
             inputStream = url.openStream();
             final JSONObject json = (JSONObject) JSONSerializer.toJSON(IOUtils.toString(inputStream));
             if (json != null) {
                 try {
-                    revNo = "SVN revision: "
+                    revNo = "Subversion: "
                         + json.getJSONObject("changeSet").getJSONArray("revisions").getJSONObject(0).getString("revision");
                 } catch (final JSONException e) {
                     // This is not great, but swallow jquery parsing exceptions assuming that some element did not exist, will have a better
@@ -428,8 +465,6 @@ public class PipelineBuild {
         } catch (final MalformedURLException e) {
             throw new RuntimeException(e);
         } catch (final IOException e) {
-            throw new RuntimeException(e);
-        } catch (final InterruptedException e) {
             throw new RuntimeException(e);
         } finally {
             if (inputStream != null) {
@@ -463,4 +498,20 @@ public class PipelineBuild {
     public boolean isManual() {
         return getCurrentBuildResult().equals(HudsonResult.MANUAL.toString());
     }
+
+    /**
+     * Start time of build
+     * 
+     * @return start time
+     */
+    public String getStartTime() {
+        String startTime = "";
+        if (currentBuild != null) {
+            if (currentBuild.getTime() != null) {
+                startTime = DateFormat.getDateTimeInstance().format(currentBuild.getTime());
+            }
+        }
+        return startTime;
+    }
+
 }

@@ -189,7 +189,7 @@
 							<tr class='build-pipeline'>
 								<td>
 									<j:if test="${x == 0}">
-										<div class="revision rounded">${buildGrid.get(x).get(0).getRevision()}</div>
+										<div class="revision rounded"><a href="#" title="${buildGrid.get(x).get(0).getRevision()}">${buildGrid.get(x).get(0).getShortRevision()}</a></div>
 									</j:if>
 								</td>
 								<td class="next"></td>
@@ -198,10 +198,26 @@
 									<j:if test="${build != null}">
 										<td>
 											<div class="${build.getStatus()} rounded">
+												<j:if test="${build.getUrl().length() > 0}">
 												<a href="${build.getUrl()}" target="_blank">
-													<div>${build.getName()}</div>
-													<div>${build.getDuration()}</div>
+													<p>${build.getName()}</p>
+													<j:if test="${build.getDuration().length() > 0}">
+														<p class="secondaryInfo">
+															${build.getStartTime()}
+															Duration: ${build.getDuration()}
+														</p>
+													</j:if>
 												</a>
+												</j:if>
+												<j:if test="${build.getUrl().length() == 0}">
+													<p>${build.getName()}</p>
+													<j:if test="${build.getDuration().length() > 0}">
+														<p class="secondaryInfo">
+															${build.getStartTime()}
+															Duration: ${build.getDuration()}
+														</p>
+													</j:if>
+												</j:if>
 												<j:if test="${build.isManual()}">
 													<j:if test="${from.hasConfigurePermission()}">
 														<button class="triggerButton" onclick="triggerBuild('${build.getUpstreamProjectName()}', '${build.getUpstreamBuildNumber()}', '${build.getProjectName()}')">Trigger</button>

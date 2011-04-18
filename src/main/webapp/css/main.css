@@ -16,7 +16,7 @@
 
 .rounded {
 	height: 60px;
-	width: 100px;
+	width: 120px;
 	opacity: 0.9;
 	-moz-opacity: 0.9;
 	-webkit-opacity: 0.9;
@@ -30,9 +30,14 @@
 	color: white;
 	font-weight: bold;
 	margin: 4px;
+	padding: 3px;
 	vertical-align: middle;
 	display: table-cell;
 	overflow : hidden;
+}
+
+.secondaryInfo {
+	font-weight: normal;
 }
 
 #pipelines {

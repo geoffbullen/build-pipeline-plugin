@@ -50,6 +50,12 @@ public class BuildForm {
      * indicates if it is a build that needs to be triggered manually
      */
     private boolean manual;
+
+    /**
+     * build start time
+     */
+    private String startTime;
+
     /**
      * downstream builds
      */
@@ -81,6 +87,7 @@ public class BuildForm {
         for (final PipelineBuild downstream : pipelineBuild.getDownstreamPipeline()) {
             dependencies.add(new BuildForm(downstream));
         }
+        startTime = pipelineBuild.getStartTime();
     }
 
     /**
@@ -128,7 +135,26 @@ public class BuildForm {
         return upstreamProjectName;
     }
 
+    public String getStartTime() {
+        return startTime;
+    }
+
     public List<BuildForm> getDependencies() {
         return dependencies;
+    }
+
+    /**
+     * Shortened revision (git SHA1 can get long
+     * 
+     * @return shortened revision
+     */
+    public String getShortRevision() {
+        String shortRevision;
+        if (revision.length() > 22) {
+            shortRevision = revision.substring(0, 22) + "...";
+        } else {
+            shortRevision = revision;
+        }
+        return shortRevision;
     }
 }
