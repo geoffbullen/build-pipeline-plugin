@@ -150,9 +150,9 @@
 								<td>
 									<div class="PROJECT rounded">
 										<a href="${project.getUrl()}" target="_blank">${project.getName()}</a>
-										<div>
+										<div class="statusImages">
 											<span class="status ${project.getResult()}"></span>
-											<img src="${rootURL}/images/24x24/${project.getHealth()}" />
+											<span class="status"><img src="${rootURL}/images/24x24/${project.getHealth()}" /></span>
 										</div>
 									</div>
 								</td>
@@ -189,7 +189,11 @@
 							<tr class='build-pipeline'>
 								<td>
 									<j:if test="${x == 0}">
-										<div class="revision rounded"><a href="#" title="${buildGrid.get(x).get(0).getRevision()}">${buildGrid.get(x).get(0).getShortRevision()}</a></div>
+										<div class="revision rounded">
+											<a href="#" title="${buildGrid.get(x).get(0).getRevision()}">
+												<p>${buildGrid.get(x).get(0).getShortRevision()}</p>
+											</a>
+										</div>
 									</j:if>
 								</td>
 								<td class="next"></td>

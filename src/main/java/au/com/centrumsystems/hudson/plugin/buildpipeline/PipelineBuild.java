@@ -34,8 +34,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -453,8 +453,7 @@ public class PipelineBuild {
             final JSONObject json = (JSONObject) JSONSerializer.toJSON(IOUtils.toString(inputStream));
             if (json != null) {
                 try {
-                    revNo = "Subversion: "
-                        + json.getJSONObject("changeSet").getJSONArray("revisions").getJSONObject(0).getString("revision");
+                    revNo = "Svn: " + json.getJSONObject("changeSet").getJSONArray("revisions").getJSONObject(0).getString("revision");
                 } catch (final JSONException e) {
                     // This is not great, but swallow jquery parsing exceptions assuming that some element did not exist, will have a better
                     // solution one I find a JSON query lib or method
@@ -504,14 +503,9 @@ public class PipelineBuild {
      * 
      * @return start time
      */
-    public String getStartTime() {
-        String startTime = "";
-        if (currentBuild != null) {
-            if (currentBuild.getTime() != null) {
-                startTime = DateFormat.getDateTimeInstance().format(currentBuild.getTime());
-            }
-        }
-        return startTime;
+    public Date getStartTime() {
+        return currentBuild != null ? currentBuild.getTime() : null;
+
     }
 
 }

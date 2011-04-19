@@ -1,6 +1,8 @@
 package au.com.centrumsystems.hudson.plugin.buildpipeline;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -22,6 +24,7 @@ public class BuildForm {
      * status
      */
     private String status = "";
+
     /**
      * url
      */
@@ -54,7 +57,7 @@ public class BuildForm {
     /**
      * build start time
      */
-    private String startTime;
+    private Date startTime;
 
     /**
      * downstream builds
@@ -135,8 +138,15 @@ public class BuildForm {
         return upstreamProjectName;
     }
 
+    /**
+     * @return Formatted start time
+     */
     public String getStartTime() {
-        return startTime;
+        String formattedStartTime = "";
+        if (startTime != null) {
+            formattedStartTime = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.FULL).format(startTime);
+        }
+        return formattedStartTime;
     }
 
     public List<BuildForm> getDependencies() {
