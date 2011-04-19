@@ -24,14 +24,7 @@
 	            icons: {
 	                primary: "trigger"
 	            }
-	        });
-			
-			$(".rounded").each(function(index, value){
-				$(value).tooltip({
-					tip: '#tooltip' + $(value).attr('id')
-				});
-			});
-			
+	        });			
 		});
 	</script>
 	<style>
@@ -215,26 +208,28 @@
 									<j:if test="${build != null}">
 										<td>
 											<div class="${build.getStatus()} rounded" id="${i}${x}${y}">
-												<j:if test="${build.getUrl().length() > 0}">
-												<a href="${build.getUrl()}" target="_blank">
-													<div>${build.getName()}</div>
-												</a>
-												</j:if>
-												<j:if test="${build.getUrl().isEmpty()}">
-													<div>${build.getName()}</div>
-												</j:if>
-												<j:if test="${!build.getDuration().isEmpty()}">
-													<div class="secondaryInfo" id="tooltip${i}${x}${y}">
-														<div>${build.getStartDate()}</div>
-														<div>${build.getStartTime()}</div>
-														<div>Duration: ${build.getDuration()}</div>
-													</div>
-												</j:if>
-												<j:if test="${build.isManual()}">
-													<j:if test="${from.hasConfigurePermission()}">
-														<button class="triggerButton" onclick="triggerBuild('${build.getUpstreamProjectName()}', '${build.getUpstreamBuildNumber()}', '${build.getProjectName()}')">Trigger</button>
+												<div>
+													<j:if test="${build.getUrl().length() > 0}">
+													<a href="${build.getUrl()}" target="_blank">
+														<div>${build.getName()}</div>
+													</a>
 													</j:if>
-												</j:if>
+													<j:if test="${build.getUrl().isEmpty()}">
+														<div>${build.getName()}</div>
+													</j:if>
+													<j:if test="${!build.getDuration().isEmpty()}">
+														<div class="secondaryInfo" id="tooltip${i}${x}${y}">
+															<div>${build.getStartDate()}</div>
+															<div>${build.getStartTime()}</div>
+															<div>Duration: ${build.getDuration()}</div>
+														</div>
+													</j:if>
+													<j:if test="${build.isManual()}">
+														<j:if test="${from.hasConfigurePermission()}">
+															<button class="triggerButton" onclick="triggerBuild('${build.getUpstreamProjectName()}', '${build.getUpstreamBuildNumber()}', '${build.getProjectName()}')">Trigger</button>
+														</j:if>
+													</j:if>
+												</div>
 											</div>
 										</td>
 										<j:if test="${(y + 1 != buildPipelineForm.getGridWidth())}">

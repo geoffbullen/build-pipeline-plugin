@@ -40,10 +40,15 @@ span.status, span.status img {
 	color: white;
 	font-weight: bold;
 	padding: 3px;
+	margin-left: auto;
+  	margin-right: auto;
+}
+
+.rounded > div {
 	display: table-cell;
-	vertical-align: middle;
-	clear:both; 
-	position:relative;
+  	vertical-align: middle;
+  	height: 70px;
+	width: 120px;
 }
 
 .secondaryInfo {
