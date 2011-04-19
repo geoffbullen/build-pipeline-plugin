@@ -1,9 +1,10 @@
 
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:i="jelly:fmt">
+	
 	<link href="${rootURL}/plugin/build-pipeline-plugin/css/main.css" type="text/css" rel="stylesheet" />
+	<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.11/themes/redmond/jquery-ui.css"></link>
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.11/jquery-ui.min.js"></script>
-	<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.11/themes/redmond/jquery-ui.css"></link>
 	<script type="text/javascript">
 		function triggerBuild(upstreamProjectName, upstreamBuildNumber, triggerProjectName) {
 			$('#upstreamProjectName').val(upstreamProjectName);
@@ -12,6 +13,7 @@
 			$('#manualExecutionForm').submit();
 		}
 		$(document).ready(function(){
+					
 			//hide legend and register on click function to show and hide
 			$('#legendView').hide();
 			$('#legendLever').click(function() {
@@ -23,6 +25,13 @@
 	                primary: "trigger"
 	            }
 	        });
+			
+			$(".rounded").each(function(index, value){
+				$(value).tooltip({
+					tip: '#tooltip' + $(value).attr('id')
+				});
+			});
+			
 		});
 	</script>
 	<style>
@@ -149,10 +158,12 @@
 							<j:if test="${project != null}">
 								<td>
 									<div class="PROJECT rounded">
-										<a href="${project.getUrl()}" target="_blank">${project.getName()}</a>
-										<div class="statusImages">
-											<span class="status ${project.getResult()}"></span>
-											<span class="status"><img src="${rootURL}/images/24x24/${project.getHealth()}" /></span>
+										<div>
+											<a href="${project.getUrl()}" target="_blank">${project.getName()}</a>
+											<div class="statusImages">
+												<span class="status ${project.getResult()}"></span>
+												<span class="status"><img src="${rootURL}/images/24x24/${project.getHealth()}" /></span>
+											</div>
 										</div>
 									</div>
 								</td>
@@ -183,16 +194,18 @@
 					</tr>
 				</j:forEach>
 				<!-- builds -->
-				<j:forEach items="${buildPipelineForm.getBuildGrids()}" var="buildGrid">
-					<tbody>
+				<j:forEach items="${buildPipelineForm.getBuildGrids()}" var="buildGrid" indexVar="i">
+					<tbody class="pipelineGroup">
 						<j:forEach begin="${0}" end="${buildGrid.keySet().size() - 1}" indexVar="x">
 							<tr class='build-pipeline'>
 								<td>
 									<j:if test="${x == 0}">
 										<div class="revision rounded">
-											<a href="#" title="${buildGrid.get(x).get(0).getRevision()}">
-												<p>${buildGrid.get(x).get(0).getShortRevision()}</p>
-											</a>
+											<div>
+												<a href="#" title="${buildGrid.get(x).get(0).getRevision()}">
+													<div>${buildGrid.get(x).get(0).getShortRevision()}</div>
+												</a>
+											</div>
 										</div>
 									</j:if>
 								</td>
@@ -201,26 +214,21 @@
 								<j:set var="build" type="au.com.centrumsystems.hudson.plugin.buildpipeline.BuildForm" value="${buildGrid.get(x).get(y)}"/>
 									<j:if test="${build != null}">
 										<td>
-											<div class="${build.getStatus()} rounded">
+											<div class="${build.getStatus()} rounded" id="${i}${x}${y}">
 												<j:if test="${build.getUrl().length() > 0}">
 												<a href="${build.getUrl()}" target="_blank">
-													<p>${build.getName()}</p>
-													<j:if test="${build.getDuration().length() > 0}">
-														<p class="secondaryInfo">
-															${build.getStartTime()}
-															Duration: ${build.getDuration()}
-														</p>
-													</j:if>
+													<div>${build.getName()}</div>
 												</a>
 												</j:if>
-												<j:if test="${build.getUrl().length() == 0}">
-													<p>${build.getName()}</p>
-													<j:if test="${build.getDuration().length() > 0}">
-														<p class="secondaryInfo">
-															${build.getStartTime()}
-															Duration: ${build.getDuration()}
-														</p>
-													</j:if>
+												<j:if test="${build.getUrl().isEmpty()}">
+													<div>${build.getName()}</div>
+												</j:if>
+												<j:if test="${!build.getDuration().isEmpty()}">
+													<div class="secondaryInfo" id="tooltip${i}${x}${y}">
+														<div>${build.getStartDate()}</div>
+														<div>${build.getStartTime()}</div>
+														<div>Duration: ${build.getDuration()}</div>
+													</div>
 												</j:if>
 												<j:if test="${build.isManual()}">
 													<j:if test="${from.hasConfigurePermission()}">

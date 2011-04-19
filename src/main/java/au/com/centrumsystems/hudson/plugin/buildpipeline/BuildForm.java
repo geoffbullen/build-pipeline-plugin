@@ -144,7 +144,18 @@ public class BuildForm {
     public String getStartTime() {
         String formattedStartTime = "";
         if (startTime != null) {
-            formattedStartTime = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.FULL).format(startTime);
+            formattedStartTime = DateFormat.getTimeInstance(DateFormat.FULL).format(startTime);
+        }
+        return formattedStartTime;
+    }
+
+    /**
+     * @return Formatted start date
+     */
+    public String getStartDate() {
+        String formattedStartTime = "";
+        if (startTime != null) {
+            formattedStartTime = DateFormat.getDateInstance(DateFormat.MEDIUM).format(startTime);
         }
         return formattedStartTime;
     }
