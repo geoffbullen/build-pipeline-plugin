@@ -323,7 +323,7 @@ public class PipelineBuild {
     }
 
     /**
-     * Get the SVN revision no of a particular currentBuild
+     * Get the SCM revision no of a particular currentBuild
      * 
      * @return The revision number of the currentBuild or "No Revision"
      */
