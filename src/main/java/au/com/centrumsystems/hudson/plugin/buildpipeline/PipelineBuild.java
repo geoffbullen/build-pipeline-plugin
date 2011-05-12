@@ -329,23 +329,29 @@ public class PipelineBuild {
      */
     public String getScmRevision() {
         String revNo = "No Revision";
-        if (currentBuild != null) {
-            if ("hudson.scm.SubversionSCM".equals(project.getScm().getType())) {
-                final String svnNo = svnNo();
-                if (svnNo != null) {
-                    revNo = svnNo;
-                }
-            } else if ("hudson.plugins.git.GitSCM".equals(project.getScm().getType())) {
-                final String gitNo = gitNo();
-                if (gitNo != null) {
-                    revNo = gitNo;
-                }
-            } else if ("hudson.plugins.mercurial.MercurialSCM".equals(project.getScm().getType())) {
-                final String hgNo = hgNo();
-                if (hgNo != null) {
-                    revNo = hgNo;
+        try {
+            if (currentBuild != null) {
+                if ("hudson.scm.SubversionSCM".equals(project.getScm().getType())) {
+                    final String svnNo = svnNo();
+                    if (svnNo != null) {
+                        revNo = svnNo;
+                    }
+                } else if ("hudson.plugins.git.GitSCM".equals(project.getScm().getType())) {
+                    final String gitNo = gitNo();
+                    if (gitNo != null) {
+                        revNo = gitNo;
+                    }
+                } else if ("hudson.plugins.mercurial.MercurialSCM".equals(project.getScm().getType())) {
+                    final String hgNo = hgNo();
+                    if (hgNo != null) {
+                        revNo = hgNo;
+                    }
                 }
             }
+        } catch (final Exception e) {
+            // if anything goes wrong, ignore and don't show a revision number, no need to bring the whole view down if we cannot see a
+            // revision
+            LOGGER.warning(e.toString());
         }
         return revNo;
     }
@@ -355,7 +361,7 @@ public class PipelineBuild {
      * 
      * @return revision number of the current build
      */
-    private String hgNo() {
+    private String hgNo() throws MalformedURLException, IOException {
         InputStream inputStream = null;
         try {
             String revNo = null;
@@ -376,10 +382,6 @@ public class PipelineBuild {
                 }
             }
             return revNo;
-        } catch (final MalformedURLException e) {
-            throw new RuntimeException(e);
-        } catch (final IOException e) {
-            throw new RuntimeException(e);
         } finally {
             if (inputStream != null) {
                 try {
@@ -396,7 +398,7 @@ public class PipelineBuild {
      * 
      * @return The revision number of the currentBuild
      */
-    private String gitNo() {
+    private String gitNo() throws MalformedURLException, IOException {
         InputStream inputStream = null;
         try {
             String revNo = null;
@@ -423,10 +425,6 @@ public class PipelineBuild {
                 }
             }
             return revNo;
-        } catch (final MalformedURLException e) {
-            throw new RuntimeException(e);
-        } catch (final IOException e) {
-            throw new RuntimeException(e);
         } finally {
             if (inputStream != null) {
                 try {
@@ -443,7 +441,7 @@ public class PipelineBuild {
      * 
      * @return subversion revision
      */
-    private String svnNo() {
+    private String svnNo() throws MalformedURLException, IOException {
         InputStream inputStream = null;
         try {
             String revNo = null;
@@ -461,10 +459,6 @@ public class PipelineBuild {
                 }
             }
             return revNo;
-        } catch (final MalformedURLException e) {
-            throw new RuntimeException(e);
-        } catch (final IOException e) {
-            throw new RuntimeException(e);
         } finally {
             if (inputStream != null) {
                 try {
