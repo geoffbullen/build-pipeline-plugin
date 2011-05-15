@@ -204,7 +204,7 @@ public class PipelineBuild {
      * @see PipelineBuild#getBuildResult(AbstractBuild)
      */
     public String getCurrentBuildResult() {
-        if (this.currentBuildResult.isEmpty()) {
+        if (this.currentBuildResult.length() == 0) {
             this.currentBuildResult = getBuildResult(this.currentBuild);
         }
         return this.currentBuildResult;
@@ -217,7 +217,7 @@ public class PipelineBuild {
      * @see PipelineBuild#getBuildResult(AbstractBuild)
      */
     public String getUpstreamBuildResult() {
-        if (this.upstreamBuildResult.isEmpty()) {
+        if (this.upstreamBuildResult.length() == 0) {
             this.upstreamBuildResult = getBuildResult(this.upstreamBuild);
         }
         return this.upstreamBuildResult;

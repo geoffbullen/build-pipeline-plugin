@@ -162,7 +162,7 @@
 								</td>
 								<j:if test="${(y + 1 != buildPipelineForm.getGridWidth())}">
 									<td class="next">
-										<j:if test="${!project.getDependencies().isEmpty()}">
+										<j:if test="${!(project.getDependencies().length() == 0)}">
 											<span class="status next">
 												<img src="${rootURL}/images/24x24/next.png" />
 											</span>
@@ -214,10 +214,10 @@
 														<div>${build.getName()}</div>
 													</a>
 													</j:if>
-													<j:if test="${build.getUrl().isEmpty()}">
+													<j:if test="${build.getUrl().length() == 0}">
 														<div>${build.getName()}</div>
 													</j:if>
-													<j:if test="${!build.getDuration().isEmpty()}">
+													<j:if test="${!(build.getDuration().length() == 0)}">
 														<div class="secondaryInfo" id="tooltip${i}${x}${y}">
 															<div>${build.getStartDate()}</div>
 															<div>${build.getStartTime()}</div>
@@ -234,7 +234,7 @@
 										</td>
 										<j:if test="${(y + 1 != buildPipelineForm.getGridWidth())}">
 											<td class="next">
-												<j:if test="${!build.getDependencies().isEmpty()}">
+												<j:if test="${!(build.getDependencies().length() == 0)}">
 													<span class="status next">
 														<img src="${rootURL}/images/24x24/next.png" />
 													</span>

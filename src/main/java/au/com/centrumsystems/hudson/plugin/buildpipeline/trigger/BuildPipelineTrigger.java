@@ -288,7 +288,7 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
 
                         if (changed) {
                             try {
-                                if (bpTrigger.getDownstreamProjectNames().isEmpty()) {
+                                if (bpTrigger.getDownstreamProjectNames().length() == 0) {
                                     p.getPublishersList().remove(bpTrigger);
                                 }
                                 p.save();
