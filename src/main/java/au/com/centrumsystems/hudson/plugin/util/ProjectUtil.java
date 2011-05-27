@@ -37,7 +37,7 @@ import java.util.List;
 import au.com.centrumsystems.hudson.plugin.buildpipeline.trigger.BuildPipelineTrigger;
 
 /**
- * CentrumAbstractProject is used to build the downstream projects pipeline
+ * Provides helper methods for #hudson.model.AbstractProject
  * 
  * @author Centrum Systems
  * 
