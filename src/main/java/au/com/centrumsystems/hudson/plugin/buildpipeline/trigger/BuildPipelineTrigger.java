@@ -101,7 +101,7 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
      */
     @SuppressWarnings("rawtypes")
     public void buildDependencyGraph(final AbstractProject owner, final DependencyGraph graph) {
-        if (downstreamProjectNames != null && downstreamProjectNames.length() > 0) {
+        if ((downstreamProjectNames != null) && (downstreamProjectNames.length() > 0)) {
             for (final Object o : Items.fromNameList(downstreamProjectNames, AbstractProject.class)) {
                 final AbstractProject downstream = (AbstractProject) o;
 
@@ -133,8 +133,8 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
     }
 
     @Override
-    public boolean perform(final AbstractBuild<?, ?> build, final Launcher launcher, final BuildListener listener)
-        throws InterruptedException, IOException {
+    public boolean perform(final AbstractBuild<?, ?> build, final Launcher launcher, 
+            final BuildListener listener) throws InterruptedException, IOException {
         return true;
     }
 
@@ -237,7 +237,7 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
                 final Item item = Hudson.getInstance().getItemByFullName(projectName, Item.class);
                 if (item == null) {
                     return FormValidation.error(Messages.BuildTrigger_NoSuchProject(projectName, AbstractProject.findNearest(projectName)
-                        .getName()));
+                            .getName()));
                 }
                 if (!(item instanceof AbstractProject)) {
                     return FormValidation.error(Messages.BuildTrigger_NotBuildable(projectName));
@@ -265,9 +265,9 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
                                 p.save();
                             } catch (final IOException e) {
                                 Logger.getLogger(ItemListenerImpl.class.getName()).log(
-                                    Level.WARNING,
-                                    "Failed to persist project BuildPipelineTrigger setting during rename from " + oldName + " to "
-                                        + newName, e);
+                                        Level.WARNING,
+                                        "Failed to persist project BuildPipelineTrigger setting during rename from " + oldName + " to "
+                                                + newName, e);
                             }
                         }
                     }
@@ -294,7 +294,7 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
                                 p.save();
                             } catch (final IOException e) {
                                 Logger.getLogger(ItemListenerImpl.class.getName()).log(Level.WARNING,
-                                    "Failed to persist project BuildPipelineTrigger setting during remove of " + oldName, e);
+                                        "Failed to persist project BuildPipelineTrigger setting during remove of " + oldName, e);
                             }
                         }
                     }
