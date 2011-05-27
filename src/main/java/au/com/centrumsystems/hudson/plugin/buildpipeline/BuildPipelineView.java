@@ -34,6 +34,7 @@ import hudson.model.AbstractProject;
 import hudson.model.Cause.UserCause;
 import hudson.model.Descriptor.FormException;
 import hudson.model.Hudson;
+import hudson.model.ParametersAction;
 import hudson.model.Run;
 import hudson.model.View;
 
@@ -247,7 +248,7 @@ public class BuildPipelineView extends View {
      */
     @SuppressWarnings("unchecked")
     public void doManualExecution(final StaplerRequest req, final StaplerResponse rsp) {
-        final List<Action> buildActions = new ArrayList<Action>();
+        List<Action> buildActions = new ArrayList<Action>();
 
         int upstreamBuildNo;
         if (req.getParameter(REQ_UPSTREAM_BUILD_NUMBER) == null) {
@@ -266,8 +267,24 @@ public class BuildPipelineView extends View {
             }
         }
 
+        // Retrieve the List of Actions from the upstream build
+        Action buildParametersAction = null;
+        buildActions = upstreamBuild.getActions();
+        // If a ParametersAction is found, save the parameters to pass to the downstream project
+        for (Action nextAction : buildActions) {
+            if (nextAction instanceof ParametersAction) {
+                buildParametersAction = nextAction;
+            }
+        }
+        
         final hudson.model.Cause.UpstreamCause upstreamCause = new hudson.model.Cause.UpstreamCause((Run<?, ?>) upstreamBuild);
-        triggerProject.scheduleBuild(triggerProject.getQuietPeriod(), upstreamCause, buildActions.toArray(new Action[buildActions.size()]));
+        if (buildParametersAction == null) {
+            buildActions.clear();
+            triggerProject.scheduleBuild(triggerProject.getQuietPeriod(), upstreamCause, 
+                    buildActions.toArray(new Action[buildActions.size()]));
+        } else {
+            triggerProject.scheduleBuild(triggerProject.getQuietPeriod(), upstreamCause, buildParametersAction);
+        }
 
         // redirect to the view page.
         try {
@@ -291,8 +308,6 @@ public class BuildPipelineView extends View {
 
     /**
      * This descriptor class is required to configure the View Page
-     * 
-     * @author rayc
      * 
      */
     @Extension
