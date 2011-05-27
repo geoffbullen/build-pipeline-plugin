@@ -33,17 +33,20 @@ import hudson.model.CauseAction;
 import java.util.List;
 
 /**
- * CentrumAbstractBuild class is a util class which is used to build the build pipeline
- *
+ * Provides helper methods for #hudson.model.AbstractBuild
+ * 
  * @author Centrum Systems
- *
+ * 
  */
 public final class BuildUtil {
 
     /**
      * Gets the next downstream build based on the upstream build and downstream project.
-     * @param downstreamProject - The downstream project
-     * @param upstreamBuild - The upstream build
+     * 
+     * @param downstreamProject
+     *            - The downstream project
+     * @param upstreamBuild
+     *            - The upstream build
      * @return - The next downstream build based on the upstream build and downstream project, or null if there is no downstream project.
      */
     public static AbstractBuild<?, ?> getDownstreamBuild(final AbstractProject<?, ?> downstreamProject,
