@@ -248,7 +248,7 @@ public class BuildPipelineView extends View {
      */
     @SuppressWarnings("unchecked")
     public void doManualExecution(final StaplerRequest req, final StaplerResponse rsp) {
-        List<Action> buildActions = new ArrayList<Action>();
+        final List<Action> buildActions = new ArrayList<Action>();
 
         int upstreamBuildNo;
         if (req.getParameter(REQ_UPSTREAM_BUILD_NUMBER) == null) {
@@ -269,17 +269,17 @@ public class BuildPipelineView extends View {
 
         // Retrieve the List of Actions from the upstream build
         Action buildParametersAction = null;
-        buildActions = upstreamBuild.getActions();
-        // If a ParametersAction is found, save the parameters to pass to the downstream project
-        for (Action nextAction : buildActions) {
-            if (nextAction instanceof ParametersAction) {
-                buildParametersAction = nextAction;
+        if (upstreamBuild != null) {
+            // If a ParametersAction is found, save the parameters to pass to the downstream project
+            for (Action nextAction : upstreamBuild.getActions()) {
+                if (nextAction instanceof ParametersAction) {
+                    buildParametersAction = nextAction;
+                }
             }
         }
         
         final hudson.model.Cause.UpstreamCause upstreamCause = new hudson.model.Cause.UpstreamCause((Run<?, ?>) upstreamBuild);
         if (buildParametersAction == null) {
-            buildActions.clear();
             triggerProject.scheduleBuild(triggerProject.getQuietPeriod(), upstreamCause, 
                     buildActions.toArray(new Action[buildActions.size()]));
         } else {
