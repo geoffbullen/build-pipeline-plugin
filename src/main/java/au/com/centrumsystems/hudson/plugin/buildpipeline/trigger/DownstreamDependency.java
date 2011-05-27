@@ -37,15 +37,18 @@ import au.com.centrumsystems.hudson.plugin.util.ProjectUtil;
 
 /**
  * Defines downstream dependency for the build pipeline trigger
- *
+ * 
  * @author Centrum Systems
  */
 public class DownstreamDependency extends Dependency {
 
     /**
      * Downstream Dependency
-     * @param upstream the upstream job
-     * @param downstream the downstream job
+     * 
+     * @param upstream
+     *            the upstream job
+     * @param downstream
+     *            the downstream job
      */
     public DownstreamDependency(final AbstractProject<?, ?> upstream, final AbstractProject<?, ?> downstream) {
         super(upstream, downstream);
@@ -57,9 +60,10 @@ public class DownstreamDependency extends Dependency {
     @SuppressWarnings("rawtypes")
     @Override
     public boolean shouldTriggerBuild(final AbstractBuild build, final TaskListener listener, final List<Action> actions) {
+
         // If the upstream project has an automatic trigger to the downstream project
         // and the current build result was SUCCESS then return true.
-        return ((!ProjectUtil.isManualTrigger(build.getProject(), getDownstreamProject()))
-                && (build.getResult().isBetterOrEqualTo(Result.SUCCESS)));
+        return ((!ProjectUtil.isManualTrigger(build.getProject(), getDownstreamProject())) && (build.getResult()
+                .isBetterOrEqualTo(Result.SUCCESS)));
     }
 }
