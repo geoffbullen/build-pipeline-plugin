@@ -90,6 +90,10 @@ public class BuildPipelineTriggerTest extends HudsonTestCase {
         assertTrue(bpTrigger.onDownstreamProjectRenamed(proj2, proj2 + "NEW"));
 
         assertEquals(proj2 + "NEW," + proj3, bpTrigger.getDownstreamProjectNames());
+        
+        // Null case
+        bpTrigger.setDownstreamProjectNames(null);
+        assertFalse(bpTrigger.onDownstreamProjectRenamed(proj2, proj3));
     }
 
     @Test
@@ -102,6 +106,10 @@ public class BuildPipelineTriggerTest extends HudsonTestCase {
         assertTrue(bpTrigger.onDownstreamProjectDeleted(proj2));
 
         assertEquals(proj3, bpTrigger.getDownstreamProjectNames());
+
+        // Null case
+        bpTrigger.setDownstreamProjectNames(null);
+        assertFalse(bpTrigger.onDownstreamProjectDeleted(proj2));
     }
 
     @Test
