@@ -149,11 +149,14 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
      */
     public boolean onDownstreamProjectRenamed(final String oldName, final String newName) {
         boolean changed = false;
-        final String[] existingDownstreamProjects = this.getDownstreamProjectNames().split(",");
-        for (int i = 0; i < existingDownstreamProjects.length; i++) {
-            if (existingDownstreamProjects[i].trim().equals(oldName)) {
-                existingDownstreamProjects[i] = newName;
-                changed = true;
+        String[] existingDownstreamProjects = new String[5];
+        if (this.getDownstreamProjectNames() != null) {
+            existingDownstreamProjects = this.getDownstreamProjectNames().split(",");
+            for (int i = 0; i < existingDownstreamProjects.length; i++) {
+                if (existingDownstreamProjects[i].trim().equals(oldName)) {
+                    existingDownstreamProjects[i] = newName;
+                    changed = true;
+                }
             }
         }
         if (changed) {
@@ -234,6 +237,10 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
             final StringTokenizer tokens = new StringTokenizer(Util.fixNull(value), ",");
             while (tokens.hasMoreTokens()) {
                 final String projectName = tokens.nextToken().trim();
+                if ("".equals(projectName)) {
+                    return FormValidation.error(Messages.BuildTrigger_NoSuchProject(projectName, AbstractProject.findNearest(projectName)
+                            .getName()));
+                }
                 final Item item = Hudson.getInstance().getItemByFullName(projectName, Item.class);
                 if (item == null) {
                     return FormValidation.error(Messages.BuildTrigger_NoSuchProject(projectName, AbstractProject.findNearest(projectName)
