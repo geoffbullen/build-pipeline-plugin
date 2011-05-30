@@ -70,6 +70,10 @@ public class BuildPipelineView extends View {
 
     /** buildViewTitle. */
     private String buildViewTitle = "";
+    
+    /** Indicates whether only the latest job will be triggered.**/
+    private boolean triggerOnlyLatestJob;
+    
 
     /** A Logger object is used to log messages */
     private static final Logger LOGGER = Logger.getLogger(BuildPipelineView.class.getName());
@@ -90,13 +94,16 @@ public class BuildPipelineView extends View {
      *            the first job in the build pipeline.
      * @param noOfDisplayedBuilds
      *            a count of the number of builds displayed on the view
+     * @param triggerOnlyLatestJob Indicates whether only the latest job will be triggered.
      */
     @DataBoundConstructor
-    public BuildPipelineView(final String name, final String buildViewTitle, final String selectedJob, final String noOfDisplayedBuilds) {
+    public BuildPipelineView(final String name, final String buildViewTitle, final String selectedJob, final String noOfDisplayedBuilds, 
+            final boolean triggerOnlyLatestJob) {
         super(name);
         setBuildViewTitle(buildViewTitle);
         setSelectedJob(selectedJob);
         setNoOfDisplayedBuilds(noOfDisplayedBuilds);
+        setTriggerOnlyLatestJob(triggerOnlyLatestJob);
     }
 
     /**
@@ -116,6 +123,8 @@ public class BuildPipelineView extends View {
         this.selectedJob = req.getParameter("selectedJob");
         this.noOfDisplayedBuilds = req.getParameter("noOfDisplayedBuilds");
         this.buildViewTitle = req.getParameter("buildViewTitle");
+        this.triggerOnlyLatestJob = Boolean.parseBoolean(req.getParameter("_.triggerOnlyLatestJob"));
+        
     }
 
     /**
@@ -190,7 +199,7 @@ public class BuildPipelineView extends View {
      * Determines if the current project has any downstream projects
      * 
      * @param currentProject
-     *            - The project from wwhich we are testing.
+     *            - The project from which we are testing.
      * @return - true; has downstream projects; false: does not have downstream projects
      */
     public boolean hasDownstreamProjects(final AbstractProject<?, ?> currentProject) {
@@ -200,7 +209,7 @@ public class BuildPipelineView extends View {
     /**
      * Returns the HTML containing the build pipeline to display.
      * 
-     * @return A STring containing the HTML code for the project and build pipelines.
+     * @return A String containing the HTML code for the project and build pipelines.
      * @throws URISyntaxException
      *             {@link URISyntaxException}
      */
@@ -393,6 +402,18 @@ public class BuildPipelineView extends View {
 
     public void setSelectedJob(final String selectedJob) {
         this.selectedJob = selectedJob;
+    }
+
+    public boolean isTriggerOnlyLatestJob() {
+        return triggerOnlyLatestJob;
+    }
+
+    public String getTriggerOnlyLatestJob() {
+        return new Boolean(triggerOnlyLatestJob).toString();
+    }
+
+    public void setTriggerOnlyLatestJob(boolean triggerOnlyLatestJob) {
+        this.triggerOnlyLatestJob = triggerOnlyLatestJob;
     }
 
     @Override
