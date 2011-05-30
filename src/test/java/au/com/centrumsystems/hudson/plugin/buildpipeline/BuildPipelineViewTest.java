@@ -56,13 +56,13 @@ public class BuildPipelineViewTest extends HudsonTestCase {
         createFreeStyleProject(proj1);
 
         // Test a valid case
-        BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds);
+        BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds, false);
         Job<?, ?> testSelectedProject = testView.getSelectedProject();
 
         assertEquals(proj1, testSelectedProject.getName());
 
         // Test the null case
-        testView = new BuildPipelineView(bpViewName, bpViewTitle, "", noOfBuilds);
+        testView = new BuildPipelineView(bpViewName, bpViewTitle, "", noOfBuilds, false);
         testSelectedProject = testView.getSelectedProject();
 
         assertNull(testSelectedProject);
@@ -77,12 +77,12 @@ public class BuildPipelineViewTest extends HudsonTestCase {
         createFreeStyleProject(proj1);
 
         // Test a valid case
-        BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds);
+        BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds, false);
 
         assertTrue(testView.hasSelectedProject());
 
         // Test the null case
-        testView = new BuildPipelineView(bpViewName, bpViewTitle, "", noOfBuilds);
+        testView = new BuildPipelineView(bpViewName, bpViewTitle, "", noOfBuilds, false);
         assertFalse(testView.hasSelectedProject());
     }
 
@@ -94,8 +94,24 @@ public class BuildPipelineViewTest extends HudsonTestCase {
         final String noOfBuilds = "5";
         final FreeStyleProject project1 = createFreeStyleProject(proj1);
 
-        final BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds);
+        final BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds, false);
         assertTrue(testView.hasBuildPermission(project1));
     }
 
+    @Test
+    public void testTriggerOnlyLatestJob() throws IOException {
+        final String bpViewName = "MyTestView";
+        final String bpViewTitle = "MyTestViewTitle";
+        final String proj1 = "Proj1";
+        final String noOfBuilds = "5";
+        createFreeStyleProject(proj1);
+
+        // True
+        BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds, true);
+        assertTrue(proj1, testView.isTriggerOnlyLatestJob());
+
+        // False
+        testView = new BuildPipelineView(bpViewName, bpViewTitle, "", noOfBuilds, false);
+        assertFalse(proj1, testView.isTriggerOnlyLatestJob());
+    }
 }
