@@ -226,7 +226,14 @@
 													</j:if>
 													<j:if test="${build.isManual()}">
 														<j:if test="${from.hasConfigurePermission()}">
-															<button class="triggerButton" onclick="triggerBuild('${build.getUpstreamProjectName()}', '${build.getUpstreamBuildNumber()}', '${build.getProjectName()}')">Trigger</button>
+															<j:if test="${!(from.isTriggerOnlyLatestJob())}">
+																<button class="triggerButton" onclick="triggerBuild('${build.getUpstreamProjectName()}', '${build.getUpstreamBuildNumber()}', '${build.getProjectName()}')">Trigger</button>
+															</j:if>
+															<j:if test="${(from.isTriggerOnlyLatestJob())}">
+																<j:if test="${i == 0}">
+																	<button class="triggerButton" onclick="triggerBuild('${build.getUpstreamProjectName()}', '${build.getUpstreamBuildNumber()}', '${build.getProjectName()}')">Trigger</button>
+																</j:if>
+															</j:if>
 														</j:if>
 													</j:if>
 												</div>
