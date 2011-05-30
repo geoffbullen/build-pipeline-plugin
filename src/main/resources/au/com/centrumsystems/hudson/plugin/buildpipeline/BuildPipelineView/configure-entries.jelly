@@ -15,4 +15,8 @@
 		<f:select name="noOfDisplayedBuilds">
     	</f:select>
   	</f:entry>
+
+  	<f:entry title="Restrict Trigger to the Most Recent Build" field="triggerOnlyLatestJob">
+		<f:booleanRadio field="triggerOnlyLatestJob" true="Yes" false="No" default="false"/>
+  	</f:entry>
 </j:jelly>
