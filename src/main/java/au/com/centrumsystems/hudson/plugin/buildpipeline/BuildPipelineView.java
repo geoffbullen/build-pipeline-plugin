@@ -122,7 +122,7 @@ public class BuildPipelineView extends View {
         this.selectedJob = req.getParameter("selectedJob");
         this.noOfDisplayedBuilds = req.getParameter("noOfDisplayedBuilds");
         this.buildViewTitle = req.getParameter("buildViewTitle");
-        this.triggerOnlyLatestJob = Boolean.parseBoolean(req.getParameter("_.triggerOnlyLatestJob"));
+        this.triggerOnlyLatestJob = Boolean.valueOf(req.getParameter("_.triggerOnlyLatestJob"));
         
     }
 
@@ -427,7 +427,7 @@ public class BuildPipelineView extends View {
     }
 
     public String getTriggerOnlyLatestJob() {
-        return new Boolean(triggerOnlyLatestJob).toString();
+        return Boolean.toString(triggerOnlyLatestJob);
     }
 
     public void setTriggerOnlyLatestJob(boolean triggerOnlyLatestJob) {
