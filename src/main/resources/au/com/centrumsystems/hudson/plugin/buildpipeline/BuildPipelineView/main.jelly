@@ -10,6 +10,7 @@
 			$('#upstreamProjectName').val(upstreamProjectName);
 			$('#upstreamBuildNumber').val(upstreamBuildNumber);
 			$('#triggerProjectName').val(triggerProjectName);
+			document.pipelineViewForm.action = "manualExecution";
 			$('#manualExecutionForm').submit();
 		}
 		$(document).ready(function(){
@@ -54,7 +55,8 @@
 		}
 	</style>
 	
-	<form method="post" action="manualExecution" id="manualExecutionForm">
+	<!-- <form method="post" action="manualExecution" id="manualExecutionForm">-->
+	<form method="post" name="pipelineViewForm" action="" id="manualExecutionForm">
 		<input name="upstreamProjectName" id="upstreamProjectName" type="hidden" />
 		<input name="upstreamBuildNumber" id="upstreamBuildNumber" type="hidden" />
 		<input name="triggerProjectName" id="triggerProjectName" type="hidden" />
@@ -208,6 +210,7 @@
 									<j:if test="${build != null}">
 										<td>
 											<div class="${build.getStatus()} rounded" id="${i}${x}${y}">
+											<!-- "i=" ${i} "x= "${x} "y= "${y}-->
 												<div>
 													<j:if test="${build.getUrl().length() > 0}">
 													<a href="${build.getUrl()}" target="_blank">
@@ -223,6 +226,11 @@
 															<div>${build.getStartTime()}</div>
 															<div>Duration: ${build.getDuration()}</div>
 														</div>
+													</j:if>
+													<j:if test="${y != 0}">
+														<j:if test="${build.getStatus() == 'FAILURE'}">
+															<button class="triggerButton" onclick="triggerBuild('${build.getUpstreamProjectName()}', '${build.getUpstreamBuildNumber()}', '${build.getProjectName()}')">Retry</button>
+														</j:if>
 													</j:if>
 													<j:if test="${build.isManual()}">
 														<j:if test="${from.hasConfigurePermission()}">
