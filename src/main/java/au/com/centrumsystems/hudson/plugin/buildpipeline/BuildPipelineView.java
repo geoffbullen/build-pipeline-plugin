@@ -254,7 +254,6 @@ public class BuildPipelineView extends View {
      * @param rsp
      *            - Stapler Response
      */
-    @SuppressWarnings("unchecked")
     public void doManualExecution(final StaplerRequest req, final StaplerResponse rsp) {
         int upstreamBuildNo;
         if (req.getParameter(REQ_UPSTREAM_BUILD_NUMBER) == null) {
