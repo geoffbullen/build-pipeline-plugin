@@ -224,7 +224,9 @@
 														<div class="secondaryInfo" id="tooltip${i}${x}${y}">
 															<div>${build.getStartDate()}</div>
 															<div>${build.getStartTime()}</div>
-															<div>Duration: ${build.getDuration()}</div>
+															<j:if test="${build.getStatus() != 'FAILURE'}">
+																<div>Duration: ${build.getDuration()}</div>
+															</j:if>
 														</div>
 													</j:if>
 													<j:if test="${y != 0}">
