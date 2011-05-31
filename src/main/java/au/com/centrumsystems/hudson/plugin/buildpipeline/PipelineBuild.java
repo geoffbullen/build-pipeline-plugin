@@ -147,7 +147,7 @@ public class PipelineBuild {
      * 
      * @return - Current build number or empty String is the current build is null.
      */
-    private String getCurrentBuildNumber() {
+    public String getCurrentBuildNumber() {
         if (this.currentBuild != null) {
             return Integer.toString(currentBuild.getNumber());
         } else {
