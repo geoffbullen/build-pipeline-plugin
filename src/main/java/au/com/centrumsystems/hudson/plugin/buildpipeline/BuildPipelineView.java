@@ -31,7 +31,6 @@ import hudson.model.TopLevelItem;
 import hudson.model.ViewDescriptor;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
-import hudson.model.Cause.UserCause;
 import hudson.model.Descriptor.FormException;
 import hudson.model.Hudson;
 import hudson.model.ParametersAction;
@@ -257,8 +256,6 @@ public class BuildPipelineView extends View {
      */
     @SuppressWarnings("unchecked")
     public void doManualExecution(final StaplerRequest req, final StaplerResponse rsp) {
-        final List<Action> buildActions = new ArrayList<Action>();
-
         int upstreamBuildNo;
         if (req.getParameter(REQ_UPSTREAM_BUILD_NUMBER) == null) {
             upstreamBuildNo = 0;
@@ -267,33 +264,12 @@ public class BuildPipelineView extends View {
         }
         final AbstractProject<?, ?> triggerProject = (AbstractProject<?, ?>) super.getJob(req.getParameter(REQ_TRIGGER_PROJECT_NAME));
         final AbstractProject<?, ?> upstreamProject = (AbstractProject<?, ?>) super.getJob(req.getParameter(REQ_UPSTREAM_PROJECT_NAME));
-        AbstractBuild<?, ?> upstreamBuild = null;
 
-        for (final AbstractBuild<?, ?> tmpUpBuild : (List<AbstractBuild<?, ?>>) upstreamProject.getBuilds()) {
-            if (tmpUpBuild.getNumber() == upstreamBuildNo) {
-                upstreamBuild = tmpUpBuild;
-                break;
-            }
-        }
+        final AbstractBuild<?, ?> upstreamBuild = retrieveBuild(upstreamBuildNo, upstreamProject);
 
-        // Retrieve the List of Actions from the upstream build
-        Action buildParametersAction = null;
-        if (upstreamBuild != null) {
-            // If a ParametersAction is found, save the parameters to pass to the downstream project
-            for (Action nextAction : upstreamBuild.getActions()) {
-                if (nextAction instanceof ParametersAction) {
-                    buildParametersAction = nextAction;
-                }
-            }
-        }
+        final Action buildParametersAction = retrieveBuildParametersAction(upstreamBuild);
         
-        final hudson.model.Cause.UpstreamCause upstreamCause = new hudson.model.Cause.UpstreamCause((Run<?, ?>) upstreamBuild);
-        if (buildParametersAction == null) {
-            triggerProject.scheduleBuild(triggerProject.getQuietPeriod(), upstreamCause, 
-                    buildActions.toArray(new Action[buildActions.size()]));
-        } else {
-            triggerProject.scheduleBuild(triggerProject.getQuietPeriod(), upstreamCause, buildParametersAction);
-        }
+        triggerBuild(triggerProject, upstreamBuild, buildParametersAction);
 
         // redirect to the view page.
         try {
@@ -304,15 +280,58 @@ public class BuildPipelineView extends View {
     }
 
     /**
-     * Request to invoke a build of the current pipeline base project
+     * Given an AbstractProject and a build number the associated AbstractBuild will be retrieved.
+     * @param buildNo - Build number
+     * @param project - AbstractProject
+     * @return The AbstractBuild associated with the AbstractProject and build number.
      */
-    public void invokeBuild() {
-        final List<Action> buildActions = new ArrayList<Action>();
-        final UserCause userInvokedCause = new UserCause();
+    private AbstractBuild<?, ?> retrieveBuild(int buildNo, final AbstractProject<?, ?> project) {
+        AbstractBuild<?, ?> build = null;
+        for (final AbstractBuild<?, ?> tmpUpBuild : (List<AbstractBuild<?, ?>>) project.getBuilds()) {
+            if (tmpUpBuild.getNumber() == buildNo) {
+                build = tmpUpBuild;
+                break;
+            }
+        }
+        return build;
+    }
 
-        getSelectedProject().scheduleBuild(getSelectedProject().getQuietPeriod(), userInvokedCause,
-            buildActions.toArray(new Action[buildActions.size()]));
+    /**
+     * Given an AbstractBuild will retrieve the associated ParametersAction 
+     * @param build - The AbstractBuild
+     * @return - AbstractBuild's ParametersAction
+     */
+    private Action retrieveBuildParametersAction(AbstractBuild<?, ?> build) {
+        // Retrieve the List of Actions from the build
+        Action buildParametersAction = null;
+        if (build != null) {
+            // If a ParametersAction is found, save them
+            for (Action nextAction : build.getActions()) {
+                if (nextAction instanceof ParametersAction) {
+                    buildParametersAction = nextAction;
+                }
+            }
+        }
+        return buildParametersAction;
+    }
 
+    /**
+     * Schedules a build to start.
+     * 
+     * The build will take an upstream build as its Cause and a set of ParametersAction from the upstream build.
+     * @param triggerProject - Schedule a build to start on this AbstractProject 
+     * @param upstreamBuild - The upstream AbstractBuild that will be used as a Cause for the triggerProject's build.
+     * @param buildParametersAction - The upstream ParametersAction that will be used as an Action for the triggerProject's build.
+     */
+    private void triggerBuild(final AbstractProject<?, ?> triggerProject, AbstractBuild<?, ?> upstreamBuild, Action buildParametersAction) {
+        final hudson.model.Cause.UpstreamCause upstreamCause = new hudson.model.Cause.UpstreamCause((Run<?, ?>) upstreamBuild);
+        if (buildParametersAction == null) {
+            final List<Action> buildActions = new ArrayList<Action>();
+            triggerProject.scheduleBuild(triggerProject.getQuietPeriod(), upstreamCause, 
+                    buildActions.toArray(new Action[buildActions.size()]));
+        } else {
+            triggerProject.scheduleBuild(triggerProject.getQuietPeriod(), upstreamCause, buildParametersAction);
+        }
     }
 
     /**
