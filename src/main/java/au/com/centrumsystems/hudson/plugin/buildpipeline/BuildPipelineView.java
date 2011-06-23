@@ -442,11 +442,22 @@ public class BuildPipelineView extends View {
     @Override
     public boolean contains(final TopLevelItem item) {
         return this.getItems().contains(item);
-        // return false;
     }
 
+    /**
+     * If a project name is changed we check if the selected job for this view also needs to be changed.
+     * @param item - The Item that has been renamed
+     * @param oldName - The old name of the Item
+     * @param newName - The new name of the Item
+     * 
+     */
     @Override
     public void onJobRenamed(final Item item, final String oldName, final String newName) {
+        if (item instanceof AbstractProject) {
+            if ((oldName != null) && (oldName.equals(this.selectedJob))) {
+                setSelectedJob(newName);
+            }
+        }   
     }
 
     @Override
