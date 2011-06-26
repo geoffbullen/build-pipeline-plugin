@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * @author marcinp
@@ -72,6 +73,9 @@ public class BuildPipelineForm {
      */
     private void placeProjectInGrid(final int startingRow, final int startingColumn, final ProjectForm projectForm) {
         int row = startingRow;
+        if (!doesRowContainPreviousEntries(projectGrid.get(row), startingColumn)) {
+            row++;
+        }
         if (projectGrid.get(row) == null) {
             projectGrid.put(row, new HashMap<Integer, ProjectForm>());
         }
@@ -99,6 +103,9 @@ public class BuildPipelineForm {
     private void placeBuildInGrid(final int startingRow, final int startingColumn, final BuildForm buildForm,
             final Map<Integer, Map<Integer, BuildForm>> buildGrid) {
         int row = startingRow;
+        if (!doesRowContainPreviousEntries(buildGrid.get(row), startingColumn)) {
+            row++;
+        }
         if (buildGrid.get(row) == null) {
             buildGrid.put(row, new HashMap<Integer, BuildForm>());
         }
@@ -110,6 +117,29 @@ public class BuildPipelineForm {
         }
     }
 
+    /**
+     * Tests if the row of the grid already contains entries in the columns greater than 
+     * the entered column.
+     * @param rowOfGrid - The row of the grid
+     * @param col - The current column of the grid 
+     * @return - true: The row does contain data in the columns greater than col,
+     *          false: The row does not contain data in the columns greater than col
+     */
+    private boolean doesRowContainPreviousEntries(Map<Integer, ?> rowOfGrid, int col) {
+        if (rowOfGrid != null) {
+            for (Entry<Integer, ?> entry : rowOfGrid.entrySet()) {
+                if (entry.getKey() >= col) {
+                    if (entry.getValue() != null) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        } else {
+            return true;
+        }
+    }
+    
     public Map<Integer, Map<Integer, ProjectForm>> getProjectGrid() {
         return projectGrid;
     }
