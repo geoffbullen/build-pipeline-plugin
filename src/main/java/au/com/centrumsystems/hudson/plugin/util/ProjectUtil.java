@@ -25,9 +25,13 @@
 package au.com.centrumsystems.hudson.plugin.util;
 
 import hudson.model.DependencyGraph;
+import hudson.model.ParameterValue;
 import hudson.model.AbstractProject;
 import hudson.model.Descriptor;
 import hudson.model.Hudson;
+import hudson.model.ParameterDefinition;
+import hudson.model.ParametersAction;
+import hudson.model.ParametersDefinitionProperty;
 import hudson.tasks.Publisher;
 import hudson.util.DescribableList;
 
@@ -47,7 +51,7 @@ public final class ProjectUtil {
     /**
      * Default constructor
      */
-    private ProjectUtil() {
+    public ProjectUtil() {
 
     }
 
@@ -92,16 +96,18 @@ public final class ProjectUtil {
     public static boolean isManualTrigger(final AbstractProject<?, ?> upstreamProject, final AbstractProject<?, ?> downstreamProject) {
 
         boolean manualTrigger = false;
-        final DescribableList<Publisher, Descriptor<Publisher>> upstreamPublishersLists = upstreamProject.getPublishersList();
-
-        for (final Publisher upstreamPub : upstreamPublishersLists) {
-            if (upstreamPub instanceof BuildPipelineTrigger) {
-                final String manualDownstreamProjects = ((BuildPipelineTrigger) upstreamPub).getDownstreamProjectNames();
-                final String[] downstreamProjs = manualDownstreamProjects.split(",");
-                for (final String nextProj : downstreamProjs) {
-                    if (downstreamProject.getName().equalsIgnoreCase(nextProj.trim())) {
-                        manualTrigger = true;
-                        break;
+        if ((upstreamProject != null) && (downstreamProject != null)) {
+            final DescribableList<Publisher, Descriptor<Publisher>> upstreamPublishersLists = upstreamProject.getPublishersList();
+    
+            for (final Publisher upstreamPub : upstreamPublishersLists) {
+                if (upstreamPub instanceof BuildPipelineTrigger) {
+                    final String manualDownstreamProjects = ((BuildPipelineTrigger) upstreamPub).getDownstreamProjectNames();
+                    final String[] downstreamProjs = manualDownstreamProjects.split(",");
+                    for (final String nextProj : downstreamProjs) {
+                        if (downstreamProject.getName().equalsIgnoreCase(nextProj.trim())) {
+                            manualTrigger = true;
+                            break;
+                        }
                     }
                 }
             }
@@ -109,5 +115,30 @@ public final class ProjectUtil {
 
         return manualTrigger;
 
+    }
+    
+    /**
+     * Gets the ParametersAction of an AbstractProject
+     * @param project - The AbstractProject
+     * @return The ParametersAction of the AbstractProject
+     */
+    public static ParametersAction getProjectParametersAction(AbstractProject<?, ?> project) {
+        if (project != null) {
+            final ParametersDefinitionProperty property = project.getProperty(ParametersDefinitionProperty.class);
+            if (property == null) {
+                return null;
+            }
+            
+            final List<ParameterValue> parameters = new ArrayList<ParameterValue>();
+            for (ParameterDefinition pd : property.getParameterDefinitions()) {
+                final ParameterValue param = pd.getDefaultParameterValue();
+                if (param != null) {
+                    parameters.add(param);
+                }
+            }
+            return new ParametersAction(parameters);
+        } else {
+            return null;
+        }
     }
 }
