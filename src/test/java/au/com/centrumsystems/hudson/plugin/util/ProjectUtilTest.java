@@ -27,11 +27,15 @@ package au.com.centrumsystems.hudson.plugin.util;
 import hudson.model.AbstractProject;
 import hudson.model.FreeStyleProject;
 import hudson.model.Hudson;
+import hudson.model.ParametersAction;
+import hudson.model.ParametersDefinitionProperty;
+import hudson.model.StringParameterDefinition;
 import hudson.tasks.BuildTrigger;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -93,6 +97,7 @@ public class ProjectUtilTest extends HudsonTestCase {
         assertTrue(proj2 + " should be a manual trigger", ProjectUtil.isManualTrigger(project1, project2));
         assertFalse(proj3 + " should be an automatic trigger", ProjectUtil.isManualTrigger(project1, project3));
 
+        assertFalse(ProjectUtil.isManualTrigger(null, null));
     }
 
     @Test
@@ -129,4 +134,28 @@ public class ProjectUtilTest extends HudsonTestCase {
         assertEquals("The project URL should have been " + proj1Url, proj1Url, pipelineBuild.getProjectURL());
     }
 
+    @Test
+    public void testGetProjectParametersAction() throws IOException, InterruptedException, ExecutionException {
+        final String proj1 = "Proj1";
+        final String proj2 = "Proj2";
+        final String paramKey = "testKey";
+        final String paramValue = "testValue";
+
+        // Create a test project
+        final FreeStyleProject project1 = createFreeStyleProject(proj1);
+        // Add a String parameter
+        project1.addProperty((new ParametersDefinitionProperty(new StringParameterDefinition(paramKey, paramValue))));
+        final FreeStyleProject project2 = createFreeStyleProject(proj2);
+
+        // Important; we must do this step to ensure that the dependency graphs are updated
+        Hudson.getInstance().rebuildDependencyGraph();
+
+        // Test the method
+        ParametersAction params = ProjectUtil.getProjectParametersAction(project1);
+        assertEquals(params.getParameter(paramKey).getName(), paramKey);
+        params = ProjectUtil.getProjectParametersAction(project2);
+        assertNull(params);
+        
+        assertNull(ProjectUtil.getProjectParametersAction(null));
+    }
 }
