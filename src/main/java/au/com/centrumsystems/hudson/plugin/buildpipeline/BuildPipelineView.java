@@ -33,7 +33,6 @@ import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.Descriptor.FormException;
 import hudson.model.Hudson;
-import hudson.model.ParametersAction;
 import hudson.model.Run;
 import hudson.model.View;
 
@@ -50,6 +49,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
+import au.com.centrumsystems.hudson.plugin.util.BuildUtil;
 import au.com.centrumsystems.hudson.plugin.util.ProjectUtil;
 
 /**
@@ -206,9 +206,9 @@ public class BuildPipelineView extends View {
     }
 
     /**
-     * Returns the HTML containing the build pipeline to display.
+     * Returns BuildPipelineForm containing the build pipeline to display.
      * 
-     * @return A String containing the HTML code for the project and build pipelines.
+     * @return - Representation of the projects and their related builds making up the build pipeline view
      * @throws URISyntaxException
      *             {@link URISyntaxException}
      */
@@ -266,7 +266,8 @@ public class BuildPipelineView extends View {
 
         final AbstractBuild<?, ?> upstreamBuild = retrieveBuild(upstreamBuildNo, upstreamProject);
 
-        final Action buildParametersAction = retrieveBuildParametersAction(upstreamBuild);
+        // Get parameters from upstream build
+        final Action buildParametersAction = BuildUtil.getAllBuildParametersAction(upstreamBuild, triggerProject);
         
         triggerBuild(triggerProject, upstreamBuild, buildParametersAction);
 
@@ -293,25 +294,6 @@ public class BuildPipelineView extends View {
             }
         }
         return build;
-    }
-
-    /**
-     * Given an AbstractBuild will retrieve the associated ParametersAction 
-     * @param build - The AbstractBuild
-     * @return - AbstractBuild's ParametersAction
-     */
-    private Action retrieveBuildParametersAction(AbstractBuild<?, ?> build) {
-        // Retrieve the List of Actions from the build
-        Action buildParametersAction = null;
-        if (build != null) {
-            // If a ParametersAction is found, save them
-            for (Action nextAction : build.getActions()) {
-                if (nextAction instanceof ParametersAction) {
-                    buildParametersAction = nextAction;
-                }
-            }
-        }
-        return buildParametersAction;
     }
 
     /**
