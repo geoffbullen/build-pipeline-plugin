@@ -24,14 +24,23 @@
  */
 package au.com.centrumsystems.hudson.plugin.buildpipeline;
 
+import hudson.model.Action;
+import hudson.model.FreeStyleBuild;
 import hudson.model.FreeStyleProject;
+import hudson.model.Hudson;
 import hudson.model.Job;
+import hudson.model.Run;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.jvnet.hudson.test.HudsonTestCase;
+import hudson.model.Cause.UpstreamCause;
+
+import au.com.centrumsystems.hudson.plugin.buildpipeline.trigger.BuildPipelineTrigger;
 
 /**
  * Test Build Pipeline View
@@ -113,5 +122,126 @@ public class BuildPipelineViewTest extends HudsonTestCase {
         // False
         testView = new BuildPipelineView(bpViewName, bpViewTitle, "", noOfBuilds, false);
         assertFalse(proj1, testView.isTriggerOnlyLatestJob());
+    }
+
+    @Test
+    public void testHasDownstreamProjects() throws IOException {
+        final String bpViewName = "MyTestView";
+        final String bpViewTitle = "MyTestViewTitle";
+        final String proj1 = "Proj1";
+        final String proj2 = "Proj2";
+        final String noOfBuilds = "5";
+        final FreeStyleProject project1 = createFreeStyleProject(proj1);
+        final FreeStyleProject project2 = createFreeStyleProject(proj2);
+
+        // Add project2 as a post build action: build other project
+        project1.getPublishersList().add(new BuildPipelineTrigger(proj2));
+
+        // Important; we must do this step to ensure that the dependency graphs are updated
+        Hudson.getInstance().rebuildDependencyGraph();
+
+        // Test a valid case
+        BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds, false);
+
+        assertTrue(testView.hasDownstreamProjects(project1));
+        assertFalse(testView.hasDownstreamProjects(project2));
+    }
+
+    @Test
+    public void testGetDownstreamProjects() throws IOException {
+        final String bpViewName = "MyTestView";
+        final String bpViewTitle = "MyTestViewTitle";
+        final String proj1 = "Proj1";
+        final String proj2 = "Proj2";
+        final String noOfBuilds = "5";
+        final FreeStyleProject project1 = createFreeStyleProject(proj1);
+        final FreeStyleProject project2 = createFreeStyleProject(proj2);
+
+        // Add project2 as a post build action: build other project
+        project1.getPublishersList().add(new BuildPipelineTrigger(proj2));
+
+        // Important; we must do this step to ensure that the dependency graphs are updated
+        Hudson.getInstance().rebuildDependencyGraph();
+
+        // Test a valid case
+        BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds, false);
+
+        assertEquals(testView.getDownstreamProjects(project1).get(0), project2);
+        assertEquals(testView.getDownstreamProjects(project2).size(), 0);
+    }
+
+    @Test
+    public void testGetBuildPipelineForm() throws Exception {
+        final String bpViewName = "MyTestView";
+        final String bpViewTitle = "MyTestViewTitle";
+        final String proj1 = "Proj1";
+        final String proj2 = "Proj2";
+        final String proj3 = "Proj3";
+        FreeStyleBuild build1;
+        final String noOfBuilds = "5";
+        final FreeStyleProject project1 = createFreeStyleProject(proj1);
+        final FreeStyleProject project2 = createFreeStyleProject(proj2);
+        final FreeStyleProject project3 = createFreeStyleProject(proj3);
+
+        // Add project2 as a post build action: build other project
+        project1.getPublishersList().add(new BuildPipelineTrigger(proj2));
+        project2.getPublishersList().add(new BuildPipelineTrigger(proj3));
+
+        // Important; we must do this step to ensure that the dependency graphs are updated
+        Hudson.getInstance().rebuildDependencyGraph();
+
+        // Build project1
+        build1 = buildAndAssertSuccess(project1);
+        waitUntilNoActivity();
+
+        // Test a valid case
+        BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds, false);
+        
+        UpstreamCause upstreamCause = new hudson.model.Cause.UpstreamCause((Run<?, ?>) build1);
+        final List<Action> buildActions = new ArrayList<Action>();
+        project2.scheduleBuild(0, upstreamCause, buildActions.toArray(new Action[buildActions.size()]));
+        waitUntilNoActivity();
+        
+        upstreamCause = new hudson.model.Cause.UpstreamCause((Run<?, ?>) project2.getBuildByNumber(1));
+        project3.scheduleBuild(0, upstreamCause, buildActions.toArray(new Action[buildActions.size()]));
+        waitUntilNoActivity();
+
+        BuildPipelineForm testForm = testView.getBuildPipelineForm();
+        
+        assertEquals(testForm.getProjectGrid().get(0).get(0).getName(), proj1);
+        assertEquals(testForm.getProjectGrid().get(0).get(1).getName(), proj2);
+        assertEquals(testForm.getProjectGrid().get(0).get(2).getName(), proj3);
+
+        assertEquals(testForm.getBuildGrids().get(0).get(0).get(0).getName(), build1.getFullDisplayName());
+        assertEquals(testForm.getBuildGrids().get(0).get(0).get(1).getName(), proj2 + " #1");
+        assertEquals(testForm.getBuildGrids().get(0).get(0).get(2).getName(), proj3 + " #1");
+
+        // Test a null case
+        testView.setSelectedJob(null);
+        assertNull(testView.getBuildPipelineForm());
+    }
+
+    @Test
+    public void testOnJobRenamed() throws IOException {
+        final String bpViewName = "MyTestView";
+        final String bpViewTitle = "MyTestViewTitle";
+        final String proj1 = "Proj1";
+        final String proj2 = "Proj2";
+        final String proj3 = "Proj3";
+        final String noOfBuilds = "5";
+        final FreeStyleProject project1 = createFreeStyleProject(proj1);
+
+        // Add project2 as a post build action: build other project
+        project1.getPublishersList().add(new BuildPipelineTrigger(proj2));
+
+        // Important; we must do this step to ensure that the dependency graphs are updated
+        Hudson.getInstance().rebuildDependencyGraph();
+
+        // Test a valid case
+        BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds, false);
+        
+        assertEquals(testView.getJob(proj1), project1);
+        project1.renameTo(proj3);
+        assertEquals(testView.getJob(proj3), project1);
     }
 }
