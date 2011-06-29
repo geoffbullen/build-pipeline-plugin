@@ -24,6 +24,7 @@ public class BuildPipelineFormTest {
     final ProjectForm pB = new ProjectForm("B");
     final ProjectForm pB1 = new ProjectForm("B1");
     final ProjectForm pB2 = new ProjectForm("B2");
+    final ProjectForm pC = new ProjectForm("C");
     
     // builds
     final BuildForm b1 = new BuildForm("1");
@@ -40,6 +41,7 @@ public class BuildPipelineFormTest {
     final BuildForm bB = new BuildForm("B");
     final BuildForm bB1 = new BuildForm("B1");
     final BuildForm bB2 = new BuildForm("B2");
+    final BuildForm bC = new BuildForm("C");
 
     @Before
     public void setup() {
@@ -52,6 +54,7 @@ public class BuildPipelineFormTest {
         
         pInit.getDependencies().add(pA);
         pInit.getDependencies().add(pB);
+        pInit.getDependencies().add(pC);
         pA.getDependencies().add(pA1);
         pA.getDependencies().add(pA2);
         pB.getDependencies().add(pB1);
@@ -66,6 +69,7 @@ public class BuildPipelineFormTest {
 
         bInit.getDependencies().add(bA);
         bInit.getDependencies().add(bB);
+        bInit.getDependencies().add(bC);
         bA.getDependencies().add(bA1);
         bA.getDependencies().add(bA2);
         bB.getDependencies().add(bB1);
@@ -149,7 +153,8 @@ public class BuildPipelineFormTest {
         // |    | |A2|
         // |    |B|B1|
         // |    | |B2|
-        assertThat(buildPipelineForm.getProjectGrid().keySet().size(), is(4));
+        // |    |C|  |
+        assertThat(buildPipelineForm.getProjectGrid().keySet().size(), is(5));
         assertThat(buildPipelineForm.getProjectGrid().get(0).get(0), is(pInit));
         assertThat(buildPipelineForm.getProjectGrid().get(0).get(1), is(pA));
         assertThat(buildPipelineForm.getProjectGrid().get(0).get(2), is(pA1));
@@ -162,6 +167,9 @@ public class BuildPipelineFormTest {
         assertThat(buildPipelineForm.getProjectGrid().get(3).get(0), is(nullValue()));
         assertThat(buildPipelineForm.getProjectGrid().get(3).get(1), is(nullValue()));
         assertThat(buildPipelineForm.getProjectGrid().get(3).get(2), is(pB2));
+        assertThat(buildPipelineForm.getProjectGrid().get(4).get(0), is(nullValue()));
+        assertThat(buildPipelineForm.getProjectGrid().get(4).get(1), is(pC));
+        assertThat(buildPipelineForm.getProjectGrid().get(4).get(2), is(nullValue()));
     }
 
     @Test
@@ -175,10 +183,12 @@ public class BuildPipelineFormTest {
         // |    | |A2|
         // |    |B|B1|
         // |    | |B2|
+        // |    |C|  |
         // |Init|A|A1|
         // |    | |A2|
         // |    |B|B1|
         // |    | |B2|
+        // |    |C|  |
         assertThat(buildPipelineForm.getBuildGrids().size(), is(2));
         assertThat(buildPipelineForm.getBuildGrids().get(0).get(0).get(0), is(bInit));
         assertThat(buildPipelineForm.getBuildGrids().get(0).get(0).get(1), is(bA));
@@ -192,6 +202,8 @@ public class BuildPipelineFormTest {
         assertThat(buildPipelineForm.getBuildGrids().get(0).get(3).get(0), is(nullValue()));
         assertThat(buildPipelineForm.getBuildGrids().get(0).get(3).get(1), is(nullValue()));
         assertThat(buildPipelineForm.getBuildGrids().get(0).get(3).get(2), is(bB2));
+        assertThat(buildPipelineForm.getBuildGrids().get(0).get(4).get(0), is(nullValue()));
+        assertThat(buildPipelineForm.getBuildGrids().get(0).get(4).get(1), is(bC));
         assertThat(buildPipelineForm.getBuildGrids().get(1).get(0).get(0), is(bInit));
         assertThat(buildPipelineForm.getBuildGrids().get(1).get(0).get(1), is(bA));
         assertThat(buildPipelineForm.getBuildGrids().get(1).get(0).get(2), is(bA1));
@@ -204,5 +216,7 @@ public class BuildPipelineFormTest {
         assertThat(buildPipelineForm.getBuildGrids().get(1).get(3).get(0), is(nullValue()));
         assertThat(buildPipelineForm.getBuildGrids().get(1).get(3).get(1), is(nullValue()));
         assertThat(buildPipelineForm.getBuildGrids().get(1).get(3).get(2), is(bB2));
+        assertThat(buildPipelineForm.getBuildGrids().get(1).get(4).get(0), is(nullValue()));
+        assertThat(buildPipelineForm.getBuildGrids().get(1).get(4).get(1), is(bC));
     }
 }
