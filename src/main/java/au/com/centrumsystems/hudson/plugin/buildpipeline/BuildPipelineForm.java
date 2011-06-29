@@ -72,10 +72,7 @@ public class BuildPipelineForm {
      *            project to be placed
      */
     private void placeProjectInGrid(final int startingRow, final int startingColumn, final ProjectForm projectForm) {
-        int row = startingRow;
-        if (!doesRowContainPreviousEntries(projectGrid.get(row), startingColumn)) {
-            row++;
-        }
+        int row = getNextAvailableRow(projectGrid, startingRow, startingColumn);
         if (projectGrid.get(row) == null) {
             projectGrid.put(row, new HashMap<Integer, ProjectForm>());
         }
@@ -102,10 +99,7 @@ public class BuildPipelineForm {
      */
     private void placeBuildInGrid(final int startingRow, final int startingColumn, final BuildForm buildForm,
             final Map<Integer, Map<Integer, BuildForm>> buildGrid) {
-        int row = startingRow;
-        if (!doesRowContainPreviousEntries(buildGrid.get(row), startingColumn)) {
-            row++;
-        }
+        int row = getNextAvailableRow(buildGrid, startingRow, startingColumn);
         if (buildGrid.get(row) == null) {
             buildGrid.put(row, new HashMap<Integer, BuildForm>());
         }
@@ -118,6 +112,35 @@ public class BuildPipelineForm {
     }
 
     /**
+     * Determines the next row of the grid that should be populated
+     * @param grid - The grid of objects to be analysed
+     * @param currentRow - The current row of the grid being used
+     * @param currentColumn - The current column of the grid being used
+     * @return - The row number to be used
+     */
+    private int getNextAvailableRow(Map<Integer, ? extends Map<Integer, ?>> grid, int currentRow, int currentColumn) {
+        int nextRow = currentRow;
+        boolean nextRoundFound = false;
+        if (grid != null) {
+            // For each row of the grid
+            while (!nextRoundFound) {
+                final Map<Integer, ?> gridRow = grid.get(nextRow);
+                if (gridRow != null) {
+                    if (rowAlreadyContainsData(gridRow, currentColumn)) {
+                        nextRow++;
+                    } else {
+                        nextRoundFound = true;
+                    }
+                } else {
+                    nextRoundFound = true;
+                }
+            }
+        }
+        
+        return nextRow;
+    }
+
+    /**
      * Tests if the row of the grid already contains entries in the columns greater than 
      * the entered column.
      * @param rowOfGrid - The row of the grid
@@ -125,21 +148,21 @@ public class BuildPipelineForm {
      * @return - true: The row does contain data in the columns greater than col,
      *          false: The row does not contain data in the columns greater than col
      */
-    private boolean doesRowContainPreviousEntries(Map<Integer, ?> rowOfGrid, int col) {
+    private boolean rowAlreadyContainsData(Map<Integer, ?> rowOfGrid, int col) {
         if (rowOfGrid != null) {
             for (Entry<Integer, ?> entry : rowOfGrid.entrySet()) {
                 if (entry.getKey() >= col) {
                     if (entry.getValue() != null) {
-                        return false;
+                        return true;
                     }
                 }
             }
-            return true;
+            return false;
         } else {
-            return true;
+            return false;
         }
     }
-    
+
     public Map<Integer, Map<Integer, ProjectForm>> getProjectGrid() {
         return projectGrid;
     }
