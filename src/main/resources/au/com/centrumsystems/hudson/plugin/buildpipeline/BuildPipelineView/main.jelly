@@ -72,11 +72,15 @@
 			<div>
 				<!-- If the user has the Build Project permission include a hyperlink to build the base project.-->
 				<j:if test="${from.hasSelectedProject()}">
-					<j:if test="${from.hasBuildPermission(from.getSelectedProject())}">
+			 	<j:set var="hasBuildPermission" type="boolean" value="${from.hasBuildPermission(from.getSelectedProject())}"/>
+					<j:if test="${hasBuildPermission}">
 						<a href="${rootURL}/job/${from.getSelectedProject().getName()}/build?delay=0sec"><img height="24" style="margin: 2px;" alt="" width="24" src="${rootURL}/images/24x24/clock.png" /></a>
 						<a href="${rootURL}/job/${from.getSelectedProject().getName()}/build?delay=0sec">Start Build of Pipeline for ${from.getSelectedProject().getName()}</a>
 					</j:if>
 				</j:if>
+				<j:if test="${!(from.hasSelectedProject())}">
+			 		<j:set var="hasBuildPermission" type="boolean" value="false"/>
+			 	</j:if>
 			</div>
 			<!-- Hyperlink to show/hide the legend-->
 			<div href="#" id="legendLever"> 
@@ -209,6 +213,7 @@
 								<j:set var="build" type="au.com.centrumsystems.hudson.plugin.buildpipeline.BuildForm" value="${buildGrid.get(x).get(y)}"/>
 									<j:if test="${build != null}">
 										<td>
+											<div class="progress-bar"></div>
 											<div class="${build.getStatus()} rounded" id="${i}${x}${y}">
 											<!-- "i=" ${i} "x= "${x} "y= "${y}-->
 												<div>
@@ -231,11 +236,13 @@
 													</j:if>
 													<j:if test="${y != 0}">
 														<j:if test="${build.getStatus() == 'FAILURE'}">
-															<button class="triggerButton" onclick="triggerBuild('${build.getUpstreamProjectName()}', '${build.getUpstreamBuildNumber()}', '${build.getProjectName()}')">Retry</button>
+															<j:if test="${hasBuildPermission}">
+																<button class="triggerButton" onclick="triggerBuild('${build.getUpstreamProjectName()}', '${build.getUpstreamBuildNumber()}', '${build.getProjectName()}')">Retry</button>
+															</j:if>
 														</j:if>
 													</j:if>
 													<j:if test="${build.isManual()}">
-														<j:if test="${from.hasConfigurePermission()}">
+														<j:if test="${hasBuildPermission}">
 															<j:if test="${!(from.isTriggerOnlyLatestJob())}">
 																<button class="triggerButton" onclick="triggerBuild('${build.getUpstreamProjectName()}', '${build.getUpstreamBuildNumber()}', '${build.getProjectName()}')">Trigger</button>
 															</j:if>
