@@ -323,6 +323,43 @@ public class PipelineBuild {
     }
 
     /**
+     * Returns the estimated percentage complete of the current build.
+     * 
+     * @return - Estimated percentage complete of the current build.
+     */
+    public long getBuildProgress() {
+        if (this.currentBuild != null && this.currentBuild.isBuilding()) {
+            final long duration = new Date().getTime()
+                    - this.currentBuild.getTimestamp().getTimeInMillis();
+            return calculatePercentage(duration, this.currentBuild
+                    .getEstimatedDuration());
+        } else {
+            return 0;
+        }
+    }
+
+    /**
+     * Calculates percentage of the current duration to the estimated duration.
+     * Caters for the possibility that current duration will be longer than
+     * estimated duration
+     * 
+     * @param duration
+     *            - Current running time in milliseconds
+     * @param estimatedDuration
+     *            - Estimated running time in milliseconds
+     * @return - Percentage of current duration to estimated duration
+     */
+    protected long calculatePercentage(long duration, long estimatedDuration) {
+        if (duration > estimatedDuration) {
+            return 100;
+        }
+        if (estimatedDuration > 0) {
+            return (long) ((float) duration / (float) estimatedDuration * 100);
+        }
+        return 100;
+    }
+
+    /**
      * Get the SCM revision no of a particular currentBuild
      * 
      * @return The revision number of the currentBuild or "No Revision"

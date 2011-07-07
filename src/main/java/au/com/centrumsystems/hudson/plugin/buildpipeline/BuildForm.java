@@ -35,6 +35,11 @@ public class BuildForm {
     private String duration = "";
 
     /**
+     * build progress
+     */
+    private long buildProgress;
+
+    /**
      * upstream project
      */
     private String upstreamProjectName = "";
@@ -91,6 +96,7 @@ public class BuildForm {
             dependencies.add(new BuildForm(downstream));
         }
         startTime = pipelineBuild.getStartTime();
+        buildProgress = pipelineBuild.getBuildProgress();
     }
 
     /**
@@ -178,4 +184,11 @@ public class BuildForm {
         }
         return shortRevision;
     }
+    
+    /**
+     * @return estimated build progress
+     */
+    public long getBuildProgress() {
+        return buildProgress;
+    }    
 }
