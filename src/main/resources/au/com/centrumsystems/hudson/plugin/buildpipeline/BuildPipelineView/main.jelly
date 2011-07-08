@@ -147,7 +147,7 @@
 	
 		 	<j:set var="buildPipelineForm" type="au.com.centrumsystems.hudson.plugin.buildpipeline.BuildPipelineForm" value="${from.getBuildPipelineForm()}"/>
 			<table id="pipelines">
-				<j:set var="projectGrid" value="${buildPipelineForm.getProjectGrid()}"/>
+-               <j:set var="projectGrid" value="${buildPipelineForm.getProjectGrid()}"/>
 				<!-- projects -->
 				<j:forEach begin="${0}" end="${buildPipelineForm.getGridHeight() - 1}" indexVar="x">
 					<tr id='project-pipeline'>
@@ -194,7 +194,7 @@
 						</j:forEach>
 					</tr>
 				</j:forEach>
-				<!-- builds -->
+                <!-- builds -->
 				<j:forEach items="${buildPipelineForm.getBuildGrids()}" var="buildGrid" indexVar="i">
 					<tbody class="pipelineGroup">
 						<j:forEach begin="${0}" end="${buildGrid.keySet().size() - 1}" indexVar="x">
@@ -215,7 +215,6 @@
 								<j:set var="build" type="au.com.centrumsystems.hudson.plugin.buildpipeline.BuildForm" value="${buildGrid.get(x).get(y)}"/>
 									<j:if test="${build != null}">
 										<td>
-											<div class="progress-bar"></div>
 											<div class="${build.getStatus()} rounded" id="${i}${x}${y}">
 											<!-- "i=" ${i} "x= "${x} "y= "${y}-->
 												<div>
@@ -249,24 +248,29 @@
 														</div>
 													</j:if>
 													<j:if test="${y != 0}">
-														<j:if test="${build.getStatus() == 'FAILURE'}">
-															<j:if test="${hasBuildPermission}">
-																<button class="triggerButton" onclick="triggerBuild('${build.getUpstreamProjectName()}', '${build.getUpstreamBuildNumber()}', '${build.getProjectName()}')">Retry</button>
-															</j:if>
-														</j:if>
+                                                        <j:if test="${build.getStatus() == 'FAILURE'}">
+                                                            <j:if test="${hasBuildPermission}">
+                                                                <button class="triggerButton" onclick="triggerBuild('${build.getUpstreamProjectName()}', '${build.getUpstreamBuildNumber()}', '${build.getProjectName()}')">Retry</button>
+                                                            </j:if>
+                                                        </j:if>
+                                                        ${build.getStatus()}
 													</j:if>
 													<j:if test="${build.isManual()}">
 														<j:if test="${hasBuildPermission}">
-															<j:if test="${!(from.isTriggerOnlyLatestJob())}">
-																<button class="triggerButton" onclick="triggerBuild('${build.getUpstreamProjectName()}', '${build.getUpstreamBuildNumber()}', '${build.getProjectName()}')">Trigger</button>
-															</j:if>
-															<j:if test="${(from.isTriggerOnlyLatestJob())}">
-																<j:if test="${i == 0}">
-																	<button class="triggerButton" onclick="triggerBuild('${build.getUpstreamProjectName()}', '${build.getUpstreamBuildNumber()}', '${build.getProjectName()}')">Trigger</button>
-																</j:if>
+															<j:if test="${buildPipelineForm.getDisplayTrigger(x,y)}">
+                                                                <button class="triggerButton" onclick="triggerBuild('${build.getUpstreamProjectName()}', '${build.getUpstreamBuildNumber()}', '${build.getProjectName()}')">Trigger</button>
 															</j:if>
 														</j:if>
 													</j:if>
+													<!-- If trigger only latest job is set then we only want the latest job to be able to be triggered
+													       This is achieved by making a call to update the 'display' boolean for each job to false 
+													       if the current build is either success or manual (has run or can be triggered to be run) -->
+                                                    <j:if test="${build.getStatus() == 'SUCCESS' or build.getStatus() == 'MANUAL'}">
+                                                        <j:if test="${(from.isTriggerOnlyLatestJob())}">
+                                                            ${buildPipelineForm.setDisplayTrigger(x,y, false)}  
+                                                        </j:if>
+                                                    </j:if>
+													
 												</div>
 											</div>
 										</td>

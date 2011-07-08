@@ -32,6 +32,10 @@ public class ProjectForm {
      * downstream projects
      */
     private final List<ProjectForm> dependencies;
+    /**
+     * display manual build
+     */
+    private Boolean displayTrigger;
 
     /**
      * @param name
@@ -43,6 +47,7 @@ public class ProjectForm {
         health = "";
         url = "";
         dependencies = new ArrayList<ProjectForm>();
+        this.displayTrigger = true;
     }
 
     /**
@@ -61,6 +66,7 @@ public class ProjectForm {
         for (final AbstractProject<?, ?> dependency : project.getDownstreamProjects()) {
             dependencies.add(new ProjectForm(dependency));
         }
+        this.displayTrigger = true;
 
     }
 
@@ -83,7 +89,41 @@ public class ProjectForm {
     public List<ProjectForm> getDependencies() {
         return dependencies;
     }
+    
+    /**
+     * Gets a display value to determine whether a manual jobs 'trigger' button 
+     * will be shown.  This is used along with isTriggerOnlyLatestJob property 
+     * allow only the latest version of a job to run.  
+     * 
+     * Works by:
+     * Initially always defaulted to true.
+     * If isTriggerOnlyLatestJob is set to true then as the html code is rendered the first
+     * job which should show the trigger button will render and then a call will be made
+     * to 'setDisplayTrigger' to change the value to both so all future jobs will 
+     * not display the trigger.  see main.jelly
+     * @return boolean whether to display or not
+     */
+    public Boolean getDisplayTrigger() {
+        return displayTrigger;
+    }
 
+    /**
+     * Sets a display value to determine whether a manual jobs 'trigger' button 
+     * will be shown.  This is used along with isTriggerOnlyLatestJob property 
+     * allow only the latest version of a job to run.  
+     * 
+     * Works by:
+     * Initially always defaulted to true.
+     * If isTriggerOnlyLatestJob is set to true then as the html code is rendered the first
+     * job which should show the trigger button will render and then a call will be made
+     * to 'setDisplayTrigger' to change the value to both so all future jobs will 
+     * not display the trigger.  see main.jelly
+     * @param display - boolean to indicate whether the trigger button should be shown
+     */
+    public void setDisplayTrigger(Boolean display) {
+        displayTrigger = display;
+    }
+    
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -113,4 +153,5 @@ public class ProjectForm {
         }
         return true;
     }
+
 }
