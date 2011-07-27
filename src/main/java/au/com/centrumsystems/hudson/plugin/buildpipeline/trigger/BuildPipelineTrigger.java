@@ -87,7 +87,7 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
         if (downstreamProjectNames == null) {
             throw new IllegalArgumentException();
         }
-
+        
         setDownstreamProjectNames(downstreamProjectNames);
     }
 
@@ -105,7 +105,11 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
             for (final Object o : Items.fromNameList(downstreamProjectNames, AbstractProject.class)) {
                 final AbstractProject downstream = (AbstractProject) o;
 
-                graph.addDependency(createDownstreamDependency(owner, downstream));
+                if (owner != downstream) {
+                	graph.addDependency(createDownstreamDependency(owner, downstream));
+                } else {
+                	removeDownstreamTrigger(this, owner, downstream.getName());
+                }
             }
         }
     }
@@ -186,6 +190,38 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
         return onDownstreamProjectRenamed(oldName, null);
     }
 
+    /**
+     * Removes a downstream trigger (BuildPipelineTrigger) from a project.
+     * This removes both:
+     * 	- The downstream project name from the downstreamProjectNames attribute
+     * 	- The BuildPipelineTrigger from the AbstractProject publishers list
+     * 
+     * @param bpTrigger - The BuildPipelineTrigger to be removed
+     * @param ownerProject - The AbstractProject from which to removed the BuildPipelineTrigger
+     * @param downstreamProjectName - The name of the AbstractProject associated with the BuildPipelineTrigger
+     */
+    public void removeDownstreamTrigger(BuildPipelineTrigger bpTrigger, final AbstractProject<?, ?> ownerProject, final String downstreamProjectName) {
+        if (bpTrigger != null) {
+            boolean changed = false;
+
+            if (bpTrigger.onDownstreamProjectDeleted(downstreamProjectName)) {
+                changed = true;
+            }
+
+            if (changed) {
+                try {
+                    if (bpTrigger.getDownstreamProjectNames().length() == 0) {
+                        ownerProject.getPublishersList().remove(bpTrigger);
+                    }
+                    ownerProject.save();
+                } catch (final IOException e) {
+                    Logger.getLogger(BuildPipelineTrigger.class.getName()).log(Level.WARNING,
+                            "Failed to persist project BuildPipelineTrigger setting during removal of " + downstreamProjectName, e);
+                }
+            }
+        }
+    }
+    
     /**
      * Set the descriptor for build pipeline trigger class This descriptor is only attached to Build Trigger Post Build action in JOB
      * configuration page
@@ -287,23 +323,7 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
                     final String oldName = item.getName();
                     final BuildPipelineTrigger bpTrigger = p.getPublishersList().get(BuildPipelineTrigger.class);
                     if (bpTrigger != null) {
-                        boolean changed = false;
-
-                        if (bpTrigger.onDownstreamProjectDeleted(oldName)) {
-                            changed = true;
-                        }
-
-                        if (changed) {
-                            try {
-                                if (bpTrigger.getDownstreamProjectNames().length() == 0) {
-                                    p.getPublishersList().remove(bpTrigger);
-                                }
-                                p.save();
-                            } catch (final IOException e) {
-                                Logger.getLogger(ItemListenerImpl.class.getName()).log(Level.WARNING,
-                                        "Failed to persist project BuildPipelineTrigger setting during remove of " + oldName, e);
-                            }
-                        }
+                    	bpTrigger.removeDownstreamTrigger(bpTrigger, p, oldName);
                     }
                 }
             }
