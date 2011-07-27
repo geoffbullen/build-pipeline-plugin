@@ -106,9 +106,9 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
                 final AbstractProject downstream = (AbstractProject) o;
 
                 if (owner != downstream) {
-                	graph.addDependency(createDownstreamDependency(owner, downstream));
+                    graph.addDependency(createDownstreamDependency(owner, downstream));
                 } else {
-                	removeDownstreamTrigger(this, owner, downstream.getName());
+                    removeDownstreamTrigger(this, owner, downstream.getName());
                 }
             }
         }
@@ -193,14 +193,15 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
     /**
      * Removes a downstream trigger (BuildPipelineTrigger) from a project.
      * This removes both:
-     * 	- The downstream project name from the downstreamProjectNames attribute
-     * 	- The BuildPipelineTrigger from the AbstractProject publishers list
+     *  - The downstream project name from the downstreamProjectNames attribute
+     *  - The BuildPipelineTrigger from the AbstractProject publishers list
      * 
      * @param bpTrigger - The BuildPipelineTrigger to be removed
      * @param ownerProject - The AbstractProject from which to removed the BuildPipelineTrigger
      * @param downstreamProjectName - The name of the AbstractProject associated with the BuildPipelineTrigger
      */
-    public void removeDownstreamTrigger(BuildPipelineTrigger bpTrigger, final AbstractProject<?, ?> ownerProject, final String downstreamProjectName) {
+    public void removeDownstreamTrigger(BuildPipelineTrigger bpTrigger,
+          final AbstractProject<?, ?> ownerProject, final String downstreamProjectName) {
         if (bpTrigger != null) {
             boolean changed = false;
 
@@ -323,7 +324,7 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
                     final String oldName = item.getName();
                     final BuildPipelineTrigger bpTrigger = p.getPublishersList().get(BuildPipelineTrigger.class);
                     if (bpTrigger != null) {
-                    	bpTrigger.removeDownstreamTrigger(bpTrigger, p, oldName);
+                        bpTrigger.removeDownstreamTrigger(bpTrigger, p, oldName);
                     }
                 }
             }
