@@ -160,7 +160,7 @@
 								<td>
 									<div class="PROJECT rounded">
 										<div>
-											<a href="${project.getUrl()}" target="_blank">${project.getName()}</a>
+											<a href="${project.getUrl()}">${project.getName()}</a>
 											<div class="statusImages">
 												<span class="status ${project.getResult()}"></span>
 												<span class="status"><img src="${rootURL}/images/24x24/${project.getHealth()}" /></span>
@@ -219,7 +219,7 @@
 											<!-- "i=" ${i} "x= "${x} "y= "${y}-->
 												<div>
 													<j:if test="${build.getUrl().length() > 0}">
-													<a href="${build.getUrl()}" target="_blank">
+													<a href="${build.getUrl()}">
 														<div>${build.getName()}</div>
 													</a>
 													</j:if>
