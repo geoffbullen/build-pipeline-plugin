@@ -4,6 +4,7 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import hudson.model.Item;
 
 /**
  * @author marcinp
@@ -60,6 +61,11 @@ public class BuildForm {
     private boolean manual;
 
     /**
+     * does user have build permission
+     */
+    private boolean hasBuildPermission;
+    
+    /**
      * build start time
      */
     private Date startTime;
@@ -80,6 +86,7 @@ public class BuildForm {
         url = pipelineBuild.getBuildResultURL();
         duration = pipelineBuild.getBuildDuration();
         manual = pipelineBuild.isManual();
+        hasBuildPermission = pipelineBuild.getProject().hasPermission(Item.BUILD);
 
         if (pipelineBuild.getUpstreamPipelineBuild() != null) {
             if (pipelineBuild.getUpstreamPipelineBuild().getProject() != null) {
@@ -132,6 +139,10 @@ public class BuildForm {
         return manual;
     }
 
+    public boolean hasBuildPermission() {
+        return hasBuildPermission;
+    }
+
     public String getProjectName() {
         return projectName;
     }
@@ -177,8 +188,8 @@ public class BuildForm {
      */
     public String getShortRevision() {
         String shortRevision;
-        if (revision.length() > 22) {
-            shortRevision = revision.substring(0, 22) + "...";
+        if (revision.length() > 20) {
+            shortRevision = revision.substring(0, 20) + "...";
         } else {
             shortRevision = revision;
         }

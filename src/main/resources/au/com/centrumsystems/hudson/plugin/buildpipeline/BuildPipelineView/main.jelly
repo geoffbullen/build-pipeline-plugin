@@ -203,7 +203,7 @@
 									<j:if test="${x == 0}">
 										<div class="revision rounded">
 											<div>
-												<a href="#" title="${buildGrid.get(x).get(0).getRevision()}">
+												<a href="${buildGrid.get(x).get(0).getUrl()}changes" title="${buildGrid.get(x).get(0).getRevision()}">
 													<div>${buildGrid.get(x).get(0).getShortRevision()}</div>
 												</a>
 											</div>
@@ -256,7 +256,7 @@
                                                         ${build.getStatus()}
 													</j:if>
 													<j:if test="${build.isManual()}">
-														<j:if test="${hasBuildPermission}">
+														<j:if test="${build.hasBuildPermission()}">
 															<j:if test="${buildPipelineForm.getDisplayTrigger(x,y)}">
                                                                 <button class="triggerButton" onclick="triggerBuild('${build.getUpstreamProjectName()}', '${build.getUpstreamBuildNumber()}', '${build.getProjectName()}')">Trigger</button>
 															</j:if>

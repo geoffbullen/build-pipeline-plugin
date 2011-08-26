@@ -29,6 +29,7 @@ import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.FreeStyleProject;
 import hudson.model.Hudson;
+import hudson.EnvVars;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.logging.Level;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONException;
@@ -45,6 +47,7 @@ import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
 
 import org.apache.commons.io.IOUtils;
+import hudson.util.LogTaskListener;
 
 import au.com.centrumsystems.hudson.plugin.util.BuildUtil;
 import au.com.centrumsystems.hudson.plugin.util.HudsonResult;
@@ -435,42 +438,9 @@ public class PipelineBuild {
      * 
      * @return The revision number of the currentBuild
      */
-    private String gitNo() throws MalformedURLException, IOException {
-        InputStream inputStream = null;
-        try {
-            String revNo = null;
-            final URL url = new URL(Hudson.getInstance().getRootUrl() + currentBuild.getUrl()
-                + "api/json?tree=actions[lastBuiltRevision[SHA1]]");
-            inputStream = url.openStream();
-            final JSONObject json = (JSONObject) JSONSerializer.toJSON(IOUtils.toString(inputStream));
-            if (json != null) {
-                try {
-                    final JSONArray actions = json.getJSONArray("actions");
-                    for (final Object object : actions) {
-                        if (object instanceof JSONObject) {
-                            final JSONObject jsonObject = (JSONObject) object;
-                            if (jsonObject.containsKey("lastBuiltRevision")) {
-                                revNo = "Git: " + jsonObject.getJSONObject("lastBuiltRevision").getString("SHA1");
-                            }
-                        }
-                    }
-
-                } catch (final JSONException e) {
-                    // This is not great, but swallow jquery parsing exceptions assuming that some element did not exist, will have a better
-                    // solution one I find a JSON query lib or method
-                    LOGGER.finest("did not find git revision in " + json);
-                }
-            }
-            return revNo;
-        } finally {
-            if (inputStream != null) {
-                try {
-                    inputStream.close();
-                } catch (final IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }
+    private String gitNo() throws MalformedURLException, IOException, InterruptedException {
+        EnvVars envVars = currentBuild.getEnvironment(new LogTaskListener(LOGGER, Level.INFO));
+        return "Git: " + envVars.get("GIT_COMMIT");      
     }
 
     /**
