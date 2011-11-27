@@ -42,7 +42,7 @@ import org.jvnet.hudson.test.HudsonTestCase;
 /**
  * BuildPipelineTrigger test class
  * 
- * @author KevinV
+ * @author Centrum Systems
  * 
  */
 public class BuildPipelineTriggerTest extends HudsonTestCase {

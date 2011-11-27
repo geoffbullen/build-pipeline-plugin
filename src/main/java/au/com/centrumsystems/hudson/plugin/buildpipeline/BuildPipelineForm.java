@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 /**
- * @author marcinp
+ * @author Centrum Systems
  * 
  *         Representation of the projects and their related builds making up the build pipeline view
  * 

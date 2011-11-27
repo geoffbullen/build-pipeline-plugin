@@ -7,7 +7,7 @@ import java.util.List;
 import hudson.model.Item;
 
 /**
- * @author marcinp
+ * @author Centrum Systems
  * 
  *         Representation of a build results pipeline
  * 
@@ -139,6 +139,11 @@ public class BuildForm {
         return manual;
     }
 
+    /**
+     * Accessor for whether the user is permitted to perform a build
+     * 
+     * @return hasPermission true\false
+     * */
     public boolean hasBuildPermission() {
         return hasBuildPermission;
     }

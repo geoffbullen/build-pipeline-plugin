@@ -19,4 +19,10 @@
   	<f:entry title="Restrict Trigger to the Most Recent Build" field="triggerOnlyLatestJob">
 		<f:booleanRadio field="triggerOnlyLatestJob" true="Yes" false="No" default="false"/>
   	</f:entry>
+  	
+  	<f:entry title="Display Progress Bar on a Pipeline activity box" field="displayProgressBar">
+		<f:booleanRadio field="displayProgressBar" true="Yes" false="No" default="false"/>
+  	</f:entry>
+  	
+  	
 </j:jelly>

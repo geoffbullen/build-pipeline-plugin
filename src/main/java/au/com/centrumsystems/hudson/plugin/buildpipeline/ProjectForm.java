@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author marcin
+ * @author Centrum Systems
  * 
  *         Representation of a set of projects
  * 

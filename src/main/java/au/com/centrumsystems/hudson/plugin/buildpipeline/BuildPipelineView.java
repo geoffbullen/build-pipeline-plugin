@@ -69,10 +69,19 @@ public class BuildPipelineView extends View {
 
     /** buildViewTitle. */
     private String buildViewTitle = "";
-    
-    /** Indicates whether only the latest job will be triggered.**/
+
+    /** Indicates whether only the latest job will be triggered. **/
     private boolean triggerOnlyLatestJob;
-    
+
+    /*
+     * Keep feature flag properties in one place so that it is easy to refactor them out later.
+     */
+    /* Feature flags - START */
+
+    /** Indicates whether the progress bar should be displayed */
+    private boolean displayProgressBar;
+
+    /* Feature flags - END */
 
     /** A Logger object is used to log messages */
     private static final Logger LOGGER = Logger.getLogger(BuildPipelineView.class.getName());
@@ -93,16 +102,21 @@ public class BuildPipelineView extends View {
      *            the first job in the build pipeline.
      * @param noOfDisplayedBuilds
      *            a count of the number of builds displayed on the view
-     * @param triggerOnlyLatestJob Indicates whether only the latest job will be triggered.
+     * @param triggerOnlyLatestJob
+     *            Indicates whether only the latest job will be triggered.
+     * @param displayProgressBar
+     *            Indicates whether progress bar should appear on each pipeline activity for in progress builds
+     * 
      */
     @DataBoundConstructor
-    public BuildPipelineView(final String name, final String buildViewTitle, final String selectedJob, final String noOfDisplayedBuilds, 
-            final boolean triggerOnlyLatestJob) {
+    public BuildPipelineView(final String name, final String buildViewTitle, final String selectedJob, final String noOfDisplayedBuilds,
+            final boolean triggerOnlyLatestJob, final boolean displayProgressBar) {
         super(name);
         setBuildViewTitle(buildViewTitle);
         setSelectedJob(selectedJob);
         setNoOfDisplayedBuilds(noOfDisplayedBuilds);
         setTriggerOnlyLatestJob(triggerOnlyLatestJob);
+        setDisplayProgressBar(displayProgressBar);
     }
 
     /**
@@ -123,7 +137,7 @@ public class BuildPipelineView extends View {
         this.noOfDisplayedBuilds = req.getParameter("noOfDisplayedBuilds");
         this.buildViewTitle = req.getParameter("buildViewTitle");
         this.triggerOnlyLatestJob = Boolean.valueOf(req.getParameter("_.triggerOnlyLatestJob"));
-        
+        this.displayProgressBar = Boolean.valueOf(req.getParameter("_.displayProgressBar"));
     }
 
     /**
@@ -259,7 +273,7 @@ public class BuildPipelineView extends View {
 
         // Get parameters from upstream build
         final Action buildParametersAction = BuildUtil.getAllBuildParametersAction(upstreamBuild, triggerProject);
-        
+
         triggerBuild(triggerProject, upstreamBuild, buildParametersAction);
 
         // redirect to the view page.
@@ -272,8 +286,11 @@ public class BuildPipelineView extends View {
 
     /**
      * Given an AbstractProject and a build number the associated AbstractBuild will be retrieved.
-     * @param buildNo - Build number
-     * @param project - AbstractProject
+     * 
+     * @param buildNo
+     *            - Build number
+     * @param project
+     *            - AbstractProject
      * @return The AbstractBuild associated with the AbstractProject and build number.
      */
     private AbstractBuild<?, ?> retrieveBuild(int buildNo, final AbstractProject<?, ?> project) {
@@ -291,15 +308,19 @@ public class BuildPipelineView extends View {
      * Schedules a build to start.
      * 
      * The build will take an upstream build as its Cause and a set of ParametersAction from the upstream build.
-     * @param triggerProject - Schedule a build to start on this AbstractProject 
-     * @param upstreamBuild - The upstream AbstractBuild that will be used as a Cause for the triggerProject's build.
-     * @param buildParametersAction - The upstream ParametersAction that will be used as an Action for the triggerProject's build.
+     * 
+     * @param triggerProject
+     *            - Schedule a build to start on this AbstractProject
+     * @param upstreamBuild
+     *            - The upstream AbstractBuild that will be used as a Cause for the triggerProject's build.
+     * @param buildParametersAction
+     *            - The upstream ParametersAction that will be used as an Action for the triggerProject's build.
      */
     private void triggerBuild(final AbstractProject<?, ?> triggerProject, AbstractBuild<?, ?> upstreamBuild, Action buildParametersAction) {
         final hudson.model.Cause.UpstreamCause upstreamCause = new hudson.model.Cause.UpstreamCause((Run<?, ?>) upstreamBuild);
         if (buildParametersAction == null) {
             final List<Action> buildActions = new ArrayList<Action>();
-            triggerProject.scheduleBuild(triggerProject.getQuietPeriod(), upstreamCause, 
+            triggerProject.scheduleBuild(triggerProject.getQuietPeriod(), upstreamCause,
                     buildActions.toArray(new Action[buildActions.size()]));
         } else {
             triggerProject.scheduleBuild(triggerProject.getQuietPeriod(), upstreamCause, buildParametersAction);
@@ -419,9 +440,13 @@ public class BuildPipelineView extends View {
 
     /**
      * If a project name is changed we check if the selected job for this view also needs to be changed.
-     * @param item - The Item that has been renamed
-     * @param oldName - The old name of the Item
-     * @param newName - The new name of the Item
+     * 
+     * @param item
+     *            - The Item that has been renamed
+     * @param oldName
+     *            - The old name of the Item
+     * @param newName
+     *            - The new name of the Item
      * 
      */
     @Override
@@ -430,12 +455,27 @@ public class BuildPipelineView extends View {
             if ((oldName != null) && (oldName.equals(this.selectedJob))) {
                 setSelectedJob(newName);
             }
-        }   
+        }
     }
 
     @Override
     public Item doCreateItem(final StaplerRequest req, final StaplerResponse rsp) throws IOException, ServletException {
         return Hudson.getInstance().doCreateItem(req, rsp);
+    }
+
+    /**
+     * @param displayProgressBar
+     *            the displayProgressBar to set
+     */
+    public void setDisplayProgressBar(boolean displayProgressBar) {
+        this.displayProgressBar = displayProgressBar;
+    }
+
+    /**
+     * @return the displayProgressBar
+     */
+    public boolean isDisplayProgressBar() {
+        return displayProgressBar;
     }
 
 }

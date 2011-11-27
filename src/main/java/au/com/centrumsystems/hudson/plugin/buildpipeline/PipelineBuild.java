@@ -54,7 +54,7 @@ import au.com.centrumsystems.hudson.plugin.util.HudsonResult;
 import au.com.centrumsystems.hudson.plugin.util.ProjectUtil;
 
 /**
- * @author KevinV
+ * @author Centrum Systems
  * 
  */
 public class PipelineBuild {
@@ -439,7 +439,7 @@ public class PipelineBuild {
      * @return The revision number of the currentBuild
      */
     private String gitNo() throws MalformedURLException, IOException, InterruptedException {
-        EnvVars envVars = currentBuild.getEnvironment(new LogTaskListener(LOGGER, Level.INFO));
+        final EnvVars envVars = currentBuild.getEnvironment(new LogTaskListener(LOGGER, Level.INFO));
         return "Git: " + envVars.get("GIT_COMMIT");      
     }
 

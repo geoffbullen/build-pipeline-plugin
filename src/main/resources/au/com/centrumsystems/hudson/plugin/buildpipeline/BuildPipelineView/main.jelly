@@ -230,20 +230,23 @@
 														<div class="secondaryInfo" id="tooltip${i}${x}${y}">
 															<div>${build.getStartDate()}</div>
 															<div>${build.getStartTime()}</div>
-															<j:if test="${build.getStatus() != 'FAILURE' and build.getStatus() != 'BUILDING'}">
+															<j:if test="${build.getStatus() != 'FAILURE' and (build.getStatus() != 'BUILDING' or from.isDisplayProgressBar() != 'true')}">
 																<div>Duration: ${build.getDuration()}</div>
 
 															</j:if>
-															<j:if test="${build.getStatus() == 'BUILDING'}">
-															    <div id="progressbar${build.hashCode()}" value='${build.getBuildProgress()}'></div>
-																<script type="text/javascript">
-                                                                    jQuery('#progressbar${build.hashCode()}').progressbar({ value: ${build.getBuildProgress()} });                                                                   
-                                                                    // If the build is taking longer than the estimated time then we want to show a red progess bar
-																	if(${build.getBuildProgress()} == 100) {
-                                                                       jQuery('#progressbar${build.hashCode()}').children().css('background', 'none red');
-                                                                       jQuery('#progressbar${build.hashCode()}').children().css('border', '1px solid red');
-																    }
-																</script>
+															<!-- display the progress bar if configured to do so -->
+															<j:if test="${(from.isDisplayProgressBar())}">
+																<j:if test="${build.getStatus() == 'BUILDING'}">
+																    <div id="progressbar${build.hashCode()}" value='${build.getBuildProgress()}'></div>
+																	<script type="text/javascript">
+	                                                                    jQuery('#progressbar${build.hashCode()}').progressbar({ value: ${build.getBuildProgress()} });                                                                   
+	                                                                    <!-- If the build is taking longer than the estimated time then we want to show a red progess bar -->
+																		if(${build.getBuildProgress()} == 100) {
+	                                                                       jQuery('#progressbar${build.hashCode()}').children().css('background', 'none red');
+	                                                                       jQuery('#progressbar${build.hashCode()}').children().css('border', '1px solid red');
+																	    }
+																	</script>
+																</j:if>
 															</j:if>
 														</div>
 													</j:if>

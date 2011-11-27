@@ -34,7 +34,7 @@ import org.junit.Test;
 import org.jvnet.hudson.test.HudsonTestCase;
 
 /**
- * @author KevinV
+ * @author Centrum Systems
  * 
  */
 public class DownstreamDependencyTest extends HudsonTestCase {
