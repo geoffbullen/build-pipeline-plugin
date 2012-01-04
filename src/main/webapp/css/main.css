@@ -51,6 +51,22 @@ span.status, span.status img {
 	width: 120px;
 }
 
+.rounded .header-name {
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+	display: inline-block;
+}
+
+.rounded .header .build {
+	width: 90px;
+}
+
+.rounded .header-number {
+	width: 20px;
+	display: inline-block;
+}
+
 .secondaryInfo {
 	font-size: 9px;
 	font-weight: normal;

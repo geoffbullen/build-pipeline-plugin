@@ -28,13 +28,13 @@ import hudson.Extension;
 import hudson.model.Action;
 import hudson.model.Item;
 import hudson.model.TopLevelItem;
-import hudson.model.ViewDescriptor;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.Descriptor.FormException;
 import hudson.model.Hudson;
 import hudson.model.Run;
 import hudson.model.View;
+import hudson.model.ViewDescriptor;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -48,8 +48,10 @@ import javax.servlet.ServletException;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
+import org.kohsuke.stapler.bind.JavaScriptMethod;
 
 import au.com.centrumsystems.hudson.plugin.util.BuildUtil;
+import au.com.centrumsystems.hudson.plugin.util.HudsonResult;
 import au.com.centrumsystems.hudson.plugin.util.ProjectUtil;
 
 /**
@@ -110,7 +112,7 @@ public class BuildPipelineView extends View {
      */
     @DataBoundConstructor
     public BuildPipelineView(final String name, final String buildViewTitle, final String selectedJob, final String noOfDisplayedBuilds,
-            final boolean triggerOnlyLatestJob, final boolean displayProgressBar) {
+        final boolean triggerOnlyLatestJob, final boolean displayProgressBar) {
         super(name);
         setBuildViewTitle(buildViewTitle);
         setSelectedJob(selectedJob);
@@ -236,6 +238,20 @@ public class BuildPipelineView extends View {
         return buildPipelineForm;
     }
 
+    @JavaScriptMethod
+    public long getBuildProgress(final int buildNumber) {
+        long buildProgress = 0L;
+        final PipelineBuild pipelineBuild = new PipelineBuild(getSelectedProject().getBuildByNumber(buildNumber), getSelectedProject(),
+            null);
+        // if the build is done building, send a negative value
+        if (HudsonResult.BUILDING.toString().equals(pipelineBuild.getCurrentBuildResult())) {
+            buildProgress = pipelineBuild.getBuildProgress();
+        } else {
+            buildProgress = -1L;
+        }
+        return buildProgress;
+    }
+
     /**
      * Retrieves the project URL
      * 
@@ -293,7 +309,7 @@ public class BuildPipelineView extends View {
      *            - AbstractProject
      * @return The AbstractBuild associated with the AbstractProject and build number.
      */
-    private AbstractBuild<?, ?> retrieveBuild(int buildNo, final AbstractProject<?, ?> project) {
+    private AbstractBuild<?, ?> retrieveBuild(final int buildNo, final AbstractProject<?, ?> project) {
         AbstractBuild<?, ?> build = null;
         for (final AbstractBuild<?, ?> tmpUpBuild : (List<AbstractBuild<?, ?>>) project.getBuilds()) {
             if (tmpUpBuild.getNumber() == buildNo) {
@@ -316,12 +332,13 @@ public class BuildPipelineView extends View {
      * @param buildParametersAction
      *            - The upstream ParametersAction that will be used as an Action for the triggerProject's build.
      */
-    private void triggerBuild(final AbstractProject<?, ?> triggerProject, AbstractBuild<?, ?> upstreamBuild, Action buildParametersAction) {
+    private void triggerBuild(final AbstractProject<?, ?> triggerProject, final AbstractBuild<?, ?> upstreamBuild,
+        final Action buildParametersAction) {
         final hudson.model.Cause.UpstreamCause upstreamCause = new hudson.model.Cause.UpstreamCause((Run<?, ?>) upstreamBuild);
         if (buildParametersAction == null) {
             final List<Action> buildActions = new ArrayList<Action>();
             triggerProject.scheduleBuild(triggerProject.getQuietPeriod(), upstreamCause,
-                    buildActions.toArray(new Action[buildActions.size()]));
+                buildActions.toArray(new Action[buildActions.size()]));
         } else {
             triggerProject.scheduleBuild(triggerProject.getQuietPeriod(), upstreamCause, buildParametersAction);
         }
@@ -424,7 +441,7 @@ public class BuildPipelineView extends View {
         return Boolean.toString(triggerOnlyLatestJob);
     }
 
-    public void setTriggerOnlyLatestJob(boolean triggerOnlyLatestJob) {
+    public void setTriggerOnlyLatestJob(final boolean triggerOnlyLatestJob) {
         this.triggerOnlyLatestJob = triggerOnlyLatestJob;
     }
 
@@ -467,7 +484,7 @@ public class BuildPipelineView extends View {
      * @param displayProgressBar
      *            the displayProgressBar to set
      */
-    public void setDisplayProgressBar(boolean displayProgressBar) {
+    public void setDisplayProgressBar(final boolean displayProgressBar) {
         this.displayProgressBar = displayProgressBar;
     }
 

@@ -6,15 +6,15 @@
 	<script type="text/javascript" src="${rootURL}/plugin/build-pipeline-plugin/js/jquery.1.5.1.min.js"></script>
 	<script type="text/javascript" src="${rootURL}/plugin/build-pipeline-plugin/js/jquery-ui-1.8.14.custom.min.js"></script>
 	<script type="text/javascript">
-		function triggerBuild(upstreamProjectName, upstreamBuildNumber, triggerProjectName) {
+		var triggerBuild = function(upstreamProjectName, upstreamBuildNumber, triggerProjectName) {
 			$('#upstreamProjectName').val(upstreamProjectName);
 			$('#upstreamBuildNumber').val(upstreamBuildNumber);
 			$('#triggerProjectName').val(triggerProjectName);
 			document.pipelineViewForm.action = "manualExecution";
 			$('#manualExecutionForm').submit();
 		}
-		$(document).ready(function(){
-					
+		
+		$(function(){					
 			//hide legend and register on click function to show and hide
 			$('#legendView').hide();
 			$('#legendLever').click(function() {
@@ -25,9 +25,10 @@
 	            icons: {
 	                primary: "trigger"
 	            }
-	        });	        
+	        });		
 		});
 	        
+		
  		
 	</script>
 	<style>
@@ -147,7 +148,7 @@
 	
 		 	<j:set var="buildPipelineForm" type="au.com.centrumsystems.hudson.plugin.buildpipeline.BuildPipelineForm" value="${from.getBuildPipelineForm()}"/>
 			<table id="pipelines">
--               <j:set var="projectGrid" value="${buildPipelineForm.getProjectGrid()}"/>
+	            <j:set var="projectGrid" value="${buildPipelineForm.getProjectGrid()}"/>
 				<!-- projects -->
 				<j:forEach begin="${0}" end="${buildPipelineForm.getGridHeight() - 1}" indexVar="x">
 					<tr id='project-pipeline'>
@@ -159,8 +160,9 @@
 							<j:if test="${project != null}">
 								<td>
 									<div class="PROJECT rounded">
-										<div>
+										<div class="header-name">
 											<a href="${project.getUrl()}">${project.getName()}</a>
+											<hr />
 											<div class="statusImages">
 												<span class="status ${project.getResult()}"></span>
 												<span class="status"><img src="${rootURL}/images/24x24/${project.getHealth()}" /></span>
@@ -217,37 +219,51 @@
 										<td>
 											<div class="${build.getStatus()} rounded" id="${i}${x}${y}">
 											<!-- "i=" ${i} "x= "${x} "y= "${y}-->
-												<div>
-													<j:if test="${build.getUrl().length() > 0}">
-													<a href="${build.getUrl()}">
-														<div>${build.getName()}</div>
-													</a>
-													</j:if>
-													<j:if test="${build.getUrl().length() == 0}">
-														<div>${build.getName()}</div>
-													</j:if>
+												<div class="header">
+													<div class="header-name build">
+														<j:if test="${build.getUrl().length() > 0}">
+														<a href="${build.getUrl()}">
+															<div>${project.getName()}</div>
+														</a>
+														</j:if>
+														<j:if test="${build.getUrl().length() == 0}">
+															<div>${project.getName()}</div>
+														</j:if>
+													</div>
+													<div class="header-number">${build.getBuildNumber()}</div>
+													<hr />
 													<j:if test="${!(build.getDuration().length() == 0)}">
 														<div class="secondaryInfo" id="tooltip${i}${x}${y}">
 															<div>${build.getStartDate()}</div>
 															<div>${build.getStartTime()}</div>
-															<j:if test="${build.getStatus() != 'FAILURE' and (build.getStatus() != 'BUILDING' or from.isDisplayProgressBar() != 'true')}">
-																<div>Duration: ${build.getDuration()}</div>
-
-															</j:if>
-															<!-- display the progress bar if configured to do so -->
-															<j:if test="${(from.isDisplayProgressBar())}">
+															<div>
 																<j:if test="${build.getStatus() == 'BUILDING'}">
-																    <div id="progressbar${build.hashCode()}" value='${build.getBuildProgress()}'></div>
-																	<script type="text/javascript">
-	                                                                    jQuery('#progressbar${build.hashCode()}').progressbar({ value: ${build.getBuildProgress()} });                                                                   
-	                                                                    <!-- If the build is taking longer than the estimated time then we want to show a red progess bar -->
-																		if(${build.getBuildProgress()} == 100) {
-	                                                                       jQuery('#progressbar${build.hashCode()}').children().css('background', 'none red');
-	                                                                       jQuery('#progressbar${build.hashCode()}').children().css('border', '1px solid red');
-																	    }
-																	</script>
+																    <script>
+																    	setInterval(function(){
+																	    	var build = <st:bind value="${from}"/>
+																    		build.getBuildProgress(${build.getBuildNumber()}, function(data){
+																    			var id = ${build.hashCode()};
+																	    		var done = data.responseObject();
+																	    		if (done >= 0) {
+																		    		jQuery("#progress-bar-done" + id).attr("style", "width:" + done + "%");
+																		    		jQuery("#progress-bar-left" + id).attr("style", "width:" + (100 - done) + "%");
+																	    		} else {
+																	    			//build is not building anymore, refresh the page to get an updated view
+																	    			location.reload(true);
+																	    		}
+																	    	});
+														    			}, 5000);
+																    </script>
+																    <table class="progress-bar" align="center">
+																    	<tbody>
+																    		<tr>
+																    			<td style="width:${build.getBuildProgress()}%;" class="progress-bar-done" id="progress-bar-done${build.hashCode()}"></td>
+																    			<td style="width:${100 - build.getBuildProgress()}%" class="progress-bar-left" id="progress-bar-left${build.hashCode()}"></td>
+																    		</tr>
+																    	</tbody>
+																    </table>																    
 																</j:if>
-															</j:if>
+															</div>
 														</div>
 													</j:if>
 													<j:if test="${y != 0}">

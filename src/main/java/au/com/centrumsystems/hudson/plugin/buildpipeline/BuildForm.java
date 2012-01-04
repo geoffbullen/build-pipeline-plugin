@@ -1,10 +1,11 @@
 package au.com.centrumsystems.hudson.plugin.buildpipeline;
 
+import hudson.model.Item;
+
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import hudson.model.Item;
 
 /**
  * @author Centrum Systems
@@ -21,6 +22,12 @@ public class BuildForm {
      * build name
      */
     private String name = "";
+
+    /**
+     * build number
+     */
+    private Integer buildNumber;
+
     /**
      * status
      */
@@ -64,7 +71,7 @@ public class BuildForm {
      * does user have build permission
      */
     private boolean hasBuildPermission;
-    
+
     /**
      * build start time
      */
@@ -81,6 +88,7 @@ public class BuildForm {
      */
     public BuildForm(final PipelineBuild pipelineBuild) {
         name = pipelineBuild.getBuildDescription();
+        buildNumber = pipelineBuild.getCurrentBuild() != null ? pipelineBuild.getCurrentBuild().getNumber() : null;
         status = pipelineBuild.getCurrentBuildResult();
         revision = pipelineBuild.getScmRevision();
         url = pipelineBuild.getBuildResultURL();
@@ -200,11 +208,15 @@ public class BuildForm {
         }
         return shortRevision;
     }
-    
+
     /**
      * @return estimated build progress
      */
     public long getBuildProgress() {
         return buildProgress;
-    }    
+    }
+
+    public Integer getBuildNumber() {
+        return buildNumber;
+    }
 }
