@@ -106,19 +106,16 @@ public class BuildPipelineView extends View {
      *            a count of the number of builds displayed on the view
      * @param triggerOnlyLatestJob
      *            Indicates whether only the latest job will be triggered.
-     * @param displayProgressBar
-     *            Indicates whether progress bar should appear on each pipeline activity for in progress builds
      * 
      */
     @DataBoundConstructor
     public BuildPipelineView(final String name, final String buildViewTitle, final String selectedJob, final String noOfDisplayedBuilds,
-        final boolean triggerOnlyLatestJob, final boolean displayProgressBar) {
+        final boolean triggerOnlyLatestJob) {
         super(name);
         setBuildViewTitle(buildViewTitle);
         setSelectedJob(selectedJob);
         setNoOfDisplayedBuilds(noOfDisplayedBuilds);
         setTriggerOnlyLatestJob(triggerOnlyLatestJob);
-        setDisplayProgressBar(displayProgressBar);
     }
 
     /**
@@ -139,7 +136,6 @@ public class BuildPipelineView extends View {
         this.noOfDisplayedBuilds = req.getParameter("noOfDisplayedBuilds");
         this.buildViewTitle = req.getParameter("buildViewTitle");
         this.triggerOnlyLatestJob = Boolean.valueOf(req.getParameter("_.triggerOnlyLatestJob"));
-        this.displayProgressBar = Boolean.valueOf(req.getParameter("_.displayProgressBar"));
     }
 
     /**
@@ -478,21 +474,6 @@ public class BuildPipelineView extends View {
     @Override
     public Item doCreateItem(final StaplerRequest req, final StaplerResponse rsp) throws IOException, ServletException {
         return Hudson.getInstance().doCreateItem(req, rsp);
-    }
-
-    /**
-     * @param displayProgressBar
-     *            the displayProgressBar to set
-     */
-    public void setDisplayProgressBar(final boolean displayProgressBar) {
-        this.displayProgressBar = displayProgressBar;
-    }
-
-    /**
-     * @return the displayProgressBar
-     */
-    public boolean isDisplayProgressBar() {
-        return displayProgressBar;
     }
 
 }

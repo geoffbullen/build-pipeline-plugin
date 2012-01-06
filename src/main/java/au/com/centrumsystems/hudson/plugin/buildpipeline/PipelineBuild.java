@@ -29,25 +29,12 @@ import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.FreeStyleProject;
 import hudson.model.Hudson;
-import hudson.EnvVars;
+import hudson.scm.ChangeLogSet;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
-import java.util.logging.Level;
-
-import net.sf.json.JSONArray;
-import net.sf.json.JSONException;
-import net.sf.json.JSONObject;
-import net.sf.json.JSONSerializer;
-
-import org.apache.commons.io.IOUtils;
-import hudson.util.LogTaskListener;
 
 import au.com.centrumsystems.hudson.plugin.util.BuildUtil;
 import au.com.centrumsystems.hudson.plugin.util.HudsonResult;
@@ -332,19 +319,16 @@ public class PipelineBuild {
      */
     public long getBuildProgress() {
         if (this.currentBuild != null && this.currentBuild.isBuilding()) {
-            final long duration = new Date().getTime()
-                    - this.currentBuild.getTimestamp().getTimeInMillis();
-            return calculatePercentage(duration, this.currentBuild
-                    .getEstimatedDuration());
+            final long duration = new Date().getTime() - this.currentBuild.getTimestamp().getTimeInMillis();
+            return calculatePercentage(duration, this.currentBuild.getEstimatedDuration());
         } else {
             return 0;
         }
     }
 
     /**
-     * Calculates percentage of the current duration to the estimated duration.
-     * Caters for the possibility that current duration will be longer than
-     * estimated duration
+     * Calculates percentage of the current duration to the estimated duration. Caters for the possibility that current duration will be
+     * longer than estimated duration
      * 
      * @param duration
      *            - Current running time in milliseconds
@@ -352,7 +336,7 @@ public class PipelineBuild {
      *            - Estimated running time in milliseconds
      * @return - Percentage of current duration to estimated duration
      */
-    protected long calculatePercentage(long duration, long estimatedDuration) {
+    protected long calculatePercentage(final long duration, final long estimatedDuration) {
         if (duration > estimatedDuration) {
             return 100;
         }
@@ -368,112 +352,37 @@ public class PipelineBuild {
      * @return The revision number of the currentBuild or "No Revision"
      */
     public String getScmRevision() {
-        String revNo = "No Revision";
-        try {
-            if (currentBuild != null) {
-                if ("hudson.scm.SubversionSCM".equals(project.getScm().getType())) {
-                    final String svnNo = svnNo();
-                    if (svnNo != null) {
-                        revNo = svnNo;
-                    }
-                } else if ("hudson.plugins.git.GitSCM".equals(project.getScm().getType())) {
-                    final String gitNo = gitNo();
-                    if (gitNo != null) {
-                        revNo = gitNo;
-                    }
-                } else if ("hudson.plugins.mercurial.MercurialSCM".equals(project.getScm().getType())) {
-                    final String hgNo = hgNo();
-                    if (hgNo != null) {
-                        revNo = hgNo;
-                    }
-                }
-            }
-        } catch (final Exception e) {
-            // if anything goes wrong, ignore and don't show a revision number, no need to bring the whole view down if we cannot see a
-            // revision
-            LOGGER.warning(e.toString());
-        }
-        return revNo;
+        return currentBuild != null ? revNo(currentBuild) : "No revision information available";
     }
 
     /**
-     * Returns the last hg rev
+     * Iterate through builds to find the revisions of the last change sets
      * 
-     * @return revision number of the current build
+     * @param build
+     *            build
+     * @return string with the revision number when it was built
      */
-    private String hgNo() throws MalformedURLException, IOException {
-        InputStream inputStream = null;
-        try {
-            String revNo = null;
-            final URL url = new URL(Hudson.getInstance().getRootUrl() + currentBuild.getUrl() + "api/json?tree=changeSet[items[node,rev]]");
-            inputStream = url.openStream();
-            final JSONObject json = (JSONObject) JSONSerializer.toJSON(IOUtils.toString(inputStream));
-            if (json != null) {
-                try {
-
-                    final JSONArray items = json.getJSONObject("changeSet").getJSONArray("items");
-                    if (items != null && items.size() >= 1) {
-                        revNo = "Hg: " + items.getJSONObject(0).getString("rev") + ":" + items.getJSONObject(0).getString("node");
-                    }
-                } catch (final JSONException e) {
-                    // This is not great, but swallow jquery parsing exceptions assuming that some element did not exist, will have a better
-                    // solution one I find a JSON query lib or method
-                    LOGGER.finest("did not find svn revision in " + json);
+    private String revNo(final AbstractBuild<?, ?> build) {
+        final StringBuilder revisions = new StringBuilder();
+        if (build.getChangeSet() != null && !build.getChangeSet().isEmptySet()) {
+            int i = 0;
+            final int size = build.getChangeSet().getItems().length;
+            for (final ChangeLogSet.Entry changeLogSet : build.getChangeSet()) {
+                if (changeLogSet.getCommitId() != null) {
+                    revisions.append(changeLogSet.getCommitId());
                 }
-            }
-            return revNo;
-        } finally {
-            if (inputStream != null) {
-                try {
-                    inputStream.close();
-                } catch (final IOException e) {
-                    throw new RuntimeException(e);
+                i++;
+                if (changeLogSet.getCommitId() != null && !changeLogSet.getCommitId().isEmpty() && i < size) {
+                    revisions.append(",");
                 }
             }
         }
-    }
-
-    /**
-     * Get the Git revision no of a particular currentBuild
-     * 
-     * @return The revision number of the currentBuild
-     */
-    private String gitNo() throws MalformedURLException, IOException, InterruptedException {
-        final EnvVars envVars = currentBuild.getEnvironment(new LogTaskListener(LOGGER, Level.INFO));
-        return "Git: " + envVars.get("GIT_COMMIT");      
-    }
-
-    /**
-     * Using the hudson api get the subversion info (yes, it is going the long way around)
-     * 
-     * @return subversion revision
-     */
-    private String svnNo() throws MalformedURLException, IOException {
-        InputStream inputStream = null;
-        try {
-            String revNo = null;
-            final URL url = new URL(Hudson.getInstance().getRootUrl() + currentBuild.getUrl()
-                + "api/json?tree=changeSet[revisions[revision]]");
-            inputStream = url.openStream();
-            final JSONObject json = (JSONObject) JSONSerializer.toJSON(IOUtils.toString(inputStream));
-            if (json != null) {
-                try {
-                    revNo = "Svn: " + json.getJSONObject("changeSet").getJSONArray("revisions").getJSONObject(0).getString("revision");
-                } catch (final JSONException e) {
-                    // This is not great, but swallow jquery parsing exceptions assuming that some element did not exist, will have a better
-                    // solution one I find a JSON query lib or method
-                    LOGGER.finest("did not find svn revision in " + json);
-                }
-            }
-            return revNo;
-        } finally {
-            if (inputStream != null) {
-                try {
-                    inputStream.close();
-                } catch (final IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
+        if (!revisions.toString().isEmpty()) {
+            return revisions.toString();
+        } else if (build.getPreviousBuild() != null) {
+            return revNo(build.getPreviousBuild());
+        } else {
+            return "No revision information available";
         }
     }
 
@@ -506,7 +415,6 @@ public class PipelineBuild {
      */
     public Date getStartTime() {
         return currentBuild != null ? currentBuild.getTime() : null;
-
     }
 
 }

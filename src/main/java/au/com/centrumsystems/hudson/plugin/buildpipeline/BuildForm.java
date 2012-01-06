@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.kohsuke.stapler.bind.JavaScriptMethod;
+
 /**
  * @author Centrum Systems
  * 
@@ -95,10 +97,10 @@ public class BuildForm {
         duration = pipelineBuild.getBuildDuration();
         manual = pipelineBuild.isManual();
         hasBuildPermission = pipelineBuild.getProject().hasPermission(Item.BUILD);
+        projectName = pipelineBuild.getProject().getName();
 
         if (pipelineBuild.getUpstreamPipelineBuild() != null) {
             if (pipelineBuild.getUpstreamPipelineBuild().getProject() != null) {
-                projectName = pipelineBuild.getProject().getName();
                 upstreamProjectName = pipelineBuild.getUpstreamPipelineBuild().getProject().getName();
             }
             if (pipelineBuild.getUpstreamBuild() != null) {
@@ -174,7 +176,7 @@ public class BuildForm {
     public String getStartTime() {
         String formattedStartTime = "";
         if (startTime != null) {
-            formattedStartTime = DateFormat.getTimeInstance(DateFormat.FULL).format(startTime);
+            formattedStartTime = DateFormat.getTimeInstance(DateFormat.MEDIUM).format(startTime);
         }
         return formattedStartTime;
     }
@@ -195,21 +197,6 @@ public class BuildForm {
     }
 
     /**
-     * Shortened revision (git SHA1 can get long
-     * 
-     * @return shortened revision
-     */
-    public String getShortRevision() {
-        String shortRevision;
-        if (revision.length() > 20) {
-            shortRevision = revision.substring(0, 20) + "...";
-        } else {
-            shortRevision = revision;
-        }
-        return shortRevision;
-    }
-
-    /**
      * @return estimated build progress
      */
     public long getBuildProgress() {
@@ -218,5 +205,25 @@ public class BuildForm {
 
     public Integer getBuildNumber() {
         return buildNumber;
+    }
+
+    public String getDependencyHashes() {
+        int i = 0;
+        final int size = dependencies.size();
+        final StringBuilder hashes = new StringBuilder("[");
+        for (final BuildForm dependency : dependencies) {
+            hashes.append(dependency.hashCode());
+            i++;
+            if (i < size) {
+                hashes.append(", ");
+            }
+        }
+        hashes.append("]");
+        return hashes.toString();
+    }
+
+    @JavaScriptMethod
+    public String asJSON() {
+        return new BuildJSONBuilder(this).asJSON();
     }
 }
