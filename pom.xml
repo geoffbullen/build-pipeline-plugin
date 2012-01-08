@@ -5,37 +5,30 @@
 		<artifactId>plugin</artifactId>
 		<version>1.446</version>
 	</parent>
-
 	<groupId>org.jvnet.hudson.plugins</groupId>
 	<artifactId>build-pipeline-plugin</artifactId>
 	<version>1.2.4-SNAPSHOT</version>
 	<packaging>hpi</packaging>
-
 	<name>Build Pipeline Plugin</name>
 	<description>This plugin provides build pipeline functionality to Hudson and Jenkins.  This allows a chain of jobs to be visualised in a new view.  Manual jobs in the pipeline can be triggered by a user with the appropriate permissions manually confirming.</description>
-
 	<url>https://code.google.com/p/build-pipeline-plugin</url>
-
 	<licenses>
 		<license>
 			<name>MIT License</name>
 			<url>http://www.opensource.org/licenses/mit-license.php</url>
 		</license>
 	</licenses>
-
 	<scm>
 		<connection>scm:hg:https://build-pipeline-plugin.googlecode.com/hg/</connection>
 		<developerConnection>scm:hg:https://build-pipeline-plugin.googlecode.com/hg/</developerConnection>
 		<url>https://build-pipeline-plugin.googlecode.com/hg/</url>
 	</scm>
-
 	<properties>
 		<code.coverage.percentage>50</code.coverage.percentage>
 		<checkstyle.rules.file>checkstyle_rules.xml</checkstyle.rules.file>
 		<pmd.config.file>pmd_rules.xml</pmd.config.file>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
-
 	<developers>
 		<developer>
 			<id>centrum</id>
@@ -44,7 +37,6 @@
 			<url>http://www.centrumsystems.com.au</url>
 		</developer>
 	</developers>
-
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -59,7 +51,6 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-
 	<build>
 		<plugins>
 			<plugin>
@@ -117,7 +108,6 @@
 					</execution>
 				</executions>
 			</plugin>
-
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-pmd-plugin</artifactId>
@@ -135,7 +125,6 @@
 					</execution>
 				</executions>
 			</plugin>
-
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>findbugs-maven-plugin</artifactId>
@@ -153,7 +142,6 @@
 					</execution>
 				</executions>
 			</plugin>
-
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-release-plugin</artifactId>
@@ -170,7 +158,6 @@
 			</plugin>
 		</plugins>
 	</build>
-
 	<profiles>
 		<profile>
 			<id>hudson-ci</id>
@@ -213,7 +200,5 @@
 				</repository>
 			</distributionManagement>
 		</profile>
-
 	</profiles>
 </project>
-

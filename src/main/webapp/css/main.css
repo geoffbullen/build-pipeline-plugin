@@ -69,8 +69,8 @@ table.build-card tr td {
 }
 
 
-.build-card .build-number {
-	width: 25px;
+.build-card .build-body {
+	height: 38px;
 }
 .build-card .secondary-info {
 	font-size: 0.9em;

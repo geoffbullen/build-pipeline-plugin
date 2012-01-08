@@ -20,10 +20,11 @@ class BuildJSONBuilder {
             startTime(buildForm.startTime)
             duration(buildForm.duration)
             buildUrl(buildForm.url)
-            complete(buildForm.status != 'BUILDING')
+            building(buildForm.status == 'BUILDING')
+			pending(buildForm.status == 'PENDING')
             progress(buildForm.buildProgress)
             progressLeft(100 - buildForm.buildProgress)
-            id(buildForm.hashCode())
+            id(buildForm.id)
         }
         return builder.toString()
     }

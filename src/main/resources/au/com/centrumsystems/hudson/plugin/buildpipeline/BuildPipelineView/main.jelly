@@ -1,4 +1,3 @@
-
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:i="jelly:fmt">
 	<link href="${rootURL}/plugin/build-pipeline-plugin/css/main.css" type="text/css" rel="stylesheet" />
 	<link rel="stylesheet" href="${rootURL}/plugin/build-pipeline-plugin/css/redmond/jquery-ui-1.8.14.custom.css"></link>
@@ -17,7 +16,7 @@
 		</tr>
 		<tr class="build-body">
 			<td class="build-number">{{buildNumber}}</td>
-			<td id="tooltip100" class="secondary-info">
+			<td class="secondary-info">
 				<div>{{startDate}}</div>
 				<div>{{startTime}}</div>
 				{{#if complete}}
@@ -28,8 +27,8 @@
 		<tr class="build-actions">
 			<td colspan="2">
 				<div class="status-bar">
-					{{#unless complete}}
-						<a href="${build.getUrl()}console">
+					{{#if building}}
+						<a href="{{buildUrl}}console">
 							<table class="progress-bar" align="center">
 								<tbody>
 									<tr>
@@ -39,13 +38,24 @@
 								</tbody>
 							</table>
 						</a>
-					{{/unless}}
+					{{/if}}
+					{{#if pending}}
+						<a href="{{buildUrl}}console">
+							<table class="progress-bar" align="center">
+								<tbody>
+									<tr class="unknown">
+										<td></td>
+									</tr>
+								</tbody>
+							</table>
+						</a>
+					{{/if}}
 				</div>
 				<div class="icons">
-					<a href="{{buildUrl}}/console">
+					<a href="{{buildUrl}}console">
 						<img title="console" alt="console" src="{{rootUrl}}/images/16x16/terminal.png" />
 					</a>
-					<a href="{{buildUrl}}/changes">
+					<a href="{{buildUrl}}changes">
 						<img title="changes" alt="changes" src="{{rootUrl}}/images/16x16/notepad.png" />
 					</a>
 				</div>
@@ -54,16 +64,8 @@
 	</tbody>
 </table>
 	</script>
-	<script type="text/javascript">
-		var triggerBuild = function(upstreamProjectName, upstreamBuildNumber, triggerProjectName) {
-			$('#upstreamProjectName').val(upstreamProjectName);
-			$('#upstreamBuildNumber').val(upstreamBuildNumber);
-			$('#triggerProjectName').val(triggerProjectName);
-			document.pipelineViewForm.action = "manualExecution";
-			$('#manualExecutionForm').submit();
-		}
-		
-		$(function(){					
+	<script type="text/javascript">	
+		jQuery(function(){					
 			//hide legend and register on click function to show and hide
 			$('#legendView').hide();
 			$('#legendLever').click(function() {
@@ -76,26 +78,52 @@
 	            }
 	        });		
 		});
-	        
-		var showProgress = function(build, buildNumber, id, dependencies) {
-			var intervalId = setInterval(function(){		    	
-	    		build.getBuildProgress(buildNumber, function(data){
-		    		var done = data.responseObject();
-		    		if (done >= 0) {
-			    		jQuery("#progress-bar-done" + id).attr("style", "width:" + done + "%");
-			    		jQuery("#progress-bar-left" + id).attr("style", "width:" + (100 - done) + "%");
-		    		} else {
-		    			//build is not building anymore, refresh the page to get an updated view
-		    			//location.reload(true);
-		    			clearInterval(intervalId);
-		    			location.href = location.href + "?bla=bla";
-		    		}
-		    	});
-			}, 5000);
-		} 		
+	
+		var BuildPipeline = function(){
+			var buildCardTemplateSource = $("#build-card-template").html();
+			this.buildCardTemplate = Handlebars.compile(buildCardTemplateSource);
+			this.buildProxies = {}
+		};
 		
-		var buildCardTemplateSource = $("#build-card-template").html();
-		var buildCardTemplate = Handlebars.compile(buildCardTemplateSource);
+		BuildPipeline.prototype = {
+			triggerBuild: function(upstreamProjectName, upstreamBuildNumber, triggerProjectName) {
+				$('#upstreamProjectName').val(upstreamProjectName);
+				$('#upstreamBuildNumber').val(upstreamBuildNumber);
+				$('#triggerProjectName').val(triggerProjectName);
+				document.pipelineViewForm.action = "manualExecution";
+				$('#manualExecutionForm').submit();
+			},
+			showProgress : function(id, dependencies) {
+				var buildPipeline = this;
+				var intervalId = setInterval(function(){		    	
+					buildPipeline.buildProxies[id].getBuildProgressUpdate(function(data){
+			    		var done = data.responseObject();
+			    		if (done > 0) {
+				    		jQuery("#progress-bar-done" + id).attr("style", "width:" + done + "%");
+				    		jQuery("#progress-bar-left" + id).attr("style", "width:" + (100 - done) + "%");
+			    		} else {
+			    			clearInterval(intervalId);
+			    			//update current build card
+			    			buildPipeline.updateBuildCard(id);
+			    			//kick off status tracking for all dependencies
+			    			jQuery.each(dependencies, function(){
+				    			jQuery("#pipelines").trigger("show-status-" + this);
+			    			});
+			    		}
+			    	});
+				}, 5000);
+			},
+			updateBuildCard : function(id) {
+				var buildPipeline = this;
+				buildPipeline.buildProxies[id].asJSON(function(data){
+					jQuery("#build-" + id).empty();
+					jQuery("#build-" + id).append(buildPipeline.buildCardTemplate(jQuery.parseJSON(data.responseObject())));
+				});
+			}
+		}
+		
+		var buildPipeline = new BuildPipeline()		
+		
 	</script>
 	<style>
 span.SUCCESS {
@@ -140,12 +168,17 @@ span.ABORT {
 </style>
 	<!-- <form method="post" action="manualExecution" id="manualExecutionForm">-->
 	<form method="post" name="pipelineViewForm" action="" id="manualExecutionForm">
-		<input name="upstreamProjectName" id="upstreamProjectName" type="hidden" /> <input name="upstreamBuildNumber" id="upstreamBuildNumber" type="hidden" /> <input name="triggerProjectName" id="triggerProjectName" type="hidden" />
+		<input name="upstreamProjectName" id="upstreamProjectName" type="hidden" />
+		<input name="upstreamBuildNumber" id="upstreamBuildNumber" type="hidden" />
+		<input name="triggerProjectName" id="triggerProjectName" type="hidden" />
 		<div id="build-pipeline-plugin-content">
 			<div>
 				<h1>Build Pipeline View: ${from.getBuildViewTitle()}</h1>
 			</div>
 			<div>${from.getDescription()}</div>
+			<script>
+				var buildView = <st:bind value="${form}" />
+			</script>
 			<!-- If the user has the Configure View permission include a hyperlink to configure this view.-->
 			<j:if test="${from.hasConfigurePermission()}">
 				<a href="configure"><img height="24" style="margin: 2px;" alt="" width="24" src="${rootURL}/images/24x24/setting.png" /></a>
@@ -256,7 +289,8 @@ span.ABORT {
 								<j:if test="${y + 1 != buildPipelineForm.getGridWidth()}">
 									<j:set var="nextIndex" value="${y + 1}" />
 									<td class="next"><j:if test="${projectGrid.get(x).containsKey(nextIndex.intValue())}">
-											<span class="status next"> <img src="${rootURL}/images/24x24/next.png" />
+											<span class="status next">
+												<img src="${rootURL}/images/24x24/next.png" />
 											</span>
 										</j:if></td>
 								</j:if>
@@ -280,12 +314,26 @@ span.ABORT {
 								<j:forEach begin="${0}" end="${buildPipelineForm.getGridWidth() - 1}" indexVar="y">
 									<j:set var="build" type="au.com.centrumsystems.hudson.plugin.buildpipeline.BuildForm" value="${buildGrid.get(x).get(y)}" />
 									<j:if test="${build != null}">
-										<td id="build-${build.hashCode()}">
+										<td id="build-${build.getId()}">
 										</td>
 										<script>
+											//generate build-card 
 											var buildData = ${build.asJSON()};
 											buildData.rootUrl = "${rootURL}";
-											jQuery("#build-${build.hashCode()}").append(buildCardTemplate(buildData));
+											jQuery("#build-${build.getId()}").append(buildPipeline.buildCardTemplate(buildData));
+											
+											//add build proxy to proxies for future use
+											buildPipeline.buildProxies[${build.getId()}] = <st:bind value="${build}" />;
+											<j:if test="${build.getStatus() == 'BUILDING'}">
+												buildPipeline.showProgress(${build.getId()}, ${build.getDependencyIds()});
+											</j:if>
+											<j:if test="${build.getStatus() == 'PENDING'}">
+												jQuery("#pipelines").bind("show-status-${build.getId()}", function(){
+													console.log("I was triggered: ${build.getId()}");
+													buildPipeline.updateBuildCard(${build.getId()});
+													buildPipeline.showProgress(${build.getId()}, ${build.getDependencyIds()});
+												});
+											</j:if>
 										</script>
 										<j:if test="${(y + 1 != buildPipelineForm.getGridWidth())}">
 											<td class="next"><j:if test="${!(build.getDependencies().length() == 0)}">
@@ -298,7 +346,8 @@ span.ABORT {
 										<j:if test="${y + 1 != buildPipelineForm.getGridWidth()}">
 											<j:set var="nextIndex" value="${y + 1}" />
 											<td class="next"><j:if test="${buildGrid.get(x).containsKey(nextIndex.intValue())}">
-													<span class="status next"> <img src="${rootURL}/images/24x24/next.png" />
+													<span class="status next">
+														<img src="${rootURL}/images/24x24/next.png" />
 													</span>
 												</j:if></td>
 										</j:if>
