@@ -50,198 +50,194 @@ import au.com.centrumsystems.hudson.plugin.buildpipeline.trigger.BuildPipelineTr
  */
 public class BuildPipelineViewTest extends HudsonTestCase {
 
-    @Override
-    @Before
-    public void setUp() throws Exception {
-        super.setUp();
-    }
+	@Override
+	@Before
+	public void setUp() throws Exception {
+		super.setUp();
+	}
 
-    @Test
-    public void testGetSelectedProject() throws IOException {
-        final String bpViewName = "MyTestView";
-        final String bpViewTitle = "MyTestViewTitle";
-        final String proj1 = "Proj1";
-        final String noOfBuilds = "5";
-        createFreeStyleProject(proj1);
+	@Test
+	public void testGetSelectedProject() throws IOException {
+		final String bpViewName = "MyTestView";
+		final String bpViewTitle = "MyTestViewTitle";
+		final String proj1 = "Proj1";
+		final String noOfBuilds = "5";
+		createFreeStyleProject(proj1);
 
-        // Test a valid case
-        BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds, false);
-        Job<?, ?> testSelectedProject = testView.getSelectedProject();
+		// Test a valid case
+		BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds, false);
+		Job<?, ?> testSelectedProject = testView.getSelectedProject();
 
-        assertEquals(proj1, testSelectedProject.getName());
+		assertEquals(proj1, testSelectedProject.getName());
 
-        // Test the null case
-        testView = new BuildPipelineView(bpViewName, bpViewTitle, "", noOfBuilds, false);
-        testSelectedProject = testView.getSelectedProject();
+		// Test the null case
+		testView = new BuildPipelineView(bpViewName, bpViewTitle, "", noOfBuilds, false);
+		testSelectedProject = testView.getSelectedProject();
 
-        assertNull(testSelectedProject);
-    }
+		assertNull(testSelectedProject);
+	}
 
-    @Test
-    public void testHasSelectedProject() throws IOException {
-        final String bpViewName = "MyTestView";
-        final String bpViewTitle = "MyTestViewTitle";
-        final String proj1 = "Proj1";
-        final String noOfBuilds = "5";
-        createFreeStyleProject(proj1);
+	@Test
+	public void testHasSelectedProject() throws IOException {
+		final String bpViewName = "MyTestView";
+		final String bpViewTitle = "MyTestViewTitle";
+		final String proj1 = "Proj1";
+		final String noOfBuilds = "5";
+		createFreeStyleProject(proj1);
 
-        // Test a valid case
-        BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds, false);
+		// Test a valid case
+		BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds, false);
 
-        assertTrue(testView.hasSelectedProject());
+		assertTrue(testView.hasSelectedProject());
 
-        // Test the null case
-        testView = new BuildPipelineView(bpViewName, bpViewTitle, "", noOfBuilds, false);
-        assertFalse(testView.hasSelectedProject());
-    }
+		// Test the null case
+		testView = new BuildPipelineView(bpViewName, bpViewTitle, "", noOfBuilds, false);
+		assertFalse(testView.hasSelectedProject());
+	}
 
-    @Test
-    public void testHasBuildPermission() throws IOException {
-        final String bpViewName = "MyTestView";
-        final String bpViewTitle = "MyTestViewTitle";
-        final String proj1 = "Proj1";
-        final String noOfBuilds = "5";
-        final FreeStyleProject project1 = createFreeStyleProject(proj1);
+	@Test
+	public void testHasBuildPermission() throws IOException {
+		final String bpViewName = "MyTestView";
+		final String bpViewTitle = "MyTestViewTitle";
+		final String proj1 = "Proj1";
+		final String noOfBuilds = "5";
+		final FreeStyleProject project1 = createFreeStyleProject(proj1);
 
-        final BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds, false);
-        assertTrue(testView.hasBuildPermission(project1));
-    }
+		final BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds, false);
+		assertTrue(testView.hasBuildPermission(project1));
+	}
 
-    @Test
-    public void testTriggerOnlyLatestJob() throws IOException {
-        final String bpViewName = "MyTestView";
-        final String bpViewTitle = "MyTestViewTitle";
-        final String proj1 = "Proj1";
-        final String noOfBuilds = "5";
-        createFreeStyleProject(proj1);
+	@Test
+	public void testTriggerOnlyLatestJob() throws IOException {
+		final String bpViewName = "MyTestView";
+		final String bpViewTitle = "MyTestViewTitle";
+		final String proj1 = "Proj1";
+		final String noOfBuilds = "5";
+		createFreeStyleProject(proj1);
 
-        // True
-        BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds, true);
-        assertTrue(proj1, testView.isTriggerOnlyLatestJob());
+		// True
+		BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds, true);
+		assertTrue(proj1, testView.isTriggerOnlyLatestJob());
 
-        // False
-        testView = new BuildPipelineView(bpViewName, bpViewTitle, "", noOfBuilds, false);
-        assertFalse(proj1, testView.isTriggerOnlyLatestJob());
-    }
+		// False
+		testView = new BuildPipelineView(bpViewName, bpViewTitle, "", noOfBuilds, false);
+		assertFalse(proj1, testView.isTriggerOnlyLatestJob());
+	}
 
-    @Test
-    public void testHasDownstreamProjects() throws IOException {
-        final String bpViewName = "MyTestView";
-        final String bpViewTitle = "MyTestViewTitle";
-        final String proj1 = "Proj1";
-        final String proj2 = "Proj2";
-        final String noOfBuilds = "5";
-        final FreeStyleProject project1 = createFreeStyleProject(proj1);
-        final FreeStyleProject project2 = createFreeStyleProject(proj2);
+	@Test
+	public void testHasDownstreamProjects() throws IOException {
+		final String bpViewName = "MyTestView";
+		final String bpViewTitle = "MyTestViewTitle";
+		final String proj1 = "Proj1";
+		final String proj2 = "Proj2";
+		final String noOfBuilds = "5";
+		final FreeStyleProject project1 = createFreeStyleProject(proj1);
+		final FreeStyleProject project2 = createFreeStyleProject(proj2);
 
-        // Add project2 as a post build action: build other project
-        project1.getPublishersList().add(new BuildPipelineTrigger(proj2));
+		// Add project2 as a post build action: build other project
+		project1.getPublishersList().add(new BuildPipelineTrigger(proj2));
 
-        // Important; we must do this step to ensure that the dependency graphs are updated
-        Hudson.getInstance().rebuildDependencyGraph();
+		// Important; we must do this step to ensure that the dependency graphs are updated
+		Hudson.getInstance().rebuildDependencyGraph();
 
-        // Test a valid case
-        final BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds, false);
+		// Test a valid case
+		final BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds, false);
 
-        assertTrue(testView.hasDownstreamProjects(project1));
-        assertFalse(testView.hasDownstreamProjects(project2));
-    }
+		assertTrue(testView.hasDownstreamProjects(project1));
+		assertFalse(testView.hasDownstreamProjects(project2));
+	}
 
-    @Test
-    public void testGetDownstreamProjects() throws IOException {
-        final String bpViewName = "MyTestView";
-        final String bpViewTitle = "MyTestViewTitle";
-        final String proj1 = "Proj1";
-        final String proj2 = "Proj2";
-        final String noOfBuilds = "5";
-        final FreeStyleProject project1 = createFreeStyleProject(proj1);
-        final FreeStyleProject project2 = createFreeStyleProject(proj2);
+	@Test
+	public void testGetDownstreamProjects() throws IOException {
+		final String bpViewName = "MyTestView";
+		final String bpViewTitle = "MyTestViewTitle";
+		final String proj1 = "Proj1";
+		final String proj2 = "Proj2";
+		final String noOfBuilds = "5";
+		final FreeStyleProject project1 = createFreeStyleProject(proj1);
+		final FreeStyleProject project2 = createFreeStyleProject(proj2);
 
-        // Add project2 as a post build action: build other project
-        project1.getPublishersList().add(new BuildPipelineTrigger(proj2));
+		// Add project2 as a post build action: build other project
+		project1.getPublishersList().add(new BuildPipelineTrigger(proj2));
 
-        // Important; we must do this step to ensure that the dependency graphs are updated
-        Hudson.getInstance().rebuildDependencyGraph();
+		// Important; we must do this step to ensure that the dependency graphs are updated
+		Hudson.getInstance().rebuildDependencyGraph();
 
-        // Test a valid case
-        final BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds, false);
+		// Test a valid case
+		final BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds, false);
 
-        assertEquals(testView.getDownstreamProjects(project1).get(0), project2);
-        assertEquals(testView.getDownstreamProjects(project2).size(), 0);
-    }
+		assertEquals(testView.getDownstreamProjects(project1).get(0), project2);
+		assertEquals(testView.getDownstreamProjects(project2).size(), 0);
+	}
 
-    @Test
-    public void testGetBuildPipelineForm() throws Exception {
-        final String bpViewName = "MyTestView";
-        final String bpViewTitle = "MyTestViewTitle";
-        final String proj1 = "Proj1";
-        final String proj2 = "Proj2";
-        final String proj3 = "Proj3";
-        FreeStyleBuild build1;
-        final String noOfBuilds = "5";
-        final FreeStyleProject project1 = createFreeStyleProject(proj1);
-        final FreeStyleProject project2 = createFreeStyleProject(proj2);
-        final FreeStyleProject project3 = createFreeStyleProject(proj3);
+	@Test
+	public void testGetBuildPipelineForm() throws Exception {
+		final String bpViewName = "MyTestView";
+		final String bpViewTitle = "MyTestViewTitle";
+		final String proj1 = "Proj1";
+		final String proj2 = "Proj2";
+		final String proj3 = "Proj3";
+		FreeStyleBuild build1;
+		final String noOfBuilds = "5";
+		final FreeStyleProject project1 = createFreeStyleProject(proj1);
+		final FreeStyleProject project2 = createFreeStyleProject(proj2);
+		final FreeStyleProject project3 = createFreeStyleProject(proj3);
 
-        // Add project2 as a post build action: build other project
-        project1.getPublishersList().add(new BuildPipelineTrigger(proj2));
-        project2.getPublishersList().add(new BuildPipelineTrigger(proj3));
+		// Add project2 as a post build action: build other project
+		project1.getPublishersList().add(new BuildPipelineTrigger(proj2));
+		project2.getPublishersList().add(new BuildPipelineTrigger(proj3));
 
-        // Important; we must do this step to ensure that the dependency graphs are updated
-        Hudson.getInstance().rebuildDependencyGraph();
+		// Important; we must do this step to ensure that the dependency graphs are updated
+		Hudson.getInstance().rebuildDependencyGraph();
 
-        // Build project1
-        build1 = buildAndAssertSuccess(project1);
-        waitUntilNoActivity();
+		// Build project1
+		build1 = buildAndAssertSuccess(project1);
+		waitUntilNoActivity();
 
-        // Test a valid case
-        final BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds, false);
+		// Test a valid case
+		final BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds, false);
 
-        UpstreamCause upstreamCause = new hudson.model.Cause.UpstreamCause((Run<?, ?>) build1);
-        final List<Action> buildActions = new ArrayList<Action>();
-        project2.scheduleBuild(0, upstreamCause, buildActions.toArray(new Action[buildActions.size()]));
-        waitUntilNoActivity();
+		UpstreamCause upstreamCause = new hudson.model.Cause.UpstreamCause((Run<?, ?>) build1);
+		final List<Action> buildActions = new ArrayList<Action>();
+		project2.scheduleBuild(0, upstreamCause, buildActions.toArray(new Action[buildActions.size()]));
+		waitUntilNoActivity();
 
-        upstreamCause = new hudson.model.Cause.UpstreamCause((Run<?, ?>) project2.getBuildByNumber(1));
-        project3.scheduleBuild(0, upstreamCause, buildActions.toArray(new Action[buildActions.size()]));
-        waitUntilNoActivity();
+		upstreamCause = new hudson.model.Cause.UpstreamCause((Run<?, ?>) project2.getBuildByNumber(1));
+		project3.scheduleBuild(0, upstreamCause, buildActions.toArray(new Action[buildActions.size()]));
+		waitUntilNoActivity();
 
-        final BuildPipelineForm testForm = testView.getBuildPipelineForm();
+		final BuildPipelineForm testForm = testView.getBuildPipelineForm();
 
-        assertEquals(testForm.getProjectGrid().get(0).get(0).getName(), proj1);
-        assertEquals(testForm.getProjectGrid().get(0).get(1).getName(), proj2);
-        assertEquals(testForm.getProjectGrid().get(0).get(2).getName(), proj3);
+		assertEquals(testForm.getProjectGrid().get(0).get(0).getName(), proj1);
+		assertEquals(testForm.getProjectGrid().get(0).get(1).getName(), proj2);
+		assertEquals(testForm.getProjectGrid().get(0).get(2).getName(), proj3);
 
-        assertEquals(testForm.getBuildGrids().get(0).get(0).get(0).getName(), build1.getFullDisplayName());
-        assertEquals(testForm.getBuildGrids().get(0).get(0).get(1).getName(), proj2 + " #1");
-        assertEquals(testForm.getBuildGrids().get(0).get(0).get(2).getName(), proj3 + " #1");
+		// Test a null case
+		testView.setSelectedJob(null);
+		assertNull(testView.getBuildPipelineForm());
+	}
 
-        // Test a null case
-        testView.setSelectedJob(null);
-        assertNull(testView.getBuildPipelineForm());
-    }
+	@Test
+	public void testOnJobRenamed() throws IOException {
+		final String bpViewName = "MyTestView";
+		final String bpViewTitle = "MyTestViewTitle";
+		final String proj1 = "Proj1";
+		final String proj2 = "Proj2";
+		final String proj3 = "Proj3";
+		final String noOfBuilds = "5";
+		final FreeStyleProject project1 = createFreeStyleProject(proj1);
 
-    @Test
-    public void testOnJobRenamed() throws IOException {
-        final String bpViewName = "MyTestView";
-        final String bpViewTitle = "MyTestViewTitle";
-        final String proj1 = "Proj1";
-        final String proj2 = "Proj2";
-        final String proj3 = "Proj3";
-        final String noOfBuilds = "5";
-        final FreeStyleProject project1 = createFreeStyleProject(proj1);
+		// Add project2 as a post build action: build other project
+		project1.getPublishersList().add(new BuildPipelineTrigger(proj2));
 
-        // Add project2 as a post build action: build other project
-        project1.getPublishersList().add(new BuildPipelineTrigger(proj2));
+		// Important; we must do this step to ensure that the dependency graphs are updated
+		Hudson.getInstance().rebuildDependencyGraph();
 
-        // Important; we must do this step to ensure that the dependency graphs are updated
-        Hudson.getInstance().rebuildDependencyGraph();
+		// Test a valid case
+		final BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds, false);
 
-        // Test a valid case
-        final BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds, false);
-
-        assertEquals(testView.getJob(proj1), project1);
-        project1.renameTo(proj3);
-        assertEquals(testView.getJob(proj3), project1);
-    }
+		assertEquals(testView.getJob(proj1), project1);
+		project1.renameTo(proj3);
+		assertEquals(testView.getJob(proj3), project1);
+	}
 }

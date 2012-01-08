@@ -31,6 +31,7 @@ import hudson.model.FreeStyleProject;
 import hudson.model.Hudson;
 import hudson.scm.ChangeLogSet;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -413,6 +414,28 @@ public class PipelineBuild {
 	 */
 	public Date getStartTime() {
 		return currentBuild != null ? currentBuild.getTime() : null;
+	}
+
+	/**
+	 * @return Formatted start time
+	 */
+	public String getFormattedStartTime() {
+		String formattedStartTime = "";
+		if (getStartTime() != null) {
+			formattedStartTime = DateFormat.getTimeInstance(DateFormat.MEDIUM).format(getStartTime());
+		}
+		return formattedStartTime;
+	}
+
+	/**
+	 * @return Formatted start date
+	 */
+	public String getFormattedStartDate() {
+		String formattedStartTime = "";
+		if (getStartTime() != null) {
+			formattedStartTime = DateFormat.getDateInstance(DateFormat.MEDIUM).format(getStartTime());
+		}
+		return formattedStartTime;
 	}
 
 }

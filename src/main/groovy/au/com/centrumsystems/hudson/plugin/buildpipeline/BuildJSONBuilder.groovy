@@ -1,30 +1,26 @@
 package au.com.centrumsystems.hudson.plugin.buildpipeline
 
+import au.com.centrumsystems.hudson.plugin.buildpipeline.PipelineBuild;
 import groovy.json.JsonBuilder
 
 class BuildJSONBuilder {
 
-    BuildForm buildForm
-
-    BuildJSONBuilder(BuildForm buildForm) {
-        this.buildForm = buildForm
-    }
-
-    String asJSON() {
+    static String asJSON(PipelineBuild pipelineBuild, Integer formId) {
         def builder = new JsonBuilder()
+		def buildStatus = pipelineBuild.currentBuildResult
         def root = builder {
-            title(buildForm.projectName)
-            status(buildForm.status)
-            buildNumber(buildForm.buildNumber)
-            startDate(buildForm.startDate)
-            startTime(buildForm.startTime)
-            duration(buildForm.duration)
-            buildUrl(buildForm.url)
-            building(buildForm.status == 'BUILDING')
-			pending(buildForm.status == 'PENDING')
-            progress(buildForm.buildProgress)
-            progressLeft(100 - buildForm.buildProgress)
-            id(buildForm.id)
+            title(pipelineBuild.project.name)
+            status(buildStatus)
+            buildNumber(pipelineBuild.currentBuild?.number)
+            startDate(pipelineBuild.formattedStartDate)
+            startTime(pipelineBuild.formattedStartTime)
+            duration(pipelineBuild.buildDuration)
+            buildUrl(pipelineBuild.buildResultURL)
+            building(buildStatus == 'BUILDING')
+			pending(buildStatus == 'PENDING')
+            progress(pipelineBuild.buildProgress)
+            progressLeft(100 - pipelineBuild.buildProgress)
+            id(formId)
         }
         return builder.toString()
     }

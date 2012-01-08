@@ -43,8 +43,9 @@
 						<a href="{{buildUrl}}console">
 							<table class="progress-bar" align="center">
 								<tbody>
-									<tr class="unknown">
-										<td></td>
+									<tr>
+										<td style="display: none;" class="progress-bar-done" id="progress-bar-done{{id}}"></td>
+										<td style="display: none;" class="progress-bar-left" id="progress-bar-left{{id}}"></td>
 									</tr>
 								</tbody>
 							</table>
@@ -96,12 +97,11 @@
 			showProgress : function(id, dependencies) {
 				var buildPipeline = this;
 				var intervalId = setInterval(function(){		    	
-					buildPipeline.buildProxies[id].getBuildProgressUpdate(function(data){
-			    		var done = data.responseObject();
-			    		if (done > 0) {
-				    		jQuery("#progress-bar-done" + id).attr("style", "width:" + done + "%");
-				    		jQuery("#progress-bar-left" + id).attr("style", "width:" + (100 - done) + "%");
-			    		} else {
+					buildPipeline.buildProxies[id].asJSON(function(data){
+			    		var build = jQuery.parseJSON(data.responseObject());
+			    		console.log(build.status + ", " + build.id + ", " + build.progress);
+			    		buildPipeline.updateBuildCardFromJSON(build);
+			    		if (build.progress == 0) {
 			    			clearInterval(intervalId);
 			    			//update current build card
 			    			buildPipeline.updateBuildCard(id);
@@ -116,9 +116,26 @@
 			updateBuildCard : function(id) {
 				var buildPipeline = this;
 				buildPipeline.buildProxies[id].asJSON(function(data){
-					jQuery("#build-" + id).empty();
-					jQuery("#build-" + id).append(buildPipeline.buildCardTemplate(jQuery.parseJSON(data.responseObject())));
+					buildPipeline.updateBuildCardFromJSON(jQuery.parseJSON(data.responseObject()));
 				});
+			},
+			updateBuildCardFromJSON : function(buildAsJSON) {
+				var buildPipeline = this;
+				jQuery("#build-" + buildAsJSON.id).empty();
+				jQuery("#build-" + buildAsJSON.id).append(buildPipeline.buildCardTemplate(buildAsJSON));
+			},
+			updatePipelineBuildAndShowProgress : function(id, nextBuildNumber, dependencies) {
+				var buildPipeline = this;
+				//try to get the updated build, that's not pending 
+				var intervalId = setInterval(function(){
+					buildPipeline.buildProxies[id].updatePipelineBuild(nextBuildNumber, function(updated){
+						if (updated.responseObject()) {
+							buildPipeline.showProgress(id, dependencies);
+							clearInterval(intervalId);
+						}
+					});
+				}, 5000);
+				
 			}
 		}
 		
@@ -176,9 +193,6 @@ span.ABORT {
 				<h1>Build Pipeline View: ${from.getBuildViewTitle()}</h1>
 			</div>
 			<div>${from.getDescription()}</div>
-			<script>
-				var buildView = <st:bind value="${form}" />
-			</script>
 			<!-- If the user has the Configure View permission include a hyperlink to configure this view.-->
 			<j:if test="${from.hasConfigurePermission()}">
 				<a href="configure"><img height="24" style="margin: 2px;" alt="" width="24" src="${rootURL}/images/24x24/setting.png" /></a>
@@ -272,7 +286,8 @@ span.ABORT {
 										<div class="header-name">
 											<a href="${project.getUrl()}" title="${project.getName()}"><div>${project.getName()}</div></a>
 											<div class="statusImages">
-												<span class="status ${project.getResult()}"></span> <span class="status"><img src="${rootURL}/images/24x24/${project.getHealth()}" /></span>
+												<span class="status ${project.getResult()}"></span> 
+												<span class="status"><img src="${rootURL}/images/24x24/${project.getHealth()}" /></span>
 											</div>
 										</div>
 									</div>
@@ -329,9 +344,7 @@ span.ABORT {
 											</j:if>
 											<j:if test="${build.getStatus() == 'PENDING'}">
 												jQuery("#pipelines").bind("show-status-${build.getId()}", function(){
-													console.log("I was triggered: ${build.getId()}");
-													buildPipeline.updateBuildCard(${build.getId()});
-													buildPipeline.showProgress(${build.getId()}, ${build.getDependencyIds()});
+													buildPipeline.updatePipelineBuildAndShowProgress(${build.getId()}, ${build.getNextBuildNumber()}, ${build.getDependencyIds()});
 												});
 											</j:if>
 										</script>
