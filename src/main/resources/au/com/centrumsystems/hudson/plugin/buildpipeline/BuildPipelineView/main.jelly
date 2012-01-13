@@ -1,64 +1,67 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:i="jelly:fmt">
 	<link href="${rootURL}/plugin/build-pipeline-plugin/css/main.css" type="text/css" rel="stylesheet" />
 	<link rel="stylesheet" href="${rootURL}/plugin/build-pipeline-plugin/css/redmond/jquery-ui-1.8.14.custom.css"></link>
-	<script type="text/javascript" src="${rootURL}/plugin/build-pipeline-plugin/js/jquery.1.5.1.min.js"></script>
+	<script type="text/javascript" src="${rootURL}/plugin/build-pipeline-plugin/js/jquery-1.7.1.min.js"></script>
 	<script type="text/javascript" src="${rootURL}/plugin/build-pipeline-plugin/js/jquery-ui-1.8.14.custom.min.js"></script>
 	<script type="text/javascript" src="${rootURL}/plugin/build-pipeline-plugin/js/handlebars-1.0.0.beta.6.js"></script>
 	<script id="build-card-template" type="text/x-handlebars-template">
-<table class="build-card rounded {{status}}">
+<table class="build-card rounded {{build.status}}">
 	<tbody>
 		<tr class="header">
 			<td colspan="2">
 				<div>
-					<a title="{{title}}">{{title}}</a>
+					<a title="{{project.name}}">{{project.name}}</a>
 				</div>
 			</td>
 		</tr>
 		<tr class="build-body">
-			<td class="build-number">{{buildNumber}}</td>
+			<td class="build-number">{{build.number}}</td>
 			<td class="secondary-info">
-				<div>{{startDate}}</div>
-				<div>{{startTime}}</div>
-				{{#if complete}}
-				<div>{{duration}}</div>
+				<div>{{build.startDate}}</div>
+				<div>{{build.startTime}}</div>
+				{{#if build.isComplete}}
+				<div>{{build.duration}}</div>
 				{{/if}}
 			</td>
 		</tr>
 		<tr class="build-actions">
 			<td colspan="2">
 				<div class="status-bar">
-					{{#if building}}
-						<a href="{{buildUrl}}console">
+					{{#if build.isBuilding}}
+						<a href="{{build.url}}console">
 							<table class="progress-bar" align="center">
 								<tbody>
 									<tr>
-										<td style="width: {{progress}}%" class="progress-bar-done" id="progress-bar-done{{id}}"></td>
-										<td style="width: {{progressLeft}}%" class="progress-bar-left" id="progress-bar-left{{id}}"></td>
+										<td style="width: {{build.progress}}%" class="progress-bar-done" id="progress-bar-done{{id}}"></td>
+										<td style="width: {{build.progressLeft}}%" class="progress-bar-left" id="progress-bar-left{{id}}"></td>
 									</tr>
 								</tbody>
 							</table>
 						</a>
 					{{/if}}
-					{{#if pending}}
-						<a href="{{buildUrl}}console">
-							<table class="progress-bar" align="center">
-								<tbody>
-									<tr>
-										<td style="display: none;" class="progress-bar-done" id="progress-bar-done{{id}}"></td>
-										<td style="display: none;" class="progress-bar-left" id="progress-bar-left{{id}}"></td>
-									</tr>
-								</tbody>
-							</table>
-						</a>
+					{{#if build.isPending}}
+						<table class="progress-bar" align="center">
+							<tbody>
+								<tr class="unknown">
+									<td></td>
+								</tr>
+							</tbody>
+						</table>
 					{{/if}}
 				</div>
 				<div class="icons">
-					<a href="{{buildUrl}}console">
-						<img title="console" alt="console" src="{{rootUrl}}/images/16x16/terminal.png" />
-					</a>
-					<a href="{{buildUrl}}changes">
-						<img title="changes" alt="changes" src="{{rootUrl}}/images/16x16/notepad.png" />
-					</a>
+					{{#unless build.isPending}}
+						{{#unless build.isManualTrigger}}
+						<a href="{{build.url}}console">
+							<img title="console" alt="console" src="{{rootUrl}}/images/16x16/terminal.png" />
+						</a>
+						{{/unless}}
+					{{/unless}}
+					{{#if build.isManual}}
+						<a href="#" class="trigger" onclick="triggerBuild('{{upstream.projectName}}', '{{upstream.buildNumber}}', '{{project.name}}')">
+							<img title="trigger" alt="trigger" src="{{rootUrl}}/images/16x16/clock.png" />
+						</a>
+					{{/if}}
 				</div>
 			</td>
 		</tr>
@@ -77,8 +80,16 @@
 	            icons: {
 	                primary: "trigger"
 	            }
-	        });		
+	        });			
 		});
+		
+		var triggerBuild = function(upstreamProjectName, upstreamBuildNumber, triggerProjectName) {
+			$('#upstreamProjectName').val(upstreamProjectName);
+			$('#upstreamBuildNumber').val(upstreamBuildNumber);
+			$('#triggerProjectName').val(triggerProjectName);
+			document.pipelineViewForm.action = "manualExecution";
+			$('#manualExecutionForm').submit();
+		}
 	
 		var BuildPipeline = function(){
 			var buildCardTemplateSource = $("#build-card-template").html();
@@ -87,31 +98,24 @@
 		};
 		
 		BuildPipeline.prototype = {
-			triggerBuild: function(upstreamProjectName, upstreamBuildNumber, triggerProjectName) {
-				$('#upstreamProjectName').val(upstreamProjectName);
-				$('#upstreamBuildNumber').val(upstreamBuildNumber);
-				$('#triggerProjectName').val(triggerProjectName);
-				document.pipelineViewForm.action = "manualExecution";
-				$('#manualExecutionForm').submit();
-			},
 			showProgress : function(id, dependencies) {
 				var buildPipeline = this;
 				var intervalId = setInterval(function(){		    	
 					buildPipeline.buildProxies[id].asJSON(function(data){
-			    		var build = jQuery.parseJSON(data.responseObject());
-			    		console.log(build.status + ", " + build.id + ", " + build.progress);
-			    		buildPipeline.updateBuildCardFromJSON(build);
-			    		if (build.progress == 0) {
+			    		var buildData = jQuery.parseJSON(data.responseObject());
+			    		console.log(buildData.build.status + ", " + buildData.id + ", " + buildData.build.progress);
+			    		if (buildData.build.progress > 0) {
+			    			buildPipeline.updateBuildCardFromJSON(buildData, false);
+			    		} else {
+				    		buildPipeline.updateBuildCardFromJSON(buildData, true);
 			    			clearInterval(intervalId);
-			    			//update current build card
-			    			buildPipeline.updateBuildCard(id);
 			    			//kick off status tracking for all dependencies
 			    			jQuery.each(dependencies, function(){
 				    			jQuery("#pipelines").trigger("show-status-" + this);
 			    			});
 			    		}
 			    	});
-				}, 5000);
+				}, 3000);
 			},
 			updateBuildCard : function(id) {
 				var buildPipeline = this;
@@ -119,10 +123,10 @@
 					buildPipeline.updateBuildCardFromJSON(jQuery.parseJSON(data.responseObject()));
 				});
 			},
-			updateBuildCardFromJSON : function(buildAsJSON) {
+			updateBuildCardFromJSON : function(buildAsJSON, fadeIn) {
 				var buildPipeline = this;
 				jQuery("#build-" + buildAsJSON.id).empty();
-				jQuery("#build-" + buildAsJSON.id).append(buildPipeline.buildCardTemplate(buildAsJSON));
+				jQuery(buildPipeline.buildCardTemplate(buildAsJSON)).hide().appendTo("#build-" + buildAsJSON.id).fadeIn(fadeIn ? 1000 : 0);
 			},
 			updatePipelineBuildAndShowProgress : function(id, nextBuildNumber, dependencies) {
 				var buildPipeline = this;
@@ -134,7 +138,7 @@
 							clearInterval(intervalId);
 						}
 					});
-				}, 5000);
+				}, 3000);
 				
 			}
 		}
@@ -284,11 +288,10 @@ span.ABORT {
 								<td>
 									<div class="PROJECT rounded">
 										<div class="header-name">
-											<a href="${project.getUrl()}" title="${project.getName()}"><div>${project.getName()}</div></a>
-											<div class="statusImages">
-												<span class="status ${project.getResult()}"></span> 
-												<span class="status"><img src="${rootURL}/images/24x24/${project.getHealth()}" /></span>
-											</div>
+											<a href="${project.getUrl()}" title="${project.getName()}">${project.getName()}</a>											
+										</div>
+										<div class="status-images">
+											<img src="${rootURL}/images/24x24/${project.getHealth()}" />
 										</div>
 									</div>
 								</td>
@@ -320,9 +323,11 @@ span.ABORT {
 							<tr class='build-pipeline'>
 								<td><j:if test="${x == 0}">
 										<div class="revision rounded">
-											<a href="${buildGrid.get(x).get(0).getUrl()}changes" title="${buildGrid.get(x).get(0).getRevision()}">
-												<div>${buildGrid.get(x).get(0).getRevision()}</div>
-											</a>
+											<div>
+												<a href="${buildGrid.get(x).get(0).getUrl()}changes" title="${buildGrid.get(x).get(0).getRevision()}">
+													${buildGrid.get(x).get(0).getRevision()}
+												</a>
+											</div>
 										</div>
 									</j:if></td>
 								<td class="next"></td>

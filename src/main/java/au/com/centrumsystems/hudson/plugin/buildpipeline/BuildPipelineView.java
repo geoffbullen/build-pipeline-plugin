@@ -257,7 +257,7 @@ public class BuildPipelineView extends View {
 	 */
 	public void doManualExecution(final StaplerRequest req, final StaplerResponse rsp) {
 		int upstreamBuildNo;
-		if (req.getParameter(REQ_UPSTREAM_BUILD_NUMBER) == null) {
+		if (req.getParameter(REQ_UPSTREAM_BUILD_NUMBER) == null || req.getParameter(REQ_UPSTREAM_BUILD_NUMBER).length() == 0) {
 			upstreamBuildNo = 0;
 		} else {
 			upstreamBuildNo = Integer.parseInt(req.getParameter(REQ_UPSTREAM_BUILD_NUMBER));

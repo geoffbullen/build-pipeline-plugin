@@ -2,6 +2,7 @@ package au.com.centrumsystems.hudson.plugin.buildpipeline
 
 import au.com.centrumsystems.hudson.plugin.buildpipeline.PipelineBuild;
 import groovy.json.JsonBuilder
+import hudson.model.Item;
 
 class BuildJSONBuilder {
 
@@ -9,18 +10,30 @@ class BuildJSONBuilder {
         def builder = new JsonBuilder()
 		def buildStatus = pipelineBuild.currentBuildResult
         def root = builder {
-            title(pipelineBuild.project.name)
-            status(buildStatus)
-            buildNumber(pipelineBuild.currentBuild?.number)
-            startDate(pipelineBuild.formattedStartDate)
-            startTime(pipelineBuild.formattedStartTime)
-            duration(pipelineBuild.buildDuration)
-            buildUrl(pipelineBuild.buildResultURL)
-            building(buildStatus == 'BUILDING')
-			pending(buildStatus == 'PENDING')
-            progress(pipelineBuild.buildProgress)
-            progressLeft(100 - pipelineBuild.buildProgress)
-            id(formId)
+			id(formId)			
+            build {				
+				duration(pipelineBuild.buildDuration)				
+				hasPermission(pipelineBuild.project?.hasPermission(Item.BUILD));
+				isBuilding(buildStatus == 'BUILDING')
+				isComplete(buildStatus != 'BUILDING' && buildStatus != 'PENDING')
+				isPending(buildStatus == 'PENDING' && !pipelineBuild.isManualTrigger())
+				isManual(pipelineBuild.isManual())
+				isManualTrigger(pipelineBuild.isManualTrigger())
+				number(pipelineBuild.currentBuild?.number)
+				progress(pipelineBuild.buildProgress)
+				progressLeft(100 - pipelineBuild.buildProgress)
+				startDate(pipelineBuild.formattedStartDate)
+				startTime(pipelineBuild.formattedStartTime)
+				status(buildStatus)								
+				url(pipelineBuild.buildResultURL)	
+			}
+			project {
+				name(pipelineBuild.project.name)
+			}
+			upstream {
+				projectName(pipelineBuild.upstreamPipelineBuild?.project?.name)
+				buildNumber(pipelineBuild.upstreamBuild?.number)
+			}           
         }
         return builder.toString()
     }

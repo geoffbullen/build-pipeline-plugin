@@ -86,4 +86,9 @@ public class BuildForm {
 	public String getRevision() {
 		return pipelineBuild.getScmRevision();
 	}
+
+	@JavaScriptMethod
+	public boolean isManualTrigger() {
+		return pipelineBuild.isManualTrigger();
+	}
 }

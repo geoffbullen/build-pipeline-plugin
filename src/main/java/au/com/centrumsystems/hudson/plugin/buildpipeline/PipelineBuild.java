@@ -408,6 +408,19 @@ public class PipelineBuild {
 	}
 
 	/**
+	 * Determine if the project is triggered manually, regardless of the state of its upstream builds
+	 * 
+	 * @return true if it is manual
+	 */
+	public boolean isManualTrigger() {
+		boolean manualTrigger = false;
+		if (this.upstreamBuild != null) {
+			manualTrigger = ProjectUtil.isManualTrigger(this.upstreamBuild.getProject(), this.project);
+		}
+		return manualTrigger;
+	}
+
+	/**
 	 * Start time of build
 	 * 
 	 * @return start time

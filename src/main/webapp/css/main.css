@@ -12,12 +12,6 @@
 	background: rgba(6, 72, 131, 0.1);
 }
 
-span.status, span.status img {
-	height: 24px;
-	width: 24px;
-	vertical-align: middle;
-	display: inline-block;
-}
 
 .rounded {
 	height: 70px;
@@ -87,7 +81,7 @@ table.build-card tr td {
 }
 
 .build-card .build-actions .status-bar table {
-	width: 85px;	
+	width: 90px;	
 	position: relative;
 	top: 6px;
 }
@@ -97,8 +91,8 @@ table.build-card tr td {
 }
 
 .build-card .build-actions img {
-	width: 12px;
-	height: 12px;
+	width: 16px;
+	height: 16px;
 	padding-right: 2px;
 }
 
@@ -164,8 +158,9 @@ tr.spacerRow td {
 }
 
 .revision div {
-	position: relative;
-	top: 25px;
+	display: table-cell;
+	vertical-align: middle;
+	height: 70px;
 }
 
 .SUCCESS {
@@ -211,6 +206,15 @@ tr.spacerRow td {
 	background-color: #aba8a8;
 	font-size: 12px;
 	font-weight: bold;
+	display: table;
+}
+
+.PROJECT .header-name {
+	display: table-row;
+}
+
+.PROJECT .status-images {
+	display: table-row;
 }
 
 .BuildViewMargin {
