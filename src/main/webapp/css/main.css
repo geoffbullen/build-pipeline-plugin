@@ -12,9 +12,46 @@
 	background: rgba(6, 72, 131, 0.1);
 }
 
-button.settingsButton{
-    background-image: url(images/16x16/gear.png);
+#popup_iframe{
+    width: 100%;
+    height:95%;
+    frameborder: 0;
+    bottom: 0;
 }
+
+#close_popup{
+  float:right;
+  width:50px;
+  color: red;
+  font-weight:bold;
+  
+}
+
+#popup {
+	height: 100%;
+	width: 100%;
+	background: #000000;
+	position: absolute;
+	top: 0;
+	-moz-opacity:0.6;
+	-khtml-opacity: 0.6;
+	opacity: 0.6;
+	filter:alpha(opacity=75);
+	z-index:1;
+}
+
+#window {
+	width: 800px;
+	height: 500px;
+	margin: 0 auto;
+	border: 1px solid #000000;
+	background: #ffffff;
+	position: absolute;
+	top: 50px;
+	left: 19%;
+	z-index:1;
+}
+
 
 .rounded {
 	height: 70px;

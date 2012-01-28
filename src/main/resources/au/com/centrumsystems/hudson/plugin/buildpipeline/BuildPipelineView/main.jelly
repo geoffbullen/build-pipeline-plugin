@@ -5,6 +5,7 @@
 	<script type="text/javascript" src="${rootURL}/plugin/build-pipeline-plugin/js/jquery-ui-1.8.14.custom.min.js"></script>
 	<script type="text/javascript" src="${rootURL}/plugin/build-pipeline-plugin/js/handlebars-1.0.0.beta.6.js"></script>
 	<script id="build-card-template" type="text/x-handlebars-template">
+
 <table class="build-card rounded {{build.status}}">
 	<tbody>
 		<tr class="header">
@@ -28,7 +29,7 @@
 			<td colspan="2">
 				<div class="status-bar" id="status-bar-{{id}}">
 					{{#if build.isBuilding}}
-						<a href="{{build.url}}console">
+						<a href="#" OnClick="Show_Popup('{{build.url}}consoleText')">
 							<table class="progress-bar" align="center">
 								<tbody>
 									<tr>
@@ -44,7 +45,7 @@
 				<div class="icons" id="icons-{{id}}">
 					{{#unless build.isPending}}
 						{{#unless build.isReadyToBeManuallyBuilt}}
-						<a href="{{build.url}}console">
+						<a href="#" OnClick="Show_Popup('{{build.url}}consoleText')">
 							<img title="console" alt="console" src="{{rootUrl}}/images/16x16/terminal.png" />
 						</a>
 						{{/unless}}
@@ -63,9 +64,9 @@
 	<script type="text/javascript">	
 		jQuery(function(){					
 			//hide legend and register on click function to show and hide
-			$('#legendView').hide();
+			$('#settingsView').hide();
 			$('#settingsPanel').click(function() {
-				$('#legendView').toggle('blind', {}, 750);
+				$('#settingsView').toggle('blind', {}, 750);
 				return false;
 			});
 			$("button").button({
@@ -150,6 +151,30 @@
 		<input name="upstreamProjectName" id="upstreamProjectName" type="hidden" />
 		<input name="upstreamBuildNumber" id="upstreamBuildNumber" type="hidden" />
 		<input name="triggerProjectName" id="triggerProjectName" type="hidden" />
+		
+		<div id="popup" style="display: none;"></div>
+			<div id="window" style="display: none;">
+			<div id="popup_content">
+				<div id="close_popup"><a href="#" onclick="Close_Popup();">close</a></div>
+			</div>
+		</div>
+		
+		<script type="text/javascript">
+		
+			function Show_Popup(url) {
+			    $('#popup_content').append('<iframe frameborder="0" id="popup_iframe" src="'+  url + '"></iframe>');
+				$('#popup').fadeIn('fast');
+				$('#window').fadeIn('fast');	
+			}
+			function Close_Popup() {
+				$('#popup').fadeOut('fast');
+				$('#window').fadeOut('fast');
+				$('#popup_content').html('<div id="close_popup"><a href="#" onclick="Close_Popup();">close</a></div>');;
+			}
+	
+
+		</script>
+
 		<div id="build-pipeline-plugin-content">
 			<div>
 				<h1>Pipeline: ${from.getBuildViewTitle()}</h1>
@@ -171,8 +196,8 @@
 			<div href="#" id="settingsPanel">
 				<button type="button" class="settingsButton" onClick="location.href='#'">More Options</button>
 			</div>
-			<div id="legendView" class="BuildViewMargin">
-				<table id="runningRobs">
+			<div id="settingsView" class="BuildViewMargin">
+				<table id="runningJobs">
 				   <tr>
 				      <td><t:executors/></td>
 				      <td><t:queue items="${app.queue.items}"/></td>
@@ -200,7 +225,8 @@
 			</j:if>
 			
 			<j:set var="buildPipelineForm" type="au.com.centrumsystems.hudson.plugin.buildpipeline.BuildPipelineForm" value="${from.getBuildPipelineForm()}" />
-			
+		
+		
 			<table id="pipelines">
 				<j:set var="projectGrid" value="${buildPipelineForm.getProjectGrid()}" />
 				<!-- projects -->
