@@ -12,6 +12,9 @@
 	background: rgba(6, 72, 131, 0.1);
 }
 
+button.settingsButton{
+    background-image: url(images/16x16/gear.png);
+}
 
 .rounded {
 	height: 70px;

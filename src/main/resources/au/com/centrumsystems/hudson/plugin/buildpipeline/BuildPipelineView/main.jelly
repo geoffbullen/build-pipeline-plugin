@@ -39,17 +39,7 @@
 							</table>
 						</a>
 					{{/if}}
-					{{#if build.isPending}}
-						{{#unless build.isReadyToBeManuallyBuilt}}
-							<table class="progress-bar" align="center">
-								<tbody>
-									<tr class="unknown">
-										<td></td>
-									</tr>
-								</tbody>
-							</table>
-						{{/unless}}
-					{{/if}}
+					
 				</div>
 				<div class="icons" id="icons-{{id}}">
 					{{#unless build.isPending}}
@@ -74,7 +64,7 @@
 		jQuery(function(){					
 			//hide legend and register on click function to show and hide
 			$('#legendView').hide();
-			$('#legendLever').click(function() {
+			$('#settingsPanel').click(function() {
 				$('#legendView').toggle('blind', {}, 750);
 				return false;
 			});
@@ -150,40 +140,6 @@
 		
 	</script>
 	<style>
-span.SUCCESS {
-	background: url("${rootURL}/images/24x24/blue.png") no-repeat center
-		center !important;
-}
-
-span.FAILURE {
-	background: url("${rootURL}/images/24x24/red.png") no-repeat center
-		center;
-}
-
-span.UNSTABLE {
-	background: url("${rootURL}/images/24x24/yellow.png") no-repeat center
-		center;
-}
-
-span.BUILDING {
-	background: url("${rootURL}/images/24x24/blue_anime.gif") no-repeat
-		center center;
-}
-
-span.NOT_BUILT {
-	background: url("${rootURL}/images/24x24/blue_anime.gif") no-repeat
-		center center;
-}
-
-span.PENDING {
-	background: url("${rootURL}/images/24x24/health-80plus.png") no-repeat
-		center center;
-}
-
-span.ABORT {
-	background: url("${rootURL}/images/24x24/grey.png") no-repeat center
-		center;
-}
 
 .trigger {
 	background: url("${rootURL}/images/16x16/clock.png") no-repeat center
@@ -196,128 +152,58 @@ span.ABORT {
 		<input name="triggerProjectName" id="triggerProjectName" type="hidden" />
 		<div id="build-pipeline-plugin-content">
 			<div>
-				<h1>Build Pipeline View: ${from.getBuildViewTitle()}</h1>
+				<h1>Pipeline: ${from.getBuildViewTitle()}</h1>
 			</div>
 			<div>${from.getDescription()}</div>
-			<!-- If the user has the Configure View permission include a hyperlink to configure this view.-->
-			<j:if test="${from.hasConfigurePermission()}">
-				<a href="configure"><img height="24" style="margin: 2px;" alt="" width="24" src="${rootURL}/images/24x24/setting.png" /></a>
-				<a href="configure">Configure View</a>
-			</j:if>
 			<div>
 				<!-- If the user has the Build Project permission include a hyperlink to build the base project.-->
 				<j:if test="${from.hasSelectedProject()}">
 					<j:set var="hasBuildPermission" type="boolean" value="${from.hasBuildPermission(from.getSelectedProject())}" />
 					<j:if test="${hasBuildPermission}">
-						<a href="${rootURL}/job/${from.getSelectedProject().getName()}/build?delay=0sec"><img height="24" style="margin: 2px;" alt="" width="24" src="${rootURL}/images/24x24/clock.png" /></a>
-						<a href="${rootURL}/job/${from.getSelectedProject().getName()}/build?delay=0sec">Start Build of Pipeline for ${from.getSelectedProject().getName()}</a>
+						<button type="button" onClick="location.href='${rootURL}/job/${from.getSelectedProject().getName()}/build?delay=0sec'">Trigger a Pipeline</button>
 					</j:if>
 				</j:if>
 				<j:if test="${!(from.hasSelectedProject())}">
 					<j:set var="hasBuildPermission" type="boolean" value="false" />
 				</j:if>
 			</div>
-			<!-- Hyperlink to show/hide the legend-->
-			<div href="#" id="legendLever">
-				<a href="#"><img height="24" style="margin: 2px;" alt="" width="24" src="${rootURL}/images/24x24/help.png" class="BuildViewMargin" /></a> <a href="#">View/Hide Build Pipeline Icon Legend</a>
+			<!-- Button to Show/hide the additional options-->
+			<div href="#" id="settingsPanel">
+				<button type="button" class="settingsButton" onClick="location.href='#'">More Options</button>
 			</div>
 			<div id="legendView" class="BuildViewMargin">
-				<table cellspacing="5" cellpadding="5">
-					<tr>
-						<td class="legend rounded" COLSPAN="2">Project Status</td>
-						<td class="legend rounded" COLSPAN="2">Build Stability</td>
-						<td class="legend rounded">Build Status</td>
-					</tr>
-					<tr>
-						<td><img src="${rootURL}/images/24x24/blue.png" /></td>
-						<td>Success</td>
-						<td><img src="${rootURL}/images/24x24/health-80plus.png" /></td>
-						<td>More than 80&#37;</td>
-						<td class="SUCCESS rounded">SUCCESS</td>
-					</tr>
-					<tr>
-						<td><img src="${rootURL}/images/24x24/yellow.png" /></td>
-						<td>Unstable</td>
-						<td><img src="${rootURL}/images/24x24/health-60to79.png" /></td>
-						<td>60-79&#37;</td>
-						<td class="UNSTABLE rounded">UNSTABLE</td>
-					</tr>
-					<tr>
-						<td><img src="${rootURL}/images/24x24/red.png" /></td>
-						<td>Failure</td>
-						<td><img src="${rootURL}/images/24x24/health-40to59.png" /></td>
-						<td>40-59&#37;</td>
-						<td class="FAILURE rounded">FAILURE</td>
-					</tr>
-					<tr>
-						<td><img src="${rootURL}/images/24x24/grey.png" /></td>
-						<td>Abort</td>
-						<td><img src="${rootURL}/images/24x24/health-20to39.png" /></td>
-						<td>20-39&#37;</td>
-						<td class="ABORT rounded">ABORT</td>
-					</tr>
-					<tr>
-						<td><img src="${rootURL}/images/24x24/blue_anime.gif" /></td>
-						<td>Building</td>
-						<td><img src="${rootURL}/images/24x24/health-00to19.png" /></td>
-						<td>Less than 20&#37;</td>
-						<td class="NOT_BUILT rounded">BUILDING</td>
-					</tr>
-					<tr>
-						<td></td>
-						<td>Pending a build being triggered either manually or automatically.</td>
-						<td></td>
-						<td></td>
-						<td class="PENDING rounded">PENDING</td>
-					</tr>
+				<table id="runningRobs">
+				   <tr>
+				      <td><t:executors/></td>
+				      <td><t:queue items="${app.queue.items}"/></td>
+				      <td>
+							<a href="builds"><img height="24" style="margin: 2px;" alt="" width="24" src="${rootURL}/images/24x24/notepad.png" /></a>
+							<a href="builds">Pipeline History</a>
+							<!-- If the user has the Configure View permission include actions.-->
+							<j:if test="${from.hasConfigurePermission()}">
+								<a href="configure"><img height="24" style="margin: 2px;" alt="" width="24" src="${rootURL}/images/24x24/setting.png" /></a>
+								<a href="configure">Configure</a>
+								<a href="newJob"><img height="24" style="margin: 2px;" alt="" width="24" src="${rootURL}/images/24x24/new-package.png" /></a>
+							    <a href="newJob">Add Step</a>
+							    <a href="delete"><img height="24" style="margin: 2px;" alt="" width="24" src="${rootURL}/images/24x24/edit-delete.png" /></a>
+							    <a href="delete">Delete Pipeline</a>
+							    <a href="../../manage"><img height="24" style="margin: 2px;" alt="" width="24" src="${rootURL}/images/24x24/setting.png" /></a>
+								<a href="../../manage">Manage Jenkins</a>						
+							</j:if>
+				      </td>
+				   </tr>
 				</table>
 			</div>
+			
 			<j:if test="${empty(items)}">
 				<st:include page="noJob.jelly" />
 			</j:if>
+			
 			<j:set var="buildPipelineForm" type="au.com.centrumsystems.hudson.plugin.buildpipeline.BuildPipelineForm" value="${from.getBuildPipelineForm()}" />
+			
 			<table id="pipelines">
 				<j:set var="projectGrid" value="${buildPipelineForm.getProjectGrid()}" />
 				<!-- projects -->
-				<j:forEach begin="${0}" end="${buildPipelineForm.getGridHeight() - 1}" indexVar="x">
-					<tr id='project-pipeline'>
-						<!-- 1st cell empty, that's where revision will go for the builds -->
-						<td></td>
-						<td class="next"></td>
-						<j:forEach begin="${0}" end="${buildPipelineForm.getGridWidth() - 1}" indexVar="y">
-							<j:set var="project" type="au.com.centrumsystems.hudson.plugin.buildpipeline.ProjectForm" value="${projectGrid.get(x).get(y)}" />
-							<j:if test="${project != null}">
-								<td>
-									<div class="PROJECT rounded">
-										<div class="header-name">
-											<a href="${project.getUrl()}" title="${project.getName()}">${project.getName()}</a>											
-										</div>
-										<div class="status-images">
-											<img src="${rootURL}/images/24x24/${project.getHealth()}" />
-										</div>
-									</div>
-								</td>
-								<j:if test="${(y + 1 != buildPipelineForm.getGridWidth())}">
-									<td class="next"><j:if test="${!(project.getDependencies().length() == 0)}">
-											<span class="status next"> <img src="${rootURL}/images/24x24/next.png" />
-											</span>
-										</j:if></td>
-								</j:if>
-							</j:if>
-							<j:if test="${project == null}">
-								<td></td>
-								<j:if test="${y + 1 != buildPipelineForm.getGridWidth()}">
-									<j:set var="nextIndex" value="${y + 1}" />
-									<td class="next"><j:if test="${projectGrid.get(x).containsKey(nextIndex.intValue())}">
-											<span class="status next">
-												<img src="${rootURL}/images/24x24/next.png" />
-											</span>
-										</j:if></td>
-								</j:if>
-							</j:if>
-						</j:forEach>
-					</tr>
-				</j:forEach>
 				<!-- builds -->
 				<j:forEach items="${buildPipelineForm.getBuildGrids()}" var="buildGrid" indexVar="i">
 					<tbody class="pipelineGroup">

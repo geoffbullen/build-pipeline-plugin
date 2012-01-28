@@ -381,7 +381,7 @@ public class PipelineBuild {
 		} else if (build.getPreviousBuild() != null) {
 			return revNo(build.getPreviousBuild());
 		} else {
-			return "No revision information available";
+			return "Revision not available";
 		}
 	}
 
