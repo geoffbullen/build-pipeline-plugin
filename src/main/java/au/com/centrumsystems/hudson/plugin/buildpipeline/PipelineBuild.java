@@ -403,8 +403,13 @@ public class PipelineBuild {
 		return buildPermission;
 	}
 
-	public boolean isManual() {
-		return getCurrentBuildResult().equals(HudsonResult.MANUAL.toString());
+	public boolean isReadyToBeManuallyBuilt() {
+		boolean isManual = false;
+		if (isManualTrigger() && this.currentBuild == null && this.getUpstreamBuild() != null
+				&& HudsonResult.SUCCESS.toString().equals(getBuildResult(this.upstreamBuild))) {
+			isManual = true;
+		}
+		return isManual;
 	}
 
 	/**

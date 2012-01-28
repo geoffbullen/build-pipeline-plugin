@@ -26,7 +26,7 @@
 		</tr>
 		<tr class="build-actions">
 			<td colspan="2">
-				<div class="status-bar">
+				<div class="status-bar" id="status-bar-{{id}}">
 					{{#if build.isBuilding}}
 						<a href="{{build.url}}console">
 							<table class="progress-bar" align="center">
@@ -40,25 +40,27 @@
 						</a>
 					{{/if}}
 					{{#if build.isPending}}
-						<table class="progress-bar" align="center">
-							<tbody>
-								<tr class="unknown">
-									<td></td>
-								</tr>
-							</tbody>
-						</table>
+						{{#unless build.isReadyToBeManuallyBuilt}}
+							<table class="progress-bar" align="center">
+								<tbody>
+									<tr class="unknown">
+										<td></td>
+									</tr>
+								</tbody>
+							</table>
+						{{/unless}}
 					{{/if}}
 				</div>
-				<div class="icons">
+				<div class="icons" id="icons-{{id}}">
 					{{#unless build.isPending}}
-						{{#unless build.isManualTrigger}}
+						{{#unless build.isReadyToBeManuallyBuilt}}
 						<a href="{{build.url}}console">
 							<img title="console" alt="console" src="{{rootUrl}}/images/16x16/terminal.png" />
 						</a>
 						{{/unless}}
 					{{/unless}}
-					{{#if build.isManual}}
-						<a href="#" class="trigger" onclick="triggerBuild('{{upstream.projectName}}', '{{upstream.buildNumber}}', '{{project.name}}')">
+					{{#if build.isReadyToBeManuallyBuilt}}
+						<a href="#" class="trigger" onclick="buildPipeline.showSpinner({{id}}); buildPipeline.triggerBuild({{id}}, '{{upstream.projectName}}', {{upstream.buildNumber}}, '{{project.name}}', [{{build.dependencyIds}}])">
 							<img title="trigger" alt="trigger" src="{{rootUrl}}/images/16x16/clock.png" />
 						</a>
 					{{/if}}
@@ -82,19 +84,12 @@
 	            }
 	        });			
 		});
-		
-		var triggerBuild = function(upstreamProjectName, upstreamBuildNumber, triggerProjectName) {
-			$('#upstreamProjectName').val(upstreamProjectName);
-			$('#upstreamBuildNumber').val(upstreamBuildNumber);
-			$('#triggerProjectName').val(triggerProjectName);
-			document.pipelineViewForm.action = "manualExecution";
-			$('#manualExecutionForm').submit();
-		}
 	
 		var BuildPipeline = function(){
 			var buildCardTemplateSource = $("#build-card-template").html();
 			this.buildCardTemplate = Handlebars.compile(buildCardTemplateSource);
 			this.buildProxies = {}
+			this.viewProxy = <st:bind value="${from}" />;				
 		};
 		
 		BuildPipeline.prototype = {
@@ -103,7 +98,6 @@
 				var intervalId = setInterval(function(){		    	
 					buildPipeline.buildProxies[id].asJSON(function(data){
 			    		var buildData = jQuery.parseJSON(data.responseObject());
-			    		console.log(buildData.build.status + ", " + buildData.id + ", " + buildData.build.progress);
 			    		if (buildData.build.progress > 0) {
 			    			buildPipeline.updateBuildCardFromJSON(buildData, false);
 			    		} else {
@@ -115,12 +109,12 @@
 			    			});
 			    		}
 			    	});
-				}, 3000);
+				}, 2000);
 			},
 			updateBuildCard : function(id) {
 				var buildPipeline = this;
 				buildPipeline.buildProxies[id].asJSON(function(data){
-					buildPipeline.updateBuildCardFromJSON(jQuery.parseJSON(data.responseObject()));
+					buildPipeline.updateBuildCardFromJSON(jQuery.parseJSON(data.responseObject()), true);
 				});
 			},
 			updateBuildCardFromJSON : function(buildAsJSON, fadeIn) {
@@ -128,7 +122,7 @@
 				jQuery("#build-" + buildAsJSON.id).empty();
 				jQuery(buildPipeline.buildCardTemplate(buildAsJSON)).hide().appendTo("#build-" + buildAsJSON.id).fadeIn(fadeIn ? 1000 : 0);
 			},
-			updatePipelineBuildAndShowProgress : function(id, nextBuildNumber, dependencies) {
+			updateNextBuildAndShowProgress : function(id, nextBuildNumber, dependencies) {
 				var buildPipeline = this;
 				//try to get the updated build, that's not pending 
 				var intervalId = setInterval(function(){
@@ -138,8 +132,17 @@
 							clearInterval(intervalId);
 						}
 					});
-				}, 3000);
-				
+				}, 2000);				
+			},
+			triggerBuild : function(id, upstreamProjectName, upstreamBuildNumber, triggerProjectName, dependencyIds) {
+				var buildPipeline = this;
+				buildPipeline.viewProxy.triggerManualBuild(upstreamBuildNumber, triggerProjectName, upstreamProjectName, function(data){
+					buildPipeline.updateNextBuildAndShowProgress(id, data.responseObject(), dependencyIds);
+				});
+			},
+			showSpinner : function(id){
+				$("#status-bar-" + id).html('<table class="progress-bar" align="center"><tbody><tr class="unknown"><td></td></tr></tbody></table>');
+				$("#icons-" + id).empty();
 			}
 		}
 		
@@ -187,8 +190,7 @@ span.ABORT {
 		center !important;
 }
 </style>
-	<!-- <form method="post" action="manualExecution" id="manualExecutionForm">-->
-	<form method="post" name="pipelineViewForm" action="" id="manualExecutionForm">
+	<form method="post" name="pipelineViewForm" action="manualExecution" id="manualExecutionForm">
 		<input name="upstreamProjectName" id="upstreamProjectName" type="hidden" />
 		<input name="upstreamBuildNumber" id="upstreamBuildNumber" type="hidden" />
 		<input name="triggerProjectName" id="triggerProjectName" type="hidden" />
@@ -348,10 +350,17 @@ span.ABORT {
 												buildPipeline.showProgress(${build.getId()}, ${build.getDependencyIds()});
 											</j:if>
 											<j:if test="${build.getStatus() == 'PENDING'}">
-												jQuery("#pipelines").bind("show-status-${build.getId()}", function(){
-													buildPipeline.updatePipelineBuildAndShowProgress(${build.getId()}, ${build.getNextBuildNumber()}, ${build.getDependencyIds()});
-												});
-											</j:if>
+											jQuery("#pipelines").bind("show-status-${build.getId()}", function(){
+											<j:choose>
+												<j:when test="${build.isManualTrigger()}">
+													buildPipeline.updateBuildCard(${build.getId()});
+												</j:when>
+												<j:otherwise>
+													buildPipeline.updateNextBuildAndShowProgress(${build.getId()}, ${build.getNextBuildNumber()}, ${build.getDependencyIds()});
+												</j:otherwise>
+											</j:choose>
+											});
+										</j:if>
 										</script>
 										<j:if test="${(y + 1 != buildPipelineForm.getGridWidth())}">
 											<td class="next"><j:if test="${!(build.getDependencies().length() == 0)}">

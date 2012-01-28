@@ -48,13 +48,14 @@ import javax.servlet.ServletException;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
+import org.kohsuke.stapler.bind.JavaScriptMethod;
 
 import au.com.centrumsystems.hudson.plugin.util.BuildUtil;
 import au.com.centrumsystems.hudson.plugin.util.ProjectUtil;
 
 /**
- * This view displays the set of jobs that are related based on their upstream\downstream relationships as a pipeline. Each build pipeline
- * becomes a row on the view.
+ * This view displays the set of jobs that are related based on their upstream\downstream relationships as a pipeline.
+ * Each build pipeline becomes a row on the view.
  * 
  * @author Centrum Systems
  * 
@@ -107,8 +108,8 @@ public class BuildPipelineView extends View {
 	 * 
 	 */
 	@DataBoundConstructor
-	public BuildPipelineView(final String name, final String buildViewTitle, final String selectedJob, final String noOfDisplayedBuilds,
-			final boolean triggerOnlyLatestJob) {
+	public BuildPipelineView(final String name, final String buildViewTitle, final String selectedJob,
+			final String noOfDisplayedBuilds, final boolean triggerOnlyLatestJob) {
 		super(name);
 		setBuildViewTitle(buildViewTitle);
 		setSelectedJob(selectedJob);
@@ -248,36 +249,27 @@ public class BuildPipelineView extends View {
 	}
 
 	/**
-	 * Invoke this method when the URL(/manualExecution/) is called
-	 * 
-	 * @param req
-	 *            - Stapler Request
-	 * @param rsp
-	 *            - Stapler Response
+	 * Trigger a manual build
+	 * @param upstreamBuildNumber
+	 *            upstream build number
+	 * @param triggerProjectName
+	 *            project that is triggered
+	 * @param upstreamProjectName
+	 *            upstream project
+	 * @return next build number that has been scheduled
 	 */
-	public void doManualExecution(final StaplerRequest req, final StaplerResponse rsp) {
-		int upstreamBuildNo;
-		if (req.getParameter(REQ_UPSTREAM_BUILD_NUMBER) == null || req.getParameter(REQ_UPSTREAM_BUILD_NUMBER).length() == 0) {
-			upstreamBuildNo = 0;
-		} else {
-			upstreamBuildNo = Integer.parseInt(req.getParameter(REQ_UPSTREAM_BUILD_NUMBER));
-		}
-		final AbstractProject<?, ?> triggerProject = (AbstractProject<?, ?>) super.getJob(req.getParameter(REQ_TRIGGER_PROJECT_NAME));
-		final AbstractProject<?, ?> upstreamProject = (AbstractProject<?, ?>) super.getJob(req.getParameter(REQ_UPSTREAM_PROJECT_NAME));
+	@JavaScriptMethod
+	public int triggerManualBuild(final Integer upstreamBuildNumber, final String triggerProjectName,
+			final String upstreamProjectName) {
+		final AbstractProject<?, ?> triggerProject = (AbstractProject<?, ?>) super.getJob(triggerProjectName);
+		final AbstractProject<?, ?> upstreamProject = (AbstractProject<?, ?>) super.getJob(upstreamProjectName);
 
-		final AbstractBuild<?, ?> upstreamBuild = retrieveBuild(upstreamBuildNo, upstreamProject);
+		final AbstractBuild<?, ?> upstreamBuild = retrieveBuild(upstreamBuildNumber, upstreamProject);
 
 		// Get parameters from upstream build
 		final Action buildParametersAction = BuildUtil.getAllBuildParametersAction(upstreamBuild, triggerProject);
 
-		triggerBuild(triggerProject, upstreamBuild, buildParametersAction);
-
-		// redirect to the view page.
-		try {
-			rsp.sendRedirect2(".");
-		} catch (final IOException e) {
-			LOGGER.info(e.toString());
-		}
+		return triggerBuild(triggerProject, upstreamBuild, buildParametersAction);
 	}
 
 	/**
@@ -311,10 +303,12 @@ public class BuildPipelineView extends View {
 	 *            - The upstream AbstractBuild that will be used as a Cause for the triggerProject's build.
 	 * @param buildParametersAction
 	 *            - The upstream ParametersAction that will be used as an Action for the triggerProject's build.
+	 * @return next build number
 	 */
-	private void triggerBuild(final AbstractProject<?, ?> triggerProject, final AbstractBuild<?, ?> upstreamBuild,
+	private int triggerBuild(final AbstractProject<?, ?> triggerProject, final AbstractBuild<?, ?> upstreamBuild,
 			final Action buildParametersAction) {
-		final hudson.model.Cause.UpstreamCause upstreamCause = new hudson.model.Cause.UpstreamCause((Run<?, ?>) upstreamBuild);
+		final hudson.model.Cause.UpstreamCause upstreamCause = new hudson.model.Cause.UpstreamCause(
+				(Run<?, ?>) upstreamBuild);
 		if (buildParametersAction == null) {
 			final List<Action> buildActions = new ArrayList<Action>();
 			triggerProject.scheduleBuild(triggerProject.getQuietPeriod(), upstreamCause,
@@ -322,6 +316,7 @@ public class BuildPipelineView extends View {
 		} else {
 			triggerProject.scheduleBuild(triggerProject.getQuietPeriod(), upstreamCause, buildParametersAction);
 		}
+		return triggerProject.getNextBuildNumber();
 	}
 
 	/**
@@ -332,8 +327,8 @@ public class BuildPipelineView extends View {
 	public static final class DescriptorImpl extends ViewDescriptor {
 
 		/**
-		 * descriptor impl constructor This empty constructor is required for stapler. If you remove this constructor, text name of
-		 * "Build Pipeline View" will be not displayed in the "NewView" page
+		 * descriptor impl constructor This empty constructor is required for stapler. If you remove this constructor,
+		 * text name of "Build Pipeline View" will be not displayed in the "NewView" page
 		 */
 		public DescriptorImpl() {
 			super();

@@ -52,16 +52,16 @@ public class BuildForm {
 	}
 
 	public List<Integer> getDependencyIds() {
-		List<Integer> hashes = new ArrayList<Integer>();
+		final List<Integer> ids = new ArrayList<Integer>();
 		for (final BuildForm dependency : dependencies) {
-			hashes.add(dependency.getId());
+			ids.add(dependency.getId());
 		}
-		return hashes;
+		return ids;
 	}
 
 	@JavaScriptMethod
 	public String asJSON() {
-		return BuildJSONBuilder.asJSON(pipelineBuild, id);
+		return BuildJSONBuilder.asJSON(pipelineBuild, id, getDependencyIds());
 	}
 
 	public int getId() {
@@ -69,12 +69,12 @@ public class BuildForm {
 	}
 
 	@JavaScriptMethod
-	public boolean updatePipelineBuild(int nextBuildNumber) {
+	public boolean updatePipelineBuild(final int nextBuildNumber) {
 		boolean updated = false;
 		final AbstractBuild<?, ?> newBuild = pipelineBuild.getProject().getBuildByNumber(nextBuildNumber);
 		if (newBuild != null) {
 			updated = true;
-			pipelineBuild = new PipelineBuild(newBuild, newBuild.getProject(), null);
+			pipelineBuild = new PipelineBuild(newBuild, newBuild.getProject(), pipelineBuild.getUpstreamBuild());
 		}
 		return updated;
 	}
