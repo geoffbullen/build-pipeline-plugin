@@ -22,7 +22,7 @@
 				<div>{{build.startTime}}</div>
 				{{#if build.isComplete}}
 				<div>{{build.duration}}</div>
-				{{/if}}
+				{{/if}}	
 			</td>
 		</tr>
 		<tr class="build-actions">
@@ -40,7 +40,6 @@
 							</table>
 						</a>
 					{{/if}}
-					
 				</div>
 				<div class="icons" id="icons-{{id}}">
 					{{#unless build.isPending}}
@@ -54,6 +53,11 @@
 						<a href="#" class="trigger" onclick="buildPipeline.showSpinner({{id}}); buildPipeline.triggerBuild({{id}}, '{{upstream.projectName}}', {{upstream.buildNumber}}, '{{project.name}}', [{{build.dependencyIds}}])">
 							<img title="trigger" alt="trigger" src="{{rootUrl}}/images/16x16/clock.png" />
 						</a>
+					{{/if}}			
+					{{#if build.isPending}}
+						{{#unless build.isReadyToBeManuallyBuilt}}
+							<span class="pending"><img src="${rootURL}/plugin/build-pipeline-plugin/images/hourglass.png" atl="pending" /></span>
+						{{/unless}}
 					{{/if}}
 				</div>
 			</td>
@@ -199,8 +203,6 @@
 			<div id="settingsView" class="BuildViewMargin">
 				<table id="runningJobs">
 				   <tr>
-				      <td><t:executors/></td>
-				      <td><t:queue items="${app.queue.items}"/></td>
 				      <td>
 							<a href="builds"><img height="24" style="margin: 2px;" alt="" width="24" src="${rootURL}/images/24x24/notepad.png" /></a>
 							<a href="builds">Pipeline History</a>
