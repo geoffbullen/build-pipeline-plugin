@@ -11,7 +11,7 @@
 		<tr class="header">
 			<td colspan="2">
 				<div>
-					<a title="{{project.name}}">{{project.name}}</a>
+					<a title="{{project.name}}" href="{{project.url}}">{{project.name}}</a>
 				</div>
 			</td>
 		</tr>
@@ -29,7 +29,7 @@
 			<td colspan="2">
 				<div class="status-bar" id="status-bar-{{id}}">
 					{{#if build.isBuilding}}
-						<a href="#" OnClick="Show_Popup('{{build.url}}consoleText')">
+						<a href="#" OnClick="showPopup('{{build.url}}consoleText')">
 							<table class="progress-bar" align="center">
 								<tbody>
 									<tr>
@@ -44,7 +44,7 @@
 				<div class="icons" id="icons-{{id}}">
 					{{#unless build.isPending}}
 						{{#unless build.isReadyToBeManuallyBuilt}}
-						<a href="#" OnClick="Show_Popup('{{build.url}}consoleText')">
+						<a href="#" OnClick="showPopup('{{build.url}}consoleText')">
 							<img title="console" alt="console" src="{{rootUrl}}/images/16x16/terminal.png" />
 						</a>
 						{{/unless}}
@@ -65,6 +65,7 @@
 	</tbody>
 </table>
 	</script>
+	<script src="${rootURL}/plugin/build-pipeline-plugin/js/build-pipeline.js"></script>
 	<script type="text/javascript">	
 		jQuery(function(){					
 			//hide legend and register on click function to show and hide
@@ -79,69 +80,21 @@
 	            }
 	        });			
 		});
-	
-		var BuildPipeline = function(){
-			var buildCardTemplateSource = $("#build-card-template").html();
-			this.buildCardTemplate = Handlebars.compile(buildCardTemplateSource);
-			this.buildProxies = {}
-			this.viewProxy = <st:bind value="${from}" />;				
-		};
 		
-		BuildPipeline.prototype = {
-			showProgress : function(id, dependencies) {
-				var buildPipeline = this;
-				var intervalId = setInterval(function(){		    	
-					buildPipeline.buildProxies[id].asJSON(function(data){
-			    		var buildData = jQuery.parseJSON(data.responseObject());
-			    		if (buildData.build.progress > 0) {
-			    			buildPipeline.updateBuildCardFromJSON(buildData, false);
-			    		} else {
-				    		buildPipeline.updateBuildCardFromJSON(buildData, true);
-			    			clearInterval(intervalId);
-			    			//kick off status tracking for all dependencies
-			    			jQuery.each(dependencies, function(){
-				    			jQuery("#pipelines").trigger("show-status-" + this);
-			    			});
-			    		}
-			    	});
-				}, 2000);
-			},
-			updateBuildCard : function(id) {
-				var buildPipeline = this;
-				buildPipeline.buildProxies[id].asJSON(function(data){
-					buildPipeline.updateBuildCardFromJSON(jQuery.parseJSON(data.responseObject()), true);
-				});
-			},
-			updateBuildCardFromJSON : function(buildAsJSON, fadeIn) {
-				var buildPipeline = this;
-				jQuery("#build-" + buildAsJSON.id).empty();
-				jQuery(buildPipeline.buildCardTemplate(buildAsJSON)).hide().appendTo("#build-" + buildAsJSON.id).fadeIn(fadeIn ? 1000 : 0);
-			},
-			updateNextBuildAndShowProgress : function(id, nextBuildNumber, dependencies) {
-				var buildPipeline = this;
-				//try to get the updated build, that's not pending 
-				var intervalId = setInterval(function(){
-					buildPipeline.buildProxies[id].updatePipelineBuild(nextBuildNumber, function(updated){
-						if (updated.responseObject()) {
-							buildPipeline.showProgress(id, dependencies);
-							clearInterval(intervalId);
-						}
-					});
-				}, 2000);				
-			},
-			triggerBuild : function(id, upstreamProjectName, upstreamBuildNumber, triggerProjectName, dependencyIds) {
-				var buildPipeline = this;
-				buildPipeline.viewProxy.triggerManualBuild(upstreamBuildNumber, triggerProjectName, upstreamProjectName, function(data){
-					buildPipeline.updateNextBuildAndShowProgress(id, data.responseObject(), dependencyIds);
-				});
-			},
-			showSpinner : function(id){
-				$("#status-bar-" + id).html('<table class="progress-bar" align="center"><tbody><tr class="unknown"><td></td></tr></tbody></table>');
-				$("#icons-" + id).empty();
-			}
+				
+		var showPopup = function (url) {
+		    $('#popup-content').append('<iframe frameborder="0" id="popup-iframe" src="'+  url + '"></iframe>');
+			$('#popup').fadeIn('fast');
+			$('#window').fadeIn('fast');	
+		}
+		var closePopup = function() {
+			$('#popup').fadeOut('fast');
+			$('#window').fadeOut('fast');
+			$('#popup-content').html('<div id="close-popup"><a href="#" onclick="closePopup();">close</a></div>');;
 		}
 		
-		var buildPipeline = new BuildPipeline()		
+		var buildCardTemplateSource = $("#build-card-template").html();		
+		var buildPipeline = new BuildPipeline(<st:bind value="${from}" />, Handlebars.compile(buildCardTemplateSource));
 		
 	</script>
 	<style>
@@ -158,68 +111,77 @@
 		
 		<div id="popup" style="display: none;"></div>
 			<div id="window" style="display: none;">
-			<div id="popup_content">
-				<div id="close_popup"><a href="#" onclick="Close_Popup();">close</a></div>
+			<div id="popup-content">
+				<div id="close-popup"><a href="#" onclick="closePopup();">close</a></div>
 			</div>
 		</div>
-		
-		<script type="text/javascript">
-		
-			function Show_Popup(url) {
-			    $('#popup_content').append('<iframe frameborder="0" id="popup_iframe" src="'+  url + '"></iframe>');
-				$('#popup').fadeIn('fast');
-				$('#window').fadeIn('fast');	
-			}
-			function Close_Popup() {
-				$('#popup').fadeOut('fast');
-				$('#window').fadeOut('fast');
-				$('#popup_content').html('<div id="close_popup"><a href="#" onclick="Close_Popup();">close</a></div>');;
-			}
-	
-
-		</script>
 
 		<div id="build-pipeline-plugin-content">
 			<div>
 				<h1>Pipeline: ${from.getBuildViewTitle()}</h1>
 			</div>
 			<div>${from.getDescription()}</div>
-			<div>
+			<div id="icon-bar">
 				<!-- If the user has the Build Project permission include a hyperlink to build the base project.-->
 				<j:if test="${from.hasSelectedProject()}">
 					<j:set var="hasBuildPermission" type="boolean" value="${from.hasBuildPermission(from.getSelectedProject())}" />
 					<j:if test="${hasBuildPermission}">
-						<button type="button" onClick="location.href='${rootURL}/job/${from.getSelectedProject().getName()}/build?delay=0sec'">Trigger a Pipeline</button>
+						<div class="icon-container">
+							<div>
+								<a href='${rootURL}/job/${from.getSelectedProject().getName()}/build?delay=0sec'>
+									<img src="${rootUrl}/images/24x24/clock.png" alt="Trigger a Pipeline" class="icon-with-caption" />
+								</a>
+							</div>
+							<div>Run</div>
+						</div>
 					</j:if>
 				</j:if>
 				<j:if test="${!(from.hasSelectedProject())}">
 					<j:set var="hasBuildPermission" type="boolean" value="false" />
 				</j:if>
-			</div>
-			<!-- Button to Show/hide the additional options-->
-			<div href="#" id="settingsPanel">
-				<button type="button" class="settingsButton" onClick="location.href='#'">More Options</button>
-			</div>
-			<div id="settingsView" class="BuildViewMargin">
-				<table id="runningJobs">
-				   <tr>
-				      <td>
-							<a href="builds"><img height="24" style="margin: 2px;" alt="" width="24" src="${rootURL}/images/24x24/notepad.png" /></a>
-							<a href="builds">Pipeline History</a>
-							<!-- If the user has the Configure View permission include actions.-->
-							<j:if test="${from.hasConfigurePermission()}">
-								<a href="configure"><img height="24" style="margin: 2px;" alt="" width="24" src="${rootURL}/images/24x24/setting.png" /></a>
-								<a href="configure">Configure</a>
-								<a href="newJob"><img height="24" style="margin: 2px;" alt="" width="24" src="${rootURL}/images/24x24/new-package.png" /></a>
-							    <a href="newJob">Add Step</a>
-							    <a href="delete"><img height="24" style="margin: 2px;" alt="" width="24" src="${rootURL}/images/24x24/edit-delete.png" /></a>
-							    <a href="delete">Delete Pipeline</a>
-							    <a href="../../manage"><img height="24" style="margin: 2px;" alt="" width="24" src="${rootURL}/images/24x24/setting.png" /></a>
-								<a href="../../manage">Manage Jenkins</a>						
-							</j:if>
-				      </td>
-				   </tr>
-				</table>
+				
+				<div class="icon-container">
+					<div>
+						<a href='builds'>
+							<img src="${rootURL}/images/24x24/notepad.png" alt="Pipeline History" class="icon-with-caption" />
+						</a>
+					</div>
+					<div>History</div>
+				</div>
+				<j:if test="${from.hasConfigurePermission()}">
+				<div class="icon-container">
+					<div>
+						<a href='configure'>
+							<img src="${rootURL}/images/24x24/setting.png" alt="Configure" class="icon-with-caption" />
+						</a>
+					</div>
+					<div>Configure</div>
+				</div>
+				<div class="icon-container">
+					<div>
+						<a href='newJob'>
+							<img src="${rootURL}/images/24x24/new-package.png" alt="Add Step" class="icon-with-caption" />
+						</a>
+					</div>
+					<div>Add Step</div>
+				</div>
+				<div class="icon-container">
+					<div>
+						<a href='delete'>
+							<img src="${rootURL}/images/24x24/edit-delete.png" class="icon-with-caption" />
+						</a>
+					</div>
+					<div>Delete</div>
+				</div>
+				<div class="icon-container">
+					<div>
+						<a href='../../manage'>
+							<img src="${rootURL}/images/24x24/setting.png" class="icon-with-caption" />						
+						</a>
+					</div>
+					<div>Manage</div>
+				</div>
+				</j:if>
 			</div>
 			
 			<j:if test="${empty(items)}">

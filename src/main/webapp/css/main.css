@@ -12,14 +12,15 @@
 	background: rgba(6, 72, 131, 0.1);
 }
 
-#popup_iframe{
+/******************** popup ***************************/
+#popup-iframe{
     width: 100%;
     height:95%;
     frameborder: 0;
     bottom: 0;
 }
 
-#close_popup{
+#close-popup {
   float:right;
   width:50px;
   color: red;
@@ -52,6 +53,32 @@
 	z-index:1;
 }
 
+/******************** icon bar ***************************/
+#icon-bar {
+	margin-bottom: 4px;
+	height: 32px;
+	margin-left: auto;
+	margin-right: auto;
+	width: 340px;
+}
+
+.icon-container {
+	float: left;
+	margin: 4px;
+	width: 48px;
+}
+
+.icon-container img {
+	width: 32px;
+	height: auto;
+}
+
+.icon-container div {
+	font-size: 9px;
+	text-align: center;
+	color: #777;
+	text-shadow:1px 0px 0px #333333;
+}
 
 .rounded {
 	height: 70px;
@@ -209,6 +236,7 @@ tr.spacerRow td {
 	display: table-cell;
 	vertical-align: middle;
 	height: 70px;
+	margin: 2px;
 }
 
 .SUCCESS {

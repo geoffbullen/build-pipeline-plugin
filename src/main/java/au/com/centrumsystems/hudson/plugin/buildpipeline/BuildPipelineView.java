@@ -30,6 +30,7 @@ import hudson.model.Item;
 import hudson.model.TopLevelItem;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
+import hudson.model.Cause;
 import hudson.model.Descriptor.FormException;
 import hudson.model.Hudson;
 import hudson.model.Run;
@@ -270,6 +271,14 @@ public class BuildPipelineView extends View {
 		final Action buildParametersAction = BuildUtil.getAllBuildParametersAction(upstreamBuild, triggerProject);
 
 		return triggerBuild(triggerProject, upstreamBuild, buildParametersAction);
+	}
+
+	@JavaScriptMethod
+	public int retryBuild(final String triggerProjectName) {
+		final AbstractProject<?, ?> triggerProject = (AbstractProject<?, ?>) super.getJob(triggerProjectName);
+		final Cause cause = new Cause.UserIdCause();
+		triggerProject.scheduleBuild(cause);
+		return triggerProject.getNextBuildNumber();
 	}
 
 	/**

@@ -30,6 +30,7 @@ class BuildJSONBuilder {
 			}
 			project {
 				name(pipelineBuild.project.name)
+				url(pipelineBuild.projectURL)
 			}
 			upstream {
 				projectName(pipelineBuild.upstreamPipelineBuild?.project?.name)
