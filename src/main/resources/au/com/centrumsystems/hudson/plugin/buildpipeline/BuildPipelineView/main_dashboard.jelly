@@ -30,7 +30,15 @@ background-color:#c30;
 padding: 5px 10px;
 background-color:#fafafa;
 }
-      
+
+.build-body, .build-actions {
+    display: None;
+}
+
+.rounded {
+    height: 100%;
+    vertical-align: middle;
+}
   </style>
   <script id="build-card-template" type="text/x-handlebars-template">
 
@@ -45,15 +53,13 @@ background-color:#fafafa;
 			</td>
 		</tr>
 		<tr class="build-body">
-			<td id="resizable" class="build-number">{{build.number}}</td>
+			<td id="resizable" class="build-number"><a href="{{project.url}}/{{build.number}}">{{build.number}}</a></td>
 			<td class="secondary-info">
-          <div class="build-detail">
 				<div>{{build.startDate}}</div>
 				<div>{{build.startTime}}</div>
 				{{#if build.isComplete}}
-				<div>{{build.duration}}</div>
+    				<div>{{build.duration}}</div>
 				{{/if}}
-        </div>
 			</td>
 		</tr>
 		<tr class="build-actions">
@@ -110,16 +116,15 @@ background-color:#fafafa;
 	            }
 	        });			
 		});
-		
 jQuery(document).ready(function() {
-  jQuery(".secondary-info").hide();
   //toggle the componenet with class msg_body
   jQuery(".header").click(function()
   {
-    jQuery(this).next(".secondary-info").slideToggle(500);
+    var div = jQuery(this).next(".build-body");
+    jQuery(this).find(".build-actions").toggle();
+    jQuery(this).next(".build-body").toggle();
   });
 });
-        
 		var showPopup = function (url) {
 		    $('#popup-content').append('<iframe frameborder="0" id="popup-iframe" src="'+  url + '"></iframe>');
 			$('#popup').fadeIn('fast');
