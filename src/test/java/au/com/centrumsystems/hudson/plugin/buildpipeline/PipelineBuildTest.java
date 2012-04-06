@@ -25,8 +25,8 @@
 
 package au.com.centrumsystems.hudson.plugin.buildpipeline;
 
-import java.util.Calendar;
-import java.util.Date;
+import au.com.centrumsystems.hudson.plugin.buildpipeline.trigger.BuildPipelineTrigger;
+import au.com.centrumsystems.hudson.plugin.util.HudsonResult;
 
 import hudson.model.AbstractBuild;
 import hudson.model.FreeStyleBuild;
@@ -34,14 +34,14 @@ import hudson.model.FreeStyleProject;
 import hudson.model.Hudson;
 import hudson.tasks.BuildTrigger;
 
+import java.util.Calendar;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.jvnet.hudson.test.HudsonTestCase;
 
-import au.com.centrumsystems.hudson.plugin.buildpipeline.trigger.BuildPipelineTrigger;
-import au.com.centrumsystems.hudson.plugin.util.HudsonResult;
-
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class PipelineBuildTest extends HudsonTestCase {
 
@@ -317,7 +317,7 @@ public class PipelineBuildTest extends HudsonTestCase {
 	@Test
 	public void testGetSVNRevisionNo() throws Exception {
 		final String proj1 = "Proj1";
-		final String proj1GetSVN = "No Revision";
+		final String proj1GetSVN = "Revision not available";
 		FreeStyleProject project1;
 		FreeStyleBuild build1;
 		project1 = createFreeStyleProject(proj1);
@@ -329,5 +329,4 @@ public class PipelineBuildTest extends HudsonTestCase {
 		assertEquals("The SVN Revision text should have been " + proj1GetSVN,
 				proj1GetSVN, pb.getScmRevision());
 	}
-
 }
