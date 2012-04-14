@@ -24,11 +24,15 @@
  */
 package au.com.centrumsystems.hudson.plugin.buildpipeline;
 
-import hudson.model.Item;
+import au.com.centrumsystems.hudson.plugin.util.BuildUtil;
+import au.com.centrumsystems.hudson.plugin.util.HudsonResult;
+import au.com.centrumsystems.hudson.plugin.util.ProjectUtil;
+
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.FreeStyleProject;
 import hudson.model.Hudson;
+import hudson.model.Item;
 import hudson.scm.ChangeLogSet;
 
 import java.text.DateFormat;
@@ -36,10 +40,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
-
-import au.com.centrumsystems.hudson.plugin.util.BuildUtil;
-import au.com.centrumsystems.hudson.plugin.util.HudsonResult;
-import au.com.centrumsystems.hudson.plugin.util.ProjectUtil;
 
 /**
  * @author Centrum Systems

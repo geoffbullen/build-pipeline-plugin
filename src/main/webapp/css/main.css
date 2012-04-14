@@ -312,14 +312,14 @@ tr.spacerRow td {
     display: none;
 }
 
-a:link, a:visited, a:active {
+.rounded a:link, .rounded a:visited, .rounded a:active {
     text-decoration: none;
     color: inherit;
     color: expression(this.parentNode.currentStyle['color']); /* IE fix */
     font-weight: inherit;
 }
 
-a:hover {
+.rounded a:hover {
     text-decoration: underline;
     color: inherit;
     color: expression(this.parentNode.currentStyle['color']);

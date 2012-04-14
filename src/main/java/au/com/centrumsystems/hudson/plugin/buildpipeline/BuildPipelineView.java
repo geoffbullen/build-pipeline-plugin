@@ -241,7 +241,6 @@ public class BuildPipelineView extends View {
 	 *            - The project
 	 * @return URL - of the project
 	 * @throws URISyntaxException
-	 * @see {@link ProjectUtil#getProjectURL(AbstractProject)}
 	 * @throws URISyntaxException
 	 *             {@link URISyntaxException}
 	 */
