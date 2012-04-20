@@ -1,5 +1,7 @@
 #side-panel {
-    display: inherit;
+    display: block;
+    width: 280px;
+    padding: 4px;
 }
 
 .build-detail {
@@ -17,11 +19,16 @@
 }
 
 tbody.pipelineGroup {
+    background-color: rgb(175, 225, 255);
     background-color: rgba(175, 225, 255, 0.5);
 }
 
 #build-pipeline-plugin-content {
     background: white;
+}
+
+#view-message {
+    display: block;
 }
 
 .revision {
@@ -30,10 +37,7 @@ tbody.pipelineGroup {
     vertical-align: middle;
     height: 70px;
     margin: 2px;
-    padding-top:5px;
-    padding-bottom:5px;
-    padding-right:5px;
-    padding-left:5px;
+    padding: 5px;
     text-align: center;
         
     background: rgb(255,116,0); /* Old browsers */

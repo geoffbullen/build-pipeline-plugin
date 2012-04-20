@@ -22,7 +22,7 @@ import hudson.security.Permission;
  * @author Ingo Richter (irichter@adobe.com)
  * @since 04/01/2012
  */
-class ReadOnlyBuildPipelineView extends BuildPipelineView {
+public class ReadOnlyBuildPipelineView extends BuildPipelineView {
     public ReadOnlyBuildPipelineView(String displayName, String description, String selectedJob, String noOfDisplayedBuilds, boolean triggerOnlyLatestJob) {
         super(displayName, displayName, selectedJob, noOfDisplayedBuilds, triggerOnlyLatestJob);
         // this is ugly, but there is no other way to set the description of
