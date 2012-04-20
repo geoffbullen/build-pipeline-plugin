@@ -6,3 +6,4 @@
 ^.settings
 ^.checkstyle
 ^.DS_Store
+^.idea$
