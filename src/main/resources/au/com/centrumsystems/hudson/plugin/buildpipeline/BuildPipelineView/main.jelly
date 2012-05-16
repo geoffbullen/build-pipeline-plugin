@@ -49,11 +49,17 @@
 						</a>
 						{{/unless}}
 					{{/unless}}
-					{{#if build.isReadyToBeManuallyBuilt}}
+					{{#if ${from.alwaysAllowManualTrigger}}}
 						<a href="#" class="trigger" onclick="buildPipeline.showSpinner({{id}}); buildPipeline.triggerBuild({{id}}, '{{upstream.projectName}}', {{upstream.buildNumber}}, '{{project.name}}', [{{build.dependencyIds}}])">
 							<img title="trigger" alt="trigger" src="{{rootUrl}}/images/16x16/clock.png" />
 						</a>
-					{{/if}}			
+					{{else}}
+						{{#if build.isReadyToBeManuallyBuilt}}
+							<a href="#" class="trigger" onclick="buildPipeline.showSpinner({{id}}); buildPipeline.triggerBuild({{id}}, '{{upstream.projectName}}', {{upstream.buildNumber}}, '{{project.name}}', [{{build.dependencyIds}}])">
+								<img title="trigger" alt="trigger" src="{{rootUrl}}/images/16x16/clock.png" />
+							</a>
+						{{/if}}			
+					{{/if}}
 					{{#if build.isPending}}
 						{{#unless build.isReadyToBeManuallyBuilt}}
 							<span class="pending"><img src="${rootURL}/plugin/build-pipeline-plugin/images/hourglass.png" atl="pending" /></span>

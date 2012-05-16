@@ -74,6 +74,9 @@ public class BuildPipelineView extends View {
 
 	/** Indicates whether only the latest job will be triggered. **/
 	private boolean triggerOnlyLatestJob;
+	
+	/** alwaysAllowManualTrigger. */
+	private boolean alwaysAllowManualTrigger;
 
 	/*
 	 * Keep feature flag properties in one place so that it is easy to refactor them out later.
@@ -106,7 +109,6 @@ public class BuildPipelineView extends View {
 	 *            a count of the number of builds displayed on the view
 	 * @param triggerOnlyLatestJob
 	 *            Indicates whether only the latest job will be triggered.
-	 * 
 	 */
 	@DataBoundConstructor
 	public BuildPipelineView(final String name, final String buildViewTitle, final String selectedJob,
@@ -116,6 +118,27 @@ public class BuildPipelineView extends View {
 		setSelectedJob(selectedJob);
 		setNoOfDisplayedBuilds(noOfDisplayedBuilds);
 		setTriggerOnlyLatestJob(triggerOnlyLatestJob);
+	}
+	/**
+	 * 
+	 * @param name
+	 *            the name of the pipeline build view.
+	 * @param buildViewTitle
+	 *            the build view title.
+	 * @param selectedJob
+	 *            the first job in the build pipeline.
+	 * @param noOfDisplayedBuilds
+	 *            a count of the number of builds displayed on the view
+	 * @param triggerOnlyLatestJob
+	 *            Indicates whether only the latest job will be triggered.
+	 * @param alwaysAllowManualTrigger
+	 *            Indicates whether manual trigger will always be available.
+	 */
+	@DataBoundConstructor
+	public BuildPipelineView(final String name, final String buildViewTitle, final String selectedJob,
+			final String noOfDisplayedBuilds, final boolean triggerOnlyLatestJob, final boolean alwaysAllowManualTrigger) {
+		this(name, buildViewTitle, selectedJob, noOfDisplayedBuilds, triggerOnlyLatestJob);
+		setAlwaysAllowManualTrigger(alwaysAllowManualTrigger);
 	}
 
 	/**
@@ -136,6 +159,7 @@ public class BuildPipelineView extends View {
 		this.noOfDisplayedBuilds = req.getParameter("noOfDisplayedBuilds");
 		this.buildViewTitle = req.getParameter("buildViewTitle");
 		this.triggerOnlyLatestJob = Boolean.valueOf(req.getParameter("_.triggerOnlyLatestJob"));
+		this.alwaysAllowManualTrigger = Boolean.valueOf(req.getParameter("_.alwaysAllowManualTrigger"));
 	}
 
 	/**
@@ -427,6 +451,18 @@ public class BuildPipelineView extends View {
 
 	public void setTriggerOnlyLatestJob(final boolean triggerOnlyLatestJob) {
 		this.triggerOnlyLatestJob = triggerOnlyLatestJob;
+	}
+	
+	public boolean isAlwaysAllowManualTrigger() {
+		return alwaysAllowManualTrigger;
+	}
+	
+	public String getAlwaysAllowManualTrigger() {
+		return Boolean.toString(alwaysAllowManualTrigger);
+	}
+	
+	public void setAlwaysAllowManualTrigger(final boolean alwaysAllowManualTrigger) {
+		this.alwaysAllowManualTrigger = alwaysAllowManualTrigger;
 	}
 
 	@Override
