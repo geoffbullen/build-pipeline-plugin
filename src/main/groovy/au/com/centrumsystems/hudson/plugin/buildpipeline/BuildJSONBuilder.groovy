@@ -19,7 +19,7 @@ class BuildJSONBuilder {
 				isPending(buildStatus == 'PENDING')
 				isReadyToBeManuallyBuilt(pipelineBuild.isReadyToBeManuallyBuilt())
 				isManualTrigger(pipelineBuild.isManualTrigger())
-				number(pipelineBuild.currentBuild?.number)
+				number(pipelineBuild.currentBuild?.displayName)
 				progress(pipelineBuild.buildProgress)
 				progressLeft(100 - pipelineBuild.buildProgress)
 				startDate(pipelineBuild.formattedStartDate)
@@ -34,7 +34,7 @@ class BuildJSONBuilder {
 			}
 			upstream {
 				projectName(pipelineBuild.upstreamPipelineBuild?.project?.name)
-				buildNumber(pipelineBuild.upstreamBuild?.number)
+				buildNumber(pipelineBuild.upstreamBuild?.displayName)
 			}           
         }
         return builder.toString()
