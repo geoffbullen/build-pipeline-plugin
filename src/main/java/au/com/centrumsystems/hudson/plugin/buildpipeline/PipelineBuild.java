@@ -34,7 +34,9 @@ import hudson.scm.ChangeLogSet;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import au.com.centrumsystems.hudson.plugin.util.BuildUtil;
@@ -456,4 +458,12 @@ public class PipelineBuild {
 		return formattedStartTime;
 	}
 
+	public Map<String, String> getBuildParameters() {
+		final Map<String, String> retval = new HashMap<String, String>();
+		if (currentBuild != null){
+			retval.putAll(currentBuild.getBuildVariables());
+		}
+		
+		return retval;
+	}
 }

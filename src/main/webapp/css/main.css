@@ -326,3 +326,6 @@ a:hover {
 	color: expression(this.parentNode.currentStyle['color']);
 	font-weight: inherit;
 }
+
+.param-info {
+	border: 1px solid black;

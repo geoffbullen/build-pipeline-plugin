@@ -205,15 +205,33 @@
 					<tbody class="pipelineGroup">
 						<j:forEach begin="${0}" end="${buildGrid.keySet().size() - 1}" indexVar="x">
 							<tr class='build-pipeline'>
+								<j:if test="${(x == 0) and from.isShowPipelineParameters()}">
+								<td>
+									<div class="param-info"> 
+									<table>
+										<tr>
+											<td colspan="3">Parameter Values</td>
+										</tr>
+										<j:forEach items="${buildGrid.get(x).get(0).getParameters().entrySet()}" var="buildParam" indexVar="buildParamCtr">
+											<tr>
+												<td>${buildParam.getKey()}</td>
+												<td>:</td>
+												<td>${buildParam.getValue()}</td>
+											</tr>
+										</j:forEach>												
+									</table>
+									</div>
+								</td>
+								</j:if>
 								<td><j:if test="${x == 0}">
-										<div class="revision rounded">
-											<div>
-												<a href="${buildGrid.get(x).get(0).getUrl()}changes" title="${buildGrid.get(x).get(0).getRevision()}">
-													${buildGrid.get(x).get(0).getRevision()}
-												</a>
-											</div>
+									<div class="revision rounded">
+										<div>
+											<a href="${buildGrid.get(x).get(0).getUrl()}changes" title="${buildGrid.get(x).get(0).getRevision()}">
+												${buildGrid.get(x).get(0).getRevision()}
+											</a>
 										</div>
-									</j:if></td>
+									</div>
+								</j:if></td>
 								<td class="next"></td>
 								<j:forEach begin="${0}" end="${buildPipelineForm.getGridWidth() - 1}" indexVar="y">
 									<j:set var="build" type="au.com.centrumsystems.hudson.plugin.buildpipeline.BuildForm" value="${buildGrid.get(x).get(y)}" />

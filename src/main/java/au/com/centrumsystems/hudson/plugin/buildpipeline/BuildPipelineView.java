@@ -77,6 +77,9 @@ public class BuildPipelineView extends View {
 	
 	/** alwaysAllowManualTrigger. */
 	private boolean alwaysAllowManualTrigger;
+	
+	/** showPipelineParameters. */
+	private boolean showPipelineParameters;
 
 	/*
 	 * Keep feature flag properties in one place so that it is easy to refactor them out later.
@@ -133,12 +136,15 @@ public class BuildPipelineView extends View {
 	 *            Indicates whether only the latest job will be triggered.
 	 * @param alwaysAllowManualTrigger
 	 *            Indicates whether manual trigger will always be available.
+	 * @param showPipelineParameters
+	 *            Indicates whether pipeline parameter values should be shown.
 	 */
 	@DataBoundConstructor
-	public BuildPipelineView(final String name, final String buildViewTitle, final String selectedJob,
-			final String noOfDisplayedBuilds, final boolean triggerOnlyLatestJob, final boolean alwaysAllowManualTrigger) {
+	public BuildPipelineView(final String name, final String buildViewTitle, final String selectedJob, final String noOfDisplayedBuilds, 
+			final boolean triggerOnlyLatestJob, final boolean alwaysAllowManualTrigger, final boolean showPipelineParameters) {
 		this(name, buildViewTitle, selectedJob, noOfDisplayedBuilds, triggerOnlyLatestJob);
 		setAlwaysAllowManualTrigger(alwaysAllowManualTrigger);
+		setShowPipelineParameters(showPipelineParameters);
 	}
 
 	/**
@@ -160,6 +166,7 @@ public class BuildPipelineView extends View {
 		this.buildViewTitle = req.getParameter("buildViewTitle");
 		this.triggerOnlyLatestJob = Boolean.valueOf(req.getParameter("_.triggerOnlyLatestJob"));
 		this.alwaysAllowManualTrigger = Boolean.valueOf(req.getParameter("_.alwaysAllowManualTrigger"));
+		this.showPipelineParameters = Boolean.valueOf(req.getParameter("_.showPipelineParameters"));
 	}
 
 	/**
@@ -463,6 +470,18 @@ public class BuildPipelineView extends View {
 	
 	public void setAlwaysAllowManualTrigger(final boolean alwaysAllowManualTrigger) {
 		this.alwaysAllowManualTrigger = alwaysAllowManualTrigger;
+	}
+	
+	public boolean isShowPipelineParameters() {
+		return showPipelineParameters;
+	}
+	
+	public String getShowPipelineParameters() {
+		return Boolean.toString(showPipelineParameters);
+	}
+	
+	public void setShowPipelineParameters(final boolean showPipelineParameters) {
+		this.showPipelineParameters = showPipelineParameters;
 	}
 
 	@Override
