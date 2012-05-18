@@ -4,8 +4,31 @@
 	<script type="text/javascript" src="${rootURL}/plugin/build-pipeline-plugin/js/jquery-1.7.1.min.js"></script>
 	<script type="text/javascript" src="${rootURL}/plugin/build-pipeline-plugin/js/jquery-ui-1.8.14.custom.min.js"></script>
 	<script type="text/javascript" src="${rootURL}/plugin/build-pipeline-plugin/js/handlebars-1.0.0.beta.6.js"></script>
+	<script type="text/javascript">
+		Handlebars.registerHelper('if_build_state', function(context, options) {
+			var states = options.hash.is.split(',');
+			var isMatch = false;
+			
+			var ctr = 0;
+			while (true) {
+				if (states.length == ctr) {
+					break;
+				}
+			
+				if (states[ctr] == this.build.status) {
+					isMatch = true;
+					break;
+				}
+				ctr++;
+			}
+			if (isMatch) {
+				return options.fn(this);
+			} else {
+				return options.inverse(this);
+			}
+		});
+	</script>
 	<script id="build-card-template" type="text/x-handlebars-template">
-
 <table class="build-card rounded {{build.status}}">
 	<tbody>
 		<tr class="header">
@@ -49,17 +72,18 @@
 						</a>
 						{{/unless}}
 					{{/unless}}
-					{{#if ${from.alwaysAllowManualTrigger}}}
-						<a href="#" class="trigger" onclick="buildPipeline.showSpinner({{id}}); buildPipeline.triggerBuild({{id}}, '{{upstream.projectName}}', {{upstream.buildNumber}}, '{{project.name}}', [{{build.dependencyIds}}])">
-							<img title="trigger" alt="trigger" src="{{rootUrl}}/images/16x16/clock.png" />
-						</a>
-					{{else}}
-						{{#if build.isReadyToBeManuallyBuilt}}
+					{{#if_build_state build is="SUCCESS"}}
+						{{#if ${from.alwaysAllowManualTrigger}}}
 							<a href="#" class="trigger" onclick="buildPipeline.showSpinner({{id}}); buildPipeline.triggerBuild({{id}}, '{{upstream.projectName}}', {{upstream.buildNumber}}, '{{project.name}}', [{{build.dependencyIds}}])">
 								<img title="trigger" alt="trigger" src="{{rootUrl}}/images/16x16/clock.png" />
 							</a>
-						{{/if}}			
-					{{/if}}
+						{{/if}}
+					{{/if_build_state}}
+					{{#if build.isReadyToBeManuallyBuilt}}
+						<a href="#" class="trigger" onclick="buildPipeline.showSpinner({{id}}); buildPipeline.triggerBuild({{id}}, '{{upstream.projectName}}', {{upstream.buildNumber}}, '{{project.name}}', [{{build.dependencyIds}}])">
+							<img title="trigger" alt="trigger" src="{{rootUrl}}/images/16x16/clock.png" />
+						</a>
+					{{/if}}			
 					{{#if build.isPending}}
 						{{#unless build.isReadyToBeManuallyBuilt}}
 							<span class="pending"><img src="${rootURL}/plugin/build-pipeline-plugin/images/hourglass.png" atl="pending" /></span>
