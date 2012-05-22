@@ -347,7 +347,7 @@ public class BuildPipelineView extends View {
 	 */
 	private int triggerBuild(final AbstractProject<?, ?> triggerProject, final AbstractBuild<?, ?> upstreamBuild,
 			final Action buildParametersAction) {
-		final hudson.model.Cause.UpstreamCause upstreamCause = new hudson.model.Cause.UpstreamCause(
+		final hudson.model.Cause.UpstreamCause upstreamCause = (null == upstreamBuild) ? null : new hudson.model.Cause.UpstreamCause(
 				(Run<?, ?>) upstreamBuild);
 		if (buildParametersAction == null) {
 			final List<Action> buildActions = new ArrayList<Action>();
