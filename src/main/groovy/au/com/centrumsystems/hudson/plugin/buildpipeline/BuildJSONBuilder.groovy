@@ -20,6 +20,7 @@ class BuildJSONBuilder {
 				isReadyToBeManuallyBuilt(pipelineBuild.isReadyToBeManuallyBuilt())
 				isManualTrigger(pipelineBuild.isManualTrigger())
 				number(pipelineBuild.currentBuild?.number)
+				extId(pipelineBuild.currentBuild?.externalizableId)
 				displayName(pipelineBuild.currentBuild?.displayName)
 				progress(pipelineBuild.buildProgress)
 				progressLeft(100 - pipelineBuild.buildProgress)
@@ -28,6 +29,7 @@ class BuildJSONBuilder {
 				status(buildStatus)								
 				url(pipelineBuild.buildResultURL)
 				dependencyIds(buildDependencyIds)
+				hasUpstreamBuild(null != pipelineBuild.upstreamBuild)
 			}
 			project {
 				name(pipelineBuild.project.name)
@@ -35,7 +37,7 @@ class BuildJSONBuilder {
 			}
 			upstream {
 				projectName(pipelineBuild.upstreamPipelineBuild?.project?.name)
-				buildNumber(pipelineBuild.upstreamBuild?.displayName)
+				buildNumber(pipelineBuild.upstreamBuild?.number)
 			}           
         }
         return builder.toString()

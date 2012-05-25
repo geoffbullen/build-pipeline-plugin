@@ -42,6 +42,8 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
@@ -299,7 +301,10 @@ public class BuildPipelineView extends View {
 		final AbstractBuild<?, ?> upstreamBuild = retrieveBuild(upstreamBuildNumber, upstreamProject);
 
 		// Get parameters from upstream build
-		final Action buildParametersAction = BuildUtil.getAllBuildParametersAction(upstreamBuild, triggerProject);
+		Action buildParametersAction = null;
+		if (upstreamBuild != null) {
+			buildParametersAction = BuildUtil.getAllBuildParametersAction(upstreamBuild, triggerProject);
+		}
 
 		return triggerBuild(triggerProject, upstreamBuild, buildParametersAction);
 	}
@@ -309,6 +314,27 @@ public class BuildPipelineView extends View {
 		final AbstractProject<?, ?> triggerProject = (AbstractProject<?, ?>) super.getJob(triggerProjectName);
 		final Cause cause = new Cause.UserIdCause();
 		triggerProject.scheduleBuild(cause);
+		return triggerProject.getNextBuildNumber();
+	}
+	
+	@JavaScriptMethod
+	public int rerunSuccessfulBuild(final String externalizableId) {
+		final AbstractBuild<?, ?> triggerBuild = (AbstractBuild<?, ?>) Run.fromExternalizableId(externalizableId);
+		final AbstractProject<?, ?> triggerProject = (AbstractProject<?, ?>) triggerBuild.getProject();
+		final Future<?> future = triggerProject.scheduleBuild2(triggerProject.getQuietPeriod(), 
+				new Cause.UserIdCause(), triggerBuild.getActions());
+		
+		@SuppressWarnings("unused")
+		Object result = null;
+		try {
+			result = future.get();
+			// discard this - not mportant
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			e.printStackTrace();
+		}
+		
 		return triggerProject.getNextBuildNumber();
 	}
 
@@ -323,12 +349,16 @@ public class BuildPipelineView extends View {
 	 */
 	private AbstractBuild<?, ?> retrieveBuild(final int buildNo, final AbstractProject<?, ?> project) {
 		AbstractBuild<?, ?> build = null;
-		for (final AbstractBuild<?, ?> tmpUpBuild : (List<AbstractBuild<?, ?>>) project.getBuilds()) {
-			if (tmpUpBuild.getNumber() == buildNo) {
-				build = tmpUpBuild;
-				break;
+		
+		if (project != null) {
+			for (final AbstractBuild<?, ?> tmpUpBuild : (List<AbstractBuild<?, ?>>) project.getBuilds()) {
+				if (tmpUpBuild.getNumber() == buildNo) {
+					build = tmpUpBuild;
+					break;
+				}
 			}
 		}
+		
 		return build;
 	}
 

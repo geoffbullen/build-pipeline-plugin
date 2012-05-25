@@ -365,10 +365,11 @@ public class PipelineBuild {
 	 */
 	private String revNo(final AbstractBuild<?, ?> build) {
 		final StringBuilder revisions = new StringBuilder();
-		if (build.getChangeSet() != null && !build.getChangeSet().isEmptySet()) {
+		final ChangeLogSet<?> changeSet = build.getChangeSet();
+		if (changeSet != null && !changeSet.isEmptySet()) {
 			int i = 0;
-			final int size = build.getChangeSet().getItems().length;
-			for (final ChangeLogSet.Entry changeLogSet : build.getChangeSet()) {
+			final int size = changeSet.getItems().length;
+			for (final ChangeLogSet.Entry changeLogSet : changeSet) {
 				if (changeLogSet.getCommitId() != null) {
 					revisions.append(changeLogSet.getCommitId());
 				}

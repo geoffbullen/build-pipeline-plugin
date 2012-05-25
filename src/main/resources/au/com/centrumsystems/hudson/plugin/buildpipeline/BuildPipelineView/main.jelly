@@ -74,7 +74,7 @@
 					{{/unless}}
 					{{#if_build_state build is="SUCCESS"}}
 						{{#if ${from.alwaysAllowManualTrigger}}}
-							<a href="#" class="trigger" onclick="buildPipeline.showSpinner({{id}}); buildPipeline.retryBuild({{id}}, '{{project.name}}', [{{build.dependencyIds}}])">
+							<a href="#" class="trigger" onclick="buildPipeline.showSpinner({{id}}); buildPipeline.rerunSuccessfulBuild({{id}}, '{{build.extId}}', [{{build.dependencyIds}}])">
 								<img title="trigger" alt="trigger" src="{{rootUrl}}/images/16x16/redo.png" />
 							</a>
 						{{/if}}

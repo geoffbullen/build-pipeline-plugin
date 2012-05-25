@@ -44,7 +44,7 @@ BuildPipeline.prototype = {
 					clearInterval(intervalId);
 				}
 			});
-		}, 2000);				
+		}, 2000);	
 	},
 	triggerBuild : function(id, upstreamProjectName, upstreamBuildNumber, triggerProjectName, dependencyIds) {
 		var buildPipeline = this;
@@ -55,6 +55,12 @@ BuildPipeline.prototype = {
 	retryBuild : function(id, triggerProjectName, dependencyIds) {
 		var buildPipeline = this;
 		buildPipeline.viewProxy.retryBuild(triggerProjectName, function(data){
+			buildPipeline.updateNextBuildAndShowProgress(id, data.responseObject(), dependencyIds);
+		});
+	},
+	rerunSuccessfulBuild : function(id, buildExternalizableId) {
+		var buildPipeline = this;
+		buildPipeline.viewProxy.rerunSuccessfulBuild(buildExternalizableId, function(data){
 			buildPipeline.updateNextBuildAndShowProgress(id, data.responseObject(), dependencyIds);
 		});
 	},
