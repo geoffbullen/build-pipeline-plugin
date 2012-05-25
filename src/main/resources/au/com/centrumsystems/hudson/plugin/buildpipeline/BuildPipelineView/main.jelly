@@ -34,7 +34,7 @@
 		<tr class="header">
 			<td colspan="2">
 				<div>
-					<a title="{{project.name}}" href="{{project.url}}">{{project.name}}</a>
+					<a title="{{project.name}}" href="{{project.url}}" name="{{id}}">{{project.name}}</a>
 				</div>
 			</td>
 		</tr>
@@ -52,7 +52,7 @@
 			<td colspan="2">
 				<div class="status-bar" id="status-bar-{{id}}">
 					{{#if build.isBuilding}}
-						<a href="#" OnClick="showPopup('{{build.url}}consoleText')">
+						<a href="#{{id}}" OnClick="showPopup('{{build.url}}consoleText')">
 							<table class="progress-bar" align="center">
 								<tbody>
 									<tr>
@@ -67,20 +67,20 @@
 				<div class="icons" id="icons-{{id}}">
 					{{#unless build.isPending}}
 						{{#unless build.isReadyToBeManuallyBuilt}}
-						<a href="#" OnClick="showPopup('{{build.url}}consoleText')">
+						<a href="#{{id}}" OnClick="showPopup('{{build.url}}consoleText')">
 							<img title="console" alt="console" src="{{rootUrl}}/images/16x16/terminal.png" />
 						</a>
 						{{/unless}}
 					{{/unless}}
 					{{#if_build_state build is="SUCCESS"}}
 						{{#if ${from.alwaysAllowManualTrigger}}}
-							<a href="#" class="trigger" onclick="buildPipeline.showSpinner({{id}}); buildPipeline.rerunSuccessfulBuild({{id}}, '{{build.extId}}', [{{build.dependencyIds}}])">
+							<a href="#{{id}}" class="trigger" onclick="buildPipeline.showSpinner({{id}}); buildPipeline.rerunSuccessfulBuild({{id}}, '{{build.extId}}', [{{build.dependencyIds}}])">
 								<img title="trigger" alt="trigger" src="{{rootUrl}}/images/16x16/redo.png" />
 							</a>
 						{{/if}}
 					{{/if_build_state}}
 					{{#if build.isReadyToBeManuallyBuilt}}
-						<a href="#" class="trigger" onclick="buildPipeline.showSpinner({{id}}); buildPipeline.triggerBuild({{id}}, '{{upstream.projectName}}', {{upstream.buildNumber}}, '{{project.name}}', [{{build.dependencyIds}}])">
+						<a href="#{{id}}" class="trigger" onclick="buildPipeline.showSpinner({{id}}); buildPipeline.triggerBuild({{id}}, '{{upstream.projectName}}', {{upstream.buildNumber}}, '{{project.name}}', [{{build.dependencyIds}}])">
 							<img title="trigger" alt="trigger" src="{{rootUrl}}/images/16x16/clock.png" />
 						</a>
 					{{/if}}			

@@ -325,9 +325,9 @@ public class BuildPipelineView extends View {
 				new Cause.UserIdCause(), triggerBuild.getActions());
 		
 		@SuppressWarnings("unused")
-		Object result = null;
+		AbstractBuild<?, ?> result = null;
 		try {
-			result = future.get();
+			result = (AbstractBuild<?, ?>) future.get();
 			// discard this - not mportant
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -335,7 +335,7 @@ public class BuildPipelineView extends View {
 			e.printStackTrace();
 		}
 		
-		return triggerProject.getNextBuildNumber();
+		return result.getNumber();
 	}
 
 	/**
