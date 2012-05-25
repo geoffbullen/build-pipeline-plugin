@@ -324,11 +324,9 @@ public class BuildPipelineView extends View {
 		final Future<?> future = triggerProject.scheduleBuild2(triggerProject.getQuietPeriod(), 
 				new Cause.UserIdCause(), triggerBuild.getActions());
 		
-		@SuppressWarnings("unused")
-		AbstractBuild<?, ?> result = null;
+		AbstractBuild<?, ?> result = triggerBuild;
 		try {
 			result = (AbstractBuild<?, ?>) future.get();
-			// discard this - not mportant
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		} catch (ExecutionException e) {
