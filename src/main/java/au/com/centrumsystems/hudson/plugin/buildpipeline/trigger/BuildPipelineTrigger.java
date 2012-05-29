@@ -55,6 +55,8 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 
+import au.com.centrumsystems.hudson.plugin.buildpipeline.Strings;
+
 /**
  * The build pipeline trigger allows the creation of downstream jobs which aren't triggered automatically. This allows us to have manual
  * "approval" steps in the process where jobs are manually promoted along the pipeline by a user pressing a button on the view.
@@ -217,7 +219,7 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
                     ownerProject.save();
                 } catch (final IOException e) {
                     Logger.getLogger(BuildPipelineTrigger.class.getName()).log(Level.WARNING,
-                            "Failed to persist project BuildPipelineTrigger setting during removal of " + downstreamProjectName, e);
+                            au.com.centrumsystems.hudson.plugin.buildpipeline.Strings.getString("BuildPipelineTrigger.FailedPersistDuringRemoval") + downstreamProjectName, e); //$NON-NLS-1$
                 }
             }
         }
@@ -245,7 +247,7 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
          */
         @Override
         public String getDisplayName() {
-            return "Build Pipeline Plugin -> Manually Execute Downstream Project";
+            return au.com.centrumsystems.hudson.plugin.buildpipeline.Strings.getString("BuildPipelineTrigger.DisplayText"); //$NON-NLS-1$
         }
 
         /**
@@ -255,12 +257,12 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
          */
         @Override
         public String getHelpFile() {
-            return "/descriptor/au.com.centrumsystems.hudson.plugin.buildpipeline.trigger.BuildPipelineTrigger/help/buildPipeline.html";
+            return "/descriptor/au.com.centrumsystems.hudson.plugin.buildpipeline.trigger.BuildPipelineTrigger/help/buildPipeline.html"; //$NON-NLS-1$
         }
 
         @Override
         public Publisher newInstance(final StaplerRequest req, final JSONObject formData) throws FormException {
-            return new BuildPipelineTrigger(formData.getString("downstreamProjectNames"));
+            return new BuildPipelineTrigger(formData.getString("downstreamProjectNames")); //$NON-NLS-1$
         }
 
         /**
@@ -271,10 +273,10 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
          * @return hudson.util.FormValidation
          */
         public FormValidation doCheckDownstreamProjectNames(@QueryParameter("downstreamProjectNames") final String value) {
-            final StringTokenizer tokens = new StringTokenizer(Util.fixNull(value), ",");
+            final StringTokenizer tokens = new StringTokenizer(Util.fixNull(value), ","); //$NON-NLS-1$
             while (tokens.hasMoreTokens()) {
                 final String projectName = tokens.nextToken().trim();
-                if ("".equals(projectName)) {
+                if ("".equals(projectName)) { //$NON-NLS-1$
                     return FormValidation.error(Messages.BuildTrigger_NoSuchProject(projectName, AbstractProject.findNearest(projectName)
                             .getName()));
                 }
@@ -309,9 +311,11 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
                                 p.save();
                             } catch (final IOException e) {
                                 Logger.getLogger(ItemListenerImpl.class.getName()).log(
-                                        Level.WARNING,
-                                        "Failed to persist project BuildPipelineTrigger setting during rename from " + oldName + " to "
-                                                + newName, e);
+                                        Level.WARNING, 
+                                        String.format(
+                                        		Strings.getString("BuildPipelineTrigger.FailedPersistDuringRename_FMT"), //$NON-NLS-1$
+                                        		oldName, newName),
+                                        e);
                             }
                         }
                     }

@@ -268,7 +268,7 @@ public class BuildPipelineViewTest extends HudsonTestCase {
 		Hudson.getInstance().rebuildDependencyGraph();
 
 		// Test a valid case
-		final BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds, false);
+		final BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds, false, false, false);
 
 		assertEquals(testView.getJob(proj1), project1);
 		project1.renameTo(proj3);

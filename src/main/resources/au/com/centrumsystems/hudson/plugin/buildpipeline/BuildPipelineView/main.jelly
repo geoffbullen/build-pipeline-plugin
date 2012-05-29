@@ -44,7 +44,8 @@
 				<div>{{build.startDate}}</div>
 				<div>{{build.startTime}}</div>
 				{{#if build.isComplete}}
-				<div>{{build.duration}}</div>
+					<div>{{build.duration}}</div>
+					<div>{{build.userId}}</div>
 				{{/if}}	
 			</td>
 		</tr>

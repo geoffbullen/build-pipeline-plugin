@@ -88,8 +88,8 @@ public class PipelineBuild {
 		this.currentBuild = build;
 		this.project = project;
 		this.upstreamBuild = previousBuild;
-		this.currentBuildResult = "";
-		this.upstreamBuildResult = "";
+		this.currentBuildResult = ""; //$NON-NLS-1$
+		this.upstreamBuildResult = ""; //$NON-NLS-1$
 	}
 
 	/**
@@ -144,7 +144,7 @@ public class PipelineBuild {
 		if (this.currentBuild != null) {
 			return Integer.toString(currentBuild.getNumber());
 		} else {
-			return "";
+			return ""; //$NON-NLS-1$
 		}
 	}
 
@@ -178,7 +178,7 @@ public class PipelineBuild {
 	 * @return URL of the currentBuild
 	 */
 	public String getBuildResultURL() {
-		return currentBuild != null ? currentBuild.getUrl() : "";
+		return currentBuild != null ? currentBuild.getUrl() : ""; //$NON-NLS-1$
 	}
 
 	/**
@@ -187,7 +187,7 @@ public class PipelineBuild {
 	 * @return URL - of the project
 	 */
 	public String getProjectURL() {
-		return project != null ? project.getUrl() : "";
+		return project != null ? project.getUrl() : ""; //$NON-NLS-1$
 	}
 
 	/**
@@ -288,7 +288,7 @@ public class PipelineBuild {
 		if (this.currentBuild != null) {
 			return this.currentBuild.getDurationString();
 		} else {
-			return "";
+			return ""; //$NON-NLS-1$
 		}
 	}
 
@@ -297,7 +297,8 @@ public class PipelineBuild {
 	 */
 	@Override
 	public String toString() {
-		return "Project: " + getProject().getName() + " : Build: " + getCurrentBuildNumber();
+		return String.format(Strings.getString("PipelineBuild.ToString_FMT"),  //$NON-NLS-1$
+				getProject().getName(), getCurrentBuildNumber());
 	}
 
 	/**
@@ -309,7 +310,7 @@ public class PipelineBuild {
 		if (this.currentBuild != null) {
 			return this.currentBuild.toString();
 		} else {
-			return "Pending build of project: " + this.getProject().getName();
+			return Strings.getString("PipelineBuild.PendingBuildOfProject") + this.getProject().getName(); //$NON-NLS-1$
 		}
 	}
 
@@ -353,7 +354,7 @@ public class PipelineBuild {
 	 * @return The revision number of the currentBuild or "No Revision"
 	 */
 	public String getScmRevision() {
-		return currentBuild != null ? revNo(currentBuild) : "No revision information available";
+		return currentBuild != null ? revNo(currentBuild) : Strings.getString("PipelineBuild.RevisionNotAvailable"); //$NON-NLS-1$
 	}
 
 	/**
@@ -375,7 +376,7 @@ public class PipelineBuild {
 				}
 				i++;
 				if (changeLogSet.getCommitId() != null && !changeLogSet.getCommitId().isEmpty() && i < size) {
-					revisions.append(",");
+					revisions.append(","); //$NON-NLS-1$
 				}
 			}
 		}
@@ -384,7 +385,7 @@ public class PipelineBuild {
 		} else if (build.getPreviousBuild() != null) {
 			return revNo(build.getPreviousBuild());
 		} else {
-			return "Revision not available";
+			return Strings.getString("PipelineBuild.RevisionNotAvailable"); //$NON-NLS-1$
 		}
 	}
 
@@ -441,7 +442,7 @@ public class PipelineBuild {
 	 * @return Formatted start time
 	 */
 	public String getFormattedStartTime() {
-		String formattedStartTime = "";
+		String formattedStartTime = ""; //$NON-NLS-1$
 		if (getStartTime() != null) {
 			formattedStartTime = DateFormat.getTimeInstance(DateFormat.MEDIUM).format(getStartTime());
 		}
@@ -452,7 +453,7 @@ public class PipelineBuild {
 	 * @return Formatted start date
 	 */
 	public String getFormattedStartDate() {
-		String formattedStartTime = "";
+		String formattedStartTime = ""; //$NON-NLS-1$
 		if (getStartTime() != null) {
 			formattedStartTime = DateFormat.getDateInstance(DateFormat.MEDIUM).format(getStartTime());
 		}
