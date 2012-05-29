@@ -55,8 +55,9 @@ import au.com.centrumsystems.hudson.plugin.util.BuildUtil;
 import au.com.centrumsystems.hudson.plugin.util.ProjectUtil;
 
 /**
- * This view displays the set of jobs that are related based on their upstream\downstream relationships as a pipeline.
- * Each build pipeline becomes a row on the view.
+ * This view displays the set of jobs that are related based on their
+ * upstream\downstream relationships as a pipeline. Each build pipeline becomes
+ * a row on the view.
  * 
  * @author Centrum Systems
  * 
@@ -76,7 +77,8 @@ public class BuildPipelineView extends View {
 	private boolean triggerOnlyLatestJob;
 
 	/*
-	 * Keep feature flag properties in one place so that it is easy to refactor them out later.
+	 * Keep feature flag properties in one place so that it is easy to refactor
+	 * them out later.
 	 */
 	/* Feature flags - START */
 
@@ -86,7 +88,8 @@ public class BuildPipelineView extends View {
 	/* Feature flags - END */
 
 	/** A Logger object is used to log messages */
-	private static final Logger LOGGER = Logger.getLogger(BuildPipelineView.class.getName());
+	private static final Logger LOGGER = Logger
+			.getLogger(BuildPipelineView.class.getName());
 	/** Constant that represents the Stapler Request upstream build number. */
 	private static final String REQ_UPSTREAM_BUILD_NUMBER = "upstreamBuildNumber";
 	/** Constant that represents the Stapler Request trigger project name. */
@@ -109,8 +112,9 @@ public class BuildPipelineView extends View {
 	 * 
 	 */
 	@DataBoundConstructor
-	public BuildPipelineView(final String name, final String buildViewTitle, final String selectedJob,
-			final String noOfDisplayedBuilds, final boolean triggerOnlyLatestJob) {
+	public BuildPipelineView(final String name, final String buildViewTitle,
+			final String selectedJob, final String noOfDisplayedBuilds,
+			final boolean triggerOnlyLatestJob) {
 		super(name);
 		setBuildViewTitle(buildViewTitle);
 		setSelectedJob(selectedJob);
@@ -131,11 +135,13 @@ public class BuildPipelineView extends View {
 	 *             Servlet Exception
 	 */
 	@Override
-	protected void submit(final StaplerRequest req) throws IOException, ServletException, FormException {
+	protected void submit(final StaplerRequest req) throws IOException,
+			ServletException, FormException {
 		this.selectedJob = req.getParameter("selectedJob");
 		this.noOfDisplayedBuilds = req.getParameter("noOfDisplayedBuilds");
 		this.buildViewTitle = req.getParameter("buildViewTitle");
-		this.triggerOnlyLatestJob = Boolean.valueOf(req.getParameter("_.triggerOnlyLatestJob"));
+		this.triggerOnlyLatestJob = Boolean.valueOf(req
+				.getParameter("_.triggerOnlyLatestJob"));
 	}
 
 	/**
@@ -146,7 +152,8 @@ public class BuildPipelineView extends View {
 	public AbstractProject<?, ?> getSelectedProject() {
 		AbstractProject<?, ?> selectedProject = null;
 		if (getSelectedJob() != null) {
-			selectedProject = (AbstractProject<?, ?>) super.getJob(getSelectedJob());
+			selectedProject = (AbstractProject<?, ?>) super
+					.getJob(getSelectedJob());
 		}
 		return selectedProject;
 	}
@@ -154,7 +161,8 @@ public class BuildPipelineView extends View {
 	/**
 	 * Tests if the selected project exists.
 	 * 
-	 * @return - true: Selected project exists; false: Selected project does not exist.
+	 * @return - true: Selected project exists; false: Selected project does not
+	 *         exist.
 	 */
 	public boolean hasSelectedProject() {
 		boolean result = false;
@@ -170,7 +178,8 @@ public class BuildPipelineView extends View {
 	 * 
 	 * @param currentProject
 	 *            - The project being viewed.
-	 * @return - true: Has Build permission; false: Does not have Build permission
+	 * @return - true: Has Build permission; false: Does not have Build
+	 *         permission
 	 * @see hudson.model.Item
 	 */
 	public boolean hasBuildPermission(final AbstractProject<?, ?> currentProject) {
@@ -180,7 +189,8 @@ public class BuildPipelineView extends View {
 	/**
 	 * Checks whether the user has Configure permission for the current project.
 	 * 
-	 * @return - true: Has Configure permission; false: Does not have Configure permission
+	 * @return - true: Has Configure permission; false: Does not have Configure
+	 *         permission
 	 */
 	public boolean hasConfigurePermission() {
 		return this.hasPermission(CONFIGURE);
@@ -193,7 +203,8 @@ public class BuildPipelineView extends View {
 	 *            - The project from which we want the downstream projects
 	 * @return - A List of downstream projects
 	 */
-	public List<AbstractProject<?, ?>> getDownstreamProjects(final AbstractProject<?, ?> currentProject) {
+	public List<AbstractProject<?, ?>> getDownstreamProjects(
+			final AbstractProject<?, ?> currentProject) {
 		return ProjectUtil.getDownstreamProjects(currentProject);
 	}
 
@@ -202,16 +213,19 @@ public class BuildPipelineView extends View {
 	 * 
 	 * @param currentProject
 	 *            - The project from which we are testing.
-	 * @return - true; has downstream projects; false: does not have downstream projects
+	 * @return - true; has downstream projects; false: does not have downstream
+	 *         projects
 	 */
-	public boolean hasDownstreamProjects(final AbstractProject<?, ?> currentProject) {
+	public boolean hasDownstreamProjects(
+			final AbstractProject<?, ?> currentProject) {
 		return (getDownstreamProjects(currentProject).size() > 0);
 	}
 
 	/**
 	 * Returns BuildPipelineForm containing the build pipeline to display.
 	 * 
-	 * @return - Representation of the projects and their related builds making up the build pipeline view
+	 * @return - Representation of the projects and their related builds making
+	 *         up the build pipeline view
 	 * @throws URISyntaxException
 	 *             {@link URISyntaxException}
 	 */
@@ -219,17 +233,20 @@ public class BuildPipelineView extends View {
 		final AbstractProject<?, ?> project = getSelectedProject();
 		BuildPipelineForm buildPipelineForm = null;
 		if (project != null) {
-			final int maxNoOfDisplayBuilds = Integer.valueOf(noOfDisplayedBuilds);
+			final int maxNoOfDisplayBuilds = Integer
+					.valueOf(noOfDisplayedBuilds);
 			int rowsAppended = 0;
 			final List<BuildForm> buildForms = new ArrayList<BuildForm>();
 			for (final AbstractBuild<?, ?> currentBuild : project.getBuilds()) {
-				buildForms.add(new BuildForm(new PipelineBuild(currentBuild, project, null)));
+				buildForms.add(new BuildForm(new PipelineBuild(currentBuild,
+						project, null)));
 				rowsAppended++;
 				if (rowsAppended >= maxNoOfDisplayBuilds) {
 					break;
 				}
 			}
-			buildPipelineForm = new BuildPipelineForm(new ProjectForm(project), buildForms);
+			buildPipelineForm = new BuildPipelineForm(new ProjectForm(project),
+					buildForms);
 		}
 		return buildPipelineForm;
 	}
@@ -244,12 +261,14 @@ public class BuildPipelineView extends View {
 	 * @throws URISyntaxException
 	 *             {@link URISyntaxException}
 	 */
-	public String getProjectURL(final AbstractProject<?, ?> project) throws URISyntaxException {
+	public String getProjectURL(final AbstractProject<?, ?> project)
+			throws URISyntaxException {
 		return project.getUrl();
 	}
 
 	/**
 	 * Trigger a manual build
+	 * 
 	 * @param upstreamBuildNumber
 	 *            upstream build number
 	 * @param triggerProjectName
@@ -259,39 +278,49 @@ public class BuildPipelineView extends View {
 	 * @return next build number that has been scheduled
 	 */
 	@JavaScriptMethod
-	public int triggerManualBuild(final Integer upstreamBuildNumber, final String triggerProjectName,
-			final String upstreamProjectName) {
-		final AbstractProject<?, ?> triggerProject = (AbstractProject<?, ?>) super.getJob(triggerProjectName);
-		final AbstractProject<?, ?> upstreamProject = (AbstractProject<?, ?>) super.getJob(upstreamProjectName);
+	public int triggerManualBuild(final Integer upstreamBuildNumber,
+			final String triggerProjectName, final String upstreamProjectName) {
+		final AbstractProject<?, ?> triggerProject = (AbstractProject<?, ?>) super
+				.getJob(triggerProjectName);
+		final AbstractProject<?, ?> upstreamProject = (AbstractProject<?, ?>) super
+				.getJob(upstreamProjectName);
 
-		final AbstractBuild<?, ?> upstreamBuild = retrieveBuild(upstreamBuildNumber, upstreamProject);
+		final AbstractBuild<?, ?> upstreamBuild = retrieveBuild(
+				upstreamBuildNumber, upstreamProject);
 
 		// Get parameters from upstream build
-		final Action buildParametersAction = BuildUtil.getAllBuildParametersAction(upstreamBuild, triggerProject);
+		final Action buildParametersAction = BuildUtil
+				.getAllBuildParametersAction(upstreamBuild, triggerProject);
 
-		return triggerBuild(triggerProject, upstreamBuild, buildParametersAction);
+		return triggerBuild(triggerProject, upstreamBuild,
+				buildParametersAction);
 	}
 
 	@JavaScriptMethod
 	public int retryBuild(final String triggerProjectName) {
-		final AbstractProject<?, ?> triggerProject = (AbstractProject<?, ?>) super.getJob(triggerProjectName);
+		final AbstractProject<?, ?> triggerProject = (AbstractProject<?, ?>) super
+				.getJob(triggerProjectName);
 		final Cause cause = new Cause.UserIdCause();
 		triggerProject.scheduleBuild(cause);
 		return triggerProject.getNextBuildNumber();
 	}
 
 	/**
-	 * Given an AbstractProject and a build number the associated AbstractBuild will be retrieved.
+	 * Given an AbstractProject and a build number the associated AbstractBuild
+	 * will be retrieved.
 	 * 
 	 * @param buildNo
 	 *            - Build number
 	 * @param project
 	 *            - AbstractProject
-	 * @return The AbstractBuild associated with the AbstractProject and build number.
+	 * @return The AbstractBuild associated with the AbstractProject and build
+	 *         number.
 	 */
-	private AbstractBuild<?, ?> retrieveBuild(final int buildNo, final AbstractProject<?, ?> project) {
+	private AbstractBuild<?, ?> retrieveBuild(final int buildNo,
+			final AbstractProject<?, ?> project) {
 		AbstractBuild<?, ?> build = null;
-		for (final AbstractBuild<?, ?> tmpUpBuild : (List<AbstractBuild<?, ?>>) project.getBuilds()) {
+		for (final AbstractBuild<?, ?> tmpUpBuild : (List<AbstractBuild<?, ?>>) project
+				.getBuilds()) {
 			if (tmpUpBuild.getNumber() == buildNo) {
 				build = tmpUpBuild;
 				break;
@@ -303,26 +332,32 @@ public class BuildPipelineView extends View {
 	/**
 	 * Schedules a build to start.
 	 * 
-	 * The build will take an upstream build as its Cause and a set of ParametersAction from the upstream build.
+	 * The build will take an upstream build as its Cause and a set of
+	 * ParametersAction from the upstream build.
 	 * 
 	 * @param triggerProject
 	 *            - Schedule a build to start on this AbstractProject
 	 * @param upstreamBuild
-	 *            - The upstream AbstractBuild that will be used as a Cause for the triggerProject's build.
+	 *            - The upstream AbstractBuild that will be used as a Cause for
+	 *            the triggerProject's build.
 	 * @param buildParametersAction
-	 *            - The upstream ParametersAction that will be used as an Action for the triggerProject's build.
+	 *            - The upstream ParametersAction that will be used as an Action
+	 *            for the triggerProject's build.
 	 * @return next build number
 	 */
-	private int triggerBuild(final AbstractProject<?, ?> triggerProject, final AbstractBuild<?, ?> upstreamBuild,
+	private int triggerBuild(final AbstractProject<?, ?> triggerProject,
+			final AbstractBuild<?, ?> upstreamBuild,
 			final Action buildParametersAction) {
 		final hudson.model.Cause.UpstreamCause upstreamCause = new hudson.model.Cause.UpstreamCause(
 				(Run<?, ?>) upstreamBuild);
 		if (buildParametersAction == null) {
 			final List<Action> buildActions = new ArrayList<Action>();
-			triggerProject.scheduleBuild(triggerProject.getQuietPeriod(), upstreamCause,
+			triggerProject.scheduleBuild(triggerProject.getQuietPeriod(),
+					upstreamCause,
 					buildActions.toArray(new Action[buildActions.size()]));
 		} else {
-			triggerProject.scheduleBuild(triggerProject.getQuietPeriod(), upstreamCause, buildParametersAction);
+			triggerProject.scheduleBuild(triggerProject.getQuietPeriod(),
+					upstreamCause, buildParametersAction);
 		}
 		return triggerProject.getNextBuildNumber();
 	}
@@ -335,8 +370,9 @@ public class BuildPipelineView extends View {
 	public static final class DescriptorImpl extends ViewDescriptor {
 
 		/**
-		 * descriptor impl constructor This empty constructor is required for stapler. If you remove this constructor,
-		 * text name of "Build Pipeline View" will be not displayed in the "NewView" page
+		 * descriptor impl constructor This empty constructor is required for
+		 * stapler. If you remove this constructor, text name of
+		 * "Build Pipeline View" will be not displayed in the "NewView" page
 		 */
 		public DescriptorImpl() {
 			super();
@@ -439,7 +475,8 @@ public class BuildPipelineView extends View {
 	}
 
 	/**
-	 * If a project name is changed we check if the selected job for this view also needs to be changed.
+	 * If a project name is changed we check if the selected job for this view
+	 * also needs to be changed.
 	 * 
 	 * @param item
 	 *            - The Item that has been renamed
@@ -450,7 +487,8 @@ public class BuildPipelineView extends View {
 	 * 
 	 */
 	@Override
-	public void onJobRenamed(final Item item, final String oldName, final String newName) {
+	public void onJobRenamed(final Item item, final String oldName,
+			final String newName) {
 		if (item instanceof AbstractProject) {
 			if ((oldName != null) && (oldName.equals(this.selectedJob))) {
 				setSelectedJob(newName);
@@ -459,7 +497,8 @@ public class BuildPipelineView extends View {
 	}
 
 	@Override
-	public Item doCreateItem(final StaplerRequest req, final StaplerResponse rsp) throws IOException, ServletException {
+	public Item doCreateItem(final StaplerRequest req, final StaplerResponse rsp)
+			throws IOException, ServletException {
 		return Hudson.getInstance().doCreateItem(req, rsp);
 	}
 

@@ -230,13 +230,19 @@ tr.spacerRow td {
 
 .revision {
     background-color: #8b8989;
-}
-
-.revision div {
     display: table-cell;
     vertical-align: middle;
     height: 70px;
     margin: 2px;
+    padding: 5px;
+    text-align: center;
+}
+
+.revision div a {
+    padding: 4px;
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .SUCCESS {

@@ -1,9 +1,12 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:i="jelly:fmt">
 	<link href="${rootURL}/plugin/build-pipeline-plugin/css/main.css" type="text/css" rel="stylesheet" />
 	<link rel="stylesheet" href="${rootURL}/plugin/build-pipeline-plugin/css/redmond/jquery-ui-1.8.14.custom.css"></link>
+	<link rel="stylesheet" href="${rootURL}/plugin/build-pipeline-plugin/css/jquery.fancybox-1.3.4.css"></link>
 	<script type="text/javascript" src="${rootURL}/plugin/build-pipeline-plugin/js/jquery-1.7.1.min.js"></script>
 	<script type="text/javascript" src="${rootURL}/plugin/build-pipeline-plugin/js/jquery-ui-1.8.14.custom.min.js"></script>
 	<script type="text/javascript" src="${rootURL}/plugin/build-pipeline-plugin/js/handlebars-1.0.0.beta.6.js"></script>
+	<script src="${rootURL}/plugin/build-pipeline-plugin/js/jquery.fancybox-1.3.4.js"></script>
+	<script src="${rootURL}/plugin/build-pipeline-plugin/js/build-pipeline.js"></script>
 	<script id="build-card-template" type="text/x-handlebars-template">
 
 <table class="build-card rounded {{build.status}}">
@@ -44,7 +47,7 @@
 				<div class="icons" id="icons-{{id}}">
 					{{#unless build.isPending}}
 						{{#unless build.isReadyToBeManuallyBuilt}}
-						<a href="#" OnClick="showPopup('{{build.url}}consoleText')">
+						<a href="#" onclick="buildPipeline.fillDialog('{{build.url}}consoleText', 'Console output for {{project.name}} #{{build.number}}')">
 							<img title="console" alt="console" src="{{rootUrl}}/images/16x16/terminal.png" />
 						</a>
 						{{/unless}}
@@ -65,33 +68,7 @@
 	</tbody>
 </table>
 	</script>
-	<script src="${rootURL}/plugin/build-pipeline-plugin/js/build-pipeline.js"></script>
 	<script type="text/javascript">	
-		jQuery(function(){					
-			//hide legend and register on click function to show and hide
-			$('#settingsView').hide();
-			$('#settingsPanel').click(function() {
-				$('#settingsView').toggle('blind', {}, 750);
-				return false;
-			});
-			$("button").button({
-	            icons: {
-	                primary: "trigger"
-	            }
-	        });			
-		});
-		
-				
-		var showPopup = function (url) {
-		    $('#popup-content').append('<iframe frameborder="0" id="popup-iframe" src="'+  url + '"></iframe>');
-			$('#popup').fadeIn('fast');
-			$('#window').fadeIn('fast');	
-		}
-		var closePopup = function() {
-			$('#popup').fadeOut('fast');
-			$('#window').fadeOut('fast');
-			$('#popup-content').html('<div id="close-popup"><a href="#" onclick="closePopup();">close</a></div>');;
-		}
 		
 		var buildCardTemplateSource = $("#build-card-template").html();		
 		var buildPipeline = new BuildPipeline(<st:bind value="${from}" />, Handlebars.compile(buildCardTemplateSource));
@@ -108,13 +85,6 @@
 		<input name="upstreamProjectName" id="upstreamProjectName" type="hidden" />
 		<input name="upstreamBuildNumber" id="upstreamBuildNumber" type="hidden" />
 		<input name="triggerProjectName" id="triggerProjectName" type="hidden" />
-		
-		<div id="popup" style="display: none;"></div>
-			<div id="window" style="display: none;">
-			<div id="popup-content">
-				<div id="close-popup"><a href="#" onclick="closePopup();">close</a></div>
-			</div>
-		</div>
 
 		<div id="build-pipeline-plugin-content">
 			<div>
