@@ -55,6 +55,8 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 
+import au.com.centrumsystems.hudson.plugin.buildpipeline.Strings;
+
 /**
  * The build pipeline trigger allows the creation of downstream jobs which aren't triggered automatically. This allows us to have manual
  * "approval" steps in the process where jobs are manually promoted along the pipeline by a user pressing a button on the view.
@@ -65,269 +67,271 @@ import org.kohsuke.stapler.StaplerRequest;
 @SuppressWarnings("unchecked")
 public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer {
 
-    /** downstream project name */
-    private String downstreamProjectNames;
+	/** downstream project name */
+	private String downstreamProjectNames;
 
-    public String getDownstreamProjectNames() {
-        return downstreamProjectNames;
-    }
+	public String getDownstreamProjectNames() {
+		return downstreamProjectNames;
+	}
 
-    public void setDownstreamProjectNames(final String downstreamProjectNames) {
-        this.downstreamProjectNames = downstreamProjectNames;
-    }
+	public void setDownstreamProjectNames(final String downstreamProjectNames) {
+		this.downstreamProjectNames = downstreamProjectNames;
+	}
 
-    /**
-     * Construct the trigger setting the project name and manual build promotion option
-     * 
-     * @param downstreamProjectNames
-     *            - the job name of the downstream build
-     */
-    @DataBoundConstructor
-    public BuildPipelineTrigger(final String downstreamProjectNames) {
-        if (downstreamProjectNames == null) {
-            throw new IllegalArgumentException();
-        }
-        
-        setDownstreamProjectNames(downstreamProjectNames);
-    }
+	/**
+	 * Construct the trigger setting the project name and manual build promotion option
+	 * 
+	 * @param downstreamProjectNames
+	 *            - the job name of the downstream build
+	 */
+	@DataBoundConstructor
+	public BuildPipelineTrigger(final String downstreamProjectNames) {
+		if (downstreamProjectNames == null) {
+			throw new IllegalArgumentException();
+		}
 
-    /**
-     * this method is required to rebuild the dependency graph of the downstream project
-     * 
-     * @param owner
-     *            owner
-     * @param graph
-     *            graph
-     */
-    @SuppressWarnings("rawtypes")
-    public void buildDependencyGraph(final AbstractProject owner, final DependencyGraph graph) {
-        if ((downstreamProjectNames != null) && (downstreamProjectNames.length() > 0)) {
-            for (final Object o : Items.fromNameList(downstreamProjectNames, AbstractProject.class)) {
-                final AbstractProject downstream = (AbstractProject) o;
+		setDownstreamProjectNames(downstreamProjectNames);
+	}
 
-                if (owner != downstream) {
-                    graph.addDependency(createDownstreamDependency(owner, downstream));
-                } else {
-                    removeDownstreamTrigger(this, owner, downstream.getName());
-                }
-            }
-        }
-    }
+	/**
+	 * this method is required to rebuild the dependency graph of the downstream project
+	 * 
+	 * @param owner
+	 *            owner
+	 * @param graph
+	 *            graph
+	 */
+	@SuppressWarnings("rawtypes")
+	public void buildDependencyGraph(final AbstractProject owner, final DependencyGraph graph) {
+		if ((downstreamProjectNames != null) && (downstreamProjectNames.length() > 0)) {
+			for (final Object o : Items.fromNameList(downstreamProjectNames, AbstractProject.class)) {
+				final AbstractProject downstream = (AbstractProject) o;
 
-    /**
-     * Create a new DownstreamDependency
-     * 
-     * @param owner
-     *            - upstream project
-     * @param downstream
-     *            - downstream project
-     * @return downstream dependency
-     */
-    private DownstreamDependency createDownstreamDependency(final AbstractProject<?, ?> owner, final AbstractProject<?, ?> downstream) {
-        return new DownstreamDependency(owner, downstream);
-    }
+				if (owner != downstream) {
+					graph.addDependency(createDownstreamDependency(owner, downstream));
+				} else {
+					removeDownstreamTrigger(this, owner, downstream.getName());
+				}
+			}
+		}
+	}
 
-    @Override
-    public boolean needsToRunAfterFinalized() {
-        return true;
-    }
+	/**
+	 * Create a new DownstreamDependency
+	 * 
+	 * @param owner
+	 *            - upstream project
+	 * @param downstream
+	 *            - downstream project
+	 * @return downstream dependency
+	 */
+	private DownstreamDependency createDownstreamDependency(final AbstractProject<?, ?> owner, final AbstractProject<?, ?> downstream) {
+		return new DownstreamDependency(owner, downstream);
+	}
 
-    public BuildStepMonitor getRequiredMonitorService() {
-        return BuildStepMonitor.NONE;
-    }
+	@Override
+	public boolean needsToRunAfterFinalized() {
+		return true;
+	}
 
-    @Override
-    public boolean perform(final AbstractBuild<?, ?> build, final Launcher launcher, 
-            final BuildListener listener) throws InterruptedException, IOException {
-        return true;
-    }
+	public BuildStepMonitor getRequiredMonitorService() {
+		return BuildStepMonitor.NONE;
+	}
 
-    /**
-     * Renames a project contained in downstreamProjectNames
-     * 
-     * @param oldName
-     *            - The old name of the project
-     * @param newName
-     *            - The new name of the project
-     * @return - true: A downstream project has been renamed; false No downstream projects were renamed
-     */
-    public boolean onDownstreamProjectRenamed(final String oldName, final String newName) {
-        boolean changed = false;
-        String[] existingDownstreamProjects = new String[5];
-        if (this.getDownstreamProjectNames() != null) {
-            existingDownstreamProjects = this.getDownstreamProjectNames().split(",");
-            for (int i = 0; i < existingDownstreamProjects.length; i++) {
-                if (existingDownstreamProjects[i].trim().equals(oldName)) {
-                    existingDownstreamProjects[i] = newName;
-                    changed = true;
-                }
-            }
-        }
-        if (changed) {
-            final StringBuilder newDownstreamProjects = new StringBuilder();
-            for (int i = 0; i < existingDownstreamProjects.length; i++) {
-                if (existingDownstreamProjects[i] == null) {
-                    continue;
-                }
-                if (newDownstreamProjects.length() > 0) {
-                    newDownstreamProjects.append(',');
-                }
-                newDownstreamProjects.append(existingDownstreamProjects[i].trim());
-            }
-            this.setDownstreamProjectNames(newDownstreamProjects.toString());
-        }
-        return changed;
-    }
+	@Override
+	public boolean perform(final AbstractBuild<?, ?> build, final Launcher launcher, final BuildListener listener)
+			throws InterruptedException, IOException {
+		return true;
+	}
 
-    /**
-     * Deletes a project from downstreamProjectNames.
-     * 
-     * @param oldName
-     *            - Project to be deleted
-     * @return - true; project deleted: false; project not deleted {@link #onDownstreamProjectRenamed(String, String)}
-     */
-    public boolean onDownstreamProjectDeleted(final String oldName) {
-        return onDownstreamProjectRenamed(oldName, null);
-    }
+	/**
+	 * Renames a project contained in downstreamProjectNames
+	 * 
+	 * @param oldName
+	 *            - The old name of the project
+	 * @param newName
+	 *            - The new name of the project
+	 * @return - true: A downstream project has been renamed; false No downstream projects were renamed
+	 */
+	public boolean onDownstreamProjectRenamed(final String oldName, final String newName) {
+		boolean changed = false;
+		String[] existingDownstreamProjects = new String[5];
+		if (this.getDownstreamProjectNames() != null) {
+			existingDownstreamProjects = this.getDownstreamProjectNames().split(",");
+			for (int i = 0; i < existingDownstreamProjects.length; i++) {
+				if (existingDownstreamProjects[i].trim().equals(oldName)) {
+					existingDownstreamProjects[i] = newName;
+					changed = true;
+				}
+			}
+		}
+		if (changed) {
+			final StringBuilder newDownstreamProjects = new StringBuilder();
+			for (int i = 0; i < existingDownstreamProjects.length; i++) {
+				if (existingDownstreamProjects[i] == null) {
+					continue;
+				}
+				if (newDownstreamProjects.length() > 0) {
+					newDownstreamProjects.append(',');
+				}
+				newDownstreamProjects.append(existingDownstreamProjects[i].trim());
+			}
+			this.setDownstreamProjectNames(newDownstreamProjects.toString());
+		}
+		return changed;
+	}
 
-    /**
-     * Removes a downstream trigger (BuildPipelineTrigger) from a project.
-     * This removes both:
-     *  - The downstream project name from the downstreamProjectNames attribute
-     *  - The BuildPipelineTrigger from the AbstractProject publishers list
-     * 
-     * @param bpTrigger - The BuildPipelineTrigger to be removed
-     * @param ownerProject - The AbstractProject from which to removed the BuildPipelineTrigger
-     * @param downstreamProjectName - The name of the AbstractProject associated with the BuildPipelineTrigger
-     */
-    public void removeDownstreamTrigger(BuildPipelineTrigger bpTrigger,
-          final AbstractProject<?, ?> ownerProject, final String downstreamProjectName) {
-        if (bpTrigger != null) {
-            boolean changed = false;
+	/**
+	 * Deletes a project from downstreamProjectNames.
+	 * 
+	 * @param oldName
+	 *            - Project to be deleted
+	 * @return - true; project deleted: false; project not deleted {@link #onDownstreamProjectRenamed(String, String)}
+	 */
+	public boolean onDownstreamProjectDeleted(final String oldName) {
+		return onDownstreamProjectRenamed(oldName, null);
+	}
 
-            if (bpTrigger.onDownstreamProjectDeleted(downstreamProjectName)) {
-                changed = true;
-            }
+	/**
+	 * Removes a downstream trigger (BuildPipelineTrigger) from a project. This removes both: - The downstream project name from the
+	 * downstreamProjectNames attribute - The BuildPipelineTrigger from the AbstractProject publishers list
+	 * 
+	 * @param bpTrigger
+	 *            - The BuildPipelineTrigger to be removed
+	 * @param ownerProject
+	 *            - The AbstractProject from which to removed the BuildPipelineTrigger
+	 * @param downstreamProjectName
+	 *            - The name of the AbstractProject associated with the BuildPipelineTrigger
+	 */
+	public void removeDownstreamTrigger(BuildPipelineTrigger bpTrigger, final AbstractProject<?, ?> ownerProject,
+			final String downstreamProjectName) {
+		if (bpTrigger != null) {
+			boolean changed = false;
 
-            if (changed) {
-                try {
-                    if (bpTrigger.getDownstreamProjectNames().length() == 0) {
-                        ownerProject.getPublishersList().remove(bpTrigger);
-                    }
-                    ownerProject.save();
-                } catch (final IOException e) {
-                    Logger.getLogger(BuildPipelineTrigger.class.getName()).log(Level.WARNING,
-                            "Failed to persist project BuildPipelineTrigger setting during removal of " + downstreamProjectName, e);
-                }
-            }
-        }
-    }
-    
-    /**
-     * Set the descriptor for build pipeline trigger class This descriptor is only attached to Build Trigger Post Build action in JOB
-     * configuration page
-     * 
-     * @author Centrum Systems
-     * 
-     */
-    @Extension
-    public static class DescriptorImpl extends BuildStepDescriptor<Publisher> {
+			if (bpTrigger.onDownstreamProjectDeleted(downstreamProjectName)) {
+				changed = true;
+			}
 
-        @Override
-        public boolean isApplicable(final Class<? extends AbstractProject> jobType) {
-            return true;
-        }
+			if (changed) {
+				try {
+					if (bpTrigger.getDownstreamProjectNames().length() == 0) {
+						ownerProject.getPublishersList().remove(bpTrigger);
+					}
+					ownerProject.save();
+				} catch (final IOException e) {
+					Logger.getLogger(BuildPipelineTrigger.class.getName()).log(
+							Level.WARNING,
+							au.com.centrumsystems.hudson.plugin.buildpipeline.Strings
+									.getString("BuildPipelineTrigger.FailedPersistDuringRemoval") + downstreamProjectName, e); //$NON-NLS-1$
+				}
+			}
+		}
+	}
 
-        /**
-         * set the display name in post build action section of the job configuration page
-         * 
-         * @return display name
-         */
-        @Override
-        public String getDisplayName() {
-            return "Build Pipeline Plugin -> Manually Execute Downstream Project";
-        }
+	/**
+	 * Set the descriptor for build pipeline trigger class This descriptor is only attached to Build Trigger Post Build action in JOB
+	 * configuration page
+	 * 
+	 * @author Centrum Systems
+	 * 
+	 */
+	@Extension
+	public static class DescriptorImpl extends BuildStepDescriptor<Publisher> {
 
-        /**
-         * Set help text to "Build Pipeline Plugin -> Manually Execute Downstream Project" Post Build action in JOB configuration page
-         * 
-         * @return location of the help file
-         */
-        @Override
-        public String getHelpFile() {
-            return "/descriptor/au.com.centrumsystems.hudson.plugin.buildpipeline.trigger.BuildPipelineTrigger/help/buildPipeline.html";
-        }
+		@Override
+		public boolean isApplicable(final Class<? extends AbstractProject> jobType) {
+			return true;
+		}
 
-        @Override
-        public Publisher newInstance(final StaplerRequest req, final JSONObject formData) throws FormException {
-            return new BuildPipelineTrigger(formData.getString("downstreamProjectNames"));
-        }
+		/**
+		 * set the display name in post build action section of the job configuration page
+		 * 
+		 * @return display name
+		 */
+		@Override
+		public String getDisplayName() {
+			return au.com.centrumsystems.hudson.plugin.buildpipeline.Strings.getString("BuildPipelineTrigger.DisplayText"); //$NON-NLS-1$
+		}
 
-        /**
-         * Validates that the downstream project names entered are valid projects.
-         * 
-         * @param value
-         *            - The entered project names
-         * @return hudson.util.FormValidation
-         */
-        public FormValidation doCheckDownstreamProjectNames(@QueryParameter("downstreamProjectNames") final String value) {
-            final StringTokenizer tokens = new StringTokenizer(Util.fixNull(value), ",");
-            while (tokens.hasMoreTokens()) {
-                final String projectName = tokens.nextToken().trim();
-                if ("".equals(projectName)) {
-                    return FormValidation.error(Messages.BuildTrigger_NoSuchProject(projectName, AbstractProject.findNearest(projectName)
-                            .getName()));
-                }
-                final Item item = Hudson.getInstance().getItemByFullName(projectName, Item.class);
-                if (item == null) {
-                    return FormValidation.error(Messages.BuildTrigger_NoSuchProject(projectName, AbstractProject.findNearest(projectName)
-                            .getName()));
-                }
-                if (!(item instanceof AbstractProject)) {
-                    return FormValidation.error(Messages.BuildTrigger_NotBuildable(projectName));
-                }
-            }
+		/**
+		 * Set help text to "Build Pipeline Plugin -> Manually Execute Downstream Project" Post Build action in JOB configuration page
+		 * 
+		 * @return location of the help file
+		 */
+		@Override
+		public String getHelpFile() {
+			return "/descriptor/au.com.centrumsystems.hudson.plugin.buildpipeline.trigger.BuildPipelineTrigger/help/buildPipeline.html"; //$NON-NLS-1$
+		}
 
-            return FormValidation.ok();
-        }
+		@Override
+		public Publisher newInstance(final StaplerRequest req, final JSONObject formData) throws FormException {
+			return new BuildPipelineTrigger(formData.getString("downstreamProjectNames")); //$NON-NLS-1$
+		}
 
-        /**
-         * If a job is renamed, update all BuildPipelineTriggers with the new name.
-         */
-        @Extension
-        public static final class ItemListenerImpl extends ItemListener {
-            @Override
-            public void onRenamed(final Item item, final String oldName, final String newName) {
-                for (final Project<?, ?> p : Hudson.getInstance().getProjects()) {
-                    final BuildPipelineTrigger bpTrigger = p.getPublishersList().get(BuildPipelineTrigger.class);
-                    if (bpTrigger != null) {
-                        boolean changed = false;
-                        changed = bpTrigger.onDownstreamProjectRenamed(oldName, newName);
+		/**
+		 * Validates that the downstream project names entered are valid projects.
+		 * 
+		 * @param value
+		 *            - The entered project names
+		 * @return hudson.util.FormValidation
+		 */
+		public FormValidation doCheckDownstreamProjectNames(@QueryParameter("downstreamProjectNames") final String value) {
+			final StringTokenizer tokens = new StringTokenizer(Util.fixNull(value), ","); //$NON-NLS-1$
+			while (tokens.hasMoreTokens()) {
+				final String projectName = tokens.nextToken().trim();
+				if ("".equals(projectName)) { //$NON-NLS-1$
+					return FormValidation.error(Messages.BuildTrigger_NoSuchProject(projectName, AbstractProject.findNearest(projectName)
+							.getName()));
+				}
+				final Item item = Hudson.getInstance().getItemByFullName(projectName, Item.class);
+				if (item == null) {
+					return FormValidation.error(Messages.BuildTrigger_NoSuchProject(projectName, AbstractProject.findNearest(projectName)
+							.getName()));
+				}
+				if (!(item instanceof AbstractProject)) {
+					return FormValidation.error(Messages.BuildTrigger_NotBuildable(projectName));
+				}
+			}
 
-                        if (changed) {
-                            try {
-                                p.save();
-                            } catch (final IOException e) {
-                                Logger.getLogger(ItemListenerImpl.class.getName()).log(
-                                        Level.WARNING,
-                                        "Failed to persist project BuildPipelineTrigger setting during rename from " + oldName + " to "
-                                                + newName, e);
-                            }
-                        }
-                    }
-                }
-            }
+			return FormValidation.ok();
+		}
 
-            @Override
-            public void onDeleted(final Item item) {
-                for (final Project<?, ?> p : Hudson.getInstance().getProjects()) {
-                    final String oldName = item.getName();
-                    final BuildPipelineTrigger bpTrigger = p.getPublishersList().get(BuildPipelineTrigger.class);
-                    if (bpTrigger != null) {
-                        bpTrigger.removeDownstreamTrigger(bpTrigger, p, oldName);
-                    }
-                }
-            }
-        }
-    }
+		/**
+		 * If a job is renamed, update all BuildPipelineTriggers with the new name.
+		 */
+		@Extension
+		public static final class ItemListenerImpl extends ItemListener {
+			@Override
+			public void onRenamed(final Item item, final String oldName, final String newName) {
+				for (final Project<?, ?> p : Hudson.getInstance().getProjects()) {
+					final BuildPipelineTrigger bpTrigger = p.getPublishersList().get(BuildPipelineTrigger.class);
+					if (bpTrigger != null) {
+						boolean changed = false;
+						changed = bpTrigger.onDownstreamProjectRenamed(oldName, newName);
+
+						if (changed) {
+							try {
+								p.save();
+							} catch (final IOException e) {
+								Logger.getLogger(ItemListenerImpl.class.getName()).log(Level.WARNING,
+										String.format(Strings.getString("BuildPipelineTrigger.FailedPersistDuringRename_FMT"), //$NON-NLS-1$
+												oldName, newName), e);
+							}
+						}
+					}
+				}
+			}
+
+			@Override
+			public void onDeleted(final Item item) {
+				for (final Project<?, ?> p : Hudson.getInstance().getProjects()) {
+					final String oldName = item.getName();
+					final BuildPipelineTrigger bpTrigger = p.getPublishersList().get(BuildPipelineTrigger.class);
+					if (bpTrigger != null) {
+						bpTrigger.removeDownstreamTrigger(bpTrigger, p, oldName);
+					}
+				}
+			}
+		}
+	}
 }

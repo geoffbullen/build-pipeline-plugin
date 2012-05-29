@@ -20,5 +20,11 @@
 		<f:booleanRadio field="triggerOnlyLatestJob" true="Yes" false="No" default="false"/>
   	</f:entry>
   	
+  	<f:entry title="Always allow manual trigger on pipeline steps" field="alwaysAllowManualTrigger">
+  	    <f:booleanRadio field="alwaysAllowManualTrigger" true="Yes" false="No" default="false"/>
+  	</f:entry>
   	
+  	<f:entry title="Show pipeline parameters" field="showPipelineParameters">
+  		<f:booleanRadio field="showPipelineParameters" true="Yes" false="No" default="false"/>
+  	</f:entry>
 </j:jelly>

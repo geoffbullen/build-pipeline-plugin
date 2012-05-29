@@ -2,6 +2,8 @@ package au.com.centrumsystems.hudson.plugin.buildpipeline
 
 import au.com.centrumsystems.hudson.plugin.buildpipeline.PipelineBuild;
 import groovy.json.JsonBuilder
+import hudson.model.Cause;
+import hudson.model.Cause.UserIdCause;
 import hudson.model.Item;
 
 class BuildJSONBuilder {
@@ -15,11 +17,13 @@ class BuildJSONBuilder {
 				duration(pipelineBuild.buildDuration)				
 				hasPermission(pipelineBuild.project?.hasPermission(Item.BUILD));
 				isBuilding(buildStatus == 'BUILDING')
-				isComplete(buildStatus != 'BUILDING' && buildStatus != 'PENDING')
+				isComplete(buildStatus != 'BUILDING' && buildStatus != 'PENDING' && buildStatus != 'MANUAL')
 				isPending(buildStatus == 'PENDING')
 				isReadyToBeManuallyBuilt(pipelineBuild.isReadyToBeManuallyBuilt())
 				isManualTrigger(pipelineBuild.isManualTrigger())
 				number(pipelineBuild.currentBuild?.number)
+				extId(pipelineBuild.currentBuild?.externalizableId)
+				displayName(pipelineBuild.currentBuild?.displayName)
 				progress(pipelineBuild.buildProgress)
 				progressLeft(100 - pipelineBuild.buildProgress)
 				startDate(pipelineBuild.formattedStartDate)
@@ -27,6 +31,8 @@ class BuildJSONBuilder {
 				status(buildStatus)								
 				url(pipelineBuild.buildResultURL)
 				dependencyIds(buildDependencyIds)
+				hasUpstreamBuild(null != pipelineBuild.upstreamBuild)
+				userId(pipelineBuild.currentBuild?.getCause(Cause.UserIdCause.class)?.getUserId())
 			}
 			project {
 				name(pipelineBuild.project.name)

@@ -39,47 +39,47 @@ import org.jvnet.hudson.test.HudsonTestCase;
  */
 public class DownstreamDependencyTest extends HudsonTestCase {
 
-    @Override
-    @Before
-    public void setUp() throws Exception {
-        super.setUp();
-    }
+	@Override
+	@Before
+	public void setUp() throws Exception {
+		super.setUp();
+	}
 
-    @Test
-    public void testDownstreamDependency() throws IOException {
-        String proj1 = "Proj1";
-        String proj2 = "Proj2";
-        FreeStyleProject project1 = createFreeStyleProject(proj1);
-        FreeStyleProject project2 = createFreeStyleProject(proj2);
+	@Test
+	public void testDownstreamDependency() throws IOException {
+		String proj1 = "Proj1";
+		String proj2 = "Proj2";
+		FreeStyleProject project1 = createFreeStyleProject(proj1);
+		FreeStyleProject project2 = createFreeStyleProject(proj2);
 
-        DownstreamDependency myDD = new DownstreamDependency(project1, project2);
-        assertEquals("Upstream project should be " + proj1, project1, myDD.getUpstreamProject());
-        assertEquals("Downstream project should be " + proj2, project2, myDD.getDownstreamProject());
-    }
+		DownstreamDependency myDD = new DownstreamDependency(project1, project2);
+		assertEquals("Upstream project should be " + proj1, project1, myDD.getUpstreamProject());
+		assertEquals("Downstream project should be " + proj2, project2, myDD.getDownstreamProject());
+	}
 
-    @Test
-    public void testShouldTriggerBuild() throws Exception {
-        String proj1 = "Proj1";
-        String proj2 = "Proj2";
-        String proj3 = "Proj3";
-        FreeStyleProject project1 = createFreeStyleProject(proj1);
-        FreeStyleProject project2 = createFreeStyleProject(proj2);
-        FreeStyleProject project3 = createFreeStyleProject(proj3);
+	@Test
+	public void testShouldTriggerBuild() throws Exception {
+		String proj1 = "Proj1";
+		String proj2 = "Proj2";
+		String proj3 = "Proj3";
+		FreeStyleProject project1 = createFreeStyleProject(proj1);
+		FreeStyleProject project2 = createFreeStyleProject(proj2);
+		FreeStyleProject project3 = createFreeStyleProject(proj3);
 
-        // Add TEST_PROJECT2 as a Manually executed pipeline project
-        // Add TEST_PROJECT3 as a Post-build action -> build other projects
-        project1.getPublishersList().add(new BuildPipelineTrigger(proj2));
-        project1.getPublishersList().add(new BuildTrigger(proj3, true));
+		// Add TEST_PROJECT2 as a Manually executed pipeline project
+		// Add TEST_PROJECT3 as a Post-build action -> build other projects
+		project1.getPublishersList().add(new BuildPipelineTrigger(proj2));
+		project1.getPublishersList().add(new BuildTrigger(proj3, true));
 
-        // Important; we must do this step to ensure that the dependency graphs are updated
-        Hudson.getInstance().rebuildDependencyGraph();
+		// Important; we must do this step to ensure that the dependency graphs are updated
+		Hudson.getInstance().rebuildDependencyGraph();
 
-        // Build project1 and wait until completion
-        buildAndAssertSuccess(project1);
-        waitUntilNoActivity();
+		// Build project1 and wait until completion
+		buildAndAssertSuccess(project1);
+		waitUntilNoActivity();
 
-        assertNull(project2.getLastBuild());
-        assertNotNull(project3.getLastBuild());
-    }
+		assertNull(project2.getLastBuild());
+		assertNotNull(project3.getLastBuild());
+	}
 
 }

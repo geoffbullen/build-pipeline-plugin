@@ -318,16 +318,19 @@ tr.spacerRow td {
     display: none;
 }
 
-.rounded a:link, .rounded a:visited, .rounded a:active {
-    text-decoration: none;
-    color: inherit;
-    color: expression(this.parentNode.currentStyle['color']); /* IE fix */
-    font-weight: inherit;
+a:link, a:visited, a:active {
+	text-decoration: none;
+	color: inherit;
+	color: expression(this.parentNode.currentStyle['color']); /* IE fix */
+	font-weight: inherit;
 }
 
-.rounded a:hover {
-    text-decoration: underline;
-    color: inherit;
-    color: expression(this.parentNode.currentStyle['color']);
-    font-weight: inherit;
+a:hover {
+	text-decoration: underline;
+	color: inherit;
+	color: expression(this.parentNode.currentStyle['color']);
+	font-weight: inherit;
 }
+
+.param-info {
+	border: 1px solid black;

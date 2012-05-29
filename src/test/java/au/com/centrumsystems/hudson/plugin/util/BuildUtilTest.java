@@ -41,148 +41,144 @@ import org.jvnet.hudson.test.HudsonTestCase;
 
 public class BuildUtilTest extends HudsonTestCase {
 
-    @Override
-    @Before
-    public void setUp() throws Exception {
-        super.setUp();
-    }
+	@Override
+	@Before
+	public void setUp() throws Exception {
+		super.setUp();
+	}
 
-    @Test
-    public void testGetDownstreamBuild() throws Exception {
-        String proj1 = "Proj1";
-        String proj2 = "Proj2";
-        String proj3 = "Proj3";
+	@Test
+	public void testGetDownstreamBuild() throws Exception {
+		String proj1 = "Proj1";
+		String proj2 = "Proj2";
+		String proj3 = "Proj3";
 
-        FreeStyleProject project1, project2, project3;
-        FreeStyleBuild build1, build2, build3;
-        FreeStyleProject project4 = null;
-        FreeStyleBuild build4 = null;
+		FreeStyleProject project1, project2, project3;
+		FreeStyleBuild build1, build2, build3;
+		FreeStyleProject project4 = null;
+		FreeStyleBuild build4 = null;
 
-        // Create test projects and associated builders
-        project1 = createFreeStyleProject(proj1);
-        project2 = createFreeStyleProject(proj2);
-        project3 = createFreeStyleProject(proj3);
+		// Create test projects and associated builders
+		project1 = createFreeStyleProject(proj1);
+		project2 = createFreeStyleProject(proj2);
+		project3 = createFreeStyleProject(proj3);
 
-        // Add project2 as a post build action: build other project
-        project1.getPublishersList().add(new BuildTrigger(proj2, true));
-        project2.getPublishersList().add(new BuildTrigger(proj3, true));
+		// Add project2 as a post build action: build other project
+		project1.getPublishersList().add(new BuildTrigger(proj2, true));
+		project2.getPublishersList().add(new BuildTrigger(proj3, true));
 
-        // Important; we must do this step to ensure that the dependency graphs are updated
-        Hudson.getInstance().rebuildDependencyGraph();
+		// Important; we must do this step to ensure that the dependency graphs are updated
+		Hudson.getInstance().rebuildDependencyGraph();
 
-        // Build project1, upon completion project2 will be built
-        build1 = buildAndAssertSuccess(project1);
-        // When all building is complete retrieve the last build from project2
-        waitUntilNoActivity();
-        build2 = project2.getLastBuild();
-        build3 = project3.getLastBuild();
+		// Build project1, upon completion project2 will be built
+		build1 = buildAndAssertSuccess(project1);
+		// When all building is complete retrieve the last build from project2
+		waitUntilNoActivity();
+		build2 = project2.getLastBuild();
+		build3 = project3.getLastBuild();
 
-        AbstractBuild<?, ?> nextBuild = BuildUtil.getDownstreamBuild(project2, build1);
-        assertEquals("The next build should be " + proj1 + build2.number, build2, nextBuild);
+		AbstractBuild<?, ?> nextBuild = BuildUtil.getDownstreamBuild(project2, build1);
+		assertEquals("The next build should be " + proj1 + build2.number, build2, nextBuild);
 
-        nextBuild = BuildUtil.getDownstreamBuild(project3, nextBuild);
-        assertEquals("The next build should be " + proj1 + build3.number, build3, nextBuild);
+		nextBuild = BuildUtil.getDownstreamBuild(project3, nextBuild);
+		assertEquals("The next build should be " + proj1 + build3.number, build3, nextBuild);
 
-        nextBuild = BuildUtil.getDownstreamBuild(project4, build4);
-        assertNull(nextBuild);
-    }
-    
-    @Test
-    public void testGetAllBuildParametersAction() throws Exception {
-        String proj1 = "Proj1";
-        String proj2 = "Proj2";
-        final String key1 = "testKey";
-        final String key2 = "testKey2";
-        final String value1 = "testValue";
-        final String value2 = "testValue2";
-        final String value3 = "testValue3";
+		nextBuild = BuildUtil.getDownstreamBuild(project4, build4);
+		assertNull(nextBuild);
+	}
 
-        FreeStyleProject project1, project2;
-        FreeStyleBuild build1;
+	@Test
+	public void testGetAllBuildParametersAction() throws Exception {
+		String proj1 = "Proj1";
+		String proj2 = "Proj2";
+		final String key1 = "testKey";
+		final String key2 = "testKey2";
+		final String value1 = "testValue";
+		final String value2 = "testValue2";
+		final String value3 = "testValue3";
 
-        // Create test projects and associated builders
-        project1 = createFreeStyleProject(proj1);
-        project2 = createFreeStyleProject(proj2);
-        // Add a String parameter
-        project1.addProperty((new ParametersDefinitionProperty(new StringParameterDefinition(key1, value1))));
-        project1.addProperty((new ParametersDefinitionProperty(new StringParameterDefinition(key2, value3))));
-        project2.addProperty((new ParametersDefinitionProperty(new StringParameterDefinition(key1, value2))));
+		FreeStyleProject project1, project2;
+		FreeStyleBuild build1;
 
-        // Add project2 as a post build action: build other project
-        project1.getPublishersList().add(new BuildTrigger(proj2, true));
+		// Create test projects and associated builders
+		project1 = createFreeStyleProject(proj1);
+		project2 = createFreeStyleProject(proj2);
+		// Add a String parameter
+		project1.addProperty((new ParametersDefinitionProperty(new StringParameterDefinition(key1, value1))));
+		project1.addProperty((new ParametersDefinitionProperty(new StringParameterDefinition(key2, value3))));
+		project2.addProperty((new ParametersDefinitionProperty(new StringParameterDefinition(key1, value2))));
 
-        // Important; we must do this step to ensure that the dependency graphs are updated
-        Hudson.getInstance().rebuildDependencyGraph();
+		// Add project2 as a post build action: build other project
+		project1.getPublishersList().add(new BuildTrigger(proj2, true));
 
-        // Build project1, upon completion project2 will be built
-        //build1 = buildAndAssertSuccess(project1);
-        build1 = project1.scheduleBuild2(0, new UserCause(), new ParametersAction(
-                new StringParameterValue(key1, value1),
-                new StringParameterValue(key2, value3))).get();
-        // When all building is complete retrieve the last build from project2
-        waitUntilNoActivity();
+		// Important; we must do this step to ensure that the dependency graphs are updated
+		Hudson.getInstance().rebuildDependencyGraph();
 
-        ParametersAction params = (ParametersAction) BuildUtil.getAllBuildParametersAction(build1, project2);
-        assertEquals(((StringParameterValue) params.getParameter(key1)).value, value2);
-        assertEquals(((StringParameterValue) params.getParameter(key2)).value, value3);
-    }
-    
-    @Test
-    public void testGetBuildParametersAction() throws Exception {
-        String proj1 = "Proj1";
-        final String key1 = "testKey";
-        final String key2 = "testKey2";
-        final String value1 = "testValue";
-        final String value3 = "testValue3";
+		// Build project1, upon completion project2 will be built
+		// build1 = buildAndAssertSuccess(project1);
+		build1 = project1.scheduleBuild2(0, new UserCause(),
+				new ParametersAction(new StringParameterValue(key1, value1), new StringParameterValue(key2, value3))).get();
+		// When all building is complete retrieve the last build from project2
+		waitUntilNoActivity();
 
-        FreeStyleProject project1;
-        FreeStyleBuild build1;
-        FreeStyleBuild build2 = null;
+		ParametersAction params = (ParametersAction) BuildUtil.getAllBuildParametersAction(build1, project2);
+		assertEquals(((StringParameterValue) params.getParameter(key1)).value, value2);
+		assertEquals(((StringParameterValue) params.getParameter(key2)).value, value3);
+	}
 
-        // Create test projects and associated builders
-        project1 = createFreeStyleProject(proj1);
+	@Test
+	public void testGetBuildParametersAction() throws Exception {
+		String proj1 = "Proj1";
+		final String key1 = "testKey";
+		final String key2 = "testKey2";
+		final String value1 = "testValue";
+		final String value3 = "testValue3";
 
-        // Add a String parameter
-        project1.addProperty((new ParametersDefinitionProperty(new StringParameterDefinition(key1, value1))));
-        project1.addProperty((new ParametersDefinitionProperty(new StringParameterDefinition(key2, value3))));
+		FreeStyleProject project1;
+		FreeStyleBuild build1;
+		FreeStyleBuild build2 = null;
 
-        // Important; we must do this step to ensure that the dependency graphs are updated
-        Hudson.getInstance().rebuildDependencyGraph();
+		// Create test projects and associated builders
+		project1 = createFreeStyleProject(proj1);
 
-        // Build project1 with the two StringParameterValues
-        build1 = project1.scheduleBuild2(0, new UserCause(), new ParametersAction(
-                new StringParameterValue(key1, value1),
-                new StringParameterValue(key2, value3))).get();
-        waitUntilNoActivity();
+		// Add a String parameter
+		project1.addProperty((new ParametersDefinitionProperty(new StringParameterDefinition(key1, value1))));
+		project1.addProperty((new ParametersDefinitionProperty(new StringParameterDefinition(key2, value3))));
 
-        ParametersAction params = (ParametersAction) BuildUtil.getBuildParametersAction(build1);
-        assertEquals(((StringParameterValue) params.getParameter(key1)).value, value1);
-        assertEquals(((StringParameterValue) params.getParameter(key2)).value, value3);
+		// Important; we must do this step to ensure that the dependency graphs are updated
+		Hudson.getInstance().rebuildDependencyGraph();
 
-        params = (ParametersAction) BuildUtil.getBuildParametersAction(build2);
-        assertNull(params);
-    }
+		// Build project1 with the two StringParameterValues
+		build1 = project1.scheduleBuild2(0, new UserCause(),
+				new ParametersAction(new StringParameterValue(key1, value1), new StringParameterValue(key2, value3))).get();
+		waitUntilNoActivity();
 
-    @Test
-    public void testMergeParameters() throws Exception {
-        final String key1 = "testKey";
-        final String key2 = "testKey2";
-        final String value1 = "testValue";
-        final String value2 = "testValue2";
-        final String value3 = "testValue3";
+		ParametersAction params = (ParametersAction) BuildUtil.getBuildParametersAction(build1);
+		assertEquals(((StringParameterValue) params.getParameter(key1)).value, value1);
+		assertEquals(((StringParameterValue) params.getParameter(key2)).value, value3);
 
-        ParametersAction baseParams = new ParametersAction(
-                new StringParameterValue(key1, value1),
-                new StringParameterValue(key2, value3));
-        ParametersAction extraParams = new ParametersAction(new StringParameterValue(key2, value2));
+		params = (ParametersAction) BuildUtil.getBuildParametersAction(build2);
+		assertNull(params);
+	}
 
-        ParametersAction params = (ParametersAction) BuildUtil.mergeParameters(baseParams, extraParams);
-        assertEquals(((StringParameterValue) params.getParameter(key1)).value, value1);
-        assertEquals(((StringParameterValue) params.getParameter(key2)).value, value2);
-        
-        baseParams = null;
-        extraParams = null;
-        params = (ParametersAction) BuildUtil.mergeParameters(baseParams, extraParams);
-        assertEquals(params.getParameters().size(), 0);
-    }
+	@Test
+	public void testMergeParameters() throws Exception {
+		final String key1 = "testKey";
+		final String key2 = "testKey2";
+		final String value1 = "testValue";
+		final String value2 = "testValue2";
+		final String value3 = "testValue3";
+
+		ParametersAction baseParams = new ParametersAction(new StringParameterValue(key1, value1), new StringParameterValue(key2, value3));
+		ParametersAction extraParams = new ParametersAction(new StringParameterValue(key2, value2));
+
+		ParametersAction params = (ParametersAction) BuildUtil.mergeParameters(baseParams, extraParams);
+		assertEquals(((StringParameterValue) params.getParameter(key1)).value, value1);
+		assertEquals(((StringParameterValue) params.getParameter(key2)).value, value2);
+
+		baseParams = null;
+		extraParams = null;
+		params = (ParametersAction) BuildUtil.mergeParameters(baseParams, extraParams);
+		assertEquals(params.getParameters().size(), 0);
+	}
 }

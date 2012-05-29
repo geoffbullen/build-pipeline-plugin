@@ -58,6 +58,12 @@ BuildPipeline.prototype = {
 			buildPipeline.updateNextBuildAndShowProgress(id, data.responseObject(), dependencyIds);
 		});
 	},
+	rerunSuccessfulBuild : function(id, buildExternalizableId, dependencyIds) {
+		var buildPipeline = this;
+		buildPipeline.viewProxy.rerunSuccessfulBuild(buildExternalizableId, function(data){
+			buildPipeline.updateNextBuildAndShowProgress(id, data.responseObject(), dependencyIds);
+		});
+	},
 	showSpinner : function(id){
 		$("#status-bar-" + id).html('<table class="progress-bar" align="center"><tbody><tr class="unknown"><td></td></tr></tbody></table>');
 		$("#icons-" + id).empty();

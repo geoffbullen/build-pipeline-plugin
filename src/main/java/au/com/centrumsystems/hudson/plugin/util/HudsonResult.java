@@ -26,12 +26,12 @@ package au.com.centrumsystems.hudson.plugin.util;
 
 /**
  * Hudson Result
- *
+ * 
  * @author Centrum Systems
  */
 public enum HudsonResult {
-    /**
-     * Hudson Result
-     */
-    SUCCESS, UNSTABLE, FAILURE, NOT_BUILT, ABORT, BUILDING, PENDING, MANUAL
+	/**
+	 * Hudson Result
+	 */
+	SUCCESS, UNSTABLE, FAILURE, NOT_BUILT, ABORT, BUILDING, PENDING, MANUAL
 }

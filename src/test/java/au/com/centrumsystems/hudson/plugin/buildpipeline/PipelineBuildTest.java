@@ -25,8 +25,8 @@
 
 package au.com.centrumsystems.hudson.plugin.buildpipeline;
 
-import au.com.centrumsystems.hudson.plugin.buildpipeline.trigger.BuildPipelineTrigger;
-import au.com.centrumsystems.hudson.plugin.util.HudsonResult;
+import java.util.Calendar;
+import java.util.Date;
 
 import hudson.model.AbstractBuild;
 import hudson.model.FreeStyleBuild;
@@ -34,14 +34,14 @@ import hudson.model.FreeStyleProject;
 import hudson.model.Hudson;
 import hudson.tasks.BuildTrigger;
 
-import java.util.Calendar;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.jvnet.hudson.test.HudsonTestCase;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import au.com.centrumsystems.hudson.plugin.buildpipeline.trigger.BuildPipelineTrigger;
+import au.com.centrumsystems.hudson.plugin.util.HudsonResult;
+
+import static org.mockito.Mockito.*;
 
 public class PipelineBuildTest extends HudsonTestCase {
 
@@ -195,7 +195,7 @@ public class PipelineBuildTest extends HudsonTestCase {
 		waitUntilNoActivity();
 
 		final PipelineBuild pb1 = new PipelineBuild(build1, null, null);
-		assertEquals(build1 + " should have been " + HudsonResult.SUCCESS,
+		assertEquals("Build result is incorrect.",
 				HudsonResult.SUCCESS.toString(), pb1.getCurrentBuildResult());
 	}
 
@@ -220,9 +220,8 @@ public class PipelineBuildTest extends HudsonTestCase {
 
 		final PipelineBuild pb1 = new PipelineBuild(build1, null, null);
 		final PipelineBuild pb2 = new PipelineBuild(build2, null, build1);
-		assertEquals("Upstream PipelineBuild should have been "
-				+ pb1.toString(), pb1.toString(), pb2
-				.getUpstreamPipelineBuild().toString());
+		assertEquals("Upstream PipelineBuild is incorrect.", 
+				pb1.toString(), pb2.getUpstreamPipelineBuild().toString());
 	}
 
 	@Test
@@ -246,7 +245,7 @@ public class PipelineBuildTest extends HudsonTestCase {
 		final FreeStyleBuild build2 = project2.getLastBuild();
 
 		final PipelineBuild pb1 = new PipelineBuild(build2, null, build1);
-		assertEquals(build2 + " should have been " + HudsonResult.SUCCESS,
+		assertEquals("Upstream build result is incorrect.",
 				HudsonResult.SUCCESS.toString(), pb1.getUpstreamBuildResult());
 	}
 
@@ -262,7 +261,7 @@ public class PipelineBuildTest extends HudsonTestCase {
 
 		final PipelineBuild pb = new PipelineBuild(build1, null, null);
 
-		assertEquals("The toString should have been " + proj1ToString,
+		assertEquals("PipelineBuild.toString is incorrect.",
 				proj1ToString, pb.toString());
 	}
 
@@ -275,18 +274,16 @@ public class PipelineBuildTest extends HudsonTestCase {
 		final FreeStyleProject project1 = createFreeStyleProject(proj1);
 		final PipelineBuild pb = new PipelineBuild(null, project1, null);
 
-		assertEquals("The build description should have been "
-				+ proj1BuildDescFail, proj1BuildDescFail, pb
-				.getBuildDescription());
+		assertEquals("The build description is incorrect.", 
+				proj1BuildDescFail, pb.getBuildDescription());
 
 		build1 = buildAndAssertSuccess(project1);
 		// When all building is complete retrieve the last builds
 		waitUntilNoActivity();
 		pb.setCurrentBuild(build1);
 
-		assertEquals("The build description should have been "
-				+ proj1BuildDescSuccess, proj1BuildDescSuccess, pb
-				.getBuildDescription());
+		assertEquals("The build description is incorrect.", 
+				proj1BuildDescSuccess, pb.getBuildDescription());
 	}
 
 	@Test
@@ -299,9 +296,8 @@ public class PipelineBuildTest extends HudsonTestCase {
 		waitUntilNoActivity();
 		final PipelineBuild pb = new PipelineBuild(build1, project1, null);
 
-		assertEquals("The build duration should have been "
-				+ build1.getDurationString(), build1.getDurationString(), pb
-				.getBuildDuration());
+		assertEquals("The build duration is incorrect.", 
+				build1.getDurationString(), pb.getBuildDuration());
 	}
 
 	@Test
@@ -317,7 +313,7 @@ public class PipelineBuildTest extends HudsonTestCase {
 	@Test
 	public void testGetSVNRevisionNo() throws Exception {
 		final String proj1 = "Proj1";
-		final String proj1GetSVN = "Revision not available";
+		final String proj1GetSVN = Strings.getString("PipelineBuild.RevisionNotAvailable");
 		FreeStyleProject project1;
 		FreeStyleBuild build1;
 		project1 = createFreeStyleProject(proj1);
@@ -326,7 +322,8 @@ public class PipelineBuildTest extends HudsonTestCase {
 		waitUntilNoActivity();
 
 		final PipelineBuild pb = new PipelineBuild(build1, project1, null);
-		assertEquals("The SVN Revision text should have been " + proj1GetSVN,
+		assertEquals("The SVN Revision text is incorrect.",
 				proj1GetSVN, pb.getScmRevision());
 	}
+
 }

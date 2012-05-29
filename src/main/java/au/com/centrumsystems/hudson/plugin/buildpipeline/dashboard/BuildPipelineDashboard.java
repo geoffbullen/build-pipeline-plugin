@@ -23,8 +23,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import au.com.centrumsystems.hudson.plugin.buildpipeline.BuildPipelineView;
 
 /**
- * This class provides the entry point to use this plugin in the
- * dashboard-plugin
+ * This class provides the entry point to use this plugin in the dashboard-plugin
  * 
  * @author Ingo Richter (irichter@adobe.com)
  * @since 03/30/2012
@@ -58,8 +57,7 @@ public class BuildPipelineDashboard extends DashboardPortlet {
 	 *            how many builds will be displayed for this job
 	 */
 	@DataBoundConstructor
-	public BuildPipelineDashboard(String name, String description,
-			String selectedJob, String noOfDisplayedBuilds) {
+	public BuildPipelineDashboard(String name, String description, String selectedJob, String noOfDisplayedBuilds) {
 		super(name);
 		this.description = description;
 		this.selectedJob = selectedJob;
@@ -91,9 +89,7 @@ public class BuildPipelineDashboard extends DashboardPortlet {
 	}
 
 	public BuildPipelineView getBuildPipelineView() {
-		return new ReadOnlyBuildPipelineView(getDisplayName(),
-				getDescription(), getSelectedJob(), getNoOfDisplayedBuilds(),
-				false);
+		return new ReadOnlyBuildPipelineView(getDisplayName(), getDescription(), getSelectedJob(), getNoOfDisplayedBuilds(), false);
 	}
 
 	/**
@@ -101,8 +97,7 @@ public class BuildPipelineDashboard extends DashboardPortlet {
 	 */
 	// TODO: create a class and use this code also in BuildPipelineView
 	@Extension(optional = true)
-	public static class BuildPipelineDashboardDescriptor extends
-			Descriptor<DashboardPortlet> {
+	public static class BuildPipelineDashboardDescriptor extends Descriptor<DashboardPortlet> {
 
 		@Override
 		public String getDisplayName() {
