@@ -16,11 +16,11 @@
     	</f:select>
   	</f:entry>
 
-  	<f:entry title="Restrict Trigger to the Most Recent Build" field="triggerOnlyLatestJob">
+  	<f:entry title="Restrict trigger to the most recent build" field="triggerOnlyLatestJob">
 		<f:booleanRadio field="triggerOnlyLatestJob" true="Yes" false="No" default="false"/>
   	</f:entry>
   	
-  	<f:entry title="Always allow manual trigger on pipeline steps" field="alwaysAllowManualTrigger">
+  	<f:entry title="Enable retry any build" field="alwaysAllowManualTrigger">
   	    <f:booleanRadio field="alwaysAllowManualTrigger" true="Yes" false="No" default="false"/>
   	</f:entry>
   	

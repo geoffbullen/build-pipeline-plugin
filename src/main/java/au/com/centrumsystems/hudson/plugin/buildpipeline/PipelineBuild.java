@@ -297,8 +297,7 @@ public class PipelineBuild {
 	 */
 	@Override
 	public String toString() {
-		return String.format(Strings.getString("PipelineBuild.ToString_FMT"),  //$NON-NLS-1$
-				getProject().getName(), getCurrentBuildNumber());
+		return "Project: " + getProject().getName() + " : Build: " + getCurrentBuildNumber();
 	}
 
 	/**

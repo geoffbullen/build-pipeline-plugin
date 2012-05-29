@@ -55,7 +55,6 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 import org.kohsuke.stapler.bind.JavaScriptMethod;
-import org.springframework.transaction.annotation.Transactional;
 
 import au.com.centrumsystems.hudson.plugin.util.BuildUtil;
 import au.com.centrumsystems.hudson.plugin.util.ProjectUtil;
@@ -374,14 +373,6 @@ public class BuildPipelineView extends View {
 		}
 
 		return triggerBuild(triggerProject, upstreamBuild, buildParametersAction);
-	}
-
-	@JavaScriptMethod
-	public int retryBuild(final String triggerProjectName) {
-		final AbstractProject<?, ?> triggerProject = (AbstractProject<?, ?>) super.getJob(triggerProjectName);
-		triggerProject.scheduleBuild(new MyUserIdCause());
-
-		return triggerProject.getNextBuildNumber();
 	}
 
 	@JavaScriptMethod
