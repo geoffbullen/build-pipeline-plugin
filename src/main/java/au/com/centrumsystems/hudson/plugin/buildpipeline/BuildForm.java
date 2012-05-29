@@ -3,7 +3,9 @@ package au.com.centrumsystems.hudson.plugin.buildpipeline;
 import hudson.model.AbstractBuild;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.kohsuke.stapler.bind.JavaScriptMethod;
 
@@ -90,5 +92,9 @@ public class BuildForm {
 	@JavaScriptMethod
 	public boolean isManualTrigger() {
 		return pipelineBuild.isManualTrigger();
+	}
+
+	public Map<String, String> getParameters() {
+		return pipelineBuild.getBuildParameters();
 	}
 }

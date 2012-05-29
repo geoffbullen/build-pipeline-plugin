@@ -24,25 +24,23 @@
  */
 package au.com.centrumsystems.hudson.plugin.buildpipeline;
 
-import au.com.centrumsystems.hudson.plugin.buildpipeline.trigger.BuildPipelineTrigger;
-
 import hudson.model.Action;
-import hudson.model.Cause.UpstreamCause;
 import hudson.model.FreeStyleBuild;
+import hudson.model.Cause.UpstreamCause;
 import hudson.model.FreeStyleProject;
 import hudson.model.Hudson;
-import hudson.model.ItemGroup;
 import hudson.model.Job;
 import hudson.model.Run;
-import hudson.model.TopLevelItem;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.jvnet.hudson.test.HudsonTestCase;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import au.com.centrumsystems.hudson.plugin.buildpipeline.trigger.BuildPipelineTrigger;
 
 /**
  * Test Build Pipeline View
@@ -67,14 +65,13 @@ public class BuildPipelineViewTest extends HudsonTestCase {
 		createFreeStyleProject(proj1);
 
 		// Test a valid case
-		BuildPipelineView testView = BuildPipelineViewFactory.getBuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds, false);
-    
+		BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds, false);
 		Job<?, ?> testSelectedProject = testView.getSelectedProject();
 
 		assertEquals(proj1, testSelectedProject.getName());
 
 		// Test the null case
-		testView = BuildPipelineViewFactory.getBuildPipelineView(bpViewName, bpViewTitle, "", noOfBuilds, false);
+		testView = new BuildPipelineView(bpViewName, bpViewTitle, "", noOfBuilds, false);
 		testSelectedProject = testView.getSelectedProject();
 
 		assertNull(testSelectedProject);
@@ -89,12 +86,12 @@ public class BuildPipelineViewTest extends HudsonTestCase {
 		createFreeStyleProject(proj1);
 
 		// Test a valid case
-		BuildPipelineView testView = BuildPipelineViewFactory.getBuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds, false);
+		BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds, false);
 
 		assertTrue(testView.hasSelectedProject());
 
 		// Test the null case
-		testView = BuildPipelineViewFactory.getBuildPipelineView(bpViewName, bpViewTitle, "", noOfBuilds, false);
+		testView = new BuildPipelineView(bpViewName, bpViewTitle, "", noOfBuilds, false);
 		assertFalse(testView.hasSelectedProject());
 	}
 
@@ -125,6 +122,40 @@ public class BuildPipelineViewTest extends HudsonTestCase {
 		// False
 		testView = new BuildPipelineView(bpViewName, bpViewTitle, "", noOfBuilds, false);
 		assertFalse(proj1, testView.isTriggerOnlyLatestJob());
+	}
+	
+	@Test
+	public void testAlwaysAllowManualTrigger() throws IOException {
+		final String bpViewName = "MyTestView";
+		final String bpViewTitle = "MyTestViewTitle";
+		final String proj1 = "Proj1";
+		final String noOfBuilds = "5";
+		createFreeStyleProject(proj1);
+
+		// True
+		BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds, true, true, false);
+		assertTrue(proj1, testView.isAlwaysAllowManualTrigger());
+
+		// False
+		testView = new BuildPipelineView(bpViewName, bpViewTitle, "", noOfBuilds, true, false, false);
+		assertFalse(proj1, testView.isAlwaysAllowManualTrigger());
+	}
+	
+	@Test
+	public void testShowPipelineParameters() throws IOException {
+		final String bpViewName = "MyTestView";
+		final String bpViewTitle = "MyTestViewTitle";
+		final String proj1 = "Proj1";
+		final String noOfBuilds = "5";
+		createFreeStyleProject(proj1);
+
+		// True
+		BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds, true, false, true);
+		assertTrue(proj1, testView.isShowPipelineParameters());
+
+		// False
+		testView = new BuildPipelineView(bpViewName, bpViewTitle, "", noOfBuilds, true, false, false);
+		assertFalse(proj1, testView.isShowPipelineParameters());
 	}
 
 	@Test
@@ -198,7 +229,7 @@ public class BuildPipelineViewTest extends HudsonTestCase {
 		waitUntilNoActivity();
 
 		// Test a valid case
-		final BuildPipelineView testView = BuildPipelineViewFactory.getBuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds, false);
+		final BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds, false);
 
 		UpstreamCause upstreamCause = new hudson.model.Cause.UpstreamCause((Run<?, ?>) build1);
 		final List<Action> buildActions = new ArrayList<Action>();
@@ -237,27 +268,10 @@ public class BuildPipelineViewTest extends HudsonTestCase {
 		Hudson.getInstance().rebuildDependencyGraph();
 
 		// Test a valid case
-		final BuildPipelineView testView = BuildPipelineViewFactory.getBuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds, false);
+		final BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds, false, false, false);
 
 		assertEquals(testView.getJob(proj1), project1);
 		project1.renameTo(proj3);
 		assertEquals(testView.getJob(proj3), project1);
 	}
-
-    /**
-     * This is a factory to create an instance of the class under test. This helps to avoid a NPE in View.java
-     * when calling getOwnerItemGroup and it's not set. This doesn't solve the root cause and it't only intended
-     * to make our tests succeed.
-     */
-    static class BuildPipelineViewFactory {
-        public static BuildPipelineView getBuildPipelineView(String bpViewName, String bpViewTitle, String projectName, String noOfBuilds, boolean triggerOnlyLatestJob) {
-            return new BuildPipelineView(bpViewName, bpViewTitle, projectName, noOfBuilds, triggerOnlyLatestJob) {
-
-                @Override
-                public ItemGroup<? extends TopLevelItem> getOwnerItemGroup() {
-                    return Hudson.getInstance();
-                }
-            };
-        }
-    }
 }
