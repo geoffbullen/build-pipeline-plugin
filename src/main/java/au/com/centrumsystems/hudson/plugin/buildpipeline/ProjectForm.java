@@ -1,5 +1,6 @@
 package au.com.centrumsystems.hudson.plugin.buildpipeline;
 
+import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 
 import java.util.ArrayList;
@@ -36,6 +37,11 @@ public class ProjectForm {
      * display manual build
      */
     private Boolean displayTrigger;
+    
+    /**
+     * the latest successful build number
+     */
+    private final String lastSuccessfulBuildNumber;
 
     /**
      * @param name
@@ -46,6 +52,7 @@ public class ProjectForm {
         result = "";
         health = "";
         url = "";
+        lastSuccessfulBuildNumber = "";
         dependencies = new ArrayList<ProjectForm>();
         this.displayTrigger = true;
     }
@@ -67,7 +74,9 @@ public class ProjectForm {
             dependencies.add(new ProjectForm(dependency));
         }
         this.displayTrigger = true;
-
+        
+        final AbstractBuild<?, ?> lastSuccessfulBuild = pipelineBuild.getProject().getLastSuccessfulBuild();
+        lastSuccessfulBuildNumber = (null == lastSuccessfulBuild) ? "" : "" + lastSuccessfulBuild.getNumber();
     }
 
     public String getName() {
@@ -84,6 +93,10 @@ public class ProjectForm {
 
     public String getUrl() {
         return url;
+    }
+    
+    public String getLastSuccessfulBuildNumber() {
+    	return lastSuccessfulBuildNumber;
     }
 
     public List<ProjectForm> getDependencies() {
