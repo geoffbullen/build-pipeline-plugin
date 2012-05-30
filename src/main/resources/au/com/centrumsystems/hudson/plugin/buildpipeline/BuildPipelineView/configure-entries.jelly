@@ -27,4 +27,8 @@
   	<f:entry title="Show pipeline parameters" field="showPipelineParameters">
   		<f:booleanRadio field="showPipelineParameters" true="Yes" false="No" default="false"/>
   	</f:entry>
+  	
+  	<f:entry title="Show pipeline definition header" field="showPipelineDefinitionHeader">
+  		<f:booleanRadio field="showPipelineDefinitionHeader" true="Yes" false="No" default="false"/>
+  	</f:entry>
 </j:jelly>

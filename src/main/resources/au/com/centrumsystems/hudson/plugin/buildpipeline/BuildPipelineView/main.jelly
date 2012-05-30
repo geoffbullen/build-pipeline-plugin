@@ -224,32 +224,28 @@
 		
 			<table id="pipelines">
 				<j:set var="projectGrid" value="${buildPipelineForm.getProjectGrid()}" />
-				<!-- projects -->
-				<thead>
-					<j:forEach items="${projectGrid}" var="projectGridLine">
-						<tr class="">
-									<td colspan="2"/>
-									<j:forEach items="${projectGridLine.getValue()}" var="projectForm">
-										<td/> <!-- spacer -->
-										<td>
-											<table class="build-card rounded PROJECT">
-												<tbody>
-													<tr>
-														<td colspan="2">${projectForm.getValue().getName()}</td>
-													</tr>
-													<tr>
-														<td class="build-number">${projectForm.getValue().getLastSuccessfulBuildNumber()}</td>
-														<td>
-															<img src="${rootURL}/images/32x32/${projectForm.getValue().getHealth()}" class="icon-with-caption" />
-														</td>
-													</tr>
-												</tbody>
-											</table>
-										</td>
-									</j:forEach>
-						</tr>
-					</j:forEach>
-				</thead>
+				<j:if test="${from.showPipelineDefinitionHeader}">
+					<!-- projects -->
+					<tbody>
+						<j:forEach items="${projectGrid}" var="projectGridLine">
+							<tr id="project-pipeline">
+								<td colspan="2"/>
+								<j:forEach items="${projectGridLine.getValue()}" var="projectForm">
+									<td/> <!-- spacer -->
+									<td>
+										<div class="PROJECT rounded">
+											<div class="status">${projectForm.getValue().getName()}</div>
+											<div class="">${projectForm.getValue().getLastSuccessfulBuildNumber()}</div>
+											<div class="statusImages">
+												<img src="${rootURL}/images/32x32/${projectForm.getValue().getHealth()}" class="icon-with-caption" />
+											</div>
+										</div>
+									</td>
+								</j:forEach>
+							</tr>
+						</j:forEach>
+					</tbody>
+				</j:if>
 				<!-- builds -->
 				<j:forEach items="${buildPipelineForm.getBuildGrids()}" var="buildGrid" indexVar="i">
 					<tbody class="pipelineGroup">

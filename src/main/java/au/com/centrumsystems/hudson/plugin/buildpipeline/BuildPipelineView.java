@@ -87,6 +87,9 @@ public class BuildPipelineView extends View {
 	
 	/** showPipelineParameters. */
 	private boolean showPipelineParameters;
+	
+	/** showPipelineDefinitionHeader. */
+	private boolean showPipelineDefinitionHeader;
 
 	/*
 	 * Keep feature flag properties in one place so that it is easy to refactor them out later.
@@ -206,10 +209,12 @@ public class BuildPipelineView extends View {
 	 */
 	@DataBoundConstructor
 	public BuildPipelineView(final String name, final String buildViewTitle, final String selectedJob, final String noOfDisplayedBuilds, 
-			final boolean triggerOnlyLatestJob, final boolean alwaysAllowManualTrigger, final boolean showPipelineParameters) {
+			final boolean triggerOnlyLatestJob, final boolean alwaysAllowManualTrigger, final boolean showPipelineParameters,
+			final boolean showPipelineDefinitionHeader) {
 		this(name, buildViewTitle, selectedJob, noOfDisplayedBuilds, triggerOnlyLatestJob);
 		setAlwaysAllowManualTrigger(alwaysAllowManualTrigger);
 		setShowPipelineParameters(showPipelineParameters);
+		setShowPipelineDefinitionHeader(showPipelineDefinitionHeader);
 	}
 
 	/**
@@ -232,6 +237,7 @@ public class BuildPipelineView extends View {
 		this.triggerOnlyLatestJob = Boolean.valueOf(req.getParameter("_.triggerOnlyLatestJob")); //$NON-NLS-1$
 		this.alwaysAllowManualTrigger = Boolean.valueOf(req.getParameter("_.alwaysAllowManualTrigger")); //$NON-NLS-1$
 		this.showPipelineParameters = Boolean.valueOf(req.getParameter("_.showPipelineParameters")); //$NON-NLS-1$
+		this.showPipelineDefinitionHeader = Boolean.valueOf(req.getParameter("_.showPipelineDefinitionHeader")); //$NON-NLS-1$
 	}
 
 	/**
@@ -579,6 +585,18 @@ public class BuildPipelineView extends View {
 	
 	public void setShowPipelineParameters(final boolean showPipelineParameters) {
 		this.showPipelineParameters = showPipelineParameters;
+	}
+	
+	public boolean isShowPipelineDefinitionHeader() {
+		return showPipelineDefinitionHeader;
+	}
+	
+	public String getshowPipelineDefinitionHeader() {
+		return Boolean.toString(showPipelineDefinitionHeader);
+	}
+	
+	public void setShowPipelineDefinitionHeader(final boolean showPipelineDefinitionHeader) {
+		this.showPipelineDefinitionHeader = showPipelineDefinitionHeader;
 	}
 
 	@Override
