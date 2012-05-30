@@ -39,6 +39,7 @@ import hudson.model.Run;
 import hudson.model.User;
 import hudson.model.View;
 import hudson.model.ViewDescriptor;
+import hudson.util.ListBoxModel;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -363,6 +364,7 @@ public class BuildPipelineView extends View {
 		final AbstractBuild<?, ?> upstreamBuild = retrieveBuild(upstreamBuildNumber, upstreamProject);
 
 		// Get parameters from upstream build
+		LOGGER.fine("Getting parameters from upstream build " + upstreamBuild.getExternalizableId()); //$NON-NLS-1$
 		Action buildParametersAction = null;
 		if (upstreamBuild != null) {
 			buildParametersAction = BuildUtil.getAllBuildParametersAction(upstreamBuild, triggerProject);
@@ -381,6 +383,7 @@ public class BuildPipelineView extends View {
 	
 	@JavaScriptMethod
 	public int rerunSuccessfulBuild(final String externalizableId) {
+		LOGGER.fine("Running successful build again: " + externalizableId); //$NON-NLS-1$
 		final AbstractBuild<?, ?> triggerBuild = (AbstractBuild<?, ?>) Run.fromExternalizableId(externalizableId);
 		final AbstractProject<?, ?> triggerProject = (AbstractProject<?, ?>) triggerBuild.getProject();
 		final Future<?> future = triggerProject.scheduleBuild2(
@@ -438,6 +441,7 @@ public class BuildPipelineView extends View {
 	 */
 	private int triggerBuild(final AbstractProject<?, ?> triggerProject, final AbstractBuild<?, ?> upstreamBuild,
 			final Action buildParametersAction) {
+		LOGGER.fine("Triggering build for project: " + triggerProject.getFullDisplayName()); //$NON-NLS-1$
 		final Cause.UpstreamCause upstreamCause = (null == upstreamBuild) ? null : new hudson.model.Cause.UpstreamCause(
 				(Run<?, ?>) upstreamBuild);
 		final List<Action> buildActions = new ArrayList<Action>();
@@ -482,7 +486,7 @@ public class BuildPipelineView extends View {
 		 * 
 		 * @return ListBoxModel
 		 */
-		public hudson.util.ListBoxModel doFillSelectedJobItems() {
+		public ListBoxModel doFillSelectedJobItems() {
 			final hudson.util.ListBoxModel options = new hudson.util.ListBoxModel();
 			for (final String jobName : Hudson.getInstance().getJobNames()) {
 				options.add(jobName);
@@ -495,7 +499,7 @@ public class BuildPipelineView extends View {
 		 * 
 		 * @return ListBoxModel
 		 */
-		public hudson.util.ListBoxModel doFillNoOfDisplayedBuildsItems() {
+		public ListBoxModel doFillNoOfDisplayedBuildsItems() {
 			final hudson.util.ListBoxModel options = new hudson.util.ListBoxModel();
 			final List<String> noOfBuilds = new ArrayList<String>();
 			noOfBuilds.add("1"); //$NON-NLS-1$
@@ -600,6 +604,7 @@ public class BuildPipelineView extends View {
 	 */
 	@Override
 	public void onJobRenamed(final Item item, final String oldName, final String newName) {
+		LOGGER.fine(String.format("Renaming job: %s -> %s", oldName, newName));
 		if (item instanceof AbstractProject) {
 			if ((oldName != null) && (oldName.equals(this.selectedJob))) {
 				setSelectedJob(newName);

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Logger;
 
 /**
  * @author Centrum Systems
@@ -13,7 +14,8 @@ import java.util.Map.Entry;
  * 
  */
 public class BuildPipelineForm {
-
+	private static final Logger LOGGER = Logger.getLogger(BuildPipelineForm.class.getName());
+	
     /**
      * projects laid out in a grid using maps to ease accessing (or maybe I made it way too complicated by not using a 2-dimensional array)
      * Outside map holds rows and inner map has ProjectForm at a particular position (defined with key)

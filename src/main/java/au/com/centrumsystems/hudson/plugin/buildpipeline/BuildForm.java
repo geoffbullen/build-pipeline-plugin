@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import org.kohsuke.stapler.bind.JavaScriptMethod;
 
@@ -16,7 +17,8 @@ import org.kohsuke.stapler.bind.JavaScriptMethod;
  * 
  */
 public class BuildForm {
-
+	private static final Logger LOGGER = Logger.getLogger(BuildForm.class.getName());
+	
 	/**
 	 * status
 	 */

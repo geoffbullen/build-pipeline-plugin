@@ -367,9 +367,11 @@ public class PipelineBuild {
 	private String revNo(final AbstractBuild<?, ?> build) {
 		final StringBuilder revisions = new StringBuilder();
 		final ChangeLogSet<?> changeSet = build.getChangeSet();
+		LOGGER.fine("Looking for a changeset..."); //$NON-NLS-1$
 		if (changeSet != null && !changeSet.isEmptySet()) {
 			int i = 0;
 			final int size = changeSet.getItems().length;
+			LOGGER.fine(String.format("Found %d change entries.", size)); //$NON-NLS-1$
 			for (final ChangeLogSet.Entry changeLogSet : changeSet) {
 				if (changeLogSet.getCommitId() != null) {
 					revisions.append(changeLogSet.getCommitId());
@@ -399,11 +401,13 @@ public class PipelineBuild {
 		boolean buildPermission = false;
 		// If no security is enabled then allow builds
 		if (!Hudson.getInstance().isUseSecurity()) {
+			LOGGER.fine("Security is not enabled.");
 			buildPermission = true;
 		} else if (this.project != null) {
 			// If security is enabled check if BUILD is enabled
 			buildPermission = this.project.hasPermission(Item.BUILD);
 		}
+		LOGGER.fine("Is user allowed to build? -> " + buildPermission);
 		return buildPermission;
 	}
 
