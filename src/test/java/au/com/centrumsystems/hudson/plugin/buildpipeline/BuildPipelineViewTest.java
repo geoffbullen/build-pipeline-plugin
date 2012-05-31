@@ -133,12 +133,29 @@ public class BuildPipelineViewTest extends HudsonTestCase {
 		createFreeStyleProject(proj1);
 
 		// True
-		BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds, true, true, false);
+		BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds, true, true, false, false);
 		assertTrue(proj1, testView.isAlwaysAllowManualTrigger());
 
 		// False
-		testView = new BuildPipelineView(bpViewName, bpViewTitle, "", noOfBuilds, true, false, false);
+		testView = new BuildPipelineView(bpViewName, bpViewTitle, "", noOfBuilds, true, false, false, false);
 		assertFalse(proj1, testView.isAlwaysAllowManualTrigger());
+	}
+	
+	@Test
+	public void testShowPipelineDefinitionHeader() throws IOException {
+		final String bpViewName = "MyTestView";
+		final String bpViewTitle = "MyTestViewTitle";
+		final String proj1 = "Proj1";
+		final String noOfBuilds = "5";
+		createFreeStyleProject(proj1);
+
+		// True
+		BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds, true, false, false, true);
+		assertTrue(proj1, testView.isShowPipelineDefinitionHeader());
+
+		// False
+		testView = new BuildPipelineView(bpViewName, bpViewTitle, "", noOfBuilds, true, false, false, false);
+		assertFalse(proj1, testView.isShowPipelineDefinitionHeader());
 	}
 	
 	@Test
@@ -150,11 +167,11 @@ public class BuildPipelineViewTest extends HudsonTestCase {
 		createFreeStyleProject(proj1);
 
 		// True
-		BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds, true, false, true);
+		BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds, true, false, true, false);
 		assertTrue(proj1, testView.isShowPipelineParameters());
 
 		// False
-		testView = new BuildPipelineView(bpViewName, bpViewTitle, "", noOfBuilds, true, false, false);
+		testView = new BuildPipelineView(bpViewName, bpViewTitle, "", noOfBuilds, true, false, false, false);
 		assertFalse(proj1, testView.isShowPipelineParameters());
 	}
 
@@ -268,7 +285,7 @@ public class BuildPipelineViewTest extends HudsonTestCase {
 		Hudson.getInstance().rebuildDependencyGraph();
 
 		// Test a valid case
-		final BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds, false, false, false);
+		final BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds, false);
 
 		assertEquals(testView.getJob(proj1), project1);
 		project1.renameTo(proj3);
