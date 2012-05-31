@@ -32,6 +32,7 @@
 		});
 	</script>
 	<script id="build-card-template" type="text/x-handlebars-template">
+
 <table class="build-card rounded {{build.status}}">
 	<tbody>
 		<tr class="header">
@@ -191,7 +192,6 @@
 			
 			<j:set var="buildPipelineForm" type="au.com.centrumsystems.hudson.plugin.buildpipeline.BuildPipelineForm" value="${from.getBuildPipelineForm()}" />
 		
-		
 			<table id="pipelines">
 				<j:set var="projectGrid" value="${buildPipelineForm.getProjectGrid()}" />
 				<j:if test="${from.showPipelineDefinitionHeader}">
@@ -207,13 +207,19 @@
 								<j:forEach items="${projectGridLine.getValue()}" var="projectForm">
 									<td/> <!-- spacer -->
 									<td>
-										<div class="PROJECT rounded">
-											<div class="status">${projectForm.getValue().getName()}</div>
-											<div class="">${projectForm.getValue().getLastSuccessfulBuildNumber()}</div>
-											<div class="statusImages">
-												<img src="${rootURL}/images/32x32/${projectForm.getValue().getHealth()}" class="icon-with-caption" />
-											</div>
-										</div>
+										<table class="PROJECT build-card rounded">
+											<tbody>
+												<tr class="header">
+													<td colspan="2">${projectForm.getValue().getName()}</td>
+												</tr>
+												<tr class="build-body">
+													<td class="build-number">${projectForm.getValue().getLastSuccessfulBuildNumber()}</td>
+													<td class="statusImages">
+														<img src="${rootURL}/images/32x32/${projectForm.getValue().getHealth()}" class="icon-with-caption" />
+													</td>
+												</tr>
+											</tbody>
+										</table>
 									</td>
 								</j:forEach>
 							</tr>
