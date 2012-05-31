@@ -62,8 +62,9 @@ import au.com.centrumsystems.hudson.plugin.util.BuildUtil;
 import au.com.centrumsystems.hudson.plugin.util.ProjectUtil;
 
 /**
- * This view displays the set of jobs that are related based on their upstream\downstream relationships as a pipeline.
- * Each build pipeline becomes a row on the view.
+ * This view displays the set of jobs that are related based on their
+ * upstream\downstream relationships as a pipeline. Each build pipeline becomes
+ * a row on the view.
  * 
  * @author Centrum Systems
  * 

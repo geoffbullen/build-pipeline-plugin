@@ -44,7 +44,7 @@ BuildPipeline.prototype = {
 					clearInterval(intervalId);
 				}
 			});
-		}, 2000);	
+		}, 2000);				
 	},
 	triggerBuild : function(id, upstreamProjectName, upstreamBuildNumber, triggerProjectName, dependencyIds) {
 		var buildPipeline = this;
@@ -67,5 +67,27 @@ BuildPipeline.prototype = {
 	showSpinner : function(id){
 		$("#status-bar-" + id).html('<table class="progress-bar" align="center"><tbody><tr class="unknown"><td></td></tr></tbody></table>');
 		$("#icons-" + id).empty();
+	},
+	fillDialog : function(href, title) {
+		$.fancybox({
+			type: 'iframe',
+			title: title,
+			titlePosition: 'over',
+			href: href,
+			transitionIn : 'elastic',
+			transitionOut : 'elastic',
+			width: '90%',
+			height: '80%'
+		});
+	},
+	closeDialog : function() {
+		$.fancybox.close();
+	},
+	showModalSpinner : function() {
+		$.fancybox.showActivity();
+	},
+	hideModalSpinner : function() {
+		$.fancybox.hideActivity();
 	}
+	
 }

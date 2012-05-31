@@ -25,8 +25,8 @@
 
 package au.com.centrumsystems.hudson.plugin.buildpipeline;
 
-import java.util.Calendar;
-import java.util.Date;
+import au.com.centrumsystems.hudson.plugin.buildpipeline.trigger.BuildPipelineTrigger;
+import au.com.centrumsystems.hudson.plugin.util.HudsonResult;
 
 import hudson.model.AbstractBuild;
 import hudson.model.FreeStyleBuild;
@@ -34,14 +34,14 @@ import hudson.model.FreeStyleProject;
 import hudson.model.Hudson;
 import hudson.tasks.BuildTrigger;
 
+import java.util.Calendar;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.jvnet.hudson.test.HudsonTestCase;
 
-import au.com.centrumsystems.hudson.plugin.buildpipeline.trigger.BuildPipelineTrigger;
-import au.com.centrumsystems.hudson.plugin.util.HudsonResult;
-
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class PipelineBuildTest extends HudsonTestCase {
 
@@ -325,5 +325,4 @@ public class PipelineBuildTest extends HudsonTestCase {
 		assertEquals("The SVN Revision text is incorrect.",
 				proj1GetSVN, pb.getScmRevision());
 	}
-
 }
