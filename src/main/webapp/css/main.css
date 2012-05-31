@@ -55,7 +55,7 @@
 /******************** icon bar ***************************/
 #icon-bar {
     margin-bottom: 4px;
-    height: 32px;
+    height: 60px;
     margin-left: auto;
     margin-right: auto;
     width: 340px;
@@ -175,6 +175,7 @@ table.build-card tr td {
     width: 100%;
     text-align: center;
     border-collapse: collapse;
+    border-top: solid black 1px;
 }
 
 #legendView td {
