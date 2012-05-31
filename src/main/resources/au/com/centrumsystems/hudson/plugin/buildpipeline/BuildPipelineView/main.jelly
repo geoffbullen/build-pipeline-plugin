@@ -199,7 +199,11 @@
 					<tbody>
 						<j:forEach items="${projectGrid}" var="projectGridLine">
 							<tr id="project-pipeline">
-								<td colspan="2"/>
+								<j:if test="${from.isShowPipelineParameters()}">
+									<!-- additional spacer for params box -->
+									<td class="spacer"/>
+								</j:if>
+								<td class="spacer"/>
 								<j:forEach items="${projectGridLine.getValue()}" var="projectForm">
 									<td/> <!-- spacer -->
 									<td>
