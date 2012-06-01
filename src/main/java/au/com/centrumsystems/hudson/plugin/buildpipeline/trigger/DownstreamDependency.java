@@ -43,7 +43,7 @@ import au.com.centrumsystems.hudson.plugin.util.ProjectUtil;
  */
 public class DownstreamDependency extends Dependency {
 	private static final Logger LOGGER = Logger.getLogger(DownstreamDependency.class.getName());
-	
+		
     /**
      * Downstream Dependency
      * 

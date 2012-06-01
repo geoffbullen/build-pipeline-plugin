@@ -47,162 +47,161 @@ import org.jvnet.hudson.test.HudsonTestCase;
  */
 public class BuildPipelineTriggerTest extends HudsonTestCase {
 
-    @Override
-    @Before
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
+	@Override
+	@Before
+	protected void setUp() throws Exception {
+		super.setUp();
+	}
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testInvalidConstructor() {
-        try {
-            new BuildPipelineTrigger(null);
-            fail("An IllegalArgumentException should have been thrown.");
-        } catch (final IllegalArgumentException e) {
+	@Test(expected = IllegalArgumentException.class)
+	public void testInvalidConstructor() {
+		try {
+			new BuildPipelineTrigger(null);
+			fail("An IllegalArgumentException should have been thrown.");
+		} catch (final IllegalArgumentException e) {
 
-        }
-    }
+		}
+	}
 
-    @Test
-    public void testBuildPipelineTrigger() throws IOException {
-        final String proj1 = "Proj1";
-        final String proj2 = "Proj2";
-        final FreeStyleProject project1 = createFreeStyleProject(proj1);
-        // Add TEST_PROJECT2 as a post build action: build other project
-        project1.getPublishersList().add(new BuildPipelineTrigger(proj2));
-        // Important; we must do this step to ensure that the dependency graphs are updated
-        Hudson.getInstance().rebuildDependencyGraph();
+	@Test
+	public void testBuildPipelineTrigger() throws IOException {
+		final String proj1 = "Proj1";
+		final String proj2 = "Proj2";
+		final FreeStyleProject project1 = createFreeStyleProject(proj1);
+		// Add TEST_PROJECT2 as a post build action: build other project
+		project1.getPublishersList().add(new BuildPipelineTrigger(proj2));
+		// Important; we must do this step to ensure that the dependency graphs are updated
+		Hudson.getInstance().rebuildDependencyGraph();
 
-        final BuildPipelineTrigger myBPTrigger = new BuildPipelineTrigger(proj1);
+		final BuildPipelineTrigger myBPTrigger = new BuildPipelineTrigger(proj1);
 
-        assertNotNull("A valid BuildPipelineTrigger should have been created.", myBPTrigger);
+		assertNotNull("A valid BuildPipelineTrigger should have been created.", myBPTrigger);
 
-        assertEquals("BuildPipelineTrigger downstream project is " + proj1, proj1, myBPTrigger.getDownstreamProjectNames());
-    }
+		assertEquals("BuildPipelineTrigger downstream project is " + proj1, proj1, myBPTrigger.getDownstreamProjectNames());
+	}
 
-    @Test
-    public void testOnDownstreamProjectRenamed() throws IOException {
-        final String proj1 = "Proj1";
-        final String proj2 = "Proj2";
-        final String proj3 = "Proj3";
-        final BuildPipelineTrigger bpTrigger = new BuildPipelineTrigger(proj1);
-        bpTrigger.setDownstreamProjectNames(proj2 + ", " + proj3);
-        assertTrue(bpTrigger.onDownstreamProjectRenamed(proj2, proj2 + "NEW"));
+	@Test
+	public void testOnDownstreamProjectRenamed() throws IOException {
+		final String proj1 = "Proj1";
+		final String proj2 = "Proj2";
+		final String proj3 = "Proj3";
+		final BuildPipelineTrigger bpTrigger = new BuildPipelineTrigger(proj1);
+		bpTrigger.setDownstreamProjectNames(proj2 + ", " + proj3);
+		assertTrue(bpTrigger.onDownstreamProjectRenamed(proj2, proj2 + "NEW"));
 
-        assertEquals(proj2 + "NEW," + proj3, bpTrigger.getDownstreamProjectNames());
-        
-        // Null case
-        bpTrigger.setDownstreamProjectNames(null);
-        assertFalse(bpTrigger.onDownstreamProjectRenamed(proj2, proj3));
-    }
+		assertEquals(proj2 + "NEW," + proj3, bpTrigger.getDownstreamProjectNames());
 
-    @Test
-    public void testOnDownstreamProjectDeleted() {
-        final String proj1 = "Proj1";
-        final String proj2 = "Proj2";
-        final String proj3 = "Proj3";
-        final BuildPipelineTrigger bpTrigger = new BuildPipelineTrigger(proj1);
-        bpTrigger.setDownstreamProjectNames(proj2 + ", " + proj3);
-        assertTrue(bpTrigger.onDownstreamProjectDeleted(proj2));
+		// Null case
+		bpTrigger.setDownstreamProjectNames(null);
+		assertFalse(bpTrigger.onDownstreamProjectRenamed(proj2, proj3));
+	}
 
-        assertEquals(proj3, bpTrigger.getDownstreamProjectNames());
+	@Test
+	public void testOnDownstreamProjectDeleted() {
+		final String proj1 = "Proj1";
+		final String proj2 = "Proj2";
+		final String proj3 = "Proj3";
+		final BuildPipelineTrigger bpTrigger = new BuildPipelineTrigger(proj1);
+		bpTrigger.setDownstreamProjectNames(proj2 + ", " + proj3);
+		assertTrue(bpTrigger.onDownstreamProjectDeleted(proj2));
 
-        // Null case
-        bpTrigger.setDownstreamProjectNames(null);
-        assertFalse(bpTrigger.onDownstreamProjectDeleted(proj2));
-    }
+		assertEquals(proj3, bpTrigger.getDownstreamProjectNames());
 
-    @Test
-    public void testOnRenamed() throws IOException {
-        final String proj1 = "Proj1";
-        final String proj2 = "Proj2";
-        final String proj3 = "Proj3";
-        final FreeStyleProject project1 = createFreeStyleProject(proj1);
-        final FreeStyleProject project2 = createFreeStyleProject(proj2);
-        project1.getPublishersList().add(new BuildPipelineTrigger(proj2 + "," + proj3));
-        Hudson.getInstance().rebuildDependencyGraph();
+		// Null case
+		bpTrigger.setDownstreamProjectNames(null);
+		assertFalse(bpTrigger.onDownstreamProjectDeleted(proj2));
+	}
 
-        project2.renameTo(proj2 + "NEW");
+	@Test
+	public void testOnRenamed() throws IOException {
+		final String proj1 = "Proj1";
+		final String proj2 = "Proj2";
+		final String proj3 = "Proj3";
+		final FreeStyleProject project1 = createFreeStyleProject(proj1);
+		final FreeStyleProject project2 = createFreeStyleProject(proj2);
+		project1.getPublishersList().add(new BuildPipelineTrigger(proj2 + "," + proj3));
+		Hudson.getInstance().rebuildDependencyGraph();
 
-        final DescribableList<Publisher, Descriptor<Publisher>> downstreamPublishersList = project1.getPublishersList();
-        for (final Publisher downstreamPub : downstreamPublishersList) {
-            if (downstreamPub instanceof BuildPipelineTrigger) {
-                final String manualDownstreamProjects = ((BuildPipelineTrigger) downstreamPub).getDownstreamProjectNames();
-                assertEquals(proj2 + "NEW," + proj3, manualDownstreamProjects);
-            }
-        }
-    }
+		project2.renameTo(proj2 + "NEW");
 
-    @Test
-    public void testOnDeleted() throws IOException, InterruptedException {
-        final String proj1 = "Proj1";
-        final String proj2 = "Proj2";
-        final String proj3 = "Proj3";
-        final FreeStyleProject project1 = createFreeStyleProject(proj1);
-        final FreeStyleProject project2 = createFreeStyleProject(proj2);
-        project1.getPublishersList().add(new BuildPipelineTrigger(proj2 + "," + proj3));
-        Hudson.getInstance().rebuildDependencyGraph();
+		final DescribableList<Publisher, Descriptor<Publisher>> downstreamPublishersList = project1.getPublishersList();
+		for (final Publisher downstreamPub : downstreamPublishersList) {
+			if (downstreamPub instanceof BuildPipelineTrigger) {
+				final String manualDownstreamProjects = ((BuildPipelineTrigger) downstreamPub).getDownstreamProjectNames();
+				assertEquals(proj2 + "NEW," + proj3, manualDownstreamProjects);
+			}
+		}
+	}
 
-        project2.delete();
+	@Test
+	public void testOnDeleted() throws IOException, InterruptedException {
+		final String proj1 = "Proj1";
+		final String proj2 = "Proj2";
+		final String proj3 = "Proj3";
+		final FreeStyleProject project1 = createFreeStyleProject(proj1);
+		final FreeStyleProject project2 = createFreeStyleProject(proj2);
+		project1.getPublishersList().add(new BuildPipelineTrigger(proj2 + "," + proj3));
+		Hudson.getInstance().rebuildDependencyGraph();
 
-        final DescribableList<Publisher, Descriptor<Publisher>> downstreamPublishersList = project1.getPublishersList();
-        for (final Publisher downstreamPub : downstreamPublishersList) {
-            if (downstreamPub instanceof BuildPipelineTrigger) {
-                final String manualDownstreamProjects = ((BuildPipelineTrigger) downstreamPub).getDownstreamProjectNames();
-                assertEquals(proj3, manualDownstreamProjects);
-            }
-        }
-    }
+		project2.delete();
 
-    @Test
-    public void testDoCheckDownstreamProjectNames() throws IOException, InterruptedException {
-        final String proj1 = "Proj1";
-        final String proj2 = "Proj2";
-        createFreeStyleProject(proj1);
+		final DescribableList<Publisher, Descriptor<Publisher>> downstreamPublishersList = project1.getPublishersList();
+		for (final Publisher downstreamPub : downstreamPublishersList) {
+			if (downstreamPub instanceof BuildPipelineTrigger) {
+				final String manualDownstreamProjects = ((BuildPipelineTrigger) downstreamPub).getDownstreamProjectNames();
+				assertEquals(proj3, manualDownstreamProjects);
+			}
+		}
+	}
 
-        final BuildPipelineTrigger.DescriptorImpl di = new BuildPipelineTrigger.DescriptorImpl();
+	@Test
+	public void testDoCheckDownstreamProjectNames() throws IOException, InterruptedException {
+		final String proj1 = "Proj1";
+		final String proj2 = "Proj2";
+		createFreeStyleProject(proj1);
 
-        assertEquals(FormValidation.ok(), di.doCheckDownstreamProjectNames(proj1));
-        assertThat(FormValidation.error("No such project '" + proj2 + "'. Did you mean '" + proj1 + "'?").toString(), is(di
-            .doCheckDownstreamProjectNames(proj2).toString()));
-    }
-    
-    @Test
-    public void testRemoveDownstreamTrigger() throws IOException, InterruptedException {
-        final String proj1 = "Proj1";
-        final String proj2 = "Proj2";
-        final FreeStyleProject project1 = createFreeStyleProject(proj1);
-        final BuildPipelineTrigger buildPipelineTrigger = new BuildPipelineTrigger(proj2);
+		final BuildPipelineTrigger.DescriptorImpl di = new BuildPipelineTrigger.DescriptorImpl();
+
+		assertEquals(FormValidation.ok(), di.doCheckDownstreamProjectNames(proj1));
+		assertThat(FormValidation.error("No such project '" + proj2 + "'. Did you mean '" + proj1 + "'?").toString(), is(di
+				.doCheckDownstreamProjectNames(proj2).toString()));
+	}
+
+	@Test
+	public void testRemoveDownstreamTrigger() throws IOException, InterruptedException {
+		final String proj1 = "Proj1";
+		final String proj2 = "Proj2";
+		final FreeStyleProject project1 = createFreeStyleProject(proj1);
+		final BuildPipelineTrigger buildPipelineTrigger = new BuildPipelineTrigger(proj2);
 		project1.getPublishersList().add(buildPipelineTrigger);
-        Hudson.getInstance().rebuildDependencyGraph();
+		Hudson.getInstance().rebuildDependencyGraph();
 
-        buildPipelineTrigger.removeDownstreamTrigger(buildPipelineTrigger, project1, proj2);
-        
+		buildPipelineTrigger.removeDownstreamTrigger(buildPipelineTrigger, project1, proj2);
 
-        final DescribableList<Publisher, Descriptor<Publisher>> downstreamPublishersList = project1.getPublishersList();
-        for (final Publisher downstreamPub : downstreamPublishersList) {
-            if (downstreamPub instanceof BuildPipelineTrigger) {
-                final String manualDownstreamProjects = ((BuildPipelineTrigger) downstreamPub).getDownstreamProjectNames();
-                assertEquals("", manualDownstreamProjects);
-            }
-        }
-    }
-    
-    @Test
-    public void testCyclicDownstreamTrigger() throws IOException, InterruptedException {
-        final String proj1 = "Proj1";
-        final FreeStyleProject project1 = createFreeStyleProject(proj1);
-        final BuildPipelineTrigger cyclicPipelineTrigger = new BuildPipelineTrigger(proj1);
+		final DescribableList<Publisher, Descriptor<Publisher>> downstreamPublishersList = project1.getPublishersList();
+		for (final Publisher downstreamPub : downstreamPublishersList) {
+			if (downstreamPub instanceof BuildPipelineTrigger) {
+				final String manualDownstreamProjects = ((BuildPipelineTrigger) downstreamPub).getDownstreamProjectNames();
+				assertEquals("", manualDownstreamProjects);
+			}
+		}
+	}
+
+	@Test
+	public void testCyclicDownstreamTrigger() throws IOException, InterruptedException {
+		final String proj1 = "Proj1";
+		final FreeStyleProject project1 = createFreeStyleProject(proj1);
+		final BuildPipelineTrigger cyclicPipelineTrigger = new BuildPipelineTrigger(proj1);
 		project1.getPublishersList().add(cyclicPipelineTrigger);
-        Hudson.getInstance().rebuildDependencyGraph();
-        
-        final DescribableList<Publisher, Descriptor<Publisher>> downstreamPublishersList = project1.getPublishersList();
-        for (final Publisher downstreamPub : downstreamPublishersList) {
-            if (downstreamPub instanceof BuildPipelineTrigger) {
-                final String manualDownstreamProjects = ((BuildPipelineTrigger) downstreamPub).getDownstreamProjectNames();
-                assertEquals("", manualDownstreamProjects);
-            }
-        }
-        
-    }
+		Hudson.getInstance().rebuildDependencyGraph();
+
+		final DescribableList<Publisher, Descriptor<Publisher>> downstreamPublishersList = project1.getPublishersList();
+		for (final Publisher downstreamPub : downstreamPublishersList) {
+			if (downstreamPub instanceof BuildPipelineTrigger) {
+				final String manualDownstreamProjects = ((BuildPipelineTrigger) downstreamPub).getDownstreamProjectNames();
+				assertEquals("", manualDownstreamProjects);
+			}
+		}
+
+	}
 }

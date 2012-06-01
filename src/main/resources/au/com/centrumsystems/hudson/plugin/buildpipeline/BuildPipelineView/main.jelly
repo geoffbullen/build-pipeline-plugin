@@ -32,7 +32,6 @@
 		});
 	</script>
 	<script id="build-card-template" type="text/x-handlebars-template">
-
 <table class="build-card rounded {{build.status}}">
 	<tbody>
 		<tr class="header">
@@ -57,7 +56,7 @@
 			<td colspan="2">
 				<div class="status-bar" id="status-bar-{{id}}">
 					{{#if build.isBuilding}}
-						<a href="#{{id}}" OnClick="showPopup('{{build.url}}consoleText')">
+						<a href="#{{id}}" onclick="buildPipeline.fillDialog('{{build.url}}consoleText', 'Console output for {{project.name}} #{{build.number}}')">
 							<table class="progress-bar" align="center">
 								<tbody>
 									<tr>
@@ -77,13 +76,15 @@
 						</a>
 						{{/unless}}
 					{{/unless}}
-					{{#if_build_state build is="SUCCESS"}}
-						{{#if ${from.alwaysAllowManualTrigger}}}
-							<a href="#{{id}}" class="trigger" onclick="buildPipeline.showSpinner({{id}}); buildPipeline.rerunSuccessfulBuild({{id}}, '{{build.extId}}', [{{build.dependencyIds}}])">
-								<img title="trigger" alt="trigger" src="{{rootUrl}}/images/16x16/redo.png" />
-							</a>
-						{{/if}}
-					{{/if_build_state}}
+					{{#unless build.isPending}}
+						{{#unless build.isBuilding}}
+							{{#if ${from.alwaysAllowManualTrigger}}}
+								<a href="#{{id}}" class="trigger" onclick="buildPipeline.showSpinner({{id}}); buildPipeline.rerunSuccessfulBuild({{id}}, '{{build.extId}}', [{{build.dependencyIds}}])">
+									<img title="trigger" alt="trigger" src="{{rootUrl}}/images/16x16/redo.png" />
+								</a>
+							{{/if}}
+						{{/unless}}
+					{{/unless}}
 					{{#if build.isReadyToBeManuallyBuilt}}
 						<a href="#{{id}}" class="trigger" onclick="buildPipeline.showSpinner({{id}}); buildPipeline.triggerBuild({{id}}, '{{upstream.projectName}}', {{upstream.buildNumber}}, '{{project.name}}', [{{build.dependencyIds}}])">
 							<img title="trigger" alt="trigger" src="{{rootUrl}}/images/16x16/clock.png" />
@@ -117,7 +118,7 @@
 		<input name="upstreamProjectName" id="upstreamProjectName" type="hidden" />
 		<input name="upstreamBuildNumber" id="upstreamBuildNumber" type="hidden" />
 		<input name="triggerProjectName" id="triggerProjectName" type="hidden" />
-		
+
 		<div id="build-pipeline-plugin-content">
 			<div>
 				<h1>Pipeline: ${from.getBuildViewTitle()}</h1>
@@ -192,8 +193,10 @@
 			
 			<j:set var="buildPipelineForm" type="au.com.centrumsystems.hudson.plugin.buildpipeline.BuildPipelineForm" value="${from.getBuildPipelineForm()}" />
 		
+		
 			<table id="pipelines">
 				<j:set var="projectGrid" value="${buildPipelineForm.getProjectGrid()}" />
+				<!-- projects -->
 				<j:if test="${from.showPipelineDefinitionHeader}">
 					<!-- projects -->
 					<tbody>
@@ -231,30 +234,44 @@
 					<tbody class="pipelineGroup">
 						<j:forEach begin="${0}" end="${buildGrid.keySet().size() - 1}" indexVar="x">
 							<tr class='build-pipeline'>
-								<j:if test="${(x == 0) and from.isShowPipelineParameters()}">
-								<td>
-									<div class="param-info"> 
-									<table>
-										<tr>
-											<td colspan="3">Parameter Values</td>
-										</tr>
-										<j:forEach items="${buildGrid.get(x).get(0).getParameters().entrySet()}" var="buildParam" indexVar="buildParamCtr">
-											<tr>
-												<td>${buildParam.getKey()}</td>
-												<td>:</td>
-												<td>${buildParam.getValue()}</td>
-											</tr>
-										</j:forEach>												
-									</table>
-									</div>
-								</td>
+								<j:if test="${from.isShowPipelineParameters()}">
+									<j:choose>
+										<j:when test="${x == 0}">
+											<td>
+												<div class="param-info"> 
+												<table>
+													<tr>
+														<td colspan="3">Parameter Values</td>
+													</tr>
+													<j:forEach items="${buildGrid.get(x).get(0).getParameters().entrySet()}" var="buildParam" indexVar="buildParamCtr">
+														<tr>
+															<td>${buildParam.getKey()}</td>
+															<td>:</td>
+															<td>${buildParam.getValue()}</td>
+														</tr>
+													</j:forEach>												
+												</table>
+												</div>
+											</td>
+										</j:when>
+										<j:otherwise>
+											<td></td>
+										</j:otherwise>
+									</j:choose>
 								</j:if>
 								<td><j:if test="${x == 0}">
 									<div class="revision rounded">
 										<div>
-											<a href="${buildGrid.get(x).get(0).getUrl()}changes" title="${buildGrid.get(x).get(0).getRevision()}">
-												${buildGrid.get(x).get(0).getRevision()}
-											</a>
+											<j:choose>
+												<j:when test="${buildGrid.get(x).get(0).getUrl()}">												
+													<a href="${buildGrid.get(x).get(0).getUrl()}changes" title="${buildGrid.get(x).get(0).getRevision()}">
+														${buildGrid.get(x).get(0).getRevision()}
+													</a>
+												</j:when>
+												<j:otherwise>
+													${buildGrid.get(x).get(0).getRevision()}
+												</j:otherwise>
+											</j:choose>
 										</div>
 									</div>
 								</j:if></td>

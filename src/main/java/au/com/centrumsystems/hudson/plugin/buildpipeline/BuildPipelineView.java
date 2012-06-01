@@ -82,10 +82,10 @@ public class BuildPipelineView extends View {
 
 	/** Indicates whether only the latest job will be triggered. **/
 	private boolean triggerOnlyLatestJob;
-	
+
 	/** alwaysAllowManualTrigger. */
 	private boolean alwaysAllowManualTrigger;
-	
+
 	/** showPipelineParameters. */
 	private boolean showPipelineParameters;
 	
@@ -168,7 +168,7 @@ public class BuildPipelineView extends View {
 				// do nothing
 			}
 	}
-	
+
 	/**
 	 * 
 	 * @param name
@@ -216,6 +216,31 @@ public class BuildPipelineView extends View {
 		setAlwaysAllowManualTrigger(alwaysAllowManualTrigger);
 		setShowPipelineParameters(showPipelineParameters);
 		setShowPipelineDefinitionHeader(showPipelineDefinitionHeader);
+	}
+
+	/**
+	 * 
+	 * @param name
+	 *            the name of the pipeline build view.
+	 * @param buildViewTitle
+	 *            the build view title.
+	 * @param selectedJob
+	 *            the first job in the build pipeline.
+	 * @param noOfDisplayedBuilds
+	 *            a count of the number of builds displayed on the view
+	 * @param triggerOnlyLatestJob
+	 *            Indicates whether only the latest job will be triggered.
+	 * @param alwaysAllowManualTrigger
+	 *            Indicates whether manual trigger will always be available.
+	 * @param showPipelineParameters
+	 *            Indicates whether pipeline parameter values should be shown.
+	 */
+	@DataBoundConstructor
+	public BuildPipelineView(final String name, final String buildViewTitle, final String selectedJob, final String noOfDisplayedBuilds,
+			final boolean triggerOnlyLatestJob, final boolean alwaysAllowManualTrigger, final boolean showPipelineParameters) {
+		this(name, buildViewTitle, selectedJob, noOfDisplayedBuilds, triggerOnlyLatestJob);
+		setAlwaysAllowManualTrigger(alwaysAllowManualTrigger);
+		setShowPipelineParameters(showPipelineParameters);
 	}
 
 	/**
@@ -379,14 +404,6 @@ public class BuildPipelineView extends View {
 		
         return triggerBuild(triggerProject, upstreamBuild, buildParametersAction);
 	}
-
-	@JavaScriptMethod
-	public int retryBuild(final String triggerProjectName) {
-		final AbstractProject<?, ?> triggerProject = (AbstractProject<?, ?>) super.getJob(triggerProjectName);
-		triggerProject.scheduleBuild(new MyUserIdCause());
-
-		return triggerProject.getNextBuildNumber();
-	}
 	
 	@JavaScriptMethod
 	public int rerunSuccessfulBuild(final String externalizableId) {
@@ -420,7 +437,7 @@ public class BuildPipelineView extends View {
 	 */
 	private AbstractBuild<?, ?> retrieveBuild(final int buildNo, final AbstractProject<?, ?> project) {
 		AbstractBuild<?, ?> build = null;
-		
+
 		if (project != null) {
 			for (final AbstractBuild<?, ?> tmpUpBuild : (List<AbstractBuild<?, ?>>) project.getBuilds()) {
 				if (tmpUpBuild.getNumber() == buildNo) {
@@ -429,7 +446,7 @@ public class BuildPipelineView extends View {
 				}
 			}
 		}
-		
+
 		return build;
 	}
 
@@ -563,7 +580,7 @@ public class BuildPipelineView extends View {
 	public void setTriggerOnlyLatestJob(final boolean triggerOnlyLatestJob) {
 		this.triggerOnlyLatestJob = triggerOnlyLatestJob;
 	}
-	
+
 	public boolean isAlwaysAllowManualTrigger() {
 		return alwaysAllowManualTrigger;
 	}
