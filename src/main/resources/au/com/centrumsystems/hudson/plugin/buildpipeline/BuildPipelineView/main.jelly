@@ -43,7 +43,7 @@
 			</td>
 		</tr>
 		<tr class="build-body">
-			<td class="build-number">{{build.number}}</td>
+			<td class="build-number"><a href="{{build.url}}">{{build.number}}</a></td>
 			<td class="secondary-info">
 				<div>{{build.startDate}}</div>
 				<div>{{build.startTime}}</div>
@@ -210,7 +210,7 @@
 										<table class="PROJECT build-card rounded">
 											<tbody>
 												<tr class="header">
-													<td colspan="2">${projectForm.getValue().getName()}</td>
+													<td colspan="2"><a href="${projectForm.getValue().getUrl()}">${projectForm.getValue().getName()}</a></td>
 												</tr>
 												<tr class="build-body">
 													<td class="build-number">${projectForm.getValue().getLastSuccessfulBuildNumber()}</td>
@@ -238,6 +238,7 @@
 										<tr>
 											<td colspan="3">Parameter Values</td>
 										</tr>
+										<!-- buildGrid.get(x).get(index) is an instance of BuildForm -->
 										<j:forEach items="${buildGrid.get(x).get(0).getParameters().entrySet()}" var="buildParam" indexVar="buildParamCtr">
 											<tr>
 												<td>${buildParam.getKey()}</td>
