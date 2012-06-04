@@ -211,8 +211,7 @@
 											<tbody>
 												<tr class="header">
 													<td colspan="2">
-														<a href="${projectForm.getValue().getUrl()}">${projectForm.getValue().getName()}</a><br/>
-														(${projectForm.getValue().getLastSuccessfulBuildNumber()})
+														<a href="${projectForm.getValue().getUrl()}">${projectForm.getValue().getName()}</a>
 													</td>
 												</tr>
 												<tr class="build-body">
