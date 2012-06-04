@@ -4,7 +4,9 @@ import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Centrum Systems
@@ -42,6 +44,11 @@ public class ProjectForm {
      * the latest successful build number
      */
     private final String lastSuccessfulBuildNumber;
+    
+    /**
+     * the parameters used in the last successful build
+     */
+    private final Map<String, String> lastSuccessfulBuildParams;
 
     /**
      * @param name
@@ -53,6 +60,7 @@ public class ProjectForm {
         health = "";
         url = "";
         lastSuccessfulBuildNumber = "";
+        lastSuccessfulBuildParams = new HashMap<String, String>();
         dependencies = new ArrayList<ProjectForm>();
         this.displayTrigger = true;
     }
@@ -77,6 +85,7 @@ public class ProjectForm {
         
         final AbstractBuild<?, ?> lastSuccessfulBuild = pipelineBuild.getProject().getLastSuccessfulBuild();
         lastSuccessfulBuildNumber = (null == lastSuccessfulBuild) ? "" : "" + lastSuccessfulBuild.getNumber();
+        lastSuccessfulBuildParams = (null == lastSuccessfulBuild) ? new HashMap<String, String>() : lastSuccessfulBuild.getBuildVariables();
     }
 
     public String getName() {
@@ -97,6 +106,10 @@ public class ProjectForm {
     
     public String getLastSuccessfulBuildNumber() {
     	return lastSuccessfulBuildNumber;
+    }
+    
+    public Map<String, String> getLastSuccessfulBuildParams() {
+    	return lastSuccessfulBuildParams;
     }
 
     public List<ProjectForm> getDependencies() {

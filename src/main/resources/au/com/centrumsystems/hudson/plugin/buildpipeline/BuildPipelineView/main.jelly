@@ -210,12 +210,23 @@
 										<table class="PROJECT build-card rounded">
 											<tbody>
 												<tr class="header">
-													<td colspan="2"><a href="${projectForm.getValue().getUrl()}">${projectForm.getValue().getName()}</a></td>
+													<td colspan="2">
+														<a href="${projectForm.getValue().getUrl()}">${projectForm.getValue().getName()}</a><br/>
+														(${projectForm.getValue().getLastSuccessfulBuildNumber()})
+													</td>
 												</tr>
 												<tr class="build-body">
-													<td class="build-number">${projectForm.getValue().getLastSuccessfulBuildNumber()}</td>
-													<td class="statusImages">
-														<img src="${rootURL}/images/32x32/${projectForm.getValue().getHealth()}" class="icon-with-caption" />
+													<td>
+													<j:forEach items="${projectForm.getValue().getLastSuccessfulBuildParams()}" var="buildParam">
+														<table>
+															<tbody>
+																<tr>
+																	<td class="">${buildParam.getKey()}: </td>
+																	<td class="">${buildParam.getValue()}</td>
+																</tr>
+															</tbody>
+														</table>
+													</j:forEach>
 													</td>
 												</tr>
 											</tbody>
