@@ -30,8 +30,8 @@ package au.com.centrumsystems.hudson.plugin.util;
  * @author Centrum Systems
  */
 public enum HudsonResult {
-	/**
-	 * Hudson Result
-	 */
-	SUCCESS, UNSTABLE, FAILURE, NOT_BUILT, ABORT, BUILDING, PENDING, MANUAL
+    /**
+     * Hudson Result
+     */
+    SUCCESS, UNSTABLE, FAILURE, NOT_BUILT, ABORT, BUILDING, PENDING, MANUAL
 }

@@ -46,116 +46,116 @@ import au.com.centrumsystems.hudson.plugin.buildpipeline.trigger.BuildPipelineTr
 
 public class ProjectUtilTest extends HudsonTestCase {
 
-	@Override
-	@Before
-	public void setUp() throws Exception {
-		super.setUp();
-	}
+    @Override
+    @Before
+    public void setUp() throws Exception {
+        super.setUp();
+    }
 
-	@Test
-	public void testGetDownstreamProjects() throws IOException {
-		final String proj1 = "Proj1";
-		final String proj2 = "Proj2";
-		final String proj3 = "Proj3";
+    @Test
+    public void testGetDownstreamProjects() throws IOException {
+        final String proj1 = "Proj1";
+        final String proj2 = "Proj2";
+        final String proj3 = "Proj3";
 
-		// Create a test project
-		final FreeStyleProject project1 = createFreeStyleProject(proj1);
-		final FreeStyleProject project2 = createFreeStyleProject(proj2);
+        // Create a test project
+        final FreeStyleProject project1 = createFreeStyleProject(proj1);
+        final FreeStyleProject project2 = createFreeStyleProject(proj2);
 
-		// Add project2 as a post build action: build other project
-		project1.getPublishersList().add(new BuildPipelineTrigger(proj2));
-		project1.getPublishersList().add(new BuildPipelineTrigger(proj3));
+        // Add project2 as a post build action: build other project
+        project1.getPublishersList().add(new BuildPipelineTrigger(proj2));
+        project1.getPublishersList().add(new BuildPipelineTrigger(proj3));
 
-		// Important; we must do this step to ensure that the dependency graphs are updated
-		Hudson.getInstance().rebuildDependencyGraph();
+        // Important; we must do this step to ensure that the dependency graphs are updated
+        Hudson.getInstance().rebuildDependencyGraph();
 
-		// Test the method
-		final List<AbstractProject<?, ?>> dsProjects = ProjectUtil.getDownstreamProjects(project1);
-		assertEquals(project1.getName() + " should have a downstream project " + project2.getName(), project2, dsProjects.get(0));
-	}
+        // Test the method
+        final List<AbstractProject<?, ?>> dsProjects = ProjectUtil.getDownstreamProjects(project1);
+        assertEquals(project1.getName() + " should have a downstream project " + project2.getName(), project2, dsProjects.get(0));
+    }
 
-	@Test
-	public void testIsManualTrigger() throws IOException {
-		final String proj1 = "Proj1";
-		final String proj2 = "Proj2";
-		final String proj3 = "Proj3";
+    @Test
+    public void testIsManualTrigger() throws IOException {
+        final String proj1 = "Proj1";
+        final String proj2 = "Proj2";
+        final String proj3 = "Proj3";
 
-		// Create a test project
-		final FreeStyleProject project1 = createFreeStyleProject(proj1);
-		final FreeStyleProject project2 = createFreeStyleProject(proj2);
-		final FreeStyleProject project3 = createFreeStyleProject(proj3);
+        // Create a test project
+        final FreeStyleProject project1 = createFreeStyleProject(proj1);
+        final FreeStyleProject project2 = createFreeStyleProject(proj2);
+        final FreeStyleProject project3 = createFreeStyleProject(proj3);
 
-		// Add TEST_PROJECT2 as a Manually executed pipeline project
-		// Add TEST_PROJECT3 as a Post-build action -> build other projects
-		project1.getPublishersList().add(new BuildPipelineTrigger(proj2));
-		project1.getPublishersList().add(new BuildTrigger(proj3, true));
+        // Add TEST_PROJECT2 as a Manually executed pipeline project
+        // Add TEST_PROJECT3 as a Post-build action -> build other projects
+        project1.getPublishersList().add(new BuildPipelineTrigger(proj2));
+        project1.getPublishersList().add(new BuildTrigger(proj3, true));
 
-		// Important; we must do this step to ensure that the dependency graphs are updated
-		Hudson.getInstance().rebuildDependencyGraph();
+        // Important; we must do this step to ensure that the dependency graphs are updated
+        Hudson.getInstance().rebuildDependencyGraph();
 
-		// Test the method
-		assertTrue(proj2 + " should be a manual trigger", ProjectUtil.isManualTrigger(project1, project2));
-		assertFalse(proj3 + " should be an automatic trigger", ProjectUtil.isManualTrigger(project1, project3));
+        // Test the method
+        assertTrue(proj2 + " should be a manual trigger", ProjectUtil.isManualTrigger(project1, project2));
+        assertFalse(proj3 + " should be an automatic trigger", ProjectUtil.isManualTrigger(project1, project3));
 
-		assertFalse(ProjectUtil.isManualTrigger(null, null));
-	}
+        assertFalse(ProjectUtil.isManualTrigger(null, null));
+    }
 
-	@Test
-	public void testHasDownstreamProjects() throws IOException {
-		final String proj1 = "Proj1";
-		final String proj2 = "Proj2";
-		final String proj3 = "Proj3";
+    @Test
+    public void testHasDownstreamProjects() throws IOException {
+        final String proj1 = "Proj1";
+        final String proj2 = "Proj2";
+        final String proj3 = "Proj3";
 
-		// Create a test project
-		final FreeStyleProject project1 = createFreeStyleProject(proj1);
-		createFreeStyleProject(proj2);
-		createFreeStyleProject(proj3);
+        // Create a test project
+        final FreeStyleProject project1 = createFreeStyleProject(proj1);
+        createFreeStyleProject(proj2);
+        createFreeStyleProject(proj3);
 
-		// Add project2 as a post build action: build other project
-		project1.getPublishersList().add(new BuildPipelineTrigger(proj2));
-		project1.getPublishersList().add(new BuildTrigger(proj3, true));
+        // Add project2 as a post build action: build other project
+        project1.getPublishersList().add(new BuildPipelineTrigger(proj2));
+        project1.getPublishersList().add(new BuildTrigger(proj3, true));
 
-		// Important; we must do this step to ensure that the dependency graphs are updated
-		Hudson.getInstance().rebuildDependencyGraph();
+        // Important; we must do this step to ensure that the dependency graphs are updated
+        Hudson.getInstance().rebuildDependencyGraph();
 
-		// Test the method
-		assertTrue(project1.getName() + " should have downstream projects", ProjectUtil.hasDownstreamProjects(project1));
-	}
+        // Test the method
+        assertTrue(project1.getName() + " should have downstream projects", ProjectUtil.hasDownstreamProjects(project1));
+    }
 
-	@Test
-	public void testGetProjectURL() throws URISyntaxException, IOException {
-		final String proj1 = "Proj 1";
-		final String proj1Url = "job/Proj%201/";
+    @Test
+    public void testGetProjectURL() throws URISyntaxException, IOException {
+        final String proj1 = "Proj 1";
+        final String proj1Url = "job/Proj%201/";
 
-		// Create a test project
-		final FreeStyleProject project1 = createFreeStyleProject(proj1);
-		final PipelineBuild pipelineBuild = new PipelineBuild(project1);
+        // Create a test project
+        final FreeStyleProject project1 = createFreeStyleProject(proj1);
+        final PipelineBuild pipelineBuild = new PipelineBuild(project1);
 
-		assertEquals("The project URL should have been " + proj1Url, proj1Url, pipelineBuild.getProjectURL());
-	}
+        assertEquals("The project URL should have been " + proj1Url, proj1Url, pipelineBuild.getProjectURL());
+    }
 
-	@Test
-	public void testGetProjectParametersAction() throws IOException, InterruptedException, ExecutionException {
-		final String proj1 = "Proj1";
-		final String proj2 = "Proj2";
-		final String paramKey = "testKey";
-		final String paramValue = "testValue";
+    @Test
+    public void testGetProjectParametersAction() throws IOException, InterruptedException, ExecutionException {
+        final String proj1 = "Proj1";
+        final String proj2 = "Proj2";
+        final String paramKey = "testKey";
+        final String paramValue = "testValue";
 
-		// Create a test project
-		final FreeStyleProject project1 = createFreeStyleProject(proj1);
-		// Add a String parameter
-		project1.addProperty((new ParametersDefinitionProperty(new StringParameterDefinition(paramKey, paramValue))));
-		final FreeStyleProject project2 = createFreeStyleProject(proj2);
+        // Create a test project
+        final FreeStyleProject project1 = createFreeStyleProject(proj1);
+        // Add a String parameter
+        project1.addProperty((new ParametersDefinitionProperty(new StringParameterDefinition(paramKey, paramValue))));
+        final FreeStyleProject project2 = createFreeStyleProject(proj2);
 
-		// Important; we must do this step to ensure that the dependency graphs are updated
-		Hudson.getInstance().rebuildDependencyGraph();
+        // Important; we must do this step to ensure that the dependency graphs are updated
+        Hudson.getInstance().rebuildDependencyGraph();
 
-		// Test the method
-		ParametersAction params = ProjectUtil.getProjectParametersAction(project1);
-		assertEquals(params.getParameter(paramKey).getName(), paramKey);
-		params = ProjectUtil.getProjectParametersAction(project2);
-		assertNull(params);
+        // Test the method
+        ParametersAction params = ProjectUtil.getProjectParametersAction(project1);
+        assertEquals(params.getParameter(paramKey).getName(), paramKey);
+        params = ProjectUtil.getProjectParametersAction(project2);
+        assertNull(params);
 
-		assertNull(ProjectUtil.getProjectParametersAction(null));
-	}
+        assertNull(ProjectUtil.getProjectParametersAction(null));
+    }
 }

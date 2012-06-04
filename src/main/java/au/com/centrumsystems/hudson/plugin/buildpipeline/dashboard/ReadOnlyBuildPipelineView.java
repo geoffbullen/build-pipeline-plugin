@@ -10,9 +10,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 package au.com.centrumsystems.hudson.plugin.buildpipeline.dashboard;
 
-import au.com.centrumsystems.hudson.plugin.buildpipeline.BuildPipelineView;
 import hudson.model.AbstractProject;
 import hudson.security.Permission;
+import au.com.centrumsystems.hudson.plugin.buildpipeline.BuildPipelineView;
 
 /**
  * This class provides a read-only view for the existing build-pipeline view. All calls checking permissions return false. The other reason
@@ -22,32 +22,32 @@ import hudson.security.Permission;
  * @since 04/01/2012
  */
 public class ReadOnlyBuildPipelineView extends BuildPipelineView {
-	public ReadOnlyBuildPipelineView(String displayName, String description, String selectedJob, String noOfDisplayedBuilds,
-			boolean triggerOnlyLatestJob) {
-		super(displayName, displayName, selectedJob, noOfDisplayedBuilds, triggerOnlyLatestJob);
-		// this is ugly, but there is no other way to set the description of
-		// the view
-		super.description = description;
-	}
+    public ReadOnlyBuildPipelineView(String displayName, String description, String selectedJob, String noOfDisplayedBuilds,
+            boolean triggerOnlyLatestJob) {
+        super(displayName, displayName, selectedJob, noOfDisplayedBuilds, triggerOnlyLatestJob);
+        // this is ugly, but there is no other way to set the description of
+        // the view
+        super.description = description;
+    }
 
-	@Override
-	public boolean hasBuildPermission(AbstractProject<?, ?> currentProject) {
-		// we are not a 'real view' in this case and we don't care in R/O mode
-		return false;
-	}
+    @Override
+    public boolean hasBuildPermission(AbstractProject<?, ?> currentProject) {
+        // we are not a 'real view' in this case and we don't care in R/O mode
+        return false;
+    }
 
-	@Override
-	public boolean hasPermission(Permission p) {
-		return false;
-	}
+    @Override
+    public boolean hasPermission(Permission p) {
+        return false;
+    }
 
-	@Override
-	public AbstractProject<?, ?> getSelectedProject() {
-		AbstractProject<?, ?> selectedProject = null;
-		if (getSelectedJob() != null) {
-			selectedProject = (AbstractProject<?, ?>) jenkins.model.Jenkins.getInstance().getItem(getSelectedJob());
-		}
+    @Override
+    public AbstractProject<?, ?> getSelectedProject() {
+        AbstractProject<?, ?> selectedProject = null;
+        if (getSelectedJob() != null) {
+            selectedProject = (AbstractProject<?, ?>) jenkins.model.Jenkins.getInstance().getItem(getSelectedJob());
+        }
 
-		return selectedProject;
-	}
+        return selectedProject;
+    }
 }

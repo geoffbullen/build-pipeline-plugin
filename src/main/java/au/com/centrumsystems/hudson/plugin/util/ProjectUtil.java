@@ -48,99 +48,99 @@ import au.com.centrumsystems.hudson.plugin.buildpipeline.trigger.BuildPipelineTr
  */
 public final class ProjectUtil {
 
-	/**
-	 * Default constructor
-	 */
-	public ProjectUtil() {
+    /**
+     * Default constructor
+     */
+    public ProjectUtil() {
 
-	}
+    }
 
-	/**
-	 * Given a Project get a List of all of its Downstream projects
-	 * 
-	 * @param currentProject
-	 *            Current project
-	 * @return List of Downstream projects
-	 */
-	public static List<AbstractProject<?, ?>> getDownstreamProjects(final AbstractProject<?, ?> currentProject) {
-		final DependencyGraph myDependencyGraph = Hudson.getInstance().getDependencyGraph();
+    /**
+     * Given a Project get a List of all of its Downstream projects
+     * 
+     * @param currentProject
+     *            Current project
+     * @return List of Downstream projects
+     */
+    public static List<AbstractProject<?, ?>> getDownstreamProjects(final AbstractProject<?, ?> currentProject) {
+        final DependencyGraph myDependencyGraph = Hudson.getInstance().getDependencyGraph();
 
-		final List<AbstractProject<?, ?>> downstreamProjectsList = new ArrayList<AbstractProject<?, ?>>();
-		for (final AbstractProject<?, ?> proj : myDependencyGraph.getDownstream(currentProject)) {
-			downstreamProjectsList.add(proj);
-		}
-		return downstreamProjectsList;
-	}
+        final List<AbstractProject<?, ?>> downstreamProjectsList = new ArrayList<AbstractProject<?, ?>>();
+        for (final AbstractProject<?, ?> proj : myDependencyGraph.getDownstream(currentProject)) {
+            downstreamProjectsList.add(proj);
+        }
+        return downstreamProjectsList;
+    }
 
-	/**
-	 * Determines whether a project has any downstream projects.
-	 * 
-	 * @param currentProject
-	 *            - The project in question
-	 * @return - true: Current project has downstream projects; false: Current project does not have any downstream projects
-	 */
-	public static boolean hasDownstreamProjects(final AbstractProject<?, ?> currentProject) {
-		return (getDownstreamProjects(currentProject).size() > 0);
-	}
+    /**
+     * Determines whether a project has any downstream projects.
+     * 
+     * @param currentProject
+     *            - The project in question
+     * @return - true: Current project has downstream projects; false: Current project does not have any downstream projects
+     */
+    public static boolean hasDownstreamProjects(final AbstractProject<?, ?> currentProject) {
+        return (getDownstreamProjects(currentProject).size() > 0);
+    }
 
-	/**
-	 * Determines if a manual trigger of the downstream project from the current upstream project is required.
-	 * 
-	 * @param upstreamProject
-	 *            - The upstream project
-	 * @param downstreamProject
-	 *            - The downstream project
-	 * 
-	 * @return - true: Manual trigger required; false: Manual trigger not required
-	 */
-	public static boolean isManualTrigger(final AbstractProject<?, ?> upstreamProject, final AbstractProject<?, ?> downstreamProject) {
+    /**
+     * Determines if a manual trigger of the downstream project from the current upstream project is required.
+     * 
+     * @param upstreamProject
+     *            - The upstream project
+     * @param downstreamProject
+     *            - The downstream project
+     * 
+     * @return - true: Manual trigger required; false: Manual trigger not required
+     */
+    public static boolean isManualTrigger(final AbstractProject<?, ?> upstreamProject, final AbstractProject<?, ?> downstreamProject) {
 
-		boolean manualTrigger = false;
-		if ((upstreamProject != null) && (downstreamProject != null)) {
-			final DescribableList<Publisher, Descriptor<Publisher>> upstreamPublishersLists = upstreamProject.getPublishersList();
+        boolean manualTrigger = false;
+        if ((upstreamProject != null) && (downstreamProject != null)) {
+            final DescribableList<Publisher, Descriptor<Publisher>> upstreamPublishersLists = upstreamProject.getPublishersList();
 
-			for (final Publisher upstreamPub : upstreamPublishersLists) {
-				if (upstreamPub instanceof BuildPipelineTrigger) {
-					final String manualDownstreamProjects = ((BuildPipelineTrigger) upstreamPub).getDownstreamProjectNames();
-					final String[] downstreamProjs = manualDownstreamProjects.split(",");
-					for (final String nextProj : downstreamProjs) {
-						if (downstreamProject.getName().equalsIgnoreCase(nextProj.trim())) {
-							manualTrigger = true;
-							break;
-						}
-					}
-				}
-			}
-		}
+            for (final Publisher upstreamPub : upstreamPublishersLists) {
+                if (upstreamPub instanceof BuildPipelineTrigger) {
+                    final String manualDownstreamProjects = ((BuildPipelineTrigger) upstreamPub).getDownstreamProjectNames();
+                    final String[] downstreamProjs = manualDownstreamProjects.split(",");
+                    for (final String nextProj : downstreamProjs) {
+                        if (downstreamProject.getName().equalsIgnoreCase(nextProj.trim())) {
+                            manualTrigger = true;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
 
-		return manualTrigger;
+        return manualTrigger;
 
-	}
+    }
 
-	/**
-	 * Gets the ParametersAction of an AbstractProject
-	 * 
-	 * @param project
-	 *            - The AbstractProject
-	 * @return The ParametersAction of the AbstractProject
-	 */
-	public static ParametersAction getProjectParametersAction(AbstractProject<?, ?> project) {
-		if (project != null) {
-			final ParametersDefinitionProperty property = project.getProperty(ParametersDefinitionProperty.class);
-			if (property == null) {
-				return null;
-			}
+    /**
+     * Gets the ParametersAction of an AbstractProject
+     * 
+     * @param project
+     *            - The AbstractProject
+     * @return The ParametersAction of the AbstractProject
+     */
+    public static ParametersAction getProjectParametersAction(AbstractProject<?, ?> project) {
+        if (project != null) {
+            final ParametersDefinitionProperty property = project.getProperty(ParametersDefinitionProperty.class);
+            if (property == null) {
+                return null;
+            }
 
-			final List<ParameterValue> parameters = new ArrayList<ParameterValue>();
-			for (ParameterDefinition pd : property.getParameterDefinitions()) {
-				final ParameterValue param = pd.getDefaultParameterValue();
-				if (param != null) {
-					parameters.add(param);
-				}
-			}
-			return new ParametersAction(parameters);
-		} else {
-			return null;
-		}
-	}
+            final List<ParameterValue> parameters = new ArrayList<ParameterValue>();
+            for (final ParameterDefinition pd : property.getParameterDefinitions()) {
+                final ParameterValue param = pd.getDefaultParameterValue();
+                if (param != null) {
+                    parameters.add(param);
+                }
+            }
+            return new ParametersAction(parameters);
+        } else {
+            return null;
+        }
+    }
 }

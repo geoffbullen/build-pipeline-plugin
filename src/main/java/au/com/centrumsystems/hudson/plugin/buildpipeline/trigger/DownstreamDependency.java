@@ -42,8 +42,11 @@ import au.com.centrumsystems.hudson.plugin.util.ProjectUtil;
  * @author Centrum Systems
  */
 public class DownstreamDependency extends Dependency {
-	private static final Logger LOGGER = Logger.getLogger(DownstreamDependency.class.getName());
-		
+    /**
+     * logger
+     */
+    private static final Logger LOGGER = Logger.getLogger(DownstreamDependency.class.getName());
+
     /**
      * Downstream Dependency
      * 
@@ -62,14 +65,14 @@ public class DownstreamDependency extends Dependency {
     @SuppressWarnings("rawtypes")
     @Override
     public boolean shouldTriggerBuild(final AbstractBuild build, final TaskListener listener, final List<Action> actions) {
-    	LOGGER.fine("Checking if build should be triggered.");
-    	
+        LOGGER.fine("Checking if build should be triggered.");
+
         // If the upstream project has an automatic trigger to the downstream project
         // and the current build result was SUCCESS then return true.
-        boolean retval = ((!ProjectUtil.isManualTrigger(build.getProject(), getDownstreamProject())) && (build.getResult()
+        final boolean retval = ((!ProjectUtil.isManualTrigger(build.getProject(), getDownstreamProject())) && (build.getResult()
                 .isBetterOrEqualTo(Result.SUCCESS)));
         LOGGER.fine("" + retval);
-        
+
         return retval;
     }
 }

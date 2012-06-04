@@ -24,14 +24,14 @@
  */
 package au.com.centrumsystems.hudson.plugin.util;
 
+import hudson.model.Action;
+import hudson.model.ParameterValue;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
-import hudson.model.Action;
 import hudson.model.Cause;
-import hudson.model.ParameterValue;
-import hudson.model.ParametersAction;
 import hudson.model.Cause.UpstreamCause;
 import hudson.model.CauseAction;
+import hudson.model.ParametersAction;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -44,100 +44,100 @@ import java.util.List;
  */
 public final class BuildUtil {
 
-	/**
-	 * Gets the next downstream build based on the upstream build and downstream project.
-	 * 
-	 * @param downstreamProject
-	 *            - The downstream project
-	 * @param upstreamBuild
-	 *            - The upstream build
-	 * @return - The next downstream build based on the upstream build and downstream project, or null if there is no downstream project.
-	 */
-	public static AbstractBuild<?, ?> getDownstreamBuild(final AbstractProject<?, ?> downstreamProject,
-			final AbstractBuild<?, ?> upstreamBuild) {
-		if ((downstreamProject != null) && (upstreamBuild != null)) {
-			for (final AbstractBuild<?, ?> innerBuild : (List<AbstractBuild<?, ?>>) downstreamProject.getBuilds()) {
-				for (final CauseAction action : innerBuild.getActions(CauseAction.class)) {
-					for (final Cause cause : action.getCauses()) {
-						if (cause instanceof UpstreamCause) {
-							final UpstreamCause upstreamCause = (UpstreamCause) cause;
-							if (upstreamCause.getUpstreamProject().equals(upstreamBuild.getProject().getName())
-									&& (upstreamCause.getUpstreamBuild() == upstreamBuild.getNumber())) {
-								return innerBuild;
-							}
-						}
-					}
-				}
-			}
-		}
-		return null;
-	}
+    /**
+     * Gets the next downstream build based on the upstream build and downstream project.
+     * 
+     * @param downstreamProject
+     *            - The downstream project
+     * @param upstreamBuild
+     *            - The upstream build
+     * @return - The next downstream build based on the upstream build and downstream project, or null if there is no downstream project.
+     */
+    public static AbstractBuild<?, ?> getDownstreamBuild(final AbstractProject<?, ?> downstreamProject,
+            final AbstractBuild<?, ?> upstreamBuild) {
+        if ((downstreamProject != null) && (upstreamBuild != null)) {
+            for (final AbstractBuild<?, ?> innerBuild : (List<AbstractBuild<?, ?>>) downstreamProject.getBuilds()) {
+                for (final CauseAction action : innerBuild.getActions(CauseAction.class)) {
+                    for (final Cause cause : action.getCauses()) {
+                        if (cause instanceof UpstreamCause) {
+                            final UpstreamCause upstreamCause = (UpstreamCause) cause;
+                            if (upstreamCause.getUpstreamProject().equals(upstreamBuild.getProject().getName())
+                                    && (upstreamCause.getUpstreamBuild() == upstreamBuild.getNumber())) {
+                                return innerBuild;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return null;
+    }
 
-	/**
-	 * Given an Upstream AbstractBuild and a Downstream AbstractProject will retrieve the associated ParametersAction. This will result in
-	 * parameters from the upstream build not overriding parameters on the downstream project.
-	 * 
-	 * @param upstreamBuild
-	 *            - The AbstractBuild
-	 * @param downstreamProject
-	 *            - The AbstractProject
-	 * @return - AbstractBuild's ParametersAction
-	 */
-	public static Action getAllBuildParametersAction(AbstractBuild<?, ?> upstreamBuild, AbstractProject<?, ?> downstreamProject) {
-		// Retrieve the List of Actions from the downstream project
-		final ParametersAction dsProjectParametersAction = ProjectUtil.getProjectParametersAction(downstreamProject);
+    /**
+     * Given an Upstream AbstractBuild and a Downstream AbstractProject will retrieve the associated ParametersAction. This will result in
+     * parameters from the upstream build not overriding parameters on the downstream project.
+     * 
+     * @param upstreamBuild
+     *            - The AbstractBuild
+     * @param downstreamProject
+     *            - The AbstractProject
+     * @return - AbstractBuild's ParametersAction
+     */
+    public static Action getAllBuildParametersAction(AbstractBuild<?, ?> upstreamBuild, AbstractProject<?, ?> downstreamProject) {
+        // Retrieve the List of Actions from the downstream project
+        final ParametersAction dsProjectParametersAction = ProjectUtil.getProjectParametersAction(downstreamProject);
 
-		// Retrieve the List of Actions from the upstream build
-		final ParametersAction usBuildParametersAction = BuildUtil.getBuildParametersAction(upstreamBuild);
+        // Retrieve the List of Actions from the upstream build
+        final ParametersAction usBuildParametersAction = BuildUtil.getBuildParametersAction(upstreamBuild);
 
-		return mergeParameters(usBuildParametersAction, dsProjectParametersAction);
-	}
+        return mergeParameters(usBuildParametersAction, dsProjectParametersAction);
+    }
 
-	/**
-	 * Gets the ParametersAction of an AbstractBuild
-	 * 
-	 * @param build
-	 *            - AbstractBuild
-	 * @return - ParametersAction of AbstractBuild
-	 */
-	public static ParametersAction getBuildParametersAction(AbstractBuild<?, ?> build) {
-		ParametersAction buildParametersAction = null;
-		if (build != null) {
-			// If a ParametersAction is found
-			for (Action nextAction : build.getActions()) {
-				if (nextAction instanceof ParametersAction) {
-					buildParametersAction = (ParametersAction) nextAction;
-				}
-			}
-		}
+    /**
+     * Gets the ParametersAction of an AbstractBuild
+     * 
+     * @param build
+     *            - AbstractBuild
+     * @return - ParametersAction of AbstractBuild
+     */
+    public static ParametersAction getBuildParametersAction(AbstractBuild<?, ?> build) {
+        ParametersAction buildParametersAction = null;
+        if (build != null) {
+            // If a ParametersAction is found
+            for (final Action nextAction : build.getActions()) {
+                if (nextAction instanceof ParametersAction) {
+                    buildParametersAction = (ParametersAction) nextAction;
+                }
+            }
+        }
 
-		return buildParametersAction;
-	}
+        return buildParametersAction;
+    }
 
-	/**
-	 * Merges two sets of ParametersAction
-	 * 
-	 * @param base
-	 *            ParametersAction set 1
-	 * @param overlay
-	 *            ParametersAction set 2
-	 * @return - Single set of ParametersAction
-	 */
-	public static ParametersAction mergeParameters(ParametersAction base, ParametersAction overlay) {
-		final LinkedHashMap<String, ParameterValue> params = new LinkedHashMap<String, ParameterValue>();
-		if (base != null) {
-			for (ParameterValue param : base.getParameters()) {
-				params.put(param.getName(), param);
-			}
-		}
+    /**
+     * Merges two sets of ParametersAction
+     * 
+     * @param base
+     *            ParametersAction set 1
+     * @param overlay
+     *            ParametersAction set 2
+     * @return - Single set of ParametersAction
+     */
+    public static ParametersAction mergeParameters(ParametersAction base, ParametersAction overlay) {
+        final LinkedHashMap<String, ParameterValue> params = new LinkedHashMap<String, ParameterValue>();
+        if (base != null) {
+            for (final ParameterValue param : base.getParameters()) {
+                params.put(param.getName(), param);
+            }
+        }
 
-		if (overlay != null) {
-			for (ParameterValue param : overlay.getParameters()) {
-				params.put(param.getName(), param);
-			}
-		}
+        if (overlay != null) {
+            for (final ParameterValue param : overlay.getParameters()) {
+                params.put(param.getName(), param);
+            }
+        }
 
-		return new ParametersAction(params.values().toArray(new ParameterValue[params.size()]));
-	}
+        return new ParametersAction(params.values().toArray(new ParameterValue[params.size()]));
+    }
 
 }
