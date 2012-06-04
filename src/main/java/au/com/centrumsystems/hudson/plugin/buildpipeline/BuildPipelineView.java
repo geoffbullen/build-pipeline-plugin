@@ -32,6 +32,7 @@ import hudson.model.TopLevelItem;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.Cause;
+import hudson.model.Cause.UserIdCause;
 import hudson.model.CauseAction;
 import hudson.model.Descriptor.FormException;
 import hudson.model.Hudson;
@@ -56,7 +57,6 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 import org.kohsuke.stapler.bind.JavaScriptMethod;
-import org.springframework.transaction.annotation.Transactional;
 
 import au.com.centrumsystems.hudson.plugin.util.BuildUtil;
 import au.com.centrumsystems.hudson.plugin.util.ProjectUtil;
@@ -395,7 +395,7 @@ public class BuildPipelineView extends View {
 		final AbstractProject<?, ?> triggerProject = (AbstractProject<?, ?>) triggerBuild.getProject();
 		final Future<?> future = triggerProject.scheduleBuild2(
 				triggerProject.getQuietPeriod(), new MyUserIdCause(), 
-				triggerBuild.getActions());
+				removeUserIdCauseActions(triggerBuild.getActions()));
 		
 		AbstractBuild<?, ?> result = triggerBuild;
 		try {
@@ -449,18 +449,54 @@ public class BuildPipelineView extends View {
 	private int triggerBuild(final AbstractProject<?, ?> triggerProject, final AbstractBuild<?, ?> upstreamBuild,
 			final Action buildParametersAction) {
 		LOGGER.fine("Triggering build for project: " + triggerProject.getFullDisplayName()); //$NON-NLS-1$
-		final Cause.UpstreamCause upstreamCause = (null == upstreamBuild) ? null : new hudson.model.Cause.UpstreamCause(
+		final Cause.UpstreamCause upstreamCause = (null == upstreamBuild) ? null : new Cause.UpstreamCause(
 				(Run<?, ?>) upstreamBuild);
 		final List<Action> buildActions = new ArrayList<Action>();
 		buildActions.add(new CauseAction(new MyUserIdCause()));
 		
 		if (buildParametersAction != null) {
-			buildActions.add(buildParametersAction);
+			if (!isUserIdCauseAction(buildParametersAction)) {
+				buildActions.add(buildParametersAction);
+			}
 		}
 		
 		triggerProject.scheduleBuild(triggerProject.getQuietPeriod(), upstreamCause,
 				buildActions.toArray(new Action[buildActions.size()]));
 		return triggerProject.getNextBuildNumber();
+	}
+	
+	private boolean isUserIdCauseAction(final Action buildAction) {
+		boolean retval = false;
+		if (buildAction instanceof CauseAction) {
+			for(Cause cause : ((CauseAction) buildAction).getCauses()) {
+				if (cause instanceof UserIdCause) {
+					retval = true;
+					break;
+				}
+			}
+		}
+		return retval;
+	}
+	
+	/**
+	 * Removes any UserId cause action from the given actions collection.
+	 * This is used by downstream builds that inherit upstream actions.
+	 * The downstream build can be initiated by another user that is
+	 * different from the user who initiated the upstream build, so the
+	 * downstream build needs to remove the old user action inherited
+	 * from upstream, and add its own.
+	 * 
+	 * @param actions a collection of build actions.
+	 * @return a collection of build actions with all UserId causes removed.
+	 */
+	private List<Action> removeUserIdCauseActions(final List<Action> actions) {
+		final List<Action> retval = new ArrayList<Action>();
+		for (final Action action : actions) {
+			if (!isUserIdCauseAction(action)) {
+				retval.add(action);
+			}
+		}
+		return retval;
 	}
 
 	/**

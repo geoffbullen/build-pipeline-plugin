@@ -44,7 +44,7 @@ BuildPipeline.prototype = {
 					clearInterval(intervalId);
 				}
 			});
-		}, 2000);				
+		}, 2000);
 	},
 	triggerBuild : function(id, upstreamProjectName, upstreamBuildNumber, triggerProjectName, dependencyIds) {
 		var buildPipeline = this;

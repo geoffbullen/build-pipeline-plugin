@@ -214,20 +214,26 @@
 														<a href="${projectForm.getValue().getUrl()}">${projectForm.getValue().getName()}</a>
 													</td>
 												</tr>
-												<tr class="build-body">
-													<td>
-													<j:forEach items="${projectForm.getValue().getLastSuccessfulBuildParams()}" var="buildParam">
-														<table>
-															<tbody>
-																<tr>
-																	<td class="">${buildParam.getKey()}: </td>
-																	<td class="">${buildParam.getValue()}</td>
-																</tr>
-															</tbody>
-														</table>
-													</j:forEach>
-													</td>
-												</tr>
+												<j:if test="${from.isShowPipelineParameters()}">
+													<tr class="build-body">
+														<td>
+															<table>
+																<tbody>
+																	<tr>
+																		<td>Latest Build:</td>
+																		<td>${projectForm.getValue().getLastSuccessfulBuildNumber()}</td>
+																	</tr>
+																	<j:forEach items="${projectForm.getValue().getLastSuccessfulBuildParams()}" var="buildParam">
+																		<tr>
+																			<td class="">${buildParam.getKey()}: </td>
+																			<td class="">${buildParam.getValue()}</td>
+																		</tr>
+																	</j:forEach>
+																</tbody>
+															</table>
+														</td>
+													</tr>
+												</j:if>
 											</tbody>
 										</table>
 									</td>
