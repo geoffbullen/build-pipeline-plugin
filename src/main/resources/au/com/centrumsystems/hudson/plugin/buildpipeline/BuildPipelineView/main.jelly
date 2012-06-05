@@ -212,7 +212,7 @@
 									<td>
 										<table class="PROJECT build-card rounded">
 											<tbody>
-												<tr class="header">
+												<tr class="header-name">
 													<td colspan="2">
 														<a href="${projectForm.getValue().getUrl()}">${projectForm.getValue().getName()}</a>
 													</td>
