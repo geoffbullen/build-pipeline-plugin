@@ -293,6 +293,8 @@ tr.spacerRow td {
 
 .PROJECT .header-name {
     display: table-row;
+    background: rgba(255, 255, 255, 0.3);
+    color: #333;
 }
 
 .PROJECT .status-images {
