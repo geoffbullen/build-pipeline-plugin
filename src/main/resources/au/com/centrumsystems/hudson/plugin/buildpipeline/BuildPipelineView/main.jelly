@@ -203,7 +203,10 @@
 									<!-- additional spacer for params box -->
 									<td class="spacer"/>
 								</j:if>
-								<td class="spacer"/>
+								<j:if test="${from.isShowRevisionBox()}">
+									<!-- additional spacer for revision box -->
+									<td class="spacer"/>
+								</j:if>
 								<j:forEach items="${projectGridLine.getValue()}" var="projectForm">
 									<td/> <!-- spacer -->
 									<td>
@@ -266,7 +269,8 @@
 									</div>
 								</td>
 								</j:if>
-								<td><j:if test="${x == 0}">
+								<j:if test="${from.isShowRevisionBox()}">
+								<td><j:if test="${(x == 0)}">
 									<div class="revision rounded">
 										<div>
 											<a href="${buildGrid.get(x).get(0).getUrl()}changes" title="${buildGrid.get(x).get(0).getRevision()}">
@@ -275,6 +279,7 @@
 										</div>
 									</div>
 								</j:if></td>
+								</j:if>
 								<td class="next"></td>
 								<j:forEach begin="${0}" end="${buildPipelineForm.getGridWidth() - 1}" indexVar="y">
 									<j:set var="build" type="au.com.centrumsystems.hudson.plugin.buildpipeline.BuildForm" value="${buildGrid.get(x).get(y)}" />

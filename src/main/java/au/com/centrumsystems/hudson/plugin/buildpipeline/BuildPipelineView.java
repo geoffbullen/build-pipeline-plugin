@@ -91,6 +91,9 @@ public class BuildPipelineView extends View {
 	
 	/** showPipelineDefinitionHeader. */
 	private boolean showPipelineDefinitionHeader;
+	
+	/** showRevisionBox */
+	private boolean showRevisionBox;
 
 	/*
 	 * Keep feature flag properties in one place so that it is easy to refactor them out later.
@@ -211,11 +214,12 @@ public class BuildPipelineView extends View {
 	@DataBoundConstructor
 	public BuildPipelineView(final String name, final String buildViewTitle, final String selectedJob, final String noOfDisplayedBuilds, 
 			final boolean triggerOnlyLatestJob, final boolean alwaysAllowManualTrigger, final boolean showPipelineParameters,
-			final boolean showPipelineDefinitionHeader) {
+			final boolean showPipelineDefinitionHeader, final boolean showRevisionBox) {
 		this(name, buildViewTitle, selectedJob, noOfDisplayedBuilds, triggerOnlyLatestJob);
 		setAlwaysAllowManualTrigger(alwaysAllowManualTrigger);
 		setShowPipelineParameters(showPipelineParameters);
 		setShowPipelineDefinitionHeader(showPipelineDefinitionHeader);
+		setShowRevisionBox(showRevisionBox);
 	}
 
 	/**
@@ -239,6 +243,7 @@ public class BuildPipelineView extends View {
 		this.alwaysAllowManualTrigger = Boolean.valueOf(req.getParameter("_.alwaysAllowManualTrigger")); //$NON-NLS-1$
 		this.showPipelineParameters = Boolean.valueOf(req.getParameter("_.showPipelineParameters")); //$NON-NLS-1$
 		this.showPipelineDefinitionHeader = Boolean.valueOf(req.getParameter("_.showPipelineDefinitionHeader")); //$NON-NLS-1$
+		this.showRevisionBox = Boolean.valueOf(req.getParameter("_.showRevisionBox")); //$NON-NLS-1$
 	}
 
 	/**
@@ -628,12 +633,24 @@ public class BuildPipelineView extends View {
 		return showPipelineDefinitionHeader;
 	}
 	
-	public String getshowPipelineDefinitionHeader() {
+	public String getShowPipelineDefinitionHeader() {
 		return Boolean.toString(showPipelineDefinitionHeader);
 	}
 	
 	public void setShowPipelineDefinitionHeader(final boolean showPipelineDefinitionHeader) {
 		this.showPipelineDefinitionHeader = showPipelineDefinitionHeader;
+	}
+	
+	public boolean isShowRevisionBox() {
+		return showRevisionBox;
+	}
+	
+	public String getShowRevisionBox() {
+		return Boolean.toString(showRevisionBox);
+	}
+	
+	public void setShowRevisionBox(final boolean showRevisionBox) {
+		this.showRevisionBox = showRevisionBox;
 	}
 
 	@Override
