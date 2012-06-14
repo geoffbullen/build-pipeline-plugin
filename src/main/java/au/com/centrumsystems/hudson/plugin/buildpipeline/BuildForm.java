@@ -63,6 +63,9 @@ public class BuildForm {
         return dependencies;
     }
 
+    /**
+     * @return All ids for existing depencies. 
+     */
     public List<Integer> getDependencyIds() {
         final List<Integer> ids = new ArrayList<Integer>();
         for (final BuildForm dependency : dependencies) {
@@ -71,6 +74,9 @@ public class BuildForm {
         return ids;
     }
 
+    /**
+     * @return convert pipelineBuild as json format. 
+     */
     @JavaScriptMethod
     public String asJSON() {
         return BuildJSONBuilder.asJSON(pipelineBuild, id, getDependencyIds());
@@ -80,6 +86,11 @@ public class BuildForm {
         return id;
     }
 
+    /**
+     * 
+     * @param nextBuildNumber nextBuildNumber
+     * @return is the build pipeline updated.
+     */
     @JavaScriptMethod
     public boolean updatePipelineBuild(final int nextBuildNumber) {
         boolean updated = false;

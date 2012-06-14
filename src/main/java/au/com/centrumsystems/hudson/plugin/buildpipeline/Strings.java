@@ -5,6 +5,7 @@ import java.util.ResourceBundle;
 
 /**
  * Message resource bundle utility
+ * @author Unknown
  */
 public final class Strings {
     /**
@@ -17,10 +18,18 @@ public final class Strings {
      */
     private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME);
 
+    /**
+     * 
+     */
     private Strings() {
     }
 
-    public static String getString(String key) {
+    /**
+     * 
+     * @param key key to resource bundle
+     * @return resource of the key.
+     */
+    public static String getString(final String key) {
         try {
             return RESOURCE_BUNDLE.getString(key);
         } catch (final MissingResourceException e) {

@@ -146,7 +146,7 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
 
     @Override
     public boolean perform(final AbstractBuild<?, ?> build, final Launcher launcher, final BuildListener listener)
-            throws InterruptedException, IOException {
+        throws InterruptedException, IOException {
         return true;
     }
 
@@ -268,7 +268,9 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
          */
         @Override
         public String getHelpFile() {
-            return "/descriptor/au.com.centrumsystems.hudson.plugin.buildpipeline.trigger.BuildPipelineTrigger/help/buildPipeline.html"; //$NON-NLS-1$
+            final String filePath = "/descriptor/au.com.centrumsystems.hudson.plugin.buildpipeline.trigger.BuildPipelineTrigger/help";
+            final String fileName = "buildPipeline.html";
+            return String.format("%s/%s", filePath, fileName);
         }
 
         @Override

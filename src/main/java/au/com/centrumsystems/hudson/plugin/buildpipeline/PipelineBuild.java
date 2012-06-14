@@ -410,6 +410,9 @@ public class PipelineBuild {
         return buildPermission;
     }
 
+    /**
+     * @return is ready to be mannlly built.
+     */
     public boolean isReadyToBeManuallyBuilt() {
         boolean isManual = false;
         if (isManualTrigger() && this.currentBuild == null && this.getUpstreamBuild() != null
@@ -463,6 +466,9 @@ public class PipelineBuild {
         return formattedStartTime;
     }
 
+    /**
+     * @return a map including build parameters
+     */
     public Map<String, String> getBuildParameters() {
         final Map<String, String> retval = new HashMap<String, String>();
         if (currentBuild != null) {

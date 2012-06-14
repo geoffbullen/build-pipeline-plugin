@@ -119,6 +119,9 @@ public class BuildPipelineView extends View {
          */
         private User user;
 
+        /**
+         * 
+         */
         public MyUserIdCause() {
             try {
                 // this block can generate a CyclicGraphDetector.CycleDetectedException
@@ -213,6 +216,8 @@ public class BuildPipelineView extends View {
      *            Indicates whether manual trigger will always be available.
      * @param showPipelineParameters
      *            Indicates whether pipeline parameter values should be shown.
+     * @param showPipelineDefinitionHeader
+     *            Indicates whether pipeline definition header should be shown.
      */
     @DataBoundConstructor
     public BuildPipelineView(final String name, final String buildViewTitle, final String selectedJob, final String noOfDisplayedBuilds,
@@ -223,7 +228,7 @@ public class BuildPipelineView extends View {
         setShowPipelineParameters(showPipelineParameters);
         setShowPipelineDefinitionHeader(showPipelineDefinitionHeader);
     }
-
+    
     /**
      * 
      * @param name
@@ -411,6 +416,11 @@ public class BuildPipelineView extends View {
         return triggerBuild(triggerProject, upstreamBuild, buildParametersAction);
     }
 
+    /**
+     * 
+     * @param externalizableId the externalizableId
+     * @return number of reruned build
+     */
     @JavaScriptMethod
     public int rerunSuccessfulBuild(final String externalizableId) {
         LOGGER.fine("Running successful build again: " + externalizableId); //$NON-NLS-1$
@@ -605,6 +615,9 @@ public class BuildPipelineView extends View {
         return Boolean.toString(showPipelineParameters);
     }
 
+    /**
+     * @param showPipelineParameters showPipelineParameters
+     */
     public void setShowPipelineParameters(final boolean showPipelineParameters) {
         this.showPipelineParameters = showPipelineParameters;
     }
@@ -613,6 +626,9 @@ public class BuildPipelineView extends View {
         return showPipelineDefinitionHeader;
     }
 
+    /**
+     * @return String value of showPipelineDefinitionHeader
+     */
     public String getshowPipelineDefinitionHeader() {
         return Boolean.toString(showPipelineDefinitionHeader);
     }

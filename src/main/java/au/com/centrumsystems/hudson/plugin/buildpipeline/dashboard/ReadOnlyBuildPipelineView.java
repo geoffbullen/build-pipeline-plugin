@@ -22,6 +22,14 @@ import au.com.centrumsystems.hudson.plugin.buildpipeline.BuildPipelineView;
  * @since 04/01/2012
  */
 public class ReadOnlyBuildPipelineView extends BuildPipelineView {
+    /**
+     * 
+     * @param displayName display name of build pipeline view
+     * @param description description of build pipeline view
+     * @param selectedJob selected job of build pipeline view
+     * @param noOfDisplayedBuilds number of displayed build of build pipeline view
+     * @param triggerOnlyLatestJob is trigger only latest job?
+     */
     public ReadOnlyBuildPipelineView(String displayName, String description, String selectedJob, String noOfDisplayedBuilds,
             boolean triggerOnlyLatestJob) {
         super(displayName, displayName, selectedJob, noOfDisplayedBuilds, triggerOnlyLatestJob);
