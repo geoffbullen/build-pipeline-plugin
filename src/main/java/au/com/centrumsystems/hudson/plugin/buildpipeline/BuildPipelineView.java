@@ -451,18 +451,15 @@ public class BuildPipelineView extends View {
      * @return The AbstractBuild associated with the AbstractProject and build number.
      */
     private AbstractBuild<?, ?> retrieveBuild(final int buildNo, final AbstractProject<?, ?> project) {
-        AbstractBuild<?, ?> build = null;
-
         if (project != null) {
             for (final AbstractBuild<?, ?> tmpUpBuild : (List<AbstractBuild<?, ?>>) project.getBuilds()) {
                 if (tmpUpBuild.getNumber() == buildNo) {
-                    build = tmpUpBuild;
-                    break;
+                    return tmpUpBuild;
                 }
             }
         }
 
-        return build;
+        throw new RuntimeException("No build found.");
     }
 
     /**
