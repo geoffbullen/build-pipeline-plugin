@@ -58,7 +58,7 @@ public class BuildPipelineDashboard extends DashboardPortlet {
      *            how many builds will be displayed for this job
      */
     @DataBoundConstructor
-    public BuildPipelineDashboard(String name, String description, String selectedJob, String noOfDisplayedBuilds) {
+    public BuildPipelineDashboard(final String name, final String description, final String selectedJob, final String noOfDisplayedBuilds) {
         super(name);
         this.description = description;
         this.selectedJob = selectedJob;

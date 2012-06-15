@@ -136,29 +136,12 @@ public class BuildPipelineViewTest extends HudsonTestCase {
         createFreeStyleProject(proj1);
 
         // True
-        BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds, true, true, false, false);
+        BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds, true, true, false);
         assertTrue(proj1, testView.isAlwaysAllowManualTrigger());
 
         // False
-        testView = new BuildPipelineView(bpViewName, bpViewTitle, "", noOfBuilds, true, false, false, false);
+        testView = new BuildPipelineView(bpViewName, bpViewTitle, "", noOfBuilds, true, false, false);
         assertFalse(proj1, testView.isAlwaysAllowManualTrigger());
-    }
-
-    @Test
-    public void testShowPipelineDefinitionHeader() throws IOException {
-        final String bpViewName = "MyTestView";
-        final String bpViewTitle = "MyTestViewTitle";
-        final String proj1 = "Proj1";
-        final String noOfBuilds = "5";
-        createFreeStyleProject(proj1);
-
-        // True
-        BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds, true, false, false, true);
-        assertTrue(proj1, testView.isShowPipelineDefinitionHeader());
-
-        // False
-        testView = new BuildPipelineView(bpViewName, bpViewTitle, "", noOfBuilds, true, false, false, false);
-        assertFalse(proj1, testView.isShowPipelineDefinitionHeader());
     }
 
     @Test
@@ -170,11 +153,11 @@ public class BuildPipelineViewTest extends HudsonTestCase {
         createFreeStyleProject(proj1);
 
         // True
-        BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds, true, false, true, false);
+        BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds, true, false, true);
         assertTrue(proj1, testView.isShowPipelineParameters());
 
         // False
-        testView = new BuildPipelineView(bpViewName, bpViewTitle, "", noOfBuilds, true, false, false, false);
+        testView = new BuildPipelineView(bpViewName, bpViewTitle, "", noOfBuilds, true, false, false);
         assertFalse(proj1, testView.isShowPipelineParameters());
     }
 
@@ -300,8 +283,8 @@ public class BuildPipelineViewTest extends HudsonTestCase {
      * getOwnerItemGroup and it's not set. This doesn't solve the root cause and it't only intended to make our tests succeed.
      */
     static class BuildPipelineViewFactory {
-        public static BuildPipelineView getBuildPipelineView(String bpViewName, String bpViewTitle, String projectName, String noOfBuilds,
-                boolean triggerOnlyLatestJob) {
+        public static BuildPipelineView getBuildPipelineView(final String bpViewName, final String bpViewTitle, final String projectName,
+                final String noOfBuilds, final boolean triggerOnlyLatestJob) {
             return new BuildPipelineView(bpViewName, bpViewTitle, projectName, noOfBuilds, triggerOnlyLatestJob) {
 
                 @Override

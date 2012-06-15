@@ -24,14 +24,19 @@ import au.com.centrumsystems.hudson.plugin.buildpipeline.BuildPipelineView;
 public class ReadOnlyBuildPipelineView extends BuildPipelineView {
     /**
      * 
-     * @param displayName display name of build pipeline view
-     * @param description description of build pipeline view
-     * @param selectedJob selected job of build pipeline view
-     * @param noOfDisplayedBuilds number of displayed build of build pipeline view
-     * @param triggerOnlyLatestJob is trigger only latest job?
+     * @param displayName
+     *            display name of build pipeline view
+     * @param description
+     *            description of build pipeline view
+     * @param selectedJob
+     *            selected job of build pipeline view
+     * @param noOfDisplayedBuilds
+     *            number of displayed build of build pipeline view
+     * @param triggerOnlyLatestJob
+     *            is trigger only latest job?
      */
-    public ReadOnlyBuildPipelineView(String displayName, String description, String selectedJob, String noOfDisplayedBuilds,
-            boolean triggerOnlyLatestJob) {
+    public ReadOnlyBuildPipelineView(final String displayName, final String description, final String selectedJob,
+            final String noOfDisplayedBuilds, final boolean triggerOnlyLatestJob) {
         super(displayName, displayName, selectedJob, noOfDisplayedBuilds, triggerOnlyLatestJob);
         // this is ugly, but there is no other way to set the description of
         // the view
@@ -39,13 +44,13 @@ public class ReadOnlyBuildPipelineView extends BuildPipelineView {
     }
 
     @Override
-    public boolean hasBuildPermission(AbstractProject<?, ?> currentProject) {
+    public boolean hasBuildPermission(final AbstractProject<?, ?> currentProject) {
         // we are not a 'real view' in this case and we don't care in R/O mode
         return false;
     }
 
     @Override
-    public boolean hasPermission(Permission p) {
+    public boolean hasPermission(final Permission p) {
         return false;
     }
 

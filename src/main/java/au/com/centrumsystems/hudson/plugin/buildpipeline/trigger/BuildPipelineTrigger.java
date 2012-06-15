@@ -94,7 +94,7 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
             throw new IllegalArgumentException();
         }
 
-        setDownstreamProjectNames(downstreamProjectNames);
+        this.downstreamProjectNames = downstreamProjectNames;
     }
 
     /**
@@ -146,7 +146,7 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
 
     @Override
     public boolean perform(final AbstractBuild<?, ?> build, final Launcher launcher, final BuildListener listener)
-        throws InterruptedException, IOException {
+            throws InterruptedException, IOException {
         return true;
     }
 
@@ -211,7 +211,7 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
      * @param downstreamProjectName
      *            - The name of the AbstractProject associated with the BuildPipelineTrigger
      */
-    public void removeDownstreamTrigger(BuildPipelineTrigger bpTrigger, final AbstractProject<?, ?> ownerProject,
+    public void removeDownstreamTrigger(final BuildPipelineTrigger bpTrigger, final AbstractProject<?, ?> ownerProject,
             final String downstreamProjectName) {
         if (bpTrigger != null) {
             boolean changed = false;

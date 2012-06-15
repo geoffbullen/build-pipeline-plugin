@@ -128,7 +128,7 @@ public class ProjectForm {
      * @param display
      *            - boolean to indicate whether the trigger button should be shown
      */
-    public void setDisplayTrigger(Boolean display) {
+    public void setDisplayTrigger(final Boolean display) {
         displayTrigger = display;
     }
 

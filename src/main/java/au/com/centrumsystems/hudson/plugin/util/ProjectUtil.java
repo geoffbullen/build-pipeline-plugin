@@ -124,7 +124,7 @@ public final class ProjectUtil {
      *            - The AbstractProject
      * @return The ParametersAction of the AbstractProject
      */
-    public static ParametersAction getProjectParametersAction(AbstractProject<?, ?> project) {
+    public static ParametersAction getProjectParametersAction(final AbstractProject<?, ?> project) {
         if (project != null) {
             final ParametersDefinitionProperty property = project.getProperty(ParametersDefinitionProperty.class);
             if (property == null) {

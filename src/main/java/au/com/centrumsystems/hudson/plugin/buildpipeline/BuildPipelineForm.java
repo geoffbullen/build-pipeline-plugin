@@ -127,7 +127,7 @@ public class BuildPipelineForm {
      *            - The current column of the grid being used
      * @return - The row number to be used
      */
-    private int getNextAvailableRow(Map<Integer, ? extends Map<Integer, ?>> grid, int currentRow, int currentColumn) {
+    private int getNextAvailableRow(final Map<Integer, ? extends Map<Integer, ?>> grid, final int currentRow, final int currentColumn) {
         int nextRow = currentRow;
         boolean nextRoundFound = false;
         if (grid != null) {
@@ -159,7 +159,7 @@ public class BuildPipelineForm {
      * @return - true: The row does contain data in the columns greater than col, false: The row does not contain data in the columns
      *         greater than col
      */
-    private boolean rowAlreadyContainsData(Map<Integer, ?> rowOfGrid, int col) {
+    private boolean rowAlreadyContainsData(final Map<Integer, ?> rowOfGrid, final int col) {
         if (rowOfGrid != null) {
             for (final Entry<Integer, ?> entry : rowOfGrid.entrySet()) {
                 if (entry.getKey() >= col) {
@@ -214,7 +214,7 @@ public class BuildPipelineForm {
      *            the height of the job
      * @return boolean whether to display or not
      */
-    public Boolean getDisplayTrigger(int row, int height) {
+    public Boolean getDisplayTrigger(final int row, final int height) {
         return projectGrid.get(row).get(height).getDisplayTrigger();
     }
 
@@ -233,7 +233,7 @@ public class BuildPipelineForm {
      * @param display
      *            - boolean to indicate whether the trigger button should be shown
      */
-    public void setDisplayTrigger(int row, int height, boolean display) {
+    public void setDisplayTrigger(final int row, final int height, final boolean display) {
         projectGrid.get(row).get(height).setDisplayTrigger(display);
     }
 

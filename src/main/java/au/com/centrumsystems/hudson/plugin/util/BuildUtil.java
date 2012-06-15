@@ -83,7 +83,8 @@ public final class BuildUtil {
      *            - The AbstractProject
      * @return - AbstractBuild's ParametersAction
      */
-    public static Action getAllBuildParametersAction(AbstractBuild<?, ?> upstreamBuild, AbstractProject<?, ?> downstreamProject) {
+    public static Action getAllBuildParametersAction(//
+            final AbstractBuild<?, ?> upstreamBuild, final AbstractProject<?, ?> downstreamProject) { //
         // Retrieve the List of Actions from the downstream project
         final ParametersAction dsProjectParametersAction = ProjectUtil.getProjectParametersAction(downstreamProject);
 
@@ -100,7 +101,7 @@ public final class BuildUtil {
      *            - AbstractBuild
      * @return - ParametersAction of AbstractBuild
      */
-    public static ParametersAction getBuildParametersAction(AbstractBuild<?, ?> build) {
+    public static ParametersAction getBuildParametersAction(final AbstractBuild<?, ?> build) {
         ParametersAction buildParametersAction = null;
         if (build != null) {
             // If a ParametersAction is found
@@ -123,7 +124,7 @@ public final class BuildUtil {
      *            ParametersAction set 2
      * @return - Single set of ParametersAction
      */
-    public static ParametersAction mergeParameters(ParametersAction base, ParametersAction overlay) {
+    public static ParametersAction mergeParameters(final ParametersAction base, final ParametersAction overlay) {
         final LinkedHashMap<String, ParameterValue> params = new LinkedHashMap<String, ParameterValue>();
         if (base != null) {
             for (final ParameterValue param : base.getParameters()) {

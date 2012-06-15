@@ -5,6 +5,7 @@ import java.util.ResourceBundle;
 
 /**
  * Message resource bundle utility
+ * 
  * @author Unknown
  */
 public final class Strings {
@@ -26,7 +27,8 @@ public final class Strings {
 
     /**
      * 
-     * @param key key to resource bundle
+     * @param key
+     *            key to resource bundle
      * @return resource of the key.
      */
     public static String getString(final String key) {

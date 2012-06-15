@@ -56,7 +56,7 @@ public class ProjectFormTest extends HudsonTestCase {
 
         assertTrue(pf.equals(pf1));
         assertFalse(pf.equals(pf2));
-        assertFalse(pf.equals(null));
+        assertNull(pf);
         assertFalse(pf.equals(pf3));
 
     }
