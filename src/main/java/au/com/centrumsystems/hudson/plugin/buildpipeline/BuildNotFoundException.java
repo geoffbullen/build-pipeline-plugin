@@ -19,7 +19,7 @@ public class BuildNotFoundException extends RuntimeException {
      * @param message
      *            message
      */
-    public BuildNotFoundException(String message) {
+    public BuildNotFoundException(final String message) {
         super(message);
     }
 
