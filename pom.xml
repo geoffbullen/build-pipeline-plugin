@@ -195,7 +195,6 @@
 					<effort>Max</effort>
 					<threshold>Medium</threshold>
 					<xmlOutput>true</xmlOutput>
-					<excludeFilterFile>findbugs-exclude.xml</excludeFilterFile>
 				</configuration>
 				<executions>
 					<execution>
@@ -277,16 +276,25 @@
 			<url>http://maven.jenkins-ci.org:8081/content/repositories/releases/</url>
 		</repository>
 	</distributionManagement>
+
 	<repositories>
 		<repository>
+			<id>maven-central</id>
+			<url>http://repo1.maven.org/maven2</url>
+		</repository>
+		<repository>
 			<id>maven.jenkins-ci.org</id>
-			<url>http://maven.jenkins-ci.org:8081/content/repositories/releases/</url>
+			<url>http://repo.jenkins-ci.org/public</url>
 		</repository>
 	</repositories>
 	<pluginRepositories>
 		<pluginRepository>
+			<id>maven-central</id>
+			<url>http://repo1.maven.org/maven2</url>
+		</pluginRepository>
+		<pluginRepository>
 			<id>maven.jenkins-ci.org</id>
-			<url>http://maven.jenkins-ci.org:8081/content/repositories/releases/</url>
+			<url>http://repo.jenkins-ci.org/public</url>
 		</pluginRepository>
 	</pluginRepositories>
 
