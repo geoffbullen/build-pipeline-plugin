@@ -1,7 +1,10 @@
 package au.com.centrumsystems.hudson.plugin.buildpipeline;
 
 /**
- * build not found
+ * Build not found
+ * 
+ * @author marcin
+ * 
  */
 public class BuildNotFoundException extends RuntimeException {
 
