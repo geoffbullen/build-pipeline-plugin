@@ -195,6 +195,7 @@
 					<effort>Max</effort>
 					<threshold>Medium</threshold>
 					<xmlOutput>true</xmlOutput>
+					<excludeFilterFile>findbugs-exclude.xml</excludeFilterFile>
 				</configuration>
 				<executions>
 					<execution>
