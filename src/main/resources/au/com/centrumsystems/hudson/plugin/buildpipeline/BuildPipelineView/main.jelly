@@ -35,14 +35,13 @@
 <table class="build-card rounded {{build.status}}">
 	<tbody>
 		<tr class="header">
-			<td colspan="2">
+			<td>
 				<div>
 					<a title="{{project.name}}" href="{{project.url}}" name="{{id}}">{{project.name}}</a>
 				</div>
 			</td>
 		</tr>
 		<tr class="build-body">
-			<td class="build-number">{{build.number}}</td>
 			<td class="secondary-info">
 				<div>{{build.startDate}}</div>
 				<div>{{build.startTime}}</div>
@@ -109,11 +108,11 @@
 	</script>
 	<style>
 
-.trigger {
-	background: url("${rootURL}/images/16x16/clock.png") no-repeat center
-		center !important;
-}
-</style>
+	.trigger {
+		background: url("${rootURL}/images/16x16/clock.png") no-repeat center
+			center !important;
+	}
+	</style>
 	<form method="post" name="pipelineViewForm" action="manualExecution" id="manualExecutionForm">
 		<input name="upstreamProjectName" id="upstreamProjectName" type="hidden" />
 		<input name="upstreamBuildNumber" id="upstreamBuildNumber" type="hidden" />
@@ -196,49 +195,26 @@
 		
 			<table id="pipelines">
 				<j:set var="projectGrid" value="${buildPipelineForm.getProjectGrid()}" />
-				<!-- projects -->
-				<j:if test="${from.showPipelineDefinitionHeader}">
-					<!-- projects -->
-					<tbody>
-						<j:forEach items="${projectGrid}" var="projectGridLine">
-							<tr id="project-pipeline">
-								<j:if test="${from.isShowPipelineParameters()}">
-									<!-- additional spacer for params box -->
-									<td class="spacer"/>
-								</j:if>
-								<td class="spacer"/>
-								<j:forEach items="${projectGridLine.getValue()}" var="projectForm">
-									<td/> <!-- spacer -->
-									<td>
-										<table class="PROJECT build-card rounded">
-											<tbody>
-												<tr class="header">
-													<td colspan="2">${projectForm.getValue().getName()}</td>
-												</tr>
-												<tr class="build-body">
-													<td class="build-number">${projectForm.getValue().getLastSuccessfulBuildNumber()}</td>
-													<td class="statusImages">
-														<img src="${rootURL}/images/32x32/${projectForm.getValue().getHealth()}" class="icon-with-caption" />
-													</td>
-												</tr>
-											</tbody>
-										</table>
-									</td>
-								</j:forEach>
-							</tr>
-						</j:forEach>
-					</tbody>
-				</j:if>
 				<!-- builds -->
 				<j:forEach items="${buildPipelineForm.getBuildGrids()}" var="buildGrid" indexVar="i">
 					<tbody class="pipelineGroup">
 						<j:forEach begin="${0}" end="${buildGrid.keySet().size() - 1}" indexVar="x">
 							<tr class='build-pipeline'>
-								<j:if test="${from.isShowPipelineParameters()}">
-									<j:choose>
-										<j:when test="${x == 0}">
-											<td>
-												<div class="param-info"> 
+								<td><j:if test="${x == 0}">
+									<div class="revision rounded">
+										<div>
+											
+											<j:choose>
+												<j:when test="${buildGrid.get(x).get(0).getUrl()}">												
+													<a href="${buildGrid.get(x).get(0).getUrl()}changes" title="${buildGrid.get(x).get(0).getRevision()}">
+														${buildGrid.get(x).get(0).getRevision()}
+													</a>
+												</j:when>
+												<j:otherwise>
+													${buildGrid.get(x).get(0).getRevision()}
+												</j:otherwise>
+											</j:choose>
+											<j:if test="${from.isShowPipelineParameters()}">
 												<table>
 													<tr>
 														<td colspan="3">Parameter Values</td>
@@ -251,27 +227,7 @@
 														</tr>
 													</j:forEach>												
 												</table>
-												</div>
-											</td>
-										</j:when>
-										<j:otherwise>
-											<td></td>
-										</j:otherwise>
-									</j:choose>
-								</j:if>
-								<td><j:if test="${x == 0}">
-									<div class="revision rounded">
-										<div>
-											<j:choose>
-												<j:when test="${buildGrid.get(x).get(0).getUrl()}">												
-													<a href="${buildGrid.get(x).get(0).getUrl()}changes" title="${buildGrid.get(x).get(0).getRevision()}">
-														${buildGrid.get(x).get(0).getRevision()}
-													</a>
-												</j:when>
-												<j:otherwise>
-													${buildGrid.get(x).get(0).getRevision()}
-												</j:otherwise>
-											</j:choose>
+											</j:if>
 										</div>
 									</div>
 								</j:if></td>

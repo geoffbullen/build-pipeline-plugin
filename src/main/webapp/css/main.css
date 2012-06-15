@@ -236,7 +236,7 @@ tr.spacerRow td {
 	text-align: center;
 }
 
-.revision div a {
+.revision div {
 	padding: 4px;
 	position: relative;
 	margin-left: auto;
@@ -332,5 +332,4 @@ a:hover {
 }
 
 .param-info {
-	border: 1px solid black;
 }
