@@ -35,13 +35,14 @@
 <table class="build-card rounded {{build.status}}">
 	<tbody>
 		<tr class="header">
-			<td>
+			<td colspan="2">
 				<div>
 					<a title="{{project.name}}" href="{{project.url}}" name="{{id}}">{{project.name}}</a>
 				</div>
 			</td>
 		</tr>
 		<tr class="build-body">
+			<td class="build-number">{{build.number}}</td>
 			<td class="secondary-info">
 				<div>{{build.startDate}}</div>
 				<div>{{build.startTime}}</div>
@@ -77,11 +78,13 @@
 					{{/unless}}
 					{{#unless build.isPending}}
 						{{#unless build.isBuilding}}
-							{{#if ${from.alwaysAllowManualTrigger}}}
-								<a href="#{{id}}" class="trigger" onclick="buildPipeline.showSpinner({{id}}); buildPipeline.rerunSuccessfulBuild({{id}}, '{{build.extId}}', [{{build.dependencyIds}}])">
-									<img title="trigger" alt="trigger" src="{{rootUrl}}/images/16x16/redo.png" />
-								</a>
-							{{/if}}
+							{{#unless build.isReadyToBeManuallyBuilt}}
+								{{#if ${from.alwaysAllowManualTrigger}}}
+									<a href="#{{id}}" class="trigger" onclick="buildPipeline.showSpinner({{id}}); buildPipeline.rerunSuccessfulBuild({{id}}, '{{build.extId}}', [{{build.dependencyIds}}])">
+										<img title="trigger" alt="trigger" src="{{rootUrl}}/images/16x16/redo.png" />
+									</a>
+								{{/if}}
+							{{/unless}}
 						{{/unless}}
 					{{/unless}}
 					{{#if build.isReadyToBeManuallyBuilt}}
@@ -203,7 +206,6 @@
 								<td><j:if test="${x == 0}">
 									<div class="revision rounded">
 										<div>
-											
 											<j:choose>
 												<j:when test="${buildGrid.get(x).get(0).getUrl()}">												
 													<a href="${buildGrid.get(x).get(0).getUrl()}changes" title="${buildGrid.get(x).get(0).getRevision()}">
@@ -249,17 +251,17 @@
 												buildPipeline.showProgress(${build.getId()}, ${build.getDependencyIds()});
 											</j:if>
 											<j:if test="${build.getStatus() == 'PENDING'}">
-											jQuery("#pipelines").bind("show-status-${build.getId()}", function(){
-											<j:choose>
-												<j:when test="${build.isManualTrigger()}">
-													buildPipeline.updateBuildCard(${build.getId()});
-												</j:when>
-												<j:otherwise>
-													buildPipeline.updateNextBuildAndShowProgress(${build.getId()}, ${build.getNextBuildNumber()}, ${build.getDependencyIds()});
-												</j:otherwise>
-											</j:choose>
-											});
-										</j:if>
+												jQuery("#pipelines").bind("show-status-${build.getId()}", function(){
+												<j:choose>
+													<j:when test="${build.isManualTrigger()}">
+														buildPipeline.updateBuildCard(${build.getId()});
+													</j:when>
+													<j:otherwise>
+														buildPipeline.updateNextBuildAndShowProgress(${build.getId()}, ${build.getNextBuildNumber()}, ${build.getDependencyIds()});
+													</j:otherwise>
+												</j:choose>
+												});
+											</j:if>
 										</script>
 										<j:if test="${(y + 1 != buildPipelineForm.getGridWidth())}">
 											<td class="next"><j:if test="${!(build.getDependencies().length() == 0)}">
