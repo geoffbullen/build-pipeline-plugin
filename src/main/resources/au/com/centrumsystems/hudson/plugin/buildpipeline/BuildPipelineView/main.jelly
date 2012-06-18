@@ -211,27 +211,34 @@
 												<tr class="build-actions">
 													<td>
 														<j:if test="${from.isShowPipelineParameters()}">
-															<div id="build-parameters-trigger-${buildGrid.get(x).get(0).getId()}" class="pointer">Parameter Values</div>
-															<div id="build-parameters-${buildGrid.get(x).get(0).getId()}" class="param-info hidden">
-																<div>
-																	<ul>
-																		<j:forEach items="${buildGrid.get(x).get(0).getParameters().entrySet()}" var="buildParam" indexVar="buildParamCtr">
-																			<li>
-																				${buildParam.getKey()}
-																				:
-																				${buildParam.getValue()}
-																			</li>
-																		</j:forEach>																
-																	</ul>
-																</div>
-															</div>
-															<script>
-																jQuery('#build-parameters-trigger-${buildGrid.get(x).get(0).getId()}').tooltip({
-																	bodyHandler: function() {
-																		return jQuery('#build-parameters-${buildGrid.get(x).get(0).getId()}').html();
-																	}
-																});
-															</script>
+															<j:choose>
+																<j:when test="${buildGrid.get(x).get(0).getParameters().isEmpty()}">
+																	No parameters
+																</j:when>
+																<j:otherwise>
+																	<div id="build-parameters-trigger-${buildGrid.get(x).get(0).getId()}" class="pointer">Parameter Values</div>
+																	<div id="build-parameters-${buildGrid.get(x).get(0).getId()}" class="param-info hidden">
+																		<div>
+																			<ul>
+																				<j:forEach items="${buildGrid.get(x).get(0).getParameters().entrySet()}" var="buildParam" indexVar="buildParamCtr">
+																					<li>
+																						${buildParam.getKey()}
+																						:
+																						${buildParam.getValue()}
+																					</li>
+																				</j:forEach>																
+																			</ul>
+																		</div>
+																	</div>
+																	<script>
+																		jQuery('#build-parameters-trigger-${buildGrid.get(x).get(0).getId()}').tooltip({
+																			bodyHandler: function() {
+																				return jQuery('#build-parameters-${buildGrid.get(x).get(0).getId()}').html();
+																			}
+																		});
+																	</script>
+																</j:otherwise>
+															</j:choose>
 														</j:if>
 													</td>
 												</tr>

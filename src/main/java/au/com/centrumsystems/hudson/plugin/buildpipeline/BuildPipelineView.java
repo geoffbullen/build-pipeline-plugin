@@ -77,13 +77,13 @@ public class BuildPipelineView extends View {
     private String buildViewTitle = ""; //$NON-NLS-1$
 
     /** Indicates whether only the latest job will be triggered. **/
-    private boolean triggerOnlyLatestJob;
+    private boolean triggerOnlyLatestJob = false;
 
     /** alwaysAllowManualTrigger. */
-    private boolean alwaysAllowManualTrigger;
+    private boolean alwaysAllowManualTrigger = true;
 
     /** showPipelineParameters. */
-    private boolean showPipelineParameters;
+    private boolean showPipelineParameters = true;
 
     /*
      * Keep feature flag properties in one place so that it is easy to refactor them out later.
