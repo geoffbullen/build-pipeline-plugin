@@ -77,7 +77,7 @@ public class BuildPipelineView extends View {
     private String buildViewTitle = ""; //$NON-NLS-1$
 
     /** Indicates whether only the latest job will be triggered. **/
-    private boolean triggerOnlyLatestJob = false;
+    private boolean triggerOnlyLatestJob;
 
     /** alwaysAllowManualTrigger. */
     private boolean alwaysAllowManualTrigger = true;
