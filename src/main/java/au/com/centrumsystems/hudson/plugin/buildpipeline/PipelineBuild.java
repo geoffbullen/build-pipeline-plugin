@@ -449,4 +449,8 @@ public class PipelineBuild {
 
         return retval;
     }
+
+    public boolean isProjectDisabled() {
+        return getProject().isDisabled();
+    }
 }

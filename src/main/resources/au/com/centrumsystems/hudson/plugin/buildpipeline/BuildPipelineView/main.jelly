@@ -55,7 +55,8 @@
 			</td>
 		</tr>
 		<tr class="build-actions">
-			<td colspan="2">
+			<td colspan="2">				
+				{{#unless project.disabled}}
 				<div class="status-bar" id="status-bar-{{id}}">
 					{{#if build.isBuilding}}
 						<div class="pointer" onclick="buildPipeline.fillDialog('{{build.url}}consoleText', 'Console output for {{project.name}} #{{build.number}}')">
@@ -100,6 +101,10 @@
 						{{/unless}}
 					{{/if}}
 				</div>
+				{{/unless}}
+				{{#if project.disabled}}
+					Project is disabled
+				{{/if}}
 			</td>
 		</tr>
 	</tbody>

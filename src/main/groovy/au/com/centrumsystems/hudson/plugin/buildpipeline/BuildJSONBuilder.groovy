@@ -13,30 +13,31 @@ class BuildJSONBuilder {
 		def buildStatus = pipelineBuild.currentBuildResult
         def root = builder {
 			id(formId)			
-            build {				
-				duration(pipelineBuild.buildDuration)				
+            build {		
+                dependencyIds(buildDependencyIds)
+                displayName(pipelineBuild.currentBuild?.displayName)
+				duration(pipelineBuild.buildDuration)
+                extId(pipelineBuild.currentBuild?.externalizableId)
 				hasPermission(pipelineBuild.project?.hasPermission(Item.BUILD));
+                hasUpstreamBuild(null != pipelineBuild.upstreamBuild)
 				isBuilding(buildStatus == 'BUILDING')
 				isComplete(buildStatus != 'BUILDING' && buildStatus != 'PENDING' && buildStatus != 'MANUAL')
 				isPending(buildStatus == 'PENDING')
 				isReadyToBeManuallyBuilt(pipelineBuild.isReadyToBeManuallyBuilt())
 				isManualTrigger(pipelineBuild.isManualTrigger())
-				number(pipelineBuild.currentBuild?.number)
-				extId(pipelineBuild.currentBuild?.externalizableId)
-				displayName(pipelineBuild.currentBuild?.displayName)
+				number(pipelineBuild.currentBuild?.number)                
 				progress(pipelineBuild.buildProgress)
 				progressLeft(100 - pipelineBuild.buildProgress)
 				startDate(pipelineBuild.formattedStartDate)
 				startTime(pipelineBuild.formattedStartTime)
 				status(buildStatus)								
-				url(pipelineBuild.buildResultURL)
-				dependencyIds(buildDependencyIds)
-				hasUpstreamBuild(null != pipelineBuild.upstreamBuild)
+				url(pipelineBuild.buildResultURL)					
 				userId(pipelineBuild.currentBuild?.getCause(Cause.UserIdCause.class)?.getUserId())
 			}
-			project {
+			project {                
+                disabled(pipelineBuild.projectDisabled)
 				name(pipelineBuild.project.name)
-				url(pipelineBuild.projectURL)
+				url(pipelineBuild.projectURL)                
 			}
 			upstream {
 				projectName(pipelineBuild.upstreamPipelineBuild?.project?.name)
