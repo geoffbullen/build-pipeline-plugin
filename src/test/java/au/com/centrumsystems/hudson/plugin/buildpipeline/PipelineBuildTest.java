@@ -296,9 +296,8 @@ public class PipelineBuildTest extends HudsonTestCase {
     }
 
     @Test
-    public void testGetSVNRevisionNo() throws Exception {
+    public void getPipelineVersion() throws Exception {
         final String proj1 = "Proj1";
-        final String proj1GetSVN = Strings.getString("PipelineBuild.RevisionNotAvailable");
         FreeStyleProject project1;
         FreeStyleBuild build1;
         project1 = createFreeStyleProject(proj1);
@@ -307,6 +306,6 @@ public class PipelineBuildTest extends HudsonTestCase {
         waitUntilNoActivity();
 
         final PipelineBuild pb = new PipelineBuild(build1, project1, null);
-        assertEquals("The SVN Revision text is incorrect.", proj1GetSVN, pb.getPipelineVersion());
+        assertEquals(String.valueOf(build1.getNumber()), pb.getPipelineVersion());
     }
 }
