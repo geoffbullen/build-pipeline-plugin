@@ -228,19 +228,10 @@ tr.spacerRow td {
 
 .revision {
 	background-color: #8b8989;
-	display: table-cell;
-	vertical-align: middle;
-	height: 70px;
-	margin: 2px;
-	padding: 5px;
-	text-align: center;
 }
 
-.revision div {
-	padding: 4px;
-	position: relative;
-	margin-left: auto;
-	margin-right: auto;
+.revision .buildNumber {
+	font-size: 2em;
 }
 
 .SUCCESS {
@@ -331,5 +322,10 @@ a:hover {
 	font-weight: inherit;
 }
 
-.param-info {
+.pointer {
+	cursor: pointer;
+}
+
+.hidden {
+	display: none;
 }

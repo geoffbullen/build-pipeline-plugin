@@ -29,7 +29,6 @@ import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.FreeStyleProject;
 import hudson.model.Hudson;
-import hudson.scm.ChangeLogSet;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -348,46 +347,19 @@ public class PipelineBuild {
     }
 
     /**
-     * Get the SCM revision no of a particular currentBuild
+     * Return pipeline version which is simply the first build's number
      * 
-     * @return The revision number of the currentBuild or "No Revision"
+     * @return pipeline verison
      */
-    public String getScmRevision() {
-        return currentBuild != null ? revNo(currentBuild) : Strings.getString("PipelineBuild.RevisionNotAvailable"); //$NON-NLS-1$
-    }
-
-    /**
-     * Iterate through builds to find the revisions of the last change sets
-     * 
-     * @param build
-     *            build
-     * @return string with the revision number when it was built
-     */
-    private String revNo(final AbstractBuild<?, ?> build) {
-        final StringBuilder revisions = new StringBuilder();
-        final ChangeLogSet<?> changeSet = build.getChangeSet();
-        LOGGER.fine("Looking for a changeset..."); //$NON-NLS-1$
-        if (changeSet != null && !changeSet.isEmptySet()) {
-            int i = 0;
-            final int size = changeSet.getItems().length;
-            LOGGER.fine(String.format("Found %d change entries.", size)); //$NON-NLS-1$
-            for (final ChangeLogSet.Entry changeLogSet : changeSet) {
-                if (changeLogSet.getCommitId() != null) {
-                    revisions.append(changeLogSet.getCommitId());
-                }
-                i++;
-                if (changeLogSet.getCommitId() != null && !changeLogSet.getCommitId().isEmpty() && i < size) {
-                    revisions.append(","); //$NON-NLS-1$
-                }
-            }
-        }
-        if (!revisions.toString().isEmpty()) {
-            return revisions.toString();
-        } else if (build.getPreviousBuild() != null) {
-            return revNo(build.getPreviousBuild());
+    public String getPipelineVersion() {
+        String version;
+        if (currentBuild != null) {
+            version = currentBuild.getNumber() > 0 ? String.valueOf(currentBuild.getNumber()) : Strings
+                    .getString("PipelineBuild.RevisionNotAvailable");
         } else {
-            return Strings.getString("PipelineBuild.RevisionNotAvailable"); //$NON-NLS-1$
+            version = Strings.getString("PipelineBuild.RevisionNotAvailable");
         }
+        return version;
     }
 
     /**

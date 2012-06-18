@@ -307,6 +307,6 @@ public class PipelineBuildTest extends HudsonTestCase {
         waitUntilNoActivity();
 
         final PipelineBuild pb = new PipelineBuild(build1, project1, null);
-        assertEquals("The SVN Revision text is incorrect.", proj1GetSVN, pb.getScmRevision());
+        assertEquals("The SVN Revision text is incorrect.", proj1GetSVN, pb.getPipelineVersion());
     }
 }

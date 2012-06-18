@@ -29,6 +29,13 @@ BuildPipeline.prototype = {
 			buildPipeline.updateBuildCardFromJSON(jQuery.parseJSON(data.responseObject()), true);
 		});
 	},
+	fetchLatestBuildNumber : function(id) {
+		var buildPipeline = this;
+		console.log(buildPipeline.buildProxies[id])
+		buildPipeline.buildProxies[id].asJSON(function(data){
+			console.log(jQuery.parseJSON(data.responseObject()).build.number)
+		});
+	},
 	updateBuildCardFromJSON : function(buildAsJSON, fadeIn) {
 		var buildPipeline = this;
 		jQuery("#build-" + buildAsJSON.id).empty();

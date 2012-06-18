@@ -108,7 +108,7 @@ public class BuildForm {
     }
 
     public String getRevision() {
-        return pipelineBuild.getScmRevision();
+        return pipelineBuild.getPipelineVersion();
     }
 
     @JavaScriptMethod

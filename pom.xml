@@ -4,7 +4,6 @@
 		<groupId>org.jenkins-ci.plugins</groupId>
 		<artifactId>plugin</artifactId>
 		<version>1.457</version>
-		<relativePath/>
 	</parent>
 	<groupId>org.jvnet.hudson.plugins</groupId>
 	<artifactId>build-pipeline-plugin</artifactId>
