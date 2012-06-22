@@ -85,13 +85,15 @@ public class BuildPipelineView extends View {
     /** showPipelineParameters. */
     private boolean showPipelineParameters = true;
 
+    /**
+     * Frequency at which the Build Pipeline Plugin updates the build cards in seconds
+     */
+    private int refreshFrequency = 2;
+
     /*
      * Keep feature flag properties in one place so that it is easy to refactor them out later.
      */
     /* Feature flags - START */
-
-    /** Indicates whether the progress bar should be displayed */
-    private boolean displayProgressBar;
 
     /* Feature flags - END */
 
@@ -211,13 +213,17 @@ public class BuildPipelineView extends View {
      *            Indicates whether manual trigger will always be available.
      * @param showPipelineParameters
      *            Indicates whether pipeline parameter values should be shown.
+     * @param refreshFrequency
+     *            Frequency at which the build pipeline plugin refreshes build cards
      */
     @DataBoundConstructor
     public BuildPipelineView(final String name, final String buildViewTitle, final String selectedJob, final String noOfDisplayedBuilds,
-            final boolean triggerOnlyLatestJob, final boolean alwaysAllowManualTrigger, final boolean showPipelineParameters) {
+            final boolean triggerOnlyLatestJob, final boolean alwaysAllowManualTrigger, final boolean showPipelineParameters,
+            final int refreshFrequency) {
         this(name, buildViewTitle, selectedJob, noOfDisplayedBuilds, triggerOnlyLatestJob);
         this.alwaysAllowManualTrigger = alwaysAllowManualTrigger;
         this.showPipelineParameters = showPipelineParameters;
+        this.refreshFrequency = refreshFrequency;
     }
 
     /**
@@ -240,6 +246,7 @@ public class BuildPipelineView extends View {
         this.triggerOnlyLatestJob = Boolean.valueOf(req.getParameter("_.triggerOnlyLatestJob")); //$NON-NLS-1$
         this.alwaysAllowManualTrigger = Boolean.valueOf(req.getParameter("_.alwaysAllowManualTrigger")); //$NON-NLS-1$
         this.showPipelineParameters = Boolean.valueOf(req.getParameter("_.showPipelineParameters")); //$NON-NLS-1$
+        this.refreshFrequency = Integer.valueOf(req.getParameter("refreshFrequency")); //$NON-NLS-1$
     }
 
     /**
@@ -566,6 +573,18 @@ public class BuildPipelineView extends View {
 
     public String getShowPipelineParameters() {
         return Boolean.toString(showPipelineParameters);
+    }
+
+    public int getRefreshFrequency() {
+        return refreshFrequency;
+    }
+
+    public void setRefreshFrequency(final int refreshFrequency) {
+        this.refreshFrequency = refreshFrequency;
+    }
+
+    public int getRefreshFrequencyInMillis() {
+        return refreshFrequency * 1000;
     }
 
     /**

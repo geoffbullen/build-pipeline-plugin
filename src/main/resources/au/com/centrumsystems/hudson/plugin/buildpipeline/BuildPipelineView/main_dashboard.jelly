@@ -66,7 +66,7 @@
 						<a href="#{{id}}" OnClick="showPopup('{{build.url}}consoleText')">
 							<table class="progress-bar" align="center">
 								<tbody>
-									<tr>
+									<tr title="{{build.progress}}%">
 										<td style="width: {{build.progress}}%" class="progress-bar-done" id="progress-bar-done{{id}}"></td>
 										<td style="width: {{build.progressLeft}}%" class="progress-bar-left" id="progress-bar-left{{id}}"></td>
 									</tr>
@@ -120,7 +120,7 @@
 	    });
 		
 		var buildCardTemplateSource = $("#build-card-template").html();		
-		var buildPipeline = new BuildPipeline(<st:bind value="${from}" />, Handlebars.compile(buildCardTemplateSource));
+		var buildPipeline = new BuildPipeline(<st:bind value="${from}" />, Handlebars.compile(buildCardTemplateSource), ${from.getRefreshFrequencyInMillis()});
 
 	</script>
 

@@ -38,8 +38,7 @@ public class ReadOnlyBuildPipelineView extends BuildPipelineView {
     public ReadOnlyBuildPipelineView(final String displayName, final String description, final String selectedJob,
             final String noOfDisplayedBuilds, final boolean triggerOnlyLatestJob) {
         super(displayName, displayName, selectedJob, noOfDisplayedBuilds, triggerOnlyLatestJob);
-        // this is ugly, but there is no other way to set the description of
-        // the view
+        // this is ugly, but there is no other way to set the description of the view
         super.description = description;
     }
 

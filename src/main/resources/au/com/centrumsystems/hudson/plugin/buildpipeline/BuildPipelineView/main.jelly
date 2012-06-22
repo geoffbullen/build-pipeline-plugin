@@ -62,7 +62,7 @@
 						<div class="pointer" onclick="buildPipeline.fillDialog('{{build.url}}consoleText', 'Console output for {{project.name}} #{{build.number}}')">
 							<table class="progress-bar" align="center">
 								<tbody>
-									<tr>
+									<tr title="{{build.progress}}%">
 										<td style="width: {{build.progress}}%" class="progress-bar-done" id="progress-bar-done{{id}}"></td>
 										<td style="width: {{build.progressLeft}}%" class="progress-bar-left" id="progress-bar-left{{id}}"></td>
 									</tr>
@@ -111,18 +111,19 @@
 </table>
 	</script>
 	<script type="text/javascript">	
-		
-		var buildCardTemplateSource = $("#build-card-template").html();		
-		var buildPipeline = new BuildPipeline(<st:bind value="${from}" />, Handlebars.compile(buildCardTemplateSource));
-		
+		var buildCardTemplateSource = $("#build-card-template").html();	
+		var buildPipeline = new BuildPipeline(<st:bind value="${from}" />, Handlebars.compile(buildCardTemplateSource), ${from.getRefreshFrequencyInMillis()});		
 	</script>
 	<style>
-.trigger {
-	background: url("${rootURL}/images/16x16/clock.png") no-repeat center center !important;
-}
-</style>
+	.trigger {
+		background: url("${rootURL}/images/16x16/clock.png") no-repeat center center !important;
+	}
+	</style>
 	<form method="post" name="pipelineViewForm" action="manualExecution" id="manualExecutionForm">
-		<input name="upstreamProjectName" id="upstreamProjectName" type="hidden" /> <input name="upstreamBuildNumber" id="upstreamBuildNumber" type="hidden" /> <input name="triggerProjectName" id="triggerProjectName" type="hidden" />
+		
+		<input name="upstreamProjectName" id="upstreamProjectName" type="hidden" />
+		<input name="upstreamBuildNumber" id="upstreamBuildNumber" type="hidden" />
+		<input name="triggerProjectName" id="triggerProjectName" type="hidden" />
 
 		<div id="build-pipeline-plugin-content">
 			<div>
