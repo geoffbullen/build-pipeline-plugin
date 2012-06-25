@@ -29,7 +29,7 @@
   	</f:entry>
   	
   	<f:entry title="Refresh frequency (in seconds)" field="refreshFrequency">
-  		<f:textbox name="refreshFrequency" clazz="number" value="5" />
+  		<f:textbox name="refreshFrequency" clazz="number" value="3" />
   	</f:entry>
   	
 </j:jelly>

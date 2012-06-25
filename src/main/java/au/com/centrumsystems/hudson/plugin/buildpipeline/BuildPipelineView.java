@@ -88,7 +88,7 @@ public class BuildPipelineView extends View {
     /**
      * Frequency at which the Build Pipeline Plugin updates the build cards in seconds
      */
-    private int refreshFrequency = 5;
+    private int refreshFrequency = 3;
 
     /*
      * Keep feature flag properties in one place so that it is easy to refactor them out later.
