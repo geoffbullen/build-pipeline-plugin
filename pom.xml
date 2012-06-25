@@ -96,6 +96,7 @@
 			<groupId>org.jenkins-ci.plugins</groupId>
 			<artifactId>dashboard-view</artifactId>
 			<version>2.2</version>
+			<optional>true</optional>
 		</dependency>
 	</dependencies>
 	<build>
