@@ -116,7 +116,7 @@
 
 .header div {
 	background: rgba(255, 255, 255, 0.7);
-	width: 116px;
+	width: 120px;
 	color: #333;
 	padding: 3px;
 	-moz-border-radius-topright: 4px;
@@ -155,7 +155,7 @@
 }
 
 .build-card .secondary-info {
-	font-size: 0.9em;
+	font-size: 1em;
 }
 
 .build-card .build-actions {
