@@ -10,9 +10,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 package au.com.centrumsystems.hudson.plugin.buildpipeline.dashboard;
 
+import au.com.centrumsystems.hudson.plugin.buildpipeline.BuildPipelineView;
 import hudson.model.AbstractProject;
 import hudson.security.Permission;
-import au.com.centrumsystems.hudson.plugin.buildpipeline.BuildPipelineView;
 
 /**
  * This class provides a read-only view for the existing build-pipeline view. All calls checking permissions return false. The other reason

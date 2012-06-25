@@ -249,11 +249,6 @@ tr.spacerRow td {
 	font-size: 2em;
 }
 
-.build-number-pipeline span {
-	background: url("../images/gear.png") no-repeat left center;
-	padding-left: 18px;	
-}
-
 .SUCCESS {
 	background-color: #1bd130;
 	color: #222;

@@ -20,8 +20,9 @@ import java.util.List;
 
 import org.kohsuke.stapler.DataBoundConstructor;
 
-import au.com.centrumsystems.hudson.plugin.buildpipeline.Strings;
 import au.com.centrumsystems.hudson.plugin.buildpipeline.BuildPipelineView;
+import au.com.centrumsystems.hudson.plugin.buildpipeline.Strings;
+
 
 /**
  * This class provides the entry point to use this plugin in the dashboard-plugin
