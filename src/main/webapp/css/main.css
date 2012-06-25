@@ -97,7 +97,7 @@
 /*************************** build card *******************************/
 .rounded {
 	height: 70px;
-	width: 124px !important;
+	width: 130px !important;
 	-moz-opacity: 0.9;
 	-webkit-opacity: 0.9;
 	opacity: 0.9;
@@ -116,7 +116,7 @@
 
 .header div {
 	background: rgba(255, 255, 255, 0.7);
-	width: 120px;
+	width: 124px;
 	color: #333;
 	padding: 3px;
 	-moz-border-radius-topright: 4px;
