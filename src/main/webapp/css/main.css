@@ -140,7 +140,8 @@
 
 .build-time {
 	background: url("../images/application-small-list-blue.png") no-repeat left center;
-	padding-left: 6px;
+	padding-left: 14px;
+	text-align: left;
 }
 
 .build-user {
