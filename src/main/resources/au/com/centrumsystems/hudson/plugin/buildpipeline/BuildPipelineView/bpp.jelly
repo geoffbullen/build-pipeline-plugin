@@ -187,7 +187,7 @@
 					<tbody class="pipelineGroup">
 						<j:forEach begin="${0}" end="${buildGrid.keySet().size() - 1}" indexVar="x">
 							<tr class='build-pipeline'>
-								<td><j:if test="${x == 0}">
+								<td class="revision-cell"><j:if test="${x == 0}">
 										<table class="revision rounded build-card">
 											<tbody>
 												<tr class="header">

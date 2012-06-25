@@ -242,6 +242,7 @@ tr.spacerRow td {
 
 .revision {
 	background-color: #8b8989;
+	margin-left: 0;
 }
 
 .revision .build-number-pipeline {
