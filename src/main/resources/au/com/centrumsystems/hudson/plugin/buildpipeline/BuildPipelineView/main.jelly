@@ -131,7 +131,7 @@
 						<div class="icon-container">
 							<div>
 								<a href='${rootURL}/job/${from.getSelectedProject().getName()}/build?delay=0sec'>
-									<img src="${rootUrl}/images/24x24/clock.png" alt="Trigger a Pipeline" class="icon-with-caption" />
+									<img src="${rootURL}/images/24x24/clock.png" alt="Trigger a Pipeline" class="icon-with-caption" />
 								</a>
 							</div>
 							<div>Run</div>
