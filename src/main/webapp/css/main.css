@@ -97,7 +97,7 @@
 /*************************** build card *******************************/
 .rounded {
 	height: 70px;
-	width: 130px !important;
+	width: 136px !important;
 	-moz-opacity: 0.9;
 	-webkit-opacity: 0.9;
 	opacity: 0.9;
@@ -116,7 +116,7 @@
 
 .header div {
 	background: rgba(255, 255, 255, 0.7);
-	width: 124px;
+	width: 130px;
 	color: #333;
 	padding: 3px;
 	-moz-border-radius-topright: 4px;
@@ -142,6 +142,7 @@
 	background: url("../images/application-small-list-blue.png") no-repeat left center;
 	padding-left: 14px;
 	text-align: left;
+	white-space: nowrap;
 }
 
 .build-user {

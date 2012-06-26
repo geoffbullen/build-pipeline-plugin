@@ -113,7 +113,9 @@
 
 		<div id="build-pipeline-plugin-content">
 			<div>
-				<h1>Pipeline: ${from.getBuildViewTitle()}</h1>
+				<h1>
+					Build Pipeline<j:if test="${!empty(from.getBuildViewTitle())}">: ${from.getBuildViewTitle()}</j:if>
+				</h1>
 			</div>
 			<div>${from.getDescription()}</div>
 			<div id="icon-bar">
