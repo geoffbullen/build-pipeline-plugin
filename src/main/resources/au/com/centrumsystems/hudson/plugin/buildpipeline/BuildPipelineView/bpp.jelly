@@ -37,7 +37,9 @@
 					{{/if}}
 					</span>
 				</div>
-				<div class="overflow-hidden build-user" title="{{build.userId}}">{{build.userId}}</div>				
+				{{#if build.userId}}
+					<div class="overflow-hidden" title="{{build.userId}}"><span class="build-user">{{build.userId}}</span></div>
+				{{/if}}				
 			</td>
 		</tr>
 		<tr class="build-actions">

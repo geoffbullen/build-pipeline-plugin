@@ -143,6 +143,7 @@
 	padding-left: 14px;
 	text-align: left;
 	white-space: nowrap;
+	font-size: 0.9em;
 }
 
 .build-user {
@@ -170,7 +171,7 @@
 }
 
 .build-card .build-actions .status-bar table {
-	width: 90px;
+	width: 110px;
 	position: relative;
 	top: 6px;
 }
