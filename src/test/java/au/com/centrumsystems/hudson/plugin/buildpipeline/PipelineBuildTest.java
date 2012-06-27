@@ -27,12 +27,15 @@ package au.com.centrumsystems.hudson.plugin.buildpipeline;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
+import au.com.centrumsystems.hudson.plugin.util.ProjectUtil;
 import hudson.model.FreeStyleBuild;
 import hudson.model.AbstractBuild;
 import hudson.model.FreeStyleProject;
 import hudson.model.Hudson;
 import hudson.tasks.BuildTrigger;
 
+import java.io.IOException;
 import java.util.Calendar;
 
 import org.junit.Before;
@@ -308,4 +311,31 @@ public class PipelineBuildTest extends HudsonTestCase {
         final PipelineBuild pb = new PipelineBuild(build1, project1, null);
         assertEquals(String.valueOf(build1.getNumber()), pb.getPipelineVersion());
     }
+
+    @Test
+    public void testIsReadyToBeManuallyBuilt() throws Exception {
+        String upstreamProjectName = "Proj1";
+        String downstreamProjectName = "Proj2";
+
+        FreeStyleProject upstreamProject = createFreeStyleProject(upstreamProjectName);
+        FreeStyleProject downstreamProject = createFreeStyleProject(downstreamProjectName);
+
+        upstreamProject.getPublishersList().add(new BuildPipelineTrigger(downstreamProjectName));
+        Hudson.getInstance().rebuildDependencyGraph();
+
+        FreeStyleBuild upstreamBuild = buildAndAssertSuccess(upstreamProject);
+        PipelineBuild pipelineBuildWithPermission = new PipelineBuild(null, downstreamProject, upstreamBuild) {
+            public boolean hasBuildPermission() { return true; }
+        };
+        assertTrue(pipelineBuildWithPermission.isReadyToBeManuallyBuilt());
+
+        PipelineBuild pipelineBuildWithoutPermission = new PipelineBuild(null, downstreamProject, upstreamBuild) {
+            public boolean hasBuildPermission() { return false; }
+        };
+        assertFalse(pipelineBuildWithoutPermission.isReadyToBeManuallyBuilt());
+    }
+
 }
+
+
+

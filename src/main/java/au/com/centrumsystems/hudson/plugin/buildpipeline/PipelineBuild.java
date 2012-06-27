@@ -386,12 +386,18 @@ public class PipelineBuild {
      * @return is ready to be mannlly built.
      */
     public boolean isReadyToBeManuallyBuilt() {
-        boolean isManual = false;
-        if (isManualTrigger() && this.currentBuild == null && this.getUpstreamBuild() != null
-                && HudsonResult.SUCCESS.toString().equals(getBuildResult(this.upstreamBuild))) {
-            isManual = true;
-        }
-        return isManual;
+        return isManualTrigger()
+            && this.currentBuild == null
+            && upstreamBuildSucceeded()
+            && hasBuildPermission();
+    }
+
+    /**
+     * @return upstream build is existed and successful.
+     */
+    private boolean upstreamBuildSucceeded() {
+        return this.getUpstreamBuild() != null
+            && HudsonResult.SUCCESS.toString().equals(getBuildResult(this.upstreamBuild));
     }
 
     /**
