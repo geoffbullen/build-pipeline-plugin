@@ -127,7 +127,8 @@
 					<j:if test="${hasBuildPermission}">
 						<div class="icon-container">
 							<div>
-								<a href='${rootURL}/job/${from.getSelectedProject().getName()}/build?delay=0sec'> <img src="${rootUrl}/images/24x24/clock.png" alt="Trigger a Pipeline" class="icon-with-caption" />
+								<a href='${rootURL}/job/${from.getSelectedProject().getName()}/build?delay=0sec'>
+									<img src="${rootURL}/images/24x24/clock.png" alt="Trigger a Pipeline" class="icon-with-caption" />
 								</a>
 							</div>
 							<div>Run</div>
@@ -140,7 +141,8 @@
 
 				<div class="icon-container">
 					<div>
-						<a href='builds'> <img src="${rootURL}/images/24x24/notepad.png" alt="Pipeline History" class="icon-with-caption" />
+						<a href='builds'>
+							<img src="${rootURL}/images/24x24/notepad.png" alt="Pipeline History" class="icon-with-caption" />
 						</a>
 					</div>
 					<div>History</div>
@@ -148,28 +150,32 @@
 				<j:if test="${from.hasConfigurePermission()}">
 					<div class="icon-container">
 						<div>
-							<a href='configure'> <img src="${rootURL}/images/24x24/setting.png" alt="Configure" class="icon-with-caption" />
+							<a href='configure'>
+								<img src="${rootURL}/images/24x24/setting.png" alt="Configure" class="icon-with-caption" />
 							</a>
 						</div>
 						<div>Configure</div>
 					</div>
 					<div class="icon-container">
 						<div>
-							<a href='newJob'> <img src="${rootURL}/images/24x24/new-package.png" alt="Add Step" class="icon-with-caption" />
+							<a href='newJob'>
+								<img src="${rootURL}/images/24x24/new-package.png" alt="Add Step" class="icon-with-caption" />
 							</a>
 						</div>
 						<div>Add Step</div>
 					</div>
 					<div class="icon-container">
 						<div>
-							<a href='delete'> <img src="${rootURL}/images/24x24/edit-delete.png" class="icon-with-caption" />
+							<a href='delete'>
+								<img src="${rootURL}/images/24x24/edit-delete.png" class="icon-with-caption" />
 							</a>
 						</div>
 						<div>Delete</div>
 					</div>
 					<div class="icon-container">
 						<div>
-							<a href='../../manage'> <img src="${rootURL}/images/24x24/setting.png" class="icon-with-caption" />
+							<a href='../../manage'>
+								<img src="${rootURL}/images/24x24/setting.png" class="icon-with-caption" />
 							</a>
 						</div>
 						<div>Manage</div>

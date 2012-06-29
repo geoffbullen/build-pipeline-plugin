@@ -59,7 +59,7 @@
 /******************** icon bar ***************************/
 #icon-bar {
 	margin-bottom: 4px;
-    height: 60px;
+    height: 48px;
 	margin-left: auto;
 	margin-right: auto;
 	width: 340px;
@@ -69,11 +69,6 @@
 	float: left;
 	margin: 4px;
 	width: 48px;
-}
-
-.icon-container img {
-	width: 32px;
-	height: auto;
 }
 
 .icon-container div {
