@@ -3,7 +3,6 @@ package au.com.centrumsystems.hudson.plugin.buildpipeline;
 import hudson.model.AbstractBuild;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -17,86 +16,107 @@ import org.kohsuke.stapler.bind.JavaScriptMethod;
  * 
  */
 public class BuildForm {
-	private static final Logger LOGGER = Logger.getLogger(BuildForm.class.getName());
-	
-	/**
-	 * status
-	 */
-	private String status = "";
+    /**
+     * logger
+     */
+    private static final Logger LOGGER = Logger.getLogger(BuildForm.class.getName());
 
-	private PipelineBuild pipelineBuild;
+    /**
+     * status
+     */
+    private String status = "";
 
-	private final Integer id;
+    /**
+     * pipeline build
+     */
+    private PipelineBuild pipelineBuild;
 
-	/**
-	 * downstream builds
-	 */
-	private List<BuildForm> dependencies = new ArrayList<BuildForm>();
+    /**
+     * integer
+     */
+    private final Integer id;
 
-	/**
-	 * @param pipelineBuild
-	 *            pipeline build domain used to see the form
-	 */
-	public BuildForm(final PipelineBuild pipelineBuild) {
-		this.pipelineBuild = pipelineBuild;
-		status = pipelineBuild.getCurrentBuildResult();
-		dependencies = new ArrayList<BuildForm>();
-		for (final PipelineBuild downstream : pipelineBuild.getDownstreamPipeline()) {
-			dependencies.add(new BuildForm(downstream));
-		}
-		id = hashCode();
-	}
+    /**
+     * downstream builds
+     */
+    private List<BuildForm> dependencies = new ArrayList<BuildForm>();
 
-	public String getStatus() {
-		return status;
-	}
+    /**
+     * @param pipelineBuild
+     *            pipeline build domain used to see the form
+     */
+    public BuildForm(final PipelineBuild pipelineBuild) {
+        this.pipelineBuild = pipelineBuild;
+        status = pipelineBuild.getCurrentBuildResult();
+        dependencies = new ArrayList<BuildForm>();
+        for (final PipelineBuild downstream : pipelineBuild.getDownstreamPipeline()) {
+            dependencies.add(new BuildForm(downstream));
+        }
+        id = hashCode();
+    }
 
-	public List<BuildForm> getDependencies() {
-		return dependencies;
-	}
+    public String getStatus() {
+        return status;
+    }
 
-	public List<Integer> getDependencyIds() {
-		final List<Integer> ids = new ArrayList<Integer>();
-		for (final BuildForm dependency : dependencies) {
-			ids.add(dependency.getId());
-		}
-		return ids;
-	}
+    public List<BuildForm> getDependencies() {
+        return dependencies;
+    }
 
-	@JavaScriptMethod
-	public String asJSON() {
-		return BuildJSONBuilder.asJSON(pipelineBuild, id, getDependencyIds());
-	}
+    /**
+     * @return All ids for existing depencies.
+     */
+    public List<Integer> getDependencyIds() {
+        final List<Integer> ids = new ArrayList<Integer>();
+        for (final BuildForm dependency : dependencies) {
+            ids.add(dependency.getId());
+        }
+        return ids;
+    }
 
-	public int getId() {
-		return id;
-	}
+    /**
+     * @return convert pipelineBuild as json format.
+     */
+    @JavaScriptMethod
+    public String asJSON() {
+        return BuildJSONBuilder.asJSON(pipelineBuild, id, getDependencyIds());
+    }
 
-	@JavaScriptMethod
-	public boolean updatePipelineBuild(final int nextBuildNumber) {
-		boolean updated = false;
-		final AbstractBuild<?, ?> newBuild = pipelineBuild.getProject().getBuildByNumber(nextBuildNumber);
-		if (newBuild != null) {
-			updated = true;
-			pipelineBuild = new PipelineBuild(newBuild, newBuild.getProject(), pipelineBuild.getUpstreamBuild());
-		}
-		return updated;
-	}
+    public int getId() {
+        return id;
+    }
 
-	public int getNextBuildNumber() {
-		return pipelineBuild.getProject().getNextBuildNumber();
-	}
+    /**
+     * 
+     * @param nextBuildNumber
+     *            nextBuildNumber
+     * @return is the build pipeline updated.
+     */
+    @JavaScriptMethod
+    public boolean updatePipelineBuild(final int nextBuildNumber) {
+        boolean updated = false;
+        final AbstractBuild<?, ?> newBuild = pipelineBuild.getProject().getBuildByNumber(nextBuildNumber);
+        if (newBuild != null) {
+            updated = true;
+            pipelineBuild = new PipelineBuild(newBuild, newBuild.getProject(), pipelineBuild.getUpstreamBuild());
+        }
+        return updated;
+    }
 
-	public String getRevision() {
-		return pipelineBuild.getScmRevision();
-	}
+    public int getNextBuildNumber() {
+        return pipelineBuild.getProject().getNextBuildNumber();
+    }
 
-	@JavaScriptMethod
-	public boolean isManualTrigger() {
-		return pipelineBuild.isManualTrigger();
-	}
-	
-	public Map<String, String> getParameters() {
-		return pipelineBuild.getBuildParameters();
-	}
+    public String getRevision() {
+        return pipelineBuild.getPipelineVersion();
+    }
+
+    @JavaScriptMethod
+    public boolean isManualTrigger() {
+        return pipelineBuild.isManualTrigger();
+    }
+
+    public Map<String, String> getParameters() {
+        return pipelineBuild.getBuildParameters();
+    }
 }

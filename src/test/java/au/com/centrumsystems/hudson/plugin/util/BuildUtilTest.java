@@ -26,6 +26,7 @@ package au.com.centrumsystems.hudson.plugin.util;
 
 import hudson.model.FreeStyleBuild;
 import hudson.model.AbstractBuild;
+import hudson.model.Cause.UserCause;
 import hudson.model.FreeStyleProject;
 import hudson.model.Hudson;
 import hudson.model.ParametersAction;
@@ -33,7 +34,6 @@ import hudson.model.ParametersDefinitionProperty;
 import hudson.model.StringParameterDefinition;
 import hudson.model.StringParameterValue;
 import hudson.tasks.BuildTrigger;
-import hudson.model.Cause.UserCause;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -49,14 +49,14 @@ public class BuildUtilTest extends HudsonTestCase {
 
     @Test
     public void testGetDownstreamBuild() throws Exception {
-        String proj1 = "Proj1";
-        String proj2 = "Proj2";
-        String proj3 = "Proj3";
+        final String proj1 = "Proj1";
+        final String proj2 = "Proj2";
+        final String proj3 = "Proj3";
 
         FreeStyleProject project1, project2, project3;
         FreeStyleBuild build1, build2, build3;
-        FreeStyleProject project4 = null;
-        FreeStyleBuild build4 = null;
+        final FreeStyleProject project4 = null;
+        final FreeStyleBuild build4 = null;
 
         // Create test projects and associated builders
         project1 = createFreeStyleProject(proj1);
@@ -86,11 +86,11 @@ public class BuildUtilTest extends HudsonTestCase {
         nextBuild = BuildUtil.getDownstreamBuild(project4, build4);
         assertNull(nextBuild);
     }
-    
+
     @Test
     public void testGetAllBuildParametersAction() throws Exception {
-        String proj1 = "Proj1";
-        String proj2 = "Proj2";
+        final String proj1 = "Proj1";
+        final String proj2 = "Proj2";
         final String key1 = "testKey";
         final String key2 = "testKey2";
         final String value1 = "testValue";
@@ -115,21 +115,20 @@ public class BuildUtilTest extends HudsonTestCase {
         Hudson.getInstance().rebuildDependencyGraph();
 
         // Build project1, upon completion project2 will be built
-        //build1 = buildAndAssertSuccess(project1);
-        build1 = project1.scheduleBuild2(0, new UserCause(), new ParametersAction(
-                new StringParameterValue(key1, value1),
-                new StringParameterValue(key2, value3))).get();
+        // build1 = buildAndAssertSuccess(project1);
+        build1 = project1.scheduleBuild2(0, new UserCause(),
+                new ParametersAction(new StringParameterValue(key1, value1), new StringParameterValue(key2, value3))).get();
         // When all building is complete retrieve the last build from project2
         waitUntilNoActivity();
 
-        ParametersAction params = (ParametersAction) BuildUtil.getAllBuildParametersAction(build1, project2);
+        final ParametersAction params = (ParametersAction) BuildUtil.getAllBuildParametersAction(build1, project2);
         assertEquals(((StringParameterValue) params.getParameter(key1)).value, value2);
         assertEquals(((StringParameterValue) params.getParameter(key2)).value, value3);
     }
-    
+
     @Test
     public void testGetBuildParametersAction() throws Exception {
-        String proj1 = "Proj1";
+        final String proj1 = "Proj1";
         final String key1 = "testKey";
         final String key2 = "testKey2";
         final String value1 = "testValue";
@@ -137,7 +136,7 @@ public class BuildUtilTest extends HudsonTestCase {
 
         FreeStyleProject project1;
         FreeStyleBuild build1;
-        FreeStyleBuild build2 = null;
+        final FreeStyleBuild build2 = null;
 
         // Create test projects and associated builders
         project1 = createFreeStyleProject(proj1);
@@ -150,16 +149,15 @@ public class BuildUtilTest extends HudsonTestCase {
         Hudson.getInstance().rebuildDependencyGraph();
 
         // Build project1 with the two StringParameterValues
-        build1 = project1.scheduleBuild2(0, new UserCause(), new ParametersAction(
-                new StringParameterValue(key1, value1),
-                new StringParameterValue(key2, value3))).get();
+        build1 = project1.scheduleBuild2(0, new UserCause(),
+                new ParametersAction(new StringParameterValue(key1, value1), new StringParameterValue(key2, value3))).get();
         waitUntilNoActivity();
 
-        ParametersAction params = (ParametersAction) BuildUtil.getBuildParametersAction(build1);
+        ParametersAction params = BuildUtil.getBuildParametersAction(build1);
         assertEquals(((StringParameterValue) params.getParameter(key1)).value, value1);
         assertEquals(((StringParameterValue) params.getParameter(key2)).value, value3);
 
-        params = (ParametersAction) BuildUtil.getBuildParametersAction(build2);
+        params = BuildUtil.getBuildParametersAction(build2);
         assertNull(params);
     }
 
@@ -171,18 +169,16 @@ public class BuildUtilTest extends HudsonTestCase {
         final String value2 = "testValue2";
         final String value3 = "testValue3";
 
-        ParametersAction baseParams = new ParametersAction(
-                new StringParameterValue(key1, value1),
-                new StringParameterValue(key2, value3));
+        ParametersAction baseParams = new ParametersAction(new StringParameterValue(key1, value1), new StringParameterValue(key2, value3));
         ParametersAction extraParams = new ParametersAction(new StringParameterValue(key2, value2));
 
-        ParametersAction params = (ParametersAction) BuildUtil.mergeParameters(baseParams, extraParams);
+        ParametersAction params = BuildUtil.mergeParameters(baseParams, extraParams);
         assertEquals(((StringParameterValue) params.getParameter(key1)).value, value1);
         assertEquals(((StringParameterValue) params.getParameter(key2)).value, value2);
-        
+
         baseParams = null;
         extraParams = null;
-        params = (ParametersAction) BuildUtil.mergeParameters(baseParams, extraParams);
+        params = BuildUtil.mergeParameters(baseParams, extraParams);
         assertEquals(params.getParameters().size(), 0);
     }
 }

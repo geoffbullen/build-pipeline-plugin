@@ -98,7 +98,7 @@ public final class ProjectUtil {
         boolean manualTrigger = false;
         if ((upstreamProject != null) && (downstreamProject != null)) {
             final DescribableList<Publisher, Descriptor<Publisher>> upstreamPublishersLists = upstreamProject.getPublishersList();
-    
+
             for (final Publisher upstreamPub : upstreamPublishersLists) {
                 if (upstreamPub instanceof BuildPipelineTrigger) {
                     final String manualDownstreamProjects = ((BuildPipelineTrigger) upstreamPub).getDownstreamProjectNames();
@@ -116,21 +116,23 @@ public final class ProjectUtil {
         return manualTrigger;
 
     }
-    
+
     /**
      * Gets the ParametersAction of an AbstractProject
-     * @param project - The AbstractProject
+     * 
+     * @param project
+     *            - The AbstractProject
      * @return The ParametersAction of the AbstractProject
      */
-    public static ParametersAction getProjectParametersAction(AbstractProject<?, ?> project) {
+    public static ParametersAction getProjectParametersAction(final AbstractProject<?, ?> project) {
         if (project != null) {
             final ParametersDefinitionProperty property = project.getProperty(ParametersDefinitionProperty.class);
             if (property == null) {
                 return null;
             }
-            
+
             final List<ParameterValue> parameters = new ArrayList<ParameterValue>();
-            for (ParameterDefinition pd : property.getParameterDefinitions()) {
+            for (final ParameterDefinition pd : property.getParameterDefinitions()) {
                 final ParameterValue param = pd.getDefaultParameterValue();
                 if (param != null) {
                     parameters.add(param);

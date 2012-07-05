@@ -117,16 +117,13 @@ public class ProjectForm {
     }
     
     /**
-     * Gets a display value to determine whether a manual jobs 'trigger' button 
-     * will be shown.  This is used along with isTriggerOnlyLatestJob property 
-     * allow only the latest version of a job to run.  
+     * Gets a display value to determine whether a manual jobs 'trigger' button will be shown. This is used along with
+     * isTriggerOnlyLatestJob property allow only the latest version of a job to run.
      * 
-     * Works by:
-     * Initially always defaulted to true.
-     * If isTriggerOnlyLatestJob is set to true then as the html code is rendered the first
-     * job which should show the trigger button will render and then a call will be made
-     * to 'setDisplayTrigger' to change the value to both so all future jobs will 
-     * not display the trigger.  see main.jelly
+     * Works by: Initially always defaulted to true. If isTriggerOnlyLatestJob is set to true then as the html code is rendered the first
+     * job which should show the trigger button will render and then a call will be made to 'setDisplayTrigger' to change the value to both
+     * so all future jobs will not display the trigger. see main.jelly
+     * 
      * @return boolean whether to display or not
      */
     public Boolean getDisplayTrigger() {
@@ -134,19 +131,17 @@ public class ProjectForm {
     }
 
     /**
-     * Sets a display value to determine whether a manual jobs 'trigger' button 
-     * will be shown.  This is used along with isTriggerOnlyLatestJob property 
-     * allow only the latest version of a job to run.  
+     * Sets a display value to determine whether a manual jobs 'trigger' button will be shown. This is used along with
+     * isTriggerOnlyLatestJob property allow only the latest version of a job to run.
      * 
-     * Works by:
-     * Initially always defaulted to true.
-     * If isTriggerOnlyLatestJob is set to true then as the html code is rendered the first
-     * job which should show the trigger button will render and then a call will be made
-     * to 'setDisplayTrigger' to change the value to both so all future jobs will 
-     * not display the trigger.  see main.jelly
-     * @param display - boolean to indicate whether the trigger button should be shown
+     * Works by: Initially always defaulted to true. If isTriggerOnlyLatestJob is set to true then as the html code is rendered the first
+     * job which should show the trigger button will render and then a call will be made to 'setDisplayTrigger' to change the value to both
+     * so all future jobs will not display the trigger. see main.jelly
+     * 
+     * @param display
+     *            - boolean to indicate whether the trigger button should be shown
      */
-    public void setDisplayTrigger(Boolean display) {
+    public void setDisplayTrigger(final Boolean display) {
         displayTrigger = display;
     }
     

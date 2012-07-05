@@ -26,7 +26,7 @@ package au.com.centrumsystems.hudson.plugin.util;
 
 /**
  * Hudson Result
- *
+ * 
  * @author Centrum Systems
  */
 public enum HudsonResult {

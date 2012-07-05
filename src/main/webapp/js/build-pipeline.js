@@ -1,7 +1,8 @@
-var BuildPipeline = function(viewProxy, buildCardTemplate){
+var BuildPipeline = function(viewProxy, buildCardTemplate, refreshFrequency){
 	this.buildCardTemplate = buildCardTemplate;
 	this.buildProxies = {};
-	this.viewProxy = viewProxy;				
+	this.viewProxy = viewProxy;
+	this.refreshFrequency = refreshFrequency
 };
 
 BuildPipeline.prototype = {
@@ -21,12 +22,19 @@ BuildPipeline.prototype = {
 	    			});
 	    		}
 	    	});
-		}, 2000);
+		}, buildPipeline.refreshFrequency);
 	},
 	updateBuildCard : function(id) {
 		var buildPipeline = this;
 		buildPipeline.buildProxies[id].asJSON(function(data){
 			buildPipeline.updateBuildCardFromJSON(jQuery.parseJSON(data.responseObject()), true);
+		});
+	},
+	fetchLatestBuildNumber : function(id) {
+		var buildPipeline = this;
+		console.log(buildPipeline.buildProxies[id])
+		buildPipeline.buildProxies[id].asJSON(function(data){
+			console.log(jQuery.parseJSON(data.responseObject()).build.number)
 		});
 	},
 	updateBuildCardFromJSON : function(buildAsJSON, fadeIn) {
@@ -44,7 +52,7 @@ BuildPipeline.prototype = {
 					clearInterval(intervalId);
 				}
 			});
-		}, 2000);
+		}, buildPipeline.refreshFrequency);
 	},
 	triggerBuild : function(id, upstreamProjectName, upstreamBuildNumber, triggerProjectName, dependencyIds) {
 		var buildPipeline = this;
@@ -72,7 +80,7 @@ BuildPipeline.prototype = {
 		$.fancybox({
 			type: 'iframe',
 			title: title,
-			titlePosition: 'over',
+			titlePosition: 'outside',
 			href: href,
 			transitionIn : 'elastic',
 			transitionOut : 'elastic',

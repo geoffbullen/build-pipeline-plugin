@@ -7,3 +7,6 @@
 ^.checkstyle
 ^.DS_Store
 ^.idea$
+build-pipeline-plugin.iml
+build-pipeline-plugin.ipr
+build-pipeline-plugin.iws

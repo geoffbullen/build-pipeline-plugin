@@ -16,16 +16,20 @@
     	</f:select>
   	</f:entry>
 
-  	<f:entry title="Restrict Trigger to the Most Recent Build" field="triggerOnlyLatestJob">
-		<f:booleanRadio field="triggerOnlyLatestJob" true="Yes" false="No" default="false"/>
+  	<f:entry title="Restrict trigger to the most recent build" field="triggerOnlyLatestJob">
+		<f:booleanRadio field="triggerOnlyLatestJob" default="true"/>
   	</f:entry>
   	
-  	<f:entry title="Allow re-execution of successful pipeline steps" field="alwaysAllowManualTrigger">
-  	    <f:booleanRadio field="alwaysAllowManualTrigger" true="Yes" false="No" default="false"/>
+  	<f:entry title="Always allow manual trigger on pipeline steps" field="alwaysAllowManualTrigger">
+  	    <f:booleanRadio field="alwaysAllowManualTrigger" default="false"/>
   	</f:entry>
   	
   	<f:entry title="Show pipeline parameters" field="showPipelineParameters">
-  		<f:booleanRadio field="showPipelineParameters" true="Yes" false="No" default="false"/>
+  		<f:booleanRadio field="showPipelineParameters" default="false"/>
+  	</f:entry>
+  	
+  	<f:entry title="Refresh frequency (in seconds)" field="refreshFrequency">
+  		<f:textbox name="refreshFrequency" clazz="number" value="3" />
   	</f:entry>
   	
   	<f:entry title="Show pipeline definition header" field="showPipelineDefinitionHeader">

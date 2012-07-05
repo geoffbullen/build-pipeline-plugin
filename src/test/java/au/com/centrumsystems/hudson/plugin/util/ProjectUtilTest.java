@@ -155,7 +155,7 @@ public class ProjectUtilTest extends HudsonTestCase {
         assertEquals(params.getParameter(paramKey).getName(), paramKey);
         params = ProjectUtil.getProjectParametersAction(project2);
         assertNull(params);
-        
+
         assertNull(ProjectUtil.getProjectParametersAction(null));
     }
 }

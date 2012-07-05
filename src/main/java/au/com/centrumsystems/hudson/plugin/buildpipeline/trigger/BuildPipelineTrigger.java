@@ -66,8 +66,11 @@ import au.com.centrumsystems.hudson.plugin.buildpipeline.Strings;
  */
 @SuppressWarnings("unchecked")
 public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer {
-	private static final Logger LOGGER = Logger.getLogger(BuildPipelineTrigger.class.getName());
-	
+    /**
+     * logger
+     */
+    private static final Logger LOGGER = Logger.getLogger(BuildPipelineTrigger.class.getName());
+
     /** downstream project name */
     private String downstreamProjectNames;
 
@@ -90,8 +93,8 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
         if (downstreamProjectNames == null) {
             throw new IllegalArgumentException();
         }
-        
-        setDownstreamProjectNames(downstreamProjectNames);
+
+        this.downstreamProjectNames = downstreamProjectNames;
     }
 
     /**
@@ -102,6 +105,7 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
      * @param graph
      *            graph
      */
+    @Override
     @SuppressWarnings("rawtypes")
     public void buildDependencyGraph(final AbstractProject owner, final DependencyGraph graph) {
         if ((downstreamProjectNames != null) && (downstreamProjectNames.length() > 0)) {
@@ -135,13 +139,14 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
         return true;
     }
 
+    @Override
     public BuildStepMonitor getRequiredMonitorService() {
         return BuildStepMonitor.NONE;
     }
 
     @Override
-    public boolean perform(final AbstractBuild<?, ?> build, final Launcher launcher, 
-            final BuildListener listener) throws InterruptedException, IOException {
+    public boolean perform(final AbstractBuild<?, ?> build, final Launcher launcher, final BuildListener listener)
+            throws InterruptedException, IOException {
         return true;
     }
 
@@ -155,7 +160,7 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
      * @return - true: A downstream project has been renamed; false No downstream projects were renamed
      */
     public boolean onDownstreamProjectRenamed(final String oldName, final String newName) {
-    	LOGGER.fine(String.format("Renaming project %s -> %s", oldName, newName)); //$NON-NLS-1$
+        LOGGER.fine(String.format("Renaming project %s -> %s", oldName, newName)); //$NON-NLS-1$
         boolean changed = false;
         String[] existingDownstreamProjects = new String[5];
         if (this.getDownstreamProjectNames() != null) {
@@ -191,22 +196,23 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
      * @return - true; project deleted: false; project not deleted {@link #onDownstreamProjectRenamed(String, String)}
      */
     public boolean onDownstreamProjectDeleted(final String oldName) {
-    	LOGGER.fine("Downstram project deleted: " + oldName); //$NON-NLS-1$
+        LOGGER.fine("Downstram project deleted: " + oldName); //$NON-NLS-1$
         return onDownstreamProjectRenamed(oldName, null);
     }
 
     /**
-     * Removes a downstream trigger (BuildPipelineTrigger) from a project.
-     * This removes both:
-     *  - The downstream project name from the downstreamProjectNames attribute
-     *  - The BuildPipelineTrigger from the AbstractProject publishers list
+     * Removes a downstream trigger (BuildPipelineTrigger) from a project. This removes both: - The downstream project name from the
+     * downstreamProjectNames attribute - The BuildPipelineTrigger from the AbstractProject publishers list
      * 
-     * @param bpTrigger - The BuildPipelineTrigger to be removed
-     * @param ownerProject - The AbstractProject from which to removed the BuildPipelineTrigger
-     * @param downstreamProjectName - The name of the AbstractProject associated with the BuildPipelineTrigger
+     * @param bpTrigger
+     *            - The BuildPipelineTrigger to be removed
+     * @param ownerProject
+     *            - The AbstractProject from which to removed the BuildPipelineTrigger
+     * @param downstreamProjectName
+     *            - The name of the AbstractProject associated with the BuildPipelineTrigger
      */
-    public void removeDownstreamTrigger(BuildPipelineTrigger bpTrigger,
-          final AbstractProject<?, ?> ownerProject, final String downstreamProjectName) {
+    public void removeDownstreamTrigger(final BuildPipelineTrigger bpTrigger, final AbstractProject<?, ?> ownerProject,
+            final String downstreamProjectName) {
         if (bpTrigger != null) {
             boolean changed = false;
 
@@ -221,13 +227,15 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
                     }
                     ownerProject.save();
                 } catch (final IOException e) {
-                    Logger.getLogger(BuildPipelineTrigger.class.getName()).log(Level.SEVERE,
-                            au.com.centrumsystems.hudson.plugin.buildpipeline.Strings.getString("BuildPipelineTrigger.FailedPersistDuringRemoval") + downstreamProjectName, e); //$NON-NLS-1$
+                    Logger.getLogger(BuildPipelineTrigger.class.getName()).log(
+                            Level.SEVERE,
+                            au.com.centrumsystems.hudson.plugin.buildpipeline.Strings
+                                    .getString("BuildPipelineTrigger.FailedPersistDuringRemoval") + downstreamProjectName, e); //$NON-NLS-1$
                 }
             }
         }
     }
-    
+
     /**
      * Set the descriptor for build pipeline trigger class This descriptor is only attached to Build Trigger Post Build action in JOB
      * configuration page
@@ -239,7 +247,7 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
     public static class DescriptorImpl extends BuildStepDescriptor<Publisher> {
 
         @Override
-        public boolean isApplicable(final Class<? extends AbstractProject> jobType) {
+        public boolean isApplicable(@SuppressWarnings("rawtypes") final Class<? extends AbstractProject> jobType) {
             return true;
         }
 
@@ -260,7 +268,9 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
          */
         @Override
         public String getHelpFile() {
-            return "/descriptor/au.com.centrumsystems.hudson.plugin.buildpipeline.trigger.BuildPipelineTrigger/help/buildPipeline.html"; //$NON-NLS-1$
+            final String filePath = "/descriptor/au.com.centrumsystems.hudson.plugin.buildpipeline.trigger.BuildPipelineTrigger/help";
+            final String fileName = "buildPipeline.html";
+            return String.format("%s/%s", filePath, fileName);
         }
 
         @Override
@@ -313,12 +323,9 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
                             try {
                                 p.save();
                             } catch (final IOException e) {
-                                Logger.getLogger(ItemListenerImpl.class.getName()).log(
-                                        Level.SEVERE, 
-                                        String.format(
-                                        		Strings.getString("BuildPipelineTrigger.FailedPersistDuringRename_FMT"), //$NON-NLS-1$
-                                        		oldName, newName),
-                                        e);
+                                Logger.getLogger(ItemListenerImpl.class.getName()).log(Level.SEVERE,
+                                        String.format(Strings.getString("BuildPipelineTrigger.FailedPersistDuringRename_FMT"), //$NON-NLS-1$
+                                                oldName, newName), e);
                             }
                         }
                     }

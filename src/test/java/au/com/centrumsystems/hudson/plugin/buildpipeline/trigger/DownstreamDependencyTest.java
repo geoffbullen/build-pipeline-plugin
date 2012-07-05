@@ -47,24 +47,24 @@ public class DownstreamDependencyTest extends HudsonTestCase {
 
     @Test
     public void testDownstreamDependency() throws IOException {
-        String proj1 = "Proj1";
-        String proj2 = "Proj2";
-        FreeStyleProject project1 = createFreeStyleProject(proj1);
-        FreeStyleProject project2 = createFreeStyleProject(proj2);
+        final String proj1 = "Proj1";
+        final String proj2 = "Proj2";
+        final FreeStyleProject project1 = createFreeStyleProject(proj1);
+        final FreeStyleProject project2 = createFreeStyleProject(proj2);
 
-        DownstreamDependency myDD = new DownstreamDependency(project1, project2);
+        final DownstreamDependency myDD = new DownstreamDependency(project1, project2);
         assertEquals("Upstream project should be " + proj1, project1, myDD.getUpstreamProject());
         assertEquals("Downstream project should be " + proj2, project2, myDD.getDownstreamProject());
     }
 
     @Test
     public void testShouldTriggerBuild() throws Exception {
-        String proj1 = "Proj1";
-        String proj2 = "Proj2";
-        String proj3 = "Proj3";
-        FreeStyleProject project1 = createFreeStyleProject(proj1);
-        FreeStyleProject project2 = createFreeStyleProject(proj2);
-        FreeStyleProject project3 = createFreeStyleProject(proj3);
+        final String proj1 = "Proj1";
+        final String proj2 = "Proj2";
+        final String proj3 = "Proj3";
+        final FreeStyleProject project1 = createFreeStyleProject(proj1);
+        final FreeStyleProject project2 = createFreeStyleProject(proj2);
+        final FreeStyleProject project3 = createFreeStyleProject(proj3);
 
         // Add TEST_PROJECT2 as a Manually executed pipeline project
         // Add TEST_PROJECT3 as a Post-build action -> build other projects

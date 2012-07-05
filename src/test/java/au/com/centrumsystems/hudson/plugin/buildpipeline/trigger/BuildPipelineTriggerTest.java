@@ -90,7 +90,7 @@ public class BuildPipelineTriggerTest extends HudsonTestCase {
         assertTrue(bpTrigger.onDownstreamProjectRenamed(proj2, proj2 + "NEW"));
 
         assertEquals(proj2 + "NEW," + proj3, bpTrigger.getDownstreamProjectNames());
-        
+
         // Null case
         bpTrigger.setDownstreamProjectNames(null);
         assertFalse(bpTrigger.onDownstreamProjectRenamed(proj2, proj3));
@@ -164,20 +164,19 @@ public class BuildPipelineTriggerTest extends HudsonTestCase {
 
         assertEquals(FormValidation.ok(), di.doCheckDownstreamProjectNames(proj1));
         assertThat(FormValidation.error("No such project '" + proj2 + "'. Did you mean '" + proj1 + "'?").toString(), is(di
-            .doCheckDownstreamProjectNames(proj2).toString()));
+                .doCheckDownstreamProjectNames(proj2).toString()));
     }
-    
+
     @Test
     public void testRemoveDownstreamTrigger() throws IOException, InterruptedException {
         final String proj1 = "Proj1";
         final String proj2 = "Proj2";
         final FreeStyleProject project1 = createFreeStyleProject(proj1);
         final BuildPipelineTrigger buildPipelineTrigger = new BuildPipelineTrigger(proj2);
-		project1.getPublishersList().add(buildPipelineTrigger);
+        project1.getPublishersList().add(buildPipelineTrigger);
         Hudson.getInstance().rebuildDependencyGraph();
 
         buildPipelineTrigger.removeDownstreamTrigger(buildPipelineTrigger, project1, proj2);
-        
 
         final DescribableList<Publisher, Descriptor<Publisher>> downstreamPublishersList = project1.getPublishersList();
         for (final Publisher downstreamPub : downstreamPublishersList) {
@@ -187,15 +186,15 @@ public class BuildPipelineTriggerTest extends HudsonTestCase {
             }
         }
     }
-    
+
     @Test
     public void testCyclicDownstreamTrigger() throws IOException, InterruptedException {
         final String proj1 = "Proj1";
         final FreeStyleProject project1 = createFreeStyleProject(proj1);
         final BuildPipelineTrigger cyclicPipelineTrigger = new BuildPipelineTrigger(proj1);
-		project1.getPublishersList().add(cyclicPipelineTrigger);
+        project1.getPublishersList().add(cyclicPipelineTrigger);
         Hudson.getInstance().rebuildDependencyGraph();
-        
+
         final DescribableList<Publisher, Descriptor<Publisher>> downstreamPublishersList = project1.getPublishersList();
         for (final Publisher downstreamPub : downstreamPublishersList) {
             if (downstreamPub instanceof BuildPipelineTrigger) {
@@ -203,6 +202,6 @@ public class BuildPipelineTriggerTest extends HudsonTestCase {
                 assertEquals("", manualDownstreamProjects);
             }
         }
-        
+
     }
 }

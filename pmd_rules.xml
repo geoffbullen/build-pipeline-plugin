@@ -180,7 +180,6 @@
    <rule ref="rulesets/junit.xml/SimplifyBooleanAssertion"/>
    <rule ref="rulesets/controversial.xml/UnnecessaryConstructor"/>
    <rule ref="rulesets/controversial.xml/NullAssignment"/>
-   <rule ref="rulesets/controversial.xml/OnlyOneReturn"/>
    <rule ref="rulesets/controversial.xml/UnusedModifier"/>
    <rule ref="rulesets/controversial.xml/AssignmentInOperand"/>
    <rule ref="rulesets/controversial.xml/AtLeastOneConstructor"/>

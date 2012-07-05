@@ -62,9 +62,8 @@ import au.com.centrumsystems.hudson.plugin.util.BuildUtil;
 import au.com.centrumsystems.hudson.plugin.util.ProjectUtil;
 
 /**
- * This view displays the set of jobs that are related based on their
- * upstream\downstream relationships as a pipeline. Each build pipeline becomes
- * a row on the view.
+ * This view displays the set of jobs that are related based on their upstream\downstream relationships as a pipeline. Each build pipeline
+ * becomes a row on the view.
  * 
  * @author Centrum Systems
  * 
@@ -84,11 +83,16 @@ public class BuildPipelineView extends View {
 	private boolean triggerOnlyLatestJob;
 	
 	/** alwaysAllowManualTrigger. */
-	private boolean alwaysAllowManualTrigger;
+    private boolean alwaysAllowManualTrigger = true;
 	
 	/** showPipelineParameters. */
-	private boolean showPipelineParameters;
-	
+    private boolean showPipelineParameters = true;
+
+    /**
+     * Frequency at which the Build Pipeline Plugin updates the build cards in seconds
+     */
+    private int refreshFrequency = 3;
+
 	/** showPipelineDefinitionHeader. */
 	private boolean showPipelineDefinitionHeader;
 	
@@ -115,12 +119,18 @@ public class BuildPipelineView extends View {
 	private static final String REQ_UPSTREAM_PROJECT_NAME = "upstreamProjectName"; //$NON-NLS-1$
 
 	/**
-	 * An instance of {@link Cause.UserIdCause} related to the current user.
-	 * Must be transient, or xstream will include it in the serialization
+     * An instance of {@link Cause.UserIdCause} related to the current user. Must be transient, or xstream will include it in the
+     * serialization
 	 */
 	private class MyUserIdCause extends Cause.UserIdCause {
-			private User user = null;
+        /**
+         * user
+         */
+        private User user;
 			
+        /**
+         * 
+         */
 			public MyUserIdCause() {
 				try {
 					// this block can generate a CyclicGraphDetector.CycleDetectedException
@@ -159,15 +169,19 @@ public class BuildPipelineView extends View {
 			}
 			
 			@Override
-			public boolean equals(Object o) {
-				if (null == o) { return false; }
-				if (!(o instanceof Cause.UserIdCause)) { return false; }
+        public boolean equals(final Object o) {
+            if (null == o) {
+                return false;
+            }
+            if (!(o instanceof Cause.UserIdCause)) {
+                return false;
+            }
 				
 				return hashCode() == o.hashCode();
 			}
 			
 			@Override
-			public void print(TaskListener listener) {
+        public void print(final TaskListener listener) {
 				// do nothing
 			}
 	}
@@ -186,13 +200,13 @@ public class BuildPipelineView extends View {
 	 *            Indicates whether only the latest job will be triggered.
 	 */
 	@DataBoundConstructor
-	public BuildPipelineView(final String name, final String buildViewTitle, final String selectedJob,
-			final String noOfDisplayedBuilds, final boolean triggerOnlyLatestJob) {
+    public BuildPipelineView(final String name, final String buildViewTitle, final String selectedJob, final String noOfDisplayedBuilds,
+            final boolean triggerOnlyLatestJob) {
 		super(name, Hudson.getInstance());
-		setBuildViewTitle(buildViewTitle);
-		setSelectedJob(selectedJob);
-		setNoOfDisplayedBuilds(noOfDisplayedBuilds);
-		setTriggerOnlyLatestJob(triggerOnlyLatestJob);
+        this.buildViewTitle = buildViewTitle;
+        this.selectedJob = selectedJob;
+        this.noOfDisplayedBuilds = noOfDisplayedBuilds;
+        this.triggerOnlyLatestJob = triggerOnlyLatestJob;
 	}
 	/**
 	 * 
@@ -210,16 +224,22 @@ public class BuildPipelineView extends View {
 	 *            Indicates whether manual trigger will always be available.
 	 * @param showPipelineParameters
 	 *            Indicates whether pipeline parameter values should be shown.
+	 * @param showPipelineDefinitionHeader
+	 *            Indicates whether the pipeline headers should be shown.
+	 * @param showRevisionBox
+	 *            Indicates whether the revision box should be show.
+     * @param refreshFrequency
+     *            Frequency at which the build pipeline plugin refreshes build cards
 	 */
 	@DataBoundConstructor
 	public BuildPipelineView(final String name, final String buildViewTitle, final String selectedJob, final String noOfDisplayedBuilds, 
 			final boolean triggerOnlyLatestJob, final boolean alwaysAllowManualTrigger, final boolean showPipelineParameters,
-			final boolean showPipelineDefinitionHeader, final boolean showRevisionBox) {
+			final boolean showPipelineDefinitionHeader, final boolean showRevisionBox, final int refreshFrequency) {
 		this(name, buildViewTitle, selectedJob, noOfDisplayedBuilds, triggerOnlyLatestJob);
-		setAlwaysAllowManualTrigger(alwaysAllowManualTrigger);
-		setShowPipelineParameters(showPipelineParameters);
-		setShowPipelineDefinitionHeader(showPipelineDefinitionHeader);
-		setShowRevisionBox(showRevisionBox);
+        this.alwaysAllowManualTrigger = alwaysAllowManualTrigger;
+        this.showPipelineParameters = showPipelineParameters;
+		this.showRevisionBox = showRevisionBox;
+		this.refreshFrequency = refreshFrequency;
 	}
 
 	/**
@@ -243,6 +263,7 @@ public class BuildPipelineView extends View {
 		this.alwaysAllowManualTrigger = Boolean.valueOf(req.getParameter("_.alwaysAllowManualTrigger")); //$NON-NLS-1$
 		this.showPipelineParameters = Boolean.valueOf(req.getParameter("_.showPipelineParameters")); //$NON-NLS-1$
 		this.showPipelineDefinitionHeader = Boolean.valueOf(req.getParameter("_.showPipelineDefinitionHeader")); //$NON-NLS-1$
+        this.refreshFrequency = Integer.valueOf(req.getParameter("refreshFrequency")); //$NON-NLS-1$
 		this.showRevisionBox = Boolean.valueOf(req.getParameter("_.showRevisionBox")); //$NON-NLS-1$
 	}
 
@@ -359,6 +380,7 @@ public class BuildPipelineView extends View {
 
 	/**
 	 * Trigger a manual build
+     * 
 	 * @param upstreamBuildNumber
 	 *            upstream build number
 	 * @param triggerProjectName
@@ -368,8 +390,7 @@ public class BuildPipelineView extends View {
 	 * @return next build number that has been scheduled
 	 */
 	@JavaScriptMethod
-	public int triggerManualBuild(final Integer upstreamBuildNumber, final String triggerProjectName,
-			final String upstreamProjectName) {
+    public int triggerManualBuild(final Integer upstreamBuildNumber, final String triggerProjectName, final String upstreamProjectName) {
 		final AbstractProject<?, ?> triggerProject = (AbstractProject<?, ?>) super.getJob(triggerProjectName);
 		final AbstractProject<?, ?> upstreamProject = (AbstractProject<?, ?>) super.getJob(upstreamProjectName);
 
@@ -385,6 +406,12 @@ public class BuildPipelineView extends View {
         return triggerBuild(triggerProject, upstreamBuild, buildParametersAction);
 	}
 
+    /**
+     * 
+     * @param externalizableId
+     *            the externalizableId
+     * @return number of reruned build
+     */
 	@JavaScriptMethod
 	public int retryBuild(final String triggerProjectName) {
 		final AbstractProject<?, ?> triggerProject = (AbstractProject<?, ?>) super.getJob(triggerProjectName);
@@ -423,6 +450,7 @@ public class BuildPipelineView extends View {
 	 *            - AbstractProject
 	 * @return The AbstractBuild associated with the AbstractProject and build number.
 	 */
+	@SuppressWarnings("unchecked")
 	private AbstractBuild<?, ?> retrieveBuild(final int buildNo, final AbstractProject<?, ?> project) {
 		AbstractBuild<?, ?> build = null;
 		
@@ -465,8 +493,7 @@ public class BuildPipelineView extends View {
 			}
 		}
 		
-		triggerProject.scheduleBuild(triggerProject.getQuietPeriod(), upstreamCause,
-				buildActions.toArray(new Action[buildActions.size()]));
+        triggerProject.scheduleBuild(triggerProject.getQuietPeriod(), upstreamCause, buildActions.toArray(new Action[buildActions.size()]));
 		return triggerProject.getNextBuildNumber();
 	}
 	
@@ -512,8 +539,8 @@ public class BuildPipelineView extends View {
 	public static final class DescriptorImpl extends ViewDescriptor {
 
 		/**
-		 * descriptor impl constructor This empty constructor is required for stapler. If you remove this constructor,
-		 * text name of "Build Pipeline View" will be not displayed in the "NewView" page
+         * descriptor impl constructor This empty constructor is required for stapler. If you remove this constructor, text name of
+         * "Build Pipeline View" will be not displayed in the "NewView" page
 		 */
 		public DescriptorImpl() {
 			super();
@@ -629,6 +656,18 @@ public class BuildPipelineView extends View {
 		this.showPipelineParameters = showPipelineParameters;
 	}
 	
+    public int getRefreshFrequency() {
+        return refreshFrequency;
+    }
+
+    public void setRefreshFrequency(final int refreshFrequency) {
+        this.refreshFrequency = refreshFrequency;
+    }
+
+    public int getRefreshFrequencyInMillis() {
+        return refreshFrequency * 1000;
+    }
+
 	public boolean isShowPipelineDefinitionHeader() {
 		return showPipelineDefinitionHeader;
 	}

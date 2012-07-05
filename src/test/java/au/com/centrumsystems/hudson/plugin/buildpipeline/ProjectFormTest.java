@@ -21,17 +21,17 @@ public class ProjectFormTest extends HudsonTestCase {
 
     @Test
     public void testConstructor() throws Exception {
-        String proj1 = "Project1";
-        String proj2 = "Project2";
-        FreeStyleProject project1 = createFreeStyleProject(proj1);
-        FreeStyleProject project2 = createFreeStyleProject(proj2);
+        final String proj1 = "Project1";
+        final String proj2 = "Project2";
+        final FreeStyleProject project1 = createFreeStyleProject(proj1);
+        final FreeStyleProject project2 = createFreeStyleProject(proj2);
         project1.getPublishersList().add(new BuildTrigger(proj2, false));
         hudson.rebuildDependencyGraph();
-        FreeStyleBuild build1 = buildAndAssertSuccess(project1);
+        final FreeStyleBuild build1 = buildAndAssertSuccess(project1);
         waitUntilNoActivity();
 
-        PipelineBuild pb = new PipelineBuild(build1, project1, null);
-        ProjectForm pf = new ProjectForm(project1);
+        final PipelineBuild pb = new PipelineBuild(build1, project1, null);
+        final ProjectForm pf = new ProjectForm(project1);
         assertEquals(project1.getName(), pf.getName());
         assertEquals(pb.getCurrentBuildResult(), pf.getResult());
         assertEquals(pb.getProjectURL(), pf.getUrl());
@@ -41,22 +41,22 @@ public class ProjectFormTest extends HudsonTestCase {
 
     @Test
     public void testEquals() throws IOException {
-        String proj1 = "Project1";
-        String proj2 = "Project2";
-        FreeStyleProject project1 = createFreeStyleProject(proj1);
-        FreeStyleProject project2 = createFreeStyleProject(proj2);
+        final String proj1 = "Project1";
+        final String proj2 = "Project2";
+        final FreeStyleProject project1 = createFreeStyleProject(proj1);
+        final FreeStyleProject project2 = createFreeStyleProject(proj2);
         project1.getPublishersList().add(new BuildTrigger(proj2, false));
         hudson.rebuildDependencyGraph();
 
-        ProjectForm pf = new ProjectForm(project1);
-        ProjectForm pf1 = new ProjectForm(project1);
-        ProjectForm pf2 = new ProjectForm(project2);
-        String proj3 = null;
-        ProjectForm pf3 = new ProjectForm(proj3);
+        final ProjectForm pf = new ProjectForm(project1);
+        final ProjectForm pf1 = new ProjectForm(project1);
+        final ProjectForm pf2 = new ProjectForm(project2);
+        final String proj3 = null;
+        final ProjectForm pf3 = new ProjectForm(proj3);
 
         assertTrue(pf.equals(pf1));
         assertFalse(pf.equals(pf2));
-        assertFalse(pf.equals(null));
+        assertNotNull(pf);
         assertFalse(pf.equals(pf3));
 
     }

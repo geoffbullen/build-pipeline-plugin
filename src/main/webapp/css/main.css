@@ -1,15 +1,19 @@
 #build-pipeline-plugin-content {
-    min-width: 400px;
-    max-width: 100%;
+	background-attachment: initial;
+	background-clip: initial;
+	background-color: rgba(6, 72, 131, 0.0976563);
+	background-image: initial;
+	background-origin: initial;
+	background-position: initial initial;
+	background-repeat: initial initial;
+	border-bottom-left-radius: 20px;
+	border-bottom-right-radius: 20px;
+	border-top-left-radius: 20px;
+	border-top-right-radius: 20px;
     margin-left: auto;
     margin-right: auto;
+	padding: 10px;
 
-    -moz-border-radius: 20px;
-    -webkit-border-radius: 20px;
-    border-radius: 20px;
-
-    padding: 20px;
-    background: rgba(6, 72, 131, 0.1);
 }
 
 /******************** popup ***************************/
@@ -55,7 +59,7 @@
 /******************** icon bar ***************************/
 #icon-bar {
     margin-bottom: 4px;
-    height: 60px;
+    height: 48px;
     margin-left: auto;
     margin-right: auto;
     width: 340px;
@@ -67,11 +71,6 @@
     width: 48px;
 }
 
-.icon-container img {
-    width: 32px;
-    height: auto;
-}
-
 .icon-container div {
     font-size: 9px;
     text-align: center;
@@ -79,10 +78,21 @@
     text-shadow:1px 0px 0px #333333;
 }
 
+.overflow-hidden {
+	-o-text-overflow: ellipsis;
+	-icab-text-overflow: ellipsis;
+	-khtml-text-overflow: ellipsis;
+	-moz-text-overflow: ellipsis;
+	-webkit-text-overflow: ellipsis;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+}
+
+/*************************** build card *******************************/
 .rounded {
     height: 70px;
-    width: 124px !important;
-
+	width: 141px !important;
     -moz-opacity: 0.9;
     -webkit-opacity: 0.9;
     opacity: 0.9;	
@@ -102,21 +112,10 @@
     margin-right: auto;
 }
 
-table.build-card tr td {
-}
-
 .header div {
     background: rgba(255, 255, 255, 0.7);
+	width: 135px;
     color: #333;
-    -o-text-overflow: ellipsis;
-    -icab-text-overflow: ellipsis;
-    -khtml-text-overflow: ellipsis;
-    -moz-text-overflow: ellipsis;
-    -webkit-text-overflow: ellipsis; 	
-    text-overflow: ellipsis;
-    overflow: hidden; 
-    white-space:nowrap;
-    width: 112px;
     padding: 3px;
 
     -moz-border-radius-topright: 4px;
@@ -128,13 +127,40 @@ table.build-card tr td {
     border-top-left-radius: 4px;
 }
 
+.build-number {
+	font-style: italic;
+	background: url("../images/gear-small.png") no-repeat left center;
+	padding-left: 14px;
+}
+
+.build-duration {
+	background: url("../images/clock-small.png") no-repeat left center;
+	padding-left: 14px;
+}
+
+.build-time {
+	background: url("../images/application-small-list-blue.png") no-repeat left center;
+	padding-left: 14px;
+	text-align: left;
+	text-overflow: clip;
+	overflow: hidden;
+	white-space: nowrap;
+	font-size: 0.9em;
+	width: 125px;
+}
+
+.build-user {
+	background: url("../images/user-small.png") no-repeat left center;
+	padding-left: 14px;		
+	width: 102px;
+}
 
 .build-card .build-body {
     height: 38px;
 }
 
 .build-card .secondary-info {
-    font-size: 0.9em;
+	font-size: 1em;
 }
 
 .build-card .build-actions {
@@ -148,7 +174,7 @@ table.build-card tr td {
 }
 
 .build-card .build-actions .status-bar table {
-    width: 90px;	
+	width: 110px;
     position: relative;
     top: 6px;
 }
@@ -163,19 +189,10 @@ table.build-card tr td {
     padding-right: 2px;
 }
 
-.build-card .build-number {
-    font-size: 2em;
-    font-weight: normal;
-    vertical-align: middle;
-    text-align: right;	
-    width: 30px;
-}
-
 #pipelines {
     width: 100%;
     text-align: center;
     border-collapse: collapse;
-    border-top: solid black 1px;
 }
 
 #legendView td {
@@ -190,6 +207,7 @@ td.next {
 
 tbody.pipelineGroup {
     background-color: #fcae3f;
+	background-color: rgba(252, 174, 63, 0.7);
 }
 
 tbody > tr:first-child > td:first-child {
@@ -231,19 +249,12 @@ tr.spacerRow td {
 
 .revision {
     background-color: #8b8989;
-    display: table-cell;
-    vertical-align: middle;
-    height: 70px;
-    margin: 2px;
-    padding: 5px;
-    text-align: center;
+	margin-left: 0;
 }
 
-.revision div a {
-    padding: 4px;
-    position: relative;
-    margin-left: auto;
-    margin-right: auto;
+.revision .build-number-pipeline {
+	padding-top: 0.25em;
+	font-size: 2em;
 }
 
 .SUCCESS {
@@ -321,16 +332,24 @@ tr.spacerRow td {
     display: none;
 }
 
-.rounded a:link, .rounded a:visited, .rounded a:active {
+a:link,a:visited,a:active {
     text-decoration: none;
     color: inherit;
-    color: expression(this.parentNode.currentStyle['color']); /* IE fix */
+	color: expression(this.parentNode.currentStyle [ 'color' ]);
+	/* IE fix */
     font-weight: inherit;
 }
 
-.rounded a:hover {
+a:hover {
     text-decoration: underline;
     color: inherit;
     color: expression(this.parentNode.currentStyle['color']);
     font-weight: inherit;
+}
+.pointer {
+	cursor: pointer;
+}
+
+.hidden {
+	display: none;
 }
