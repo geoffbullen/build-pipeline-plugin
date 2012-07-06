@@ -60,9 +60,9 @@ import au.com.centrumsystems.hudson.plugin.buildpipeline.Strings;
 /**
  * The build pipeline trigger allows the creation of downstream jobs which aren't triggered automatically. This allows us to have manual
  * "approval" steps in the process where jobs are manually promoted along the pipeline by a user pressing a button on the view.
- * 
+ *
  * @author Centrum Systems
- * 
+ *
  */
 public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer {
     /**
@@ -83,7 +83,7 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
 
     /**
      * Construct the trigger setting the project name and manual build promotion option
-     * 
+     *
      * @param downstreamProjectNames
      *            - the job name of the downstream build
      */
@@ -98,7 +98,7 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
 
     /**
      * this method is required to rebuild the dependency graph of the downstream project
-     * 
+     *
      * @param owner
      *            owner
      * @param graph
@@ -122,7 +122,7 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
 
     /**
      * Create a new DownstreamDependency
-     * 
+     *
      * @param owner
      *            - upstream project
      * @param downstream
@@ -148,8 +148,8 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
             throws InterruptedException, IOException {
         return true;
     }
-    
-	@Override
+
+    @Override
     public BuildStepDescriptor<Publisher> getDescriptor() {
         return new BuildStepDescriptor<Publisher>() {
 
@@ -168,7 +168,7 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
 
     /**
      * Renames a project contained in downstreamProjectNames
-     * 
+     *
      * @param oldName
      *            - The old name of the project
      * @param newName
@@ -206,7 +206,7 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
 
     /**
      * Deletes a project from downstreamProjectNames.
-     * 
+     *
      * @param oldName
      *            - Project to be deleted
      * @return - true; project deleted: false; project not deleted {@link #onDownstreamProjectRenamed(String, String)}
@@ -219,7 +219,7 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
     /**
      * Removes a downstream trigger (BuildPipelineTrigger) from a project. This removes both: - The downstream project name from the
      * downstreamProjectNames attribute - The BuildPipelineTrigger from the AbstractProject publishers list
-     * 
+     *
      * @param bpTrigger
      *            - The BuildPipelineTrigger to be removed
      * @param ownerProject
@@ -255,9 +255,9 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
     /**
      * Set the descriptor for build pipeline trigger class This descriptor is only attached to Build Trigger Post Build action in JOB
      * configuration page
-     * 
+     *
      * @author Centrum Systems
-     * 
+     *
      */
     @Extension
     public static class DescriptorImpl extends BuildStepDescriptor<Publisher> {
@@ -269,7 +269,7 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
 
         /**
          * set the display name in post build action section of the job configuration page
-         * 
+         *
          * @return display name
          */
         @Override
@@ -279,7 +279,7 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
 
         /**
          * Set help text to "Build Pipeline Plugin -> Manually Execute Downstream Project" Post Build action in JOB configuration page
-         * 
+         *
          * @return location of the help file
          */
         @Override
@@ -293,10 +293,10 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
         public Publisher newInstance(final StaplerRequest req, final JSONObject formData) throws FormException {
             return new BuildPipelineTrigger(formData.getString("downstreamProjectNames")); //$NON-NLS-1$
         }
-        
+
         /**
          * Validates that the downstream project names entered are valid projects.
-         * 
+         *
          * @param value
          *            - The entered project names
          * @return hudson.util.FormValidation

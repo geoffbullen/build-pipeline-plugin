@@ -10,9 +10,9 @@ import java.util.Map;
 
 /**
  * @author Centrum Systems
- * 
+ *
  *         Representation of a set of projects
- * 
+ *
  */
 public class ProjectForm {
     /**
@@ -39,12 +39,12 @@ public class ProjectForm {
      * display manual build
      */
     private Boolean displayTrigger;
-    
+
     /**
      * the latest successful build number
      */
     private final String lastSuccessfulBuildNumber;
-    
+
     /**
      * the parameters used in the last successful build
      */
@@ -82,7 +82,7 @@ public class ProjectForm {
             dependencies.add(new ProjectForm(dependency));
         }
         this.displayTrigger = true;
-        
+
         final AbstractBuild<?, ?> lastSuccessfulBuild = pipelineBuild.getProject().getLastSuccessfulBuild();
         lastSuccessfulBuildNumber = (null == lastSuccessfulBuild) ? "" : "" + lastSuccessfulBuild.getNumber();
         lastSuccessfulBuildParams = (null == lastSuccessfulBuild) ? new HashMap<String, String>() : lastSuccessfulBuild.getBuildVariables();
@@ -103,27 +103,27 @@ public class ProjectForm {
     public String getUrl() {
         return url;
     }
-    
+
     public String getLastSuccessfulBuildNumber() {
         return lastSuccessfulBuildNumber;
     }
-    
+
     public Map<String, String> getLastSuccessfulBuildParams() {
-    	return lastSuccessfulBuildParams;
+        return lastSuccessfulBuildParams;
     }
 
     public List<ProjectForm> getDependencies() {
         return dependencies;
     }
-    
+
     /**
      * Gets a display value to determine whether a manual jobs 'trigger' button will be shown. This is used along with
      * isTriggerOnlyLatestJob property allow only the latest version of a job to run.
-     * 
+     *
      * Works by: Initially always defaulted to true. If isTriggerOnlyLatestJob is set to true then as the html code is rendered the first
      * job which should show the trigger button will render and then a call will be made to 'setDisplayTrigger' to change the value to both
      * so all future jobs will not display the trigger. see main.jelly
-     * 
+     *
      * @return boolean whether to display or not
      */
     public Boolean getDisplayTrigger() {
@@ -133,18 +133,18 @@ public class ProjectForm {
     /**
      * Sets a display value to determine whether a manual jobs 'trigger' button will be shown. This is used along with
      * isTriggerOnlyLatestJob property allow only the latest version of a job to run.
-     * 
+     *
      * Works by: Initially always defaulted to true. If isTriggerOnlyLatestJob is set to true then as the html code is rendered the first
      * job which should show the trigger button will render and then a call will be made to 'setDisplayTrigger' to change the value to both
      * so all future jobs will not display the trigger. see main.jelly
-     * 
+     *
      * @param display
      *            - boolean to indicate whether the trigger button should be shown
      */
     public void setDisplayTrigger(final Boolean display) {
         displayTrigger = display;
     }
-    
+
     @Override
     public int hashCode() {
         final int prime = 31;
