@@ -35,8 +35,5 @@
   	<f:entry title="Show pipeline definition header" field="showPipelineDefinitionHeader">
   		<f:booleanRadio field="showPipelineDefinitionHeader" true="Yes" false="No" default="false"/>
   	</f:entry>
-  	
-  	<f:entry title="Show revision box" field="showRevisionBox">
-  		<f:booleanRadio field="showRevisionBox" true="Yes" false="No" default="false"/>
-  	</f:entry>
+
 </j:jelly>

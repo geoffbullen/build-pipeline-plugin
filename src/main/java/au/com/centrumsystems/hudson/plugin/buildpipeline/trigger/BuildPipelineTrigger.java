@@ -30,6 +30,7 @@ import hudson.Util;
 import hudson.model.BuildListener;
 import hudson.model.DependecyDeclarer;
 import hudson.model.DependencyGraph;
+import hudson.model.Describable;
 import hudson.model.Item;
 import hudson.model.Items;
 import hudson.model.AbstractBuild;
@@ -148,6 +149,23 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
     public boolean perform(final AbstractBuild<?, ?> build, final Launcher launcher, final BuildListener listener)
             throws InterruptedException, IOException {
         return true;
+    }
+    
+	@Override
+    public BuildStepDescriptor<Publisher> getDescriptor() {
+		return new BuildStepDescriptor<Publisher>() {
+
+			@Override
+			@SuppressWarnings("rawtypes")
+			public boolean isApplicable(final Class<? extends AbstractProject> jobType) {
+				return false;
+			}
+
+			@Override
+			public String getDisplayName() {
+				return "Build Pipeline";
+			}
+		};
     }
 
     /**
@@ -277,7 +295,7 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
         public Publisher newInstance(final StaplerRequest req, final JSONObject formData) throws FormException {
             return new BuildPipelineTrigger(formData.getString("downstreamProjectNames")); //$NON-NLS-1$
         }
-
+        
         /**
          * Validates that the downstream project names entered are valid projects.
          * 

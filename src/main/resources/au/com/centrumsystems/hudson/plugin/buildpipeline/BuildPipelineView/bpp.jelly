@@ -16,18 +16,22 @@
 			<td>
 				<div class="overflow-hidden">
 					<a title="{{project.name}}" href="{{project.url}}" name="{{id}}">{{project.name}}</a>
+					{{#unless build.isPending}}
+						{{#unless build.isReadyToBeManuallyBuilt}}
+							<span class="build-number">
+								<a href="{{project.url}}{{build.number}}/">{{build.number}}</a>
+							</span>		
+						{{/unless}}
+					{{/unless}}
 				</div>
 			</td>
 		</tr>
 		<tr class="build-body">
 			<td class="secondary-info">
-				<div class="build-time">{{build.startDate}} {{build.startTime}}</div>				
+				<div class="build-time">
+					{{build.startDate}} {{build.startTime}}
+				</div>				
 				<div>
-					{{#unless build.isPending}}
-						{{#unless build.isReadyToBeManuallyBuilt}}
-							<span class="build-number">{{build.number}}</span>		
-						{{/unless}}
-					{{/unless}}
 					<span class="build-duration">
 					{{#if build.isComplete}}
 						{{build.duration}}
@@ -192,6 +196,76 @@
 
 			<table id="pipelines">
 				<j:set var="projectGrid" value="${buildPipelineForm.getProjectGrid()}" />
+				<j:if test="${from.showPipelineDefinitionHeader}">
+					<!-- projects header -->
+					<tbody>
+						<j:forEach items="${projectGrid}" var="projectGridLine">
+							<tr id="project-pipeline">
+								<!-- additional spacer for revision box -->
+								<td class="spacer"/>
+								<!-- Calculate additional spacers for parallel build step -->
+								<!--
+									A spacer is given by a <td colspan="2" />. The colspan must
+									cover the green arrow between two successive pipeline steps.
+									
+									The grid width is given by ${buildPipelineForm.getGridWidth()}
+									The collection of project forms in a project grid line is given
+									by ${projectGridLine.getValue()}.
+									Therefore the number of spacers is the grid width minus the
+									number of projects in the current grid line.
+								 -->
+								<j:forEach begin="1" end="${buildPipelineForm.getGridWidth() - projectGridLine.getValue().size()}">
+									<td colspan="2" />
+								</j:forEach>
+								<j:forEach items="${projectGridLine.getValue()}" var="projectForm">
+									<td/> <!-- spacer -->
+									<td>
+										<table class="PROJECT build-card rounded">
+											<tbody>
+												<tr class="header-name">
+													<td colspan="2">
+														<a href="${projectForm.getValue().getUrl()}">${projectForm.getValue().getName()}</a>
+													</td>
+												</tr>
+												<tr class="build-body">
+													<td>
+														<table>
+															<tbody>
+																<j:choose>
+																	<j:when test="${projectForm.getValue().getLastSuccessfulBuildNumber() != ''}">
+																		<tr>
+																			<td>Latest Build:</td>
+																			<td>
+																				<a href="${projectForm.getValue().getUrl()}${projectForm.getValue().getLastSuccessfulBuildNumber()}">${projectForm.getValue().getLastSuccessfulBuildNumber()}</a>
+																			</td>
+																		</tr>
+																		<j:if test="${from.isShowPipelineParameters()}">
+																			<j:forEach items="${projectForm.getValue().getLastSuccessfulBuildParams()}" var="buildParam">
+																				<tr>
+																					<td class="">${buildParam.getKey()}: </td>
+																					<td class="">${buildParam.getValue()}</td>
+																				</tr>
+																			</j:forEach>
+																		</j:if>
+																	</j:when>
+																	<j:otherwise>
+																		<tr>
+																			<td clas="">No builds</td>
+																		</tr>
+																	</j:otherwise>
+																</j:choose>
+															</tbody>
+														</table>
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</td>
+								</j:forEach>
+							</tr>
+						</j:forEach>
+					</tbody>
+				</j:if>
 				<!-- builds -->
 				<j:forEach items="${buildPipelineForm.getBuildGrids()}" var="buildGrid" indexVar="i">
 					<tbody class="pipelineGroup">
@@ -201,7 +275,7 @@
 										<table class="revision rounded build-card">
 											<tbody>
 												<tr class="header">
-													<td>
+													<td colspan="2">
 														<div>Pipeline version</div>
 													</td>
 												</tr>
@@ -209,27 +283,27 @@
 													<td>
 														<div class="build-number-pipeline" id="buildNumber${buildGrid.get(x).get(0).getId()}"><span>${buildGrid.get(x).get(0).getRevision()}</span></div>
 													</td>
-												</tr>
-												<tr class="build-actions">
-													<td>
+													<td class="secondary-info">
 														<j:if test="${from.isShowPipelineParameters()}">
 															<j:choose>
 																<j:when test="${buildGrid.get(x).get(0).getParameters().isEmpty()}">
 																	No parameters
 																</j:when>
 																<j:otherwise>
+																	<!-- 
 																	<div id="build-parameters-trigger-${buildGrid.get(x).get(0).getId()}" class="pointer">Parameter Values</div>
 																	<div id="build-parameters-${buildGrid.get(x).get(0).getId()}" class="param-info hidden">
+																	-->
+																	<div id="build-parameters-${buildGrid.get(x).get(0).getId()}">
 																		<div>
-																			<ul>
+																			<table>
 																				<j:forEach items="${buildGrid.get(x).get(0).getParameters().entrySet()}" var="buildParam" indexVar="buildParamCtr">
-																					<li>
-																						${buildParam.getKey()}
-																						:
-																						${buildParam.getValue()}
-																					</li>
+																					<tr>
+																						<td>${buildParam.getKey()} :</td>
+																						<td>${buildParam.getValue()}</td>
+																					</tr>
 																				</j:forEach>																
-																			</ul>
+																			</table>
 																		</div>
 																	</div>
 																	<script>

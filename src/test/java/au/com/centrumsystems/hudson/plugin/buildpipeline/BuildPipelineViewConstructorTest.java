@@ -20,11 +20,11 @@ public class BuildPipelineViewConstructorTest {
     public void testAlwaysAllowManualTrigger() throws IOException {
 
         // True
-        BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds, true, true, false, false, false, 2);
+        BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds, true, true, false, false, 2);
         assertTrue(testView.isAlwaysAllowManualTrigger());
 
         // False
-        testView = new BuildPipelineView(bpViewName, bpViewTitle, "", noOfBuilds, true, false, false, false, false, 2);
+        testView = new BuildPipelineView(bpViewName, bpViewTitle, "", noOfBuilds, true, false, false, false, 2);
         assertFalse(testView.isAlwaysAllowManualTrigger());
     }
 
@@ -32,11 +32,11 @@ public class BuildPipelineViewConstructorTest {
     public void testShowPipelineParameters() throws IOException {
 
         // True
-        BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds, true, false, true, false, false, 2);
+        BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds, true, false, true, false, 2);
         assertTrue(testView.isShowPipelineParameters());
 
         // False
-        testView = new BuildPipelineView(bpViewName, bpViewTitle, "", noOfBuilds, true, false, false, false, false, 2);
+        testView = new BuildPipelineView(bpViewName, bpViewTitle, "", noOfBuilds, true, false, false, false, 2);
         assertFalse(testView.isShowPipelineParameters());
     }
 
@@ -44,7 +44,7 @@ public class BuildPipelineViewConstructorTest {
     public void testRefreshFrequency() throws IOException {
 
         // False
-        final BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, "", noOfBuilds, true, false, false, false, false, 2);
+        final BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, "", noOfBuilds, true, false, false, false, 2);
         assertThat(testView.getRefreshFrequency(), is(2));
         assertThat(testView.getRefreshFrequencyInMillis(), is(2000));
     }

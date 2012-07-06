@@ -96,9 +96,6 @@ public class BuildPipelineView extends View {
 	/** showPipelineDefinitionHeader. */
 	private boolean showPipelineDefinitionHeader;
 	
-	/** showRevisionBox */
-	private boolean showRevisionBox;
-
 	/*
 	 * Keep feature flag properties in one place so that it is easy to refactor them out later.
 	 */
@@ -226,19 +223,17 @@ public class BuildPipelineView extends View {
 	 *            Indicates whether pipeline parameter values should be shown.
 	 * @param showPipelineDefinitionHeader
 	 *            Indicates whether the pipeline headers should be shown.
-	 * @param showRevisionBox
-	 *            Indicates whether the revision box should be show.
      * @param refreshFrequency
      *            Frequency at which the build pipeline plugin refreshes build cards
 	 */
 	@DataBoundConstructor
 	public BuildPipelineView(final String name, final String buildViewTitle, final String selectedJob, final String noOfDisplayedBuilds, 
 			final boolean triggerOnlyLatestJob, final boolean alwaysAllowManualTrigger, final boolean showPipelineParameters,
-			final boolean showPipelineDefinitionHeader, final boolean showRevisionBox, final int refreshFrequency) {
+			final boolean showPipelineDefinitionHeader, final int refreshFrequency) {
 		this(name, buildViewTitle, selectedJob, noOfDisplayedBuilds, triggerOnlyLatestJob);
         this.alwaysAllowManualTrigger = alwaysAllowManualTrigger;
         this.showPipelineParameters = showPipelineParameters;
-		this.showRevisionBox = showRevisionBox;
+        this.showPipelineDefinitionHeader = showPipelineDefinitionHeader;
 		this.refreshFrequency = refreshFrequency;
 	}
 
@@ -264,7 +259,6 @@ public class BuildPipelineView extends View {
 		this.showPipelineParameters = Boolean.valueOf(req.getParameter("_.showPipelineParameters")); //$NON-NLS-1$
 		this.showPipelineDefinitionHeader = Boolean.valueOf(req.getParameter("_.showPipelineDefinitionHeader")); //$NON-NLS-1$
         this.refreshFrequency = Integer.valueOf(req.getParameter("refreshFrequency")); //$NON-NLS-1$
-		this.showRevisionBox = Boolean.valueOf(req.getParameter("_.showRevisionBox")); //$NON-NLS-1$
 	}
 
 	/**
@@ -678,18 +672,6 @@ public class BuildPipelineView extends View {
 	
 	public void setShowPipelineDefinitionHeader(final boolean showPipelineDefinitionHeader) {
 		this.showPipelineDefinitionHeader = showPipelineDefinitionHeader;
-	}
-	
-	public boolean isShowRevisionBox() {
-		return showRevisionBox;
-	}
-	
-	public String getShowRevisionBox() {
-		return Boolean.toString(showRevisionBox);
-	}
-	
-	public void setShowRevisionBox(final boolean showRevisionBox) {
-		this.showRevisionBox = showRevisionBox;
 	}
 
 	@Override

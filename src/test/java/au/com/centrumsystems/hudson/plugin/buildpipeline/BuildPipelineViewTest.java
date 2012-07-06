@@ -136,11 +136,11 @@ public class BuildPipelineViewTest extends HudsonTestCase {
 		createFreeStyleProject(proj1);
 
 		// True
-		BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds, true, true, false, false, false, 2000);
+		BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds, true, true, false, false, 2);
 		assertTrue(proj1, testView.isAlwaysAllowManualTrigger());
 
 		// False
-		testView = new BuildPipelineView(bpViewName, bpViewTitle, "", noOfBuilds, true, false, false, false, false, 2000);
+		testView = new BuildPipelineView(bpViewName, bpViewTitle, "", noOfBuilds, true, false, false, false, 2);
 		assertFalse(proj1, testView.isAlwaysAllowManualTrigger());
 	}
 	
@@ -153,11 +153,11 @@ public class BuildPipelineViewTest extends HudsonTestCase {
 		createFreeStyleProject(proj1);
 
 		// True
-		BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds, true, false, false, true, false, 2000);
+		BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds, true, false, false, true, 2);
 		assertTrue(proj1, testView.isShowPipelineDefinitionHeader());
 
 		// False
-		testView = new BuildPipelineView(bpViewName, bpViewTitle, "", noOfBuilds, true, false, false, false, false, 2000);
+		testView = new BuildPipelineView(bpViewName, bpViewTitle, "", noOfBuilds, true, false, false, false, 2);
 		assertFalse(proj1, testView.isShowPipelineDefinitionHeader());
 	}
 	
@@ -170,29 +170,12 @@ public class BuildPipelineViewTest extends HudsonTestCase {
 		createFreeStyleProject(proj1);
 
 		// True
-		BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds, true, false, true, false, false, 2000);
+		BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds, true, false, true, false, 2);
 		assertTrue(proj1, testView.isShowPipelineParameters());
 
 		// False
-		testView = new BuildPipelineView(bpViewName, bpViewTitle, "", noOfBuilds, true, false, false, false, false, 2000);
+		testView = new BuildPipelineView(bpViewName, bpViewTitle, "", noOfBuilds, true, false, false, false, 2);
 		assertFalse(proj1, testView.isShowPipelineParameters());
-	}
-	
-	@Test
-	public void testShowRevisionBox() throws IOException {
-		final String bpViewName = "MyTestView";
-		final String bpViewTitle = "MyTestViewTitle";
-		final String proj1 = "Proj1";
-		final String noOfBuilds = "5";
-		createFreeStyleProject(proj1);
-
-		// True
-		BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds, true, false, false, false, true, 2000);
-		assertTrue(proj1, testView.isShowRevisionBox());
-
-		// False
-		testView = new BuildPipelineView(bpViewName, bpViewTitle, "", noOfBuilds, true, false, false, false, false, 2000);
-		assertFalse(proj1, testView.isShowRevisionBox());
 	}
 
 	@Test
