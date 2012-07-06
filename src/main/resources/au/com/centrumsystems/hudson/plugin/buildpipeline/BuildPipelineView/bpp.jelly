@@ -66,8 +66,8 @@
 				<div class="icons" id="icons-{{id}}">
 					{{#unless build.isPending}}
 						{{#unless build.isReadyToBeManuallyBuilt}}
-						<span class="pointer" onclick="buildPipeline.fillDialog('{{build.url}}consoleText', 'Console output for {{project.name}} #{{build.number}}')">
-							<img title="console" alt="console" src="{{rootUrl}}/images/16x16/terminal.png" />
+						<span class="pointer" onclick="buildPipeline.fillDialog('{{build.url}}console', 'Console output for {{project.name}} #{{build.number}}')">
+							<img title="console" alt="console" src="{{rootURL}}/images/16x16/terminal.png" />
 						</span>
 						{{/unless}}
 					{{/unless}}
@@ -76,7 +76,7 @@
 							{{#unless build.isReadyToBeManuallyBuilt}}
 								{{#if ${from.alwaysAllowManualTrigger}}}
 									<span class="pointer trigger" onclick="buildPipeline.showSpinner({{id}}); buildPipeline.rerunSuccessfulBuild({{id}}, '{{build.extId}}', [{{build.dependencyIds}}])">
-										<img title="trigger" alt="trigger" src="{{rootUrl}}/images/16x16/redo.png" />
+										<img title="trigger" alt="trigger" src="{{rootURL}}/images/16x16/redo.png" />
 									</span>
 								{{/if}}
 							{{/unless}}
@@ -84,7 +84,7 @@
 					{{/unless}}
 					{{#if build.isReadyToBeManuallyBuilt}}
 						<span class="pointer trigger" onclick="buildPipeline.showSpinner({{id}}); buildPipeline.triggerBuild({{id}}, '{{upstream.projectName}}', {{upstream.buildNumber}}, '{{project.name}}', [{{build.dependencyIds}}])">
-							<img title="trigger" alt="trigger" src="{{rootUrl}}/images/16x16/clock.png" />
+							<img title="trigger" alt="trigger" src="{{rootURL}}/images/16x16/clock.png" />
 						</span>
 					{{/if}}			
 					{{#if build.isPending}}
