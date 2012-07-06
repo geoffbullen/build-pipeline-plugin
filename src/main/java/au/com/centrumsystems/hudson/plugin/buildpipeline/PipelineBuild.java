@@ -268,7 +268,7 @@ public class PipelineBuild {
      */
     public PipelineBuild getUpstreamPipelineBuild() {
         @SuppressWarnings("rawtypes")
-		final List<AbstractProject> upstreamProjects = getProject().getUpstreamProjects();
+        final List<AbstractProject> upstreamProjects = getProject().getUpstreamProjects();
         final AbstractProject<?, ?> previousProject;
         final PipelineBuild previousPB = new PipelineBuild();
         if (upstreamProjects.size() > 0) {

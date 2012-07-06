@@ -30,7 +30,6 @@ import hudson.Util;
 import hudson.model.BuildListener;
 import hudson.model.DependecyDeclarer;
 import hudson.model.DependencyGraph;
-import hudson.model.Describable;
 import hudson.model.Item;
 import hudson.model.Items;
 import hudson.model.AbstractBuild;
@@ -65,7 +64,6 @@ import au.com.centrumsystems.hudson.plugin.buildpipeline.Strings;
  * @author Centrum Systems
  * 
  */
-@SuppressWarnings("unchecked")
 public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer {
     /**
      * logger
@@ -153,19 +151,19 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
     
 	@Override
     public BuildStepDescriptor<Publisher> getDescriptor() {
-		return new BuildStepDescriptor<Publisher>() {
+        return new BuildStepDescriptor<Publisher>() {
 
-			@Override
-			@SuppressWarnings("rawtypes")
-			public boolean isApplicable(final Class<? extends AbstractProject> jobType) {
-				return false;
-			}
+            @Override
+            @SuppressWarnings("rawtypes")
+            public boolean isApplicable(final Class<? extends AbstractProject> jobType) {
+                return false;
+            }
 
-			@Override
-			public String getDisplayName() {
-				return "Build Pipeline";
-			}
-		};
+            @Override
+            public String getDisplayName() {
+                return "Build Pipeline";
+                }
+            };
     }
 
     /**

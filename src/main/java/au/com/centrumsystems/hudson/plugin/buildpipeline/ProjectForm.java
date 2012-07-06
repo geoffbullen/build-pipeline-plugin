@@ -105,7 +105,7 @@ public class ProjectForm {
     }
     
     public String getLastSuccessfulBuildNumber() {
-    	return lastSuccessfulBuildNumber;
+        return lastSuccessfulBuildNumber;
     }
     
     public Map<String, String> getLastSuccessfulBuildParams() {

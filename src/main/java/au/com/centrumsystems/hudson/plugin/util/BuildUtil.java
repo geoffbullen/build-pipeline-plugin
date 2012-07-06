@@ -53,11 +53,11 @@ public final class BuildUtil {
      *            - The upstream build
      * @return - The next downstream build based on the upstream build and downstream project, or null if there is no downstream project.
      */
-	public static AbstractBuild<?, ?> getDownstreamBuild(final AbstractProject<?, ?> downstreamProject,
+    public static AbstractBuild<?, ?> getDownstreamBuild(final AbstractProject<?, ?> downstreamProject,
             final AbstractBuild<?, ?> upstreamBuild) {
         if ((downstreamProject != null) && (upstreamBuild != null)) {
-        	@SuppressWarnings("unchecked")
-        	final List<AbstractBuild<?, ?>> downstreamBuilds = (List<AbstractBuild<?, ?>>) downstreamProject.getBuilds();
+            @SuppressWarnings("unchecked")
+            final List<AbstractBuild<?, ?>> downstreamBuilds = (List<AbstractBuild<?, ?>>) downstreamProject.getBuilds();
             for (final AbstractBuild<?, ?> innerBuild : downstreamBuilds) {
                 for (final CauseAction action : innerBuild.getActions(CauseAction.class)) {
                     for (final Cause cause : action.getCauses()) {
