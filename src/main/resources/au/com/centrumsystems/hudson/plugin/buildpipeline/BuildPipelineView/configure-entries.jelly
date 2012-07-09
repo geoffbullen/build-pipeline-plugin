@@ -29,7 +29,7 @@
   	</f:entry>
   	
   	<f:entry title="Refresh frequency (in seconds)" field="refreshFrequency">
-  		<f:textbox name="refreshFrequency" clazz="number" value="3" />
+  		<f:textbox name="refreshFrequency" clazz="number" />
   	</f:entry>
   	
   	<f:entry title="Show pipeline definition header" field="showPipelineDefinitionHeader">

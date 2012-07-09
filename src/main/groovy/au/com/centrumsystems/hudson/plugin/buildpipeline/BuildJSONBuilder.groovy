@@ -33,6 +33,7 @@ class BuildJSONBuilder {
 				status(buildStatus)								
 				url(pipelineBuild.buildResultURL)					
 				userId(pipelineBuild.currentBuild?.getCause(Cause.UserIdCause.class)?.getUserId())
+                estimatedRemainingTime(pipelineBuild.currentBuild?.executor?.estimatedRemainingTime)
 			}
 			project {                
                 disabled(pipelineBuild.projectDisabled)

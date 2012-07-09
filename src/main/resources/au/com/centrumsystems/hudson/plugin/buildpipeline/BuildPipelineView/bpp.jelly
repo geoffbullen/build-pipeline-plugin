@@ -10,19 +10,12 @@
 	<script src="${rootURL}/plugin/build-pipeline-plugin/js/jquery.tooltip.min.js"></script>
 	<script src="${rootURL}/plugin/build-pipeline-plugin/js/build-pipeline.js"></script>
 	<script id="build-card-template" type="text/x-handlebars-template">
-<table class="build-card rounded {{build.status}}">
+<table class="build-card rounded {{build.status}} {{#if project.disabled}}disabled{{/if}}">
 	<tbody>
 		<tr class="header">
 			<td>
 				<div class="overflow-hidden">
 					<a title="{{project.name}}" href="{{project.url}}" name="{{id}}">{{project.name}}</a>
-					{{#unless build.isPending}}
-						{{#unless build.isReadyToBeManuallyBuilt}}
-							<span class="build-number">
-								<a href="{{project.url}}{{build.number}}/">{{build.number}}</a>
-							</span>		
-						{{/unless}}
-					{{/unless}}
 				</div>
 			</td>
 		</tr>
@@ -33,12 +26,7 @@
 				</div>				
 				<div>
 					<span class="build-duration">
-					{{#if build.isComplete}}
 						{{build.duration}}
-					{{/if}}
-					{{#if build.isBuilding}}
-						...
-					{{/if}}
 					</span>
 				</div>
 				{{#if build.userId}}
@@ -51,10 +39,10 @@
 				{{#unless project.disabled}}
 				<div class="status-bar" id="status-bar-{{id}}">
 					{{#if build.isBuilding}}
-						<div class="pointer" onclick="buildPipeline.fillDialog('{{build.url}}consoleText', 'Console output for {{project.name}} #{{build.number}}')">
+						<div class="pointer" onclick="buildPipeline.fillDialog('{{build.url}}console', 'Console output for {{project.name}} #{{build.number}}')">
 							<table class="progress-bar" align="center">
 								<tbody>
-									<tr title="{{build.progress}}%">
+									<tr title="Estimated remaining time: {{build.estimatedRemainingTime}}">
 										<td style="width: {{build.progress}}%" class="progress-bar-done" id="progress-bar-done{{id}}"></td>
 										<td style="width: {{build.progressLeft}}%" class="progress-bar-left" id="progress-bar-left{{id}}"></td>
 									</tr>
@@ -63,6 +51,7 @@
 						</div>
 					{{/if}}
 				</div>
+
 				<div class="icons" id="icons-{{id}}">
 					{{#unless build.isPending}}
 						{{#unless build.isReadyToBeManuallyBuilt}}
@@ -86,16 +75,13 @@
 						<span class="pointer trigger" onclick="buildPipeline.showSpinner({{id}}); buildPipeline.triggerBuild({{id}}, '{{upstream.projectName}}', {{upstream.buildNumber}}, '{{project.name}}', [{{build.dependencyIds}}])">
 							<img title="trigger" alt="trigger" src="{{rootURL}}/images/16x16/clock.png" />
 						</span>
-					{{/if}}			
-					{{#if build.isPending}}
-						{{#unless build.isReadyToBeManuallyBuilt}}
-							<span class="pending"><img src="${rootURL}/plugin/build-pipeline-plugin/images/hourglass.png" atl="pending" /></span>
-						{{/unless}}
-					{{/if}}
+					{{/if}}						
 				</div>
 				{{/unless}}
 				{{#if project.disabled}}
-					Project is disabled
+					<div class="icons" id="icons-{{id}}">
+						<span class="disabled"><img src="${rootURL}/images/16x16/warning.png" atl="disabled" title="disabled" /></span>
+					</div>
 				{{/if}}
 			</td>
 		</tr>
@@ -276,11 +262,7 @@
 											<tbody>
 												<tr class="header">
 													<td colspan="2">
-														<div>Pipeline version
-														<j:if test="${from.isShowPipelineParameters()}">
-															<span class="build-number" id="buildNumber${buildGrid.get(x).get(0).getId()}">${buildGrid.get(x).get(0).getRevision()}</span>
-														</j:if>
-														</div>
+														<div>Pipeline ${buildGrid.get(x).get(0).getRevision()}</div>
 													</td>
 												</tr>
 												<tr class="build-body">
@@ -324,6 +306,9 @@
 															</td>
 														</j:otherwise>
 													</j:choose>
+												</tr>
+												<tr class="build-actions">
+													<td></td>
 												</tr>
 											</tbody>
 										</table>

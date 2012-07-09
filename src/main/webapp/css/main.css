@@ -256,6 +256,11 @@ tr.spacerRow td {
 	font-size: 2em;
 }
 
+.disabled {
+	background-color: #c8c6c7 !important;
+    color: #222;
+}
+
 .SUCCESS {
     background-color: #1bd130;
     color: #222;
