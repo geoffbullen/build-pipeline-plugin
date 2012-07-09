@@ -23,12 +23,23 @@
 			<td class="secondary-info">
 				<div class="build-time">
 					{{build.startDate}} {{build.startTime}}
-				</div>				
+				</div>
+				{{#unless build.isBuilding}}
+					{{#unless project.disabled}}
+					<div>
+						<span class="build-duration">
+							{{build.duration}}
+						</span>
+					</div>
+					{{/unless}}
+				{{/unless}}
+				{{#if build.isBuilding}}	
 				<div>
 					<span class="build-duration">
-						{{build.duration}}
+						Remaining: {{build.estimatedRemainingTime}}
 					</span>
 				</div>
+				{{/if}}
 				{{#if build.userId}}
 					<div class="overflow-hidden" title="{{build.userId}}"><span class="build-user">{{build.userId}}</span></div>
 				{{/if}}				
