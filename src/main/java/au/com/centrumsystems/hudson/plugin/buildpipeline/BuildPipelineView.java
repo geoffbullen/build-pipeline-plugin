@@ -64,9 +64,9 @@ import au.com.centrumsystems.hudson.plugin.util.ProjectUtil;
 /**
  * This view displays the set of jobs that are related based on their upstream\downstream relationships as a pipeline. Each build pipeline
  * becomes a row on the view.
- *
+ * 
  * @author Centrum Systems
- *
+ * 
  */
 public class BuildPipelineView extends View {
 
@@ -128,44 +128,44 @@ public class BuildPipelineView extends View {
         /**
          *
          */
-            public MyUserIdCause() {
-                try {
-                    // this block can generate a CyclicGraphDetector.CycleDetectedException
-                    // in cases that I haven't quite figured out yet
-                    // also an org.acegisecurity.AccessDeniedException when the user
-                    // is not logged in
-                    user = Hudson.getInstance().getMe();
-                } catch (final Exception e) {
-                    // do nothing
-                    LOGGER.fine(e.getMessage());
-                }
+        public MyUserIdCause() {
+            try {
+                // this block can generate a CyclicGraphDetector.CycleDetectedException
+                // in cases that I haven't quite figured out yet
+                // also an org.acegisecurity.AccessDeniedException when the user
+                // is not logged in
+                user = Hudson.getInstance().getMe();
+            } catch (final Exception e) {
+                // do nothing
+                LOGGER.fine(e.getMessage());
             }
+        }
 
-            @Override
-            public String getUserId() {
-                return (null == user) ? null : user.getId();
+        @Override
+        public String getUserId() {
+            return (null == user) ? null : user.getId();
+        }
+
+        @Override
+        public String getUserName() {
+            return (null == user) ? null : user.getDisplayName();
+        }
+
+        @Override
+        public String toString() {
+            return getUserName();
+        }
+
+        @Override
+        public int hashCode() {
+            if (getUserId() == null) {
+                return super.hashCode();
+            } else {
+                return getUserId().hashCode();
             }
+        }
 
-            @Override
-            public String getUserName() {
-                return (null == user) ? null : user.getDisplayName();
-            }
-
-            @Override
-            public String toString() {
-                return getUserName();
-            }
-
-            @Override
-            public int hashCode() {
-                if (getUserId() == null) {
-                    return super.hashCode();
-                } else {
-                    return getUserId().hashCode();
-                }
-            }
-
-            @Override
+        @Override
         public boolean equals(final Object o) {
             if (null == o) {
                 return false;
@@ -174,17 +174,17 @@ public class BuildPipelineView extends View {
                 return false;
             }
 
-                return hashCode() == o.hashCode();
-            }
+            return hashCode() == o.hashCode();
+        }
 
-            @Override
+        @Override
         public void print(final TaskListener listener) {
-                // do nothing
-            }
+            // do nothing
+        }
     }
 
     /**
-     *
+     * 
      * @param name
      *            the name of the pipeline build view.
      * @param buildViewTitle
@@ -205,8 +205,9 @@ public class BuildPipelineView extends View {
         this.noOfDisplayedBuilds = noOfDisplayedBuilds;
         this.triggerOnlyLatestJob = triggerOnlyLatestJob;
     }
+
     /**
-     *
+     * 
      * @param name
      *            the name of the pipeline build view.
      * @param buildViewTitle
@@ -239,7 +240,7 @@ public class BuildPipelineView extends View {
 
     /**
      * Handles the configuration submission
-     *
+     * 
      * @param req
      *            Stapler Request
      * @throws FormException
@@ -263,7 +264,7 @@ public class BuildPipelineView extends View {
 
     /**
      * Gets the selected project
-     *
+     * 
      * @return - The selected project in the current view
      */
     public AbstractProject<?, ?> getSelectedProject() {
@@ -276,7 +277,7 @@ public class BuildPipelineView extends View {
 
     /**
      * Tests if the selected project exists.
-     *
+     * 
      * @return - true: Selected project exists; false: Selected project does not exist.
      */
     public boolean hasSelectedProject() {
@@ -290,7 +291,7 @@ public class BuildPipelineView extends View {
 
     /**
      * Checks whether the user has Build permission for the current project.
-     *
+     * 
      * @param currentProject
      *            - The project being viewed.
      * @return - true: Has Build permission; false: Does not have Build permission
@@ -302,7 +303,7 @@ public class BuildPipelineView extends View {
 
     /**
      * Checks whether the user has Configure permission for the current project.
-     *
+     * 
      * @return - true: Has Configure permission; false: Does not have Configure permission
      */
     public boolean hasConfigurePermission() {
@@ -311,7 +312,7 @@ public class BuildPipelineView extends View {
 
     /**
      * Get a List of downstream projects.
-     *
+     * 
      * @param currentProject
      *            - The project from which we want the downstream projects
      * @return - A List of downstream projects
@@ -322,7 +323,7 @@ public class BuildPipelineView extends View {
 
     /**
      * Determines if the current project has any downstream projects
-     *
+     * 
      * @param currentProject
      *            - The project from which we are testing.
      * @return - true; has downstream projects; false: does not have downstream projects
@@ -333,7 +334,7 @@ public class BuildPipelineView extends View {
 
     /**
      * Returns BuildPipelineForm containing the build pipeline to display.
-     *
+     * 
      * @return - Representation of the projects and their related builds making up the build pipeline view
      * @throws URISyntaxException
      *             {@link URISyntaxException}
@@ -359,7 +360,7 @@ public class BuildPipelineView extends View {
 
     /**
      * Retrieves the project URL
-     *
+     * 
      * @param project
      *            - The project
      * @return URL - of the project
@@ -374,7 +375,7 @@ public class BuildPipelineView extends View {
 
     /**
      * Trigger a manual build
-     *
+     * 
      * @param upstreamBuildNumber
      *            upstream build number
      * @param triggerProjectName
@@ -391,7 +392,9 @@ public class BuildPipelineView extends View {
         final AbstractBuild<?, ?> upstreamBuild = retrieveBuild(upstreamBuildNumber, upstreamProject);
 
         // Get parameters from upstream build
-        LOGGER.fine("Getting parameters from upstream build " + upstreamBuild.getExternalizableId()); //$NON-NLS-1$
+        if (upstreamBuild != null) {
+            LOGGER.fine("Getting parameters from upstream build " + upstreamBuild.getExternalizableId()); //$NON-NLS-1$
+        }
         Action buildParametersAction = null;
         if (upstreamBuild != null) {
             buildParametersAction = BuildUtil.getAllBuildParametersAction(upstreamBuild, triggerProject);
@@ -423,8 +426,7 @@ public class BuildPipelineView extends View {
         LOGGER.fine("Running successful build again: " + externalizableId); //$NON-NLS-1$
         final AbstractBuild<?, ?> triggerBuild = (AbstractBuild<?, ?>) Run.fromExternalizableId(externalizableId);
         final AbstractProject<?, ?> triggerProject = triggerBuild.getProject();
-        final Future<?> future = triggerProject.scheduleBuild2(
-                triggerProject.getQuietPeriod(), new MyUserIdCause(),
+        final Future<?> future = triggerProject.scheduleBuild2(triggerProject.getQuietPeriod(), new MyUserIdCause(),
                 removeUserIdCauseActions(triggerBuild.getActions()));
 
         AbstractBuild<?, ?> result = triggerBuild;
@@ -441,7 +443,7 @@ public class BuildPipelineView extends View {
 
     /**
      * Given an AbstractProject and a build number the associated AbstractBuild will be retrieved.
-     *
+     * 
      * @param buildNo
      *            - Build number
      * @param project
@@ -466,9 +468,9 @@ public class BuildPipelineView extends View {
 
     /**
      * Schedules a build to start.
-     *
+     * 
      * The build will take an upstream build as its Cause and a set of ParametersAction from the upstream build.
-     *
+     * 
      * @param triggerProject
      *            - Schedule a build to start on this AbstractProject
      * @param upstreamBuild
@@ -480,8 +482,7 @@ public class BuildPipelineView extends View {
     private int triggerBuild(final AbstractProject<?, ?> triggerProject, final AbstractBuild<?, ?> upstreamBuild,
             final Action buildParametersAction) {
         LOGGER.fine("Triggering build for project: " + triggerProject.getFullDisplayName()); //$NON-NLS-1$
-        final Cause.UpstreamCause upstreamCause = (null == upstreamBuild) ? null : new Cause.UpstreamCause(
-                (Run<?, ?>) upstreamBuild);
+        final Cause.UpstreamCause upstreamCause = (null == upstreamBuild) ? null : new Cause.UpstreamCause((Run<?, ?>) upstreamBuild);
         final List<Action> buildActions = new ArrayList<Action>();
         buildActions.add(new CauseAction(new MyUserIdCause()));
 
@@ -497,7 +498,7 @@ public class BuildPipelineView extends View {
 
     /**
      * Checks whether the given {@link Action} contains a reference to a {@link UserIdCause} object.
-     *
+     * 
      * @param buildAction
      *            the action to check.
      * @return <code>true</code> if the action has a reference to a userId cause.
@@ -516,14 +517,12 @@ public class BuildPipelineView extends View {
     }
 
     /**
-     * Removes any UserId cause action from the given actions collection.
-     * This is used by downstream builds that inherit upstream actions.
-     * The downstream build can be initiated by another user that is
-     * different from the user who initiated the upstream build, so the
-     * downstream build needs to remove the old user action inherited
-     * from upstream, and add its own.
-     *
-     * @param actions a collection of build actions.
+     * Removes any UserId cause action from the given actions collection. This is used by downstream builds that inherit upstream actions.
+     * The downstream build can be initiated by another user that is different from the user who initiated the upstream build, so the
+     * downstream build needs to remove the old user action inherited from upstream, and add its own.
+     * 
+     * @param actions
+     *            a collection of build actions.
      * @return a collection of build actions with all UserId causes removed.
      */
     private List<Action> removeUserIdCauseActions(final List<Action> actions) {
@@ -538,7 +537,7 @@ public class BuildPipelineView extends View {
 
     /**
      * This descriptor class is required to configure the View Page
-     *
+     * 
      */
     @Extension
     public static final class DescriptorImpl extends ViewDescriptor {
@@ -553,7 +552,7 @@ public class BuildPipelineView extends View {
 
         /**
          * get the display name
-         *
+         * 
          * @return display name
          */
         @Override
@@ -563,7 +562,7 @@ public class BuildPipelineView extends View {
 
         /**
          * Display Job List Item in the Edit View Page
-         *
+         * 
          * @return ListBoxModel
          */
         public ListBoxModel doFillSelectedJobItems() {
@@ -576,7 +575,7 @@ public class BuildPipelineView extends View {
 
         /**
          * Display No Of Builds Items in the Edit View Page
-         *
+         * 
          * @return ListBoxModel
          */
         public ListBoxModel doFillNoOfDisplayedBuildsItems() {
@@ -697,14 +696,14 @@ public class BuildPipelineView extends View {
 
     /**
      * If a project name is changed we check if the selected job for this view also needs to be changed.
-     *
+     * 
      * @param item
      *            - The Item that has been renamed
      * @param oldName
      *            - The old name of the Item
      * @param newName
      *            - The new name of the Item
-     *
+     * 
      */
     @Override
     public void onJobRenamed(final Item item, final String oldName, final String newName) {
