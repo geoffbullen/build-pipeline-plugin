@@ -36,12 +36,12 @@
 				{{#if build.isBuilding}}	
 				<div>
 					<span class="build-duration">
-						Remaining: {{build.estimatedRemainingTime}}
+						Rem.: {{build.estimatedRemainingTime}}
 					</span>
 				</div>
 				{{/if}}
 				{{#if build.userId}}
-					<div class="overflow-hidden" title="{{build.userId}}"><span class="build-user">{{build.userId}}</span></div>
+					<div class="overflow-hidden build-user" title="{{build.userId}}">{{build.userId}}</div>
 				{{/if}}				
 			</td>
 		</tr>
@@ -196,71 +196,56 @@
 				<j:if test="${from.showPipelineDefinitionHeader}">
 					<!-- projects header -->
 					<tbody>
-						<j:forEach items="${projectGrid}" var="projectGridLine">
-							<tr id="project-pipeline">
-								<!-- additional spacer for revision box -->
-								<td class="spacer"/>
-								<!-- Calculate additional spacers for parallel build step -->
-								<!--
-									A spacer is given by a <td colspan="2" />. The colspan must
-									cover the green arrow between two successive pipeline steps.
-									
-									The grid width is given by ${buildPipelineForm.getGridWidth()}
-									The collection of project forms in a project grid line is given
-									by ${projectGridLine.getValue()}.
-									Therefore the number of spacers is the grid width minus the
-									number of projects in the current grid line.
-								 -->
-								<j:forEach begin="1" end="${buildPipelineForm.getGridWidth() - projectGridLine.getValue().size()}">
-									<td colspan="2" />
-								</j:forEach>
-								<j:forEach items="${projectGridLine.getValue()}" var="projectForm">
-									<td/> <!-- spacer -->
-									<td>
-										<table class="PROJECT build-card rounded">
-											<tbody>
-												<tr class="header-name">
-													<td colspan="2">
-														<a href="${projectForm.getValue().getUrl()}">${projectForm.getValue().getName()}</a>
-													</td>
-												</tr>
-												<tr class="build-body">
-													<td>
-														<table>
-															<tbody>
-																<j:choose>
-																	<j:when test="${projectForm.getValue().getLastSuccessfulBuildNumber() != ''}">
-																		<tr>
-																			<td>Latest Build:</td>
-																			<td>
-																				<a href="${projectForm.getValue().getUrl()}${projectForm.getValue().getLastSuccessfulBuildNumber()}">${projectForm.getValue().getLastSuccessfulBuildNumber()}</a>
-																			</td>
-																		</tr>
-																		<j:if test="${from.isShowPipelineParameters()}">
-																			<j:forEach items="${projectForm.getValue().getLastSuccessfulBuildParams()}" var="buildParam">
-																				<tr>
-																					<td class="param-name">${buildParam.getKey()}:</td>
-																					<td class="param-value">${buildParam.getValue()}</td>
-																				</tr>
-																			</j:forEach>
-																		</j:if>
-																	</j:when>
-																	<j:otherwise>
-																		<tr>
-																			<td clas="">No builds</td>
-																		</tr>
-																	</j:otherwise>
-																</j:choose>
-															</tbody>
-														</table>
-													</td>
-												</tr>
-											</tbody>
-										</table>
-									</td>
+						<j:forEach begin="${0}" end="${buildPipelineForm.getGridHeight() - 1}" indexVar="x">
+							<tr id='project-pipeline'>
+								<!-- 1st cell empty, that's where revision will go for the builds -->
+								<td></td>
+								<td class="next"></td>
+								<j:forEach begin="${0}" end="${buildPipelineForm.getGridWidth() - 1}" indexVar="y">
+								<j:set var="project" type="au.com.centrumsystems.hudson.plugin.buildpipeline.ProjectForm" value="${projectGrid.get(x).get(y)}"/>
+									<j:if test="${project != null}">
+										<td>
+											<table class="PROJECT build-card rounded">
+												<tbody>
+													<tr class="header-name">
+														<td colspan="2">
+															<div class="header-wrapper overflow-hidden">
+																<a href="${project.getUrl()}" title="${project.getName()}">																	
+																	<img src="${rootURL}/images/24x24/${project.getHealth()}" />
+																	${project.getName()}
+																</a>
+															</div>
+														</td>
+													</tr>												
+												</tbody>
+											</table>
+										</td>
+										<j:if test="${(y + 1 != buildPipelineForm.getGridWidth())}">
+											<td class="next">
+												<j:if test="${!(project.getDependencies().length() == 0)}">
+													<span class="status next">
+														<img src="${rootURL}/images/24x24/next.png" />
+													</span>
+												</j:if>
+											</td>
+										</j:if>
+									</j:if>
+									<j:if test="${project == null}">
+										<td></td>
+										<j:if test="${y + 1 != buildPipelineForm.getGridWidth()}">
+											<j:set var="nextIndex" value="${y + 1}"/>
+												<td class="next">
+													<j:if test="${projectGrid.get(x).containsKey(nextIndex.intValue())}">
+														<span class="status next">
+															<img src="${rootURL}/images/24x24/next.png" />
+														</span>
+													</j:if>
+												</td>
+										</j:if>
+									</j:if>
 								</j:forEach>
 							</tr>
-						</j:forEach>
+						</j:forEach>						
 					</tbody>
 				</j:if>
 				<!-- builds -->

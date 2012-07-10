@@ -456,4 +456,8 @@ public class PipelineBuild {
     public boolean isProjectDisabled() {
         return getProject().isDisabled();
     }
+
+    public String getProjectHealth() {
+        return project.getBuildHealth().getIconUrl().replaceAll("\\.gif", "\\.png");
+    }
 }

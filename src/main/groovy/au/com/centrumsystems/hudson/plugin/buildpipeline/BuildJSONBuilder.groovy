@@ -38,7 +38,8 @@ class BuildJSONBuilder {
 			project {                
                 disabled(pipelineBuild.projectDisabled)
 				name(pipelineBuild.project.name)
-				url(pipelineBuild.projectURL)                
+				url(pipelineBuild.projectURL)   
+                health(pipelineBuild.projectHealth)             
 			}
 			upstream {
 				projectName(pipelineBuild.upstreamPipelineBuild?.project?.name)

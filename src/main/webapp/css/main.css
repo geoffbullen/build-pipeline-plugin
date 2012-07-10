@@ -304,20 +304,21 @@ tr.spacerRow td {
     font-size: 12px;
     font-weight: bold;
     display: table;
+    height: 20px;
 }
 
 .PROJECT .header-name {
     display: table-row;
-    background: rgba(255, 255, 255, 0.3);
     color: #333;
+}
+
+.PROJECT .header-name div.header-wrapper {
+	width: 141px;
+	text-align: left;
 }
 
 .PROJECT .status-images {
     display: table-row;
-}
-
-.param-name {
-	text-align: right;
 }
 
 .param-value {
