@@ -8,7 +8,7 @@ import hudson.model.Item;
 
 class BuildJSONBuilder {
 
-    static String asJSON(PipelineBuild pipelineBuild, Integer formId, List<Integer> buildDependencyIds) {
+    static String asJSON(PipelineBuild pipelineBuild, Integer formId, Integer projectId, List<Integer> buildDependencyIds) {
         def builder = new JsonBuilder()
 		def buildStatus = pipelineBuild.currentBuildResult
         def root = builder {
@@ -31,7 +31,7 @@ class BuildJSONBuilder {
 				startDate(pipelineBuild.formattedStartDate)
 				startTime(pipelineBuild.formattedStartTime)
 				status(buildStatus)								
-				url(pipelineBuild.buildResultURL)					
+				url(pipelineBuild.buildResultURL ? pipelineBuild.buildResultURL : pipelineBuild.projectURL)					
 				userId(pipelineBuild.currentBuild?.getCause(Cause.UserIdCause.class)?.getUserId())
                 estimatedRemainingTime(pipelineBuild.currentBuild?.executor?.estimatedRemainingTime)
 			}
@@ -39,7 +39,8 @@ class BuildJSONBuilder {
                 disabled(pipelineBuild.projectDisabled)
 				name(pipelineBuild.project.name)
 				url(pipelineBuild.projectURL)   
-                health(pipelineBuild.projectHealth)             
+                health(pipelineBuild.projectHealth)     
+                id(projectId)
 			}
 			upstream {
 				projectName(pipelineBuild.upstreamPipelineBuild?.project?.name)

@@ -8,11 +8,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.kohsuke.stapler.bind.JavaScriptMethod;
+
 /**
  * @author Centrum Systems
- *
+ * 
  *         Representation of a set of projects
- *
+ * 
  */
 public class ProjectForm {
     /**
@@ -119,11 +121,11 @@ public class ProjectForm {
     /**
      * Gets a display value to determine whether a manual jobs 'trigger' button will be shown. This is used along with
      * isTriggerOnlyLatestJob property allow only the latest version of a job to run.
-     *
+     * 
      * Works by: Initially always defaulted to true. If isTriggerOnlyLatestJob is set to true then as the html code is rendered the first
      * job which should show the trigger button will render and then a call will be made to 'setDisplayTrigger' to change the value to both
      * so all future jobs will not display the trigger. see main.jelly
-     *
+     * 
      * @return boolean whether to display or not
      */
     public Boolean getDisplayTrigger() {
@@ -133,11 +135,11 @@ public class ProjectForm {
     /**
      * Sets a display value to determine whether a manual jobs 'trigger' button will be shown. This is used along with
      * isTriggerOnlyLatestJob property allow only the latest version of a job to run.
-     *
+     * 
      * Works by: Initially always defaulted to true. If isTriggerOnlyLatestJob is set to true then as the html code is rendered the first
      * job which should show the trigger button will render and then a call will be made to 'setDisplayTrigger' to change the value to both
      * so all future jobs will not display the trigger. see main.jelly
-     *
+     * 
      * @param display
      *            - boolean to indicate whether the trigger button should be shown
      */
@@ -173,6 +175,20 @@ public class ProjectForm {
             return false;
         }
         return true;
+    }
+
+    public int getId() {
+        return name.hashCode();
+    }
+
+    /**
+     * Project as JSON
+     * 
+     * @return JSON string
+     */
+    @JavaScriptMethod
+    public String asJSON() {
+        return ProjectJSONBuilder.asJSON(this);
     }
 
 }

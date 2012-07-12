@@ -32,9 +32,15 @@ public class BuildForm {
     private PipelineBuild pipelineBuild;
 
     /**
-     * integer
+     * id
      */
     private final Integer id;
+
+    /**
+     * project id used to update project cards
+     */
+    // TODO refactor to get rid of this coupling
+    private final Integer projectId;
 
     /**
      * downstream builds
@@ -53,6 +59,7 @@ public class BuildForm {
             dependencies.add(new BuildForm(downstream));
         }
         id = hashCode();
+        projectId = pipelineBuild.getProject().getName().hashCode();
     }
 
     public String getStatus() {
@@ -79,7 +86,7 @@ public class BuildForm {
      */
     @JavaScriptMethod
     public String asJSON() {
-        return BuildJSONBuilder.asJSON(pipelineBuild, id, getDependencyIds());
+        return BuildJSONBuilder.asJSON(pipelineBuild, id, projectId, getDependencyIds());
     }
 
     public int getId() {
@@ -119,4 +126,9 @@ public class BuildForm {
     public Map<String, String> getParameters() {
         return pipelineBuild.getBuildParameters();
     }
+
+    public Integer getProjectId() {
+        return projectId;
+    }
+
 }

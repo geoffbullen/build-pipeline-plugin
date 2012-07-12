@@ -1,8 +1,9 @@
-var BuildPipeline = function(viewProxy, buildCardTemplate, refreshFrequency){
+var BuildPipeline = function(viewProxy, buildCardTemplate, projectCardTemplate, refreshFrequency){
 	this.buildCardTemplate = buildCardTemplate;
+	this.projectCardTemplate = projectCardTemplate;
 	this.buildProxies = {};
 	this.viewProxy = viewProxy;
-	this.refreshFrequency = refreshFrequency
+	this.refreshFrequency = refreshFrequency;
 };
 
 BuildPipeline.prototype = {
@@ -15,6 +16,7 @@ BuildPipeline.prototype = {
 	    			buildPipeline.updateBuildCardFromJSON(buildData, false);
 	    		} else {
 		    		buildPipeline.updateBuildCardFromJSON(buildData, true);
+					buildPipeline.updateProjectCardFromJSON(buildData.project);
 	    			clearInterval(intervalId);
 	    			//kick off status tracking for all dependencies
 	    			jQuery.each(dependencies, function(){
@@ -30,6 +32,12 @@ BuildPipeline.prototype = {
 			buildPipeline.updateBuildCardFromJSON(jQuery.parseJSON(data.responseObject()), true);
 		});
 	},
+	updateProjectCard : function(id) {
+		var buildPipeline = this;
+		buildPipeline.projectProxies[id].asJSON(function(data){
+			buildPipeline.updateProjectCardFromJSON(jQuery.parseJSON(data.responseObject()), true);
+		});
+	},
 	fetchLatestBuildNumber : function(id) {
 		var buildPipeline = this;
 		console.log(buildPipeline.buildProxies[id])
@@ -41,6 +49,11 @@ BuildPipeline.prototype = {
 		var buildPipeline = this;
 		jQuery("#build-" + buildAsJSON.id).empty();
 		jQuery(buildPipeline.buildCardTemplate(buildAsJSON)).hide().appendTo("#build-" + buildAsJSON.id).fadeIn(fadeIn ? 1000 : 0);
+	},
+	updateProjectCardFromJSON : function(projectAsJSON, fadeIn) {
+		var buildPipeline = this;
+		jQuery("#project-" + projectAsJSON.id).empty();
+		jQuery(buildPipeline.projectCardTemplate(projectAsJSON)).hide().appendTo("#project-" + projectAsJSON.id).fadeIn(fadeIn ? 1000 : 0);
 	},
 	updateNextBuildAndShowProgress : function(id, nextBuildNumber, dependencies) {
 		var buildPipeline = this;
