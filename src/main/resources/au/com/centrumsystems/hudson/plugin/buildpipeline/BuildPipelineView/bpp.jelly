@@ -24,15 +24,13 @@
 				<div class="build-time">
 					{{build.startDate}} {{build.startTime}}
 				</div>
-				{{#unless build.isBuilding}}
-					{{#unless project.disabled}}
-					<div>
-						<span class="build-duration">
-							{{build.duration}}
-						</span>
-					</div>
-					{{/unless}}
-				{{/unless}}
+				{{#if build.isComplete}}
+				<div>
+					<span class="build-duration">
+						{{build.duration}}
+					</span>
+				</div>
+				{{/if}}
 				{{#if build.isBuilding}}	
 				<div>
 					<span class="build-duration">
@@ -224,7 +222,6 @@
 										<td id="project-${project.getId()}"></td>
 										<script>
 											jQuery("#project-${project.getId()}").append(buildPipeline.projectCardTemplate(${project.asJSON()}));
-											buildPipeline.projectProxies[${project.getId()}] = <st:bind value="${project}" />;
 										</script>
 										<j:if test="${(y + 1 != buildPipelineForm.getGridWidth())}">
 											<td class="next">
