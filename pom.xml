@@ -170,12 +170,16 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-pmd-plugin</artifactId>
-				<version>2.5</version>
+				<version>2.7.1</version>
 				<!--$NO-MVN-MAN-VER$ -->
 				<configuration>
 					<rulesets>
 						<ruleset>${pmd.config.file}</ruleset>
 					</rulesets>
+					<excludes>
+						<exclude>**/generated-sources/**</exclude>
+					</excludes>
+					<failOnViolation>false</failOnViolation>
 				</configuration>
 				<executions>
 					<execution>
