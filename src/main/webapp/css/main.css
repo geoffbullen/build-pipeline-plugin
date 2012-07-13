@@ -135,7 +135,11 @@
 
 .build-duration {
 	background: url("../images/clock-small.png") no-repeat left center;
-	padding-left: 14px;
+	padding-left: 14px;	
+}
+
+.build-duration-container {
+	width: 135px;
 }
 
 .build-time {

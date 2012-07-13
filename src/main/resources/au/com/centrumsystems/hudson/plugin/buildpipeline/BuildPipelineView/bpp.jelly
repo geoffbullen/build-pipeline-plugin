@@ -31,14 +31,14 @@
 				<div class="build-time">
 					{{build.startDate}} {{build.startTime}}
 				</div>
-				<div>
+				<div class="overflow-hidden build-duration-container">
 				{{#if build.isComplete}}
-					<span class="build-duration">
+					<span class="build-duration" title="{{build.duration}}">						
 						{{build.duration}}
 					</span>
 				{{/if}}
 				{{#if build.isBuilding}}
-					<span class="build-duration">
+					<span class="build-duration" title="{{build.duration}}">
 						{{build.duration}}
 					</span>
 				{{/if}}
