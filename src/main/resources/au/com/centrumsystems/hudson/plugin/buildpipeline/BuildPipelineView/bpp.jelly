@@ -15,7 +15,14 @@
 		<tr class="header">
 			<td>
 				<div class="overflow-hidden">
-					<span class="pointer" title="{{project.name}}" onclick="buildPipeline.fillDialog('{{build.url}}')" name="{{id}}">{{project.name}}</span>
+					<span class="pointer" title="{{project.name}}" onclick="buildPipeline.fillDialog('{{build.url}}')" name="{{id}}">
+						{{#unless build.isPending}}
+							{{#unless build.isReadyToBeManuallyBuilt}}								
+								#{{build.number}}							
+							{{/unless}}
+						{{/unless}}						
+						{{project.name}}	
+					</span>
 				</div>
 			</td>
 		</tr>
@@ -24,20 +31,18 @@
 				<div class="build-time">
 					{{build.startDate}} {{build.startTime}}
 				</div>
-				{{#if build.isComplete}}
 				<div>
+				{{#if build.isComplete}}
 					<span class="build-duration">
 						{{build.duration}}
 					</span>
-				</div>
 				{{/if}}
-				{{#if build.isBuilding}}	
-				<div>
+				{{#if build.isBuilding}}
 					<span class="build-duration">
-						Rem.: {{build.estimatedRemainingTime}}
+						{{build.duration}}
 					</span>
-				</div>
 				{{/if}}
+				</div>
 				{{#if build.userId}}
 					<div class="overflow-hidden build-user" title="{{build.userId}}">{{build.userId}}</div>
 				{{/if}}				
