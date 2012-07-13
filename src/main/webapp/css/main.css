@@ -129,6 +129,7 @@
 
 .build-number {
 	font-style: italic;
+	background: url("../images/gear-small.png") no-repeat left center;
 	padding-left: 14px;
 }
 
