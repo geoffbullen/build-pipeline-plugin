@@ -74,17 +74,19 @@
 						</span>
 						{{/unless}}
 					{{/unless}}
-					{{#unless build.isPending}}
-						{{#unless build.isBuilding}}
-							{{#unless build.isReadyToBeManuallyBuilt}}
-								{{#if ${from.alwaysAllowManualTrigger}}}
-									<span class="pointer trigger" onclick="buildPipeline.showSpinner({{id}}); buildPipeline.rerunSuccessfulBuild({{id}}, '{{build.extId}}', [{{build.dependencyIds}}])">
-										<img title="trigger" alt="trigger" src="${rootURL}/images/16x16/redo.png" />
-									</span>
-								{{/if}}
-							{{/unless}}
-						{{/unless}}
-					{{/unless}}
+					{{#if build.isRerunable}}
+						{{#if ${from.triggerOnlyLatestJob}}}
+							{{#if build.isFirstRow}}
+							<span class="pointer trigger" onclick="buildPipeline.showSpinner({{id}}); buildPipeline.rerunSuccessfulBuild({{id}}, '{{build.extId}}', [{{build.dependencyIds}}])">
+								<img title="re-run" alt="re-run" src="${rootURL}/images/16x16/redo.png" />
+							</span>
+							{{/if}}
+							{{else}}
+							<span class="pointer trigger" onclick="buildPipeline.showSpinner({{id}}); buildPipeline.rerunSuccessfulBuild({{id}}, '{{build.extId}}', [{{build.dependencyIds}}])">
+								<img title="re-run" alt="re-run" src="${rootURL}/images/16x16/redo.png" />
+							</span>
+						{{/if}}
+					{{/if}}
 					{{#if build.isReadyToBeManuallyBuilt}}
 						<span class="pointer trigger" onclick="buildPipeline.showSpinner({{id}}); buildPipeline.triggerBuild({{id}}, '{{upstream.projectName}}', {{upstream.buildNumber}}, '{{project.name}}', [{{build.dependencyIds}}])">
 							<img title="trigger" alt="trigger" src="${rootURL}/images/16x16/clock.png" />

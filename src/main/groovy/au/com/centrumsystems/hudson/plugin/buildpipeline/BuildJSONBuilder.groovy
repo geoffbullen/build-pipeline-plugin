@@ -8,7 +8,7 @@ import hudson.model.Item;
 
 class BuildJSONBuilder {
 
-    static String asJSON(PipelineBuild pipelineBuild, Integer formId, Integer projectId, List<Integer> buildDependencyIds) {
+    static String asJSON(PipelineBuild pipelineBuild, Integer formId, Integer projectId, List<Integer> buildDependencyIds, boolean firstRow) {
         def builder = new JsonBuilder()
 		def buildStatus = pipelineBuild.currentBuildResult
         def root = builder {
@@ -22,9 +22,11 @@ class BuildJSONBuilder {
                 hasUpstreamBuild(null != pipelineBuild.upstreamBuild)
 				isBuilding(buildStatus == 'BUILDING')
 				isComplete(buildStatus != 'BUILDING' && buildStatus != 'PENDING' && buildStatus != 'MANUAL')
+                isFirstRow(firstRow)
 				isPending(buildStatus == 'PENDING')
 				isReadyToBeManuallyBuilt(pipelineBuild.isReadyToBeManuallyBuilt())
 				isManualTrigger(pipelineBuild.isManualTrigger())
+                isRerunable(buildStatus != 'PENDING' && buildStatus != 'BUILDING' && !pipelineBuild.isReadyToBeManuallyBuilt())
 				number(pipelineBuild.currentBuild?.number)                
 				progress(pipelineBuild.buildProgress)
 				progressLeft(100 - pipelineBuild.buildProgress)

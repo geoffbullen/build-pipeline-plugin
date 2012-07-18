@@ -52,6 +52,16 @@ public class BuildPipelineForm {
             placeBuildInGrid(0, 0, buildForm, buildGrid);
             buildGrids.add(buildGrid);
         }
+
+        // flag when build form is on the first row, affects rerun functionality
+        if (buildGrids != null && buildGrids.size() > 0) {
+            for (Integer key : buildGrids.get(0).keySet()) {
+                for (Integer buildFormKey : buildGrids.get(0).get(key).keySet()) {
+                    buildGrids.get(0).get(key).get(buildFormKey).setFirstRow(true);
+                }
+            }
+        }
+
     }
 
     /**
@@ -198,43 +208,6 @@ public class BuildPipelineForm {
 
     public Integer getGridHeight() {
         return projectGrid.keySet().size();
-    }
-
-    /**
-     * Gets a display value to determine whether a manual jobs 'trigger' button will be shown. This is used along with
-     * isTriggerOnlyLatestJob property allow only the latest version of a job to run.
-     * 
-     * Works by: Initially always defaulted to true. If isTriggerOnlyLatestJob is set to true then as the html code is rendered the first
-     * job which should show the trigger button will render and then a call will be made to 'setDisplayTrigger' to change the value to both
-     * so all future jobs will not display the trigger. see main.jelly
-     * 
-     * @param row
-     *            the row of the job
-     * @param height
-     *            the height of the job
-     * @return boolean whether to display or not
-     */
-    public Boolean getDisplayTrigger(final int row, final int height) {
-        return projectGrid.get(row).get(height).getDisplayTrigger();
-    }
-
-    /**
-     * Sets a display value to determine whether a manual jobs 'trigger' button will be shown. This is used along with
-     * isTriggerOnlyLatestJob property allow only the latest version of a job to run.
-     * 
-     * Works by: Initially always defaulted to true. If isTriggerOnlyLatestJob is set to true then as the html code is rendered the first
-     * job which should show the trigger button will render and then a call will be made to 'setDisplayTrigger' to change the value to both
-     * so all future jobs will not display the trigger. see main.jelly
-     * 
-     * @param row
-     *            the row of the job
-     * @param height
-     *            the height of the job
-     * @param display
-     *            - boolean to indicate whether the trigger button should be shown
-     */
-    public void setDisplayTrigger(final int row, final int height, final boolean display) {
-        projectGrid.get(row).get(height).setDisplayTrigger(display);
     }
 
     public List<Map<Integer, Map<Integer, BuildForm>>> getBuildGrids() {
