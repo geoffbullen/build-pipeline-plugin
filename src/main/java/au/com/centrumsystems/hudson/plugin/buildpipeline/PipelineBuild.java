@@ -355,8 +355,13 @@ public class PipelineBuild {
     public String getPipelineVersion() {
         String version;
         if (currentBuild != null) {
-            version = currentBuild.getNumber() > 0 ? String.valueOf(currentBuild.getNumber()) : Strings
-                    .getString("PipelineBuild.RevisionNotAvailable");
+            String displayName = currentBuild.getDisplayName();
+            if(displayName == null || displayName.trim().length() == 0) {
+                version = currentBuild.getNumber() > 0 ? String.valueOf(currentBuild.getNumber()) : Strings
+                    .getString("PipelineBuild.RevisionNotAvailable");            
+            }else {
+                version = displayName;
+            }
         } else {
             version = Strings.getString("PipelineBuild.RevisionNotAvailable");
         }

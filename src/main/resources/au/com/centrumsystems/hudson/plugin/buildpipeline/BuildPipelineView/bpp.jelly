@@ -18,7 +18,11 @@
 					<span class="pointer" title="{{project.name}}" onclick="buildPipeline.fillDialog('{{build.url}}')" name="{{id}}">
 						{{#unless build.isPending}}
 							{{#unless build.isReadyToBeManuallyBuilt}}								
-								#{{build.number}}							
+                                {{#if build.displayName}}
+                                    {{build.displayName}}
+								{{else}}
+                                    #{{build.number}}
+                                {{/if}}
 							{{/unless}}
 						{{/unless}}						
 						{{project.name}}	
