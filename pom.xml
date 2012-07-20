@@ -274,22 +274,22 @@
 		</pluginManagement>
 	</build>
 
-			<distributionManagement>
-				<repository>
+	<distributionManagement>
+		<repository>
 			<id>maven.jenkins-ci.org</id>
 			<url>http://maven.jenkins-ci.org:8081/content/repositories/releases/</url>
-				</repository>
-			</distributionManagement>
+		</repository>
+	</distributionManagement>
 
 	<repositories>
 		<repository>
 			<id>maven-central</id>
 			<url>http://repo1.maven.org/maven2</url>
 		</repository>
-				<repository>
-					<id>maven.jenkins-ci.org</id>
+		<repository>
+			<id>maven.jenkins-ci.org</id>
 			<url>http://repo.jenkins-ci.org/public</url>
-				</repository>
+		</repository>
 	</repositories>
 	<pluginRepositories>
 		<pluginRepository>
