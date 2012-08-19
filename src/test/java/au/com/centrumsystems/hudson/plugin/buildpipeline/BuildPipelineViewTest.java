@@ -189,7 +189,7 @@ public class BuildPipelineViewTest extends HudsonTestCase {
 		final FreeStyleProject project2 = createFreeStyleProject(proj2);
 
 		// Add project2 as a post build action: build other project
-		project1.getPublishersList().add(new BuildPipelineTrigger(proj2));
+		project1.getPublishersList().add(new BuildPipelineTrigger(proj2, null));
 
 		// Important; we must do this step to ensure that the dependency graphs are updated
 		Hudson.getInstance().rebuildDependencyGraph();
@@ -212,7 +212,7 @@ public class BuildPipelineViewTest extends HudsonTestCase {
 		final FreeStyleProject project2 = createFreeStyleProject(proj2);
 
 		// Add project2 as a post build action: build other project
-		project1.getPublishersList().add(new BuildPipelineTrigger(proj2));
+		project1.getPublishersList().add(new BuildPipelineTrigger(proj2, null));
 
 		// Important; we must do this step to ensure that the dependency graphs are updated
 		Hudson.getInstance().rebuildDependencyGraph();
@@ -238,8 +238,8 @@ public class BuildPipelineViewTest extends HudsonTestCase {
 		final FreeStyleProject project3 = createFreeStyleProject(proj3);
 
 		// Add project2 as a post build action: build other project
-		project1.getPublishersList().add(new BuildPipelineTrigger(proj2));
-		project2.getPublishersList().add(new BuildPipelineTrigger(proj3));
+		project1.getPublishersList().add(new BuildPipelineTrigger(proj2, null));
+		project2.getPublishersList().add(new BuildPipelineTrigger(proj3, null));
 
 		// Important; we must do this step to ensure that the dependency graphs are updated
 		Hudson.getInstance().rebuildDependencyGraph();
@@ -282,7 +282,7 @@ public class BuildPipelineViewTest extends HudsonTestCase {
 		final FreeStyleProject project1 = createFreeStyleProject(proj1);
 
 		// Add project2 as a post build action: build other project
-		project1.getPublishersList().add(new BuildPipelineTrigger(proj2));
+		project1.getPublishersList().add(new BuildPipelineTrigger(proj2, null));
 
 		// Important; we must do this step to ensure that the dependency graphs are updated
 		Hudson.getInstance().rebuildDependencyGraph();

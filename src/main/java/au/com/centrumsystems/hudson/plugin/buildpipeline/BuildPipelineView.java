@@ -24,6 +24,7 @@
  */
 package au.com.centrumsystems.hudson.plugin.buildpipeline;
 
+import au.com.centrumsystems.hudson.plugin.buildpipeline.trigger.BuildPipelineTrigger;
 import hudson.Extension;
 import hudson.model.Action;
 import hudson.model.Item;
@@ -40,6 +41,7 @@ import hudson.model.Run;
 import hudson.model.User;
 import hudson.model.View;
 import hudson.model.ViewDescriptor;
+import hudson.plugins.parameterizedtrigger.AbstractBuildParameters;
 import hudson.util.ListBoxModel;
 
 import java.io.IOException;
@@ -49,10 +51,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 
+import hudson.util.LogTaskListener;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
@@ -489,6 +493,26 @@ public class BuildPipelineView extends View {
         if (buildParametersAction != null) {
             if (!isUserIdCauseAction(buildParametersAction)) {
                 buildActions.add(buildParametersAction);
+            }
+        }
+
+        if (upstreamBuild != null) {
+
+            final BuildPipelineTrigger trigger = upstreamBuild.getProject().getPublishersList().get(BuildPipelineTrigger.class);
+
+            final List<AbstractBuildParameters> configs = trigger.getConfigs();
+
+            for (AbstractBuildParameters config : configs) {
+                try {
+                    final Action action = config.getAction(upstreamBuild, new LogTaskListener(LOGGER, Level.INFO));
+                    buildActions.add(action);
+                } catch (IOException e) {
+                    LOGGER.log(Level.SEVERE, "I/O exception while adding build parameter", e); //$NON-NLS-1$
+                } catch (InterruptedException e) {
+                    LOGGER.log(Level.SEVERE, "Adding build parameter was interrupted", e); //$NON-NLS-1$
+                } catch (AbstractBuildParameters.DontTriggerException e) {
+                    LOGGER.log(Level.FINE, "Not triggering : " + config); //$NON-NLS-1$
+                }
             }
         }
 

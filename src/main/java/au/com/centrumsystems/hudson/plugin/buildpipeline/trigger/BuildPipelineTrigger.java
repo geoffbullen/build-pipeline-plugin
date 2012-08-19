@@ -26,6 +26,7 @@ package au.com.centrumsystems.hudson.plugin.buildpipeline.trigger;
 
 import hudson.Extension;
 import hudson.Launcher;
+import hudson.PluginWrapper;
 import hudson.Util;
 import hudson.model.BuildListener;
 import hudson.model.DependecyDeclarer;
@@ -36,7 +37,9 @@ import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.Hudson;
 import hudson.model.Project;
+import hudson.model.Descriptor;
 import hudson.model.listeners.ItemListener;
+import hudson.plugins.parameterizedtrigger.AbstractBuildParameters;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Messages;
@@ -45,15 +48,14 @@ import hudson.tasks.Publisher;
 import hudson.util.FormValidation;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.sf.json.JSONObject;
-
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
-import org.kohsuke.stapler.StaplerRequest;
 
 import au.com.centrumsystems.hudson.plugin.buildpipeline.Strings;
 
@@ -70,6 +72,11 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
      */
     private static final Logger LOGGER = Logger.getLogger(BuildPipelineTrigger.class.getName());
 
+    /**
+     * Build parameters
+     */
+    private final List<AbstractBuildParameters> configs;
+
     /** downstream project name */
     private String downstreamProjectNames;
 
@@ -81,19 +88,27 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
         this.downstreamProjectNames = downstreamProjectNames;
     }
 
+    public List<AbstractBuildParameters> getConfigs() {
+        return configs;
+    }
+
     /**
      * Construct the trigger setting the project name and manual build promotion option
      *
      * @param downstreamProjectNames
      *            - the job name of the downstream build
+     *
+     * @param configs
+     *            - the build parameters
      */
     @DataBoundConstructor
-    public BuildPipelineTrigger(final String downstreamProjectNames) {
+    public BuildPipelineTrigger(final String downstreamProjectNames, final List<AbstractBuildParameters> configs) {
         if (downstreamProjectNames == null) {
             throw new IllegalArgumentException();
         }
 
         this.downstreamProjectNames = downstreamProjectNames;
+        this.configs = new ArrayList<AbstractBuildParameters>(Util.fixNull(configs));
     }
 
     /**
@@ -262,6 +277,21 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
     @Extension
     public static class DescriptorImpl extends BuildStepDescriptor<Publisher> {
 
+        public List<Descriptor<AbstractBuildParameters>> getBuilderConfigDescriptors() {
+            return Hudson.getInstance().getDescriptorList(AbstractBuildParameters.class);
+        }
+
+        /**
+         * Returns true if it is possible to add parameters to the trigger. This is the case when the
+         * parameterized-trigger plugin is both installed and active.
+         *
+         * @return true if it is possible to add parameters to the trigger
+         */
+        public boolean canAddParameters() {
+            final PluginWrapper plugin = Hudson.getInstance().getPluginManager().getPlugin("parameterized-trigger"); //$NON-NLS-1$
+            return plugin != null && plugin.isActive();
+        }
+
         @Override
         public boolean isApplicable(@SuppressWarnings("rawtypes") final Class<? extends AbstractProject> jobType) {
             return true;
@@ -287,11 +317,6 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
             final String filePath = "/descriptor/au.com.centrumsystems.hudson.plugin.buildpipeline.trigger.BuildPipelineTrigger/help";
             final String fileName = "buildPipeline.html";
             return String.format("%s/%s", filePath, fileName);
-        }
-
-        @Override
-        public Publisher newInstance(final StaplerRequest req, final JSONObject formData) throws FormException {
-            return new BuildPipelineTrigger(formData.getString("downstreamProjectNames")); //$NON-NLS-1$
         }
 
         /**

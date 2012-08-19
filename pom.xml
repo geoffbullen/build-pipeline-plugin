@@ -97,6 +97,12 @@
 			<version>2.2</version>
 			<optional>true</optional>
 		</dependency>
+        <dependency>
+            <groupId>org.jenkins-ci.plugins</groupId>
+            <artifactId>parameterized-trigger</artifactId>
+            <version>2.15</version>
+            <optional>true</optional>
+        </dependency>
 	</dependencies>
 	<build>
 		<plugins>

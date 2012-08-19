@@ -175,7 +175,7 @@ public class PipelineBuildTest extends HudsonTestCase {
         BuildPipelineTrigger trigger2;
 
         final FreeStyleProject project1 = createFreeStyleProject(proj1);
-        trigger2 = new BuildPipelineTrigger(proj2);
+        trigger2 = new BuildPipelineTrigger(proj2, null);
 
         project1.getPublishersList().add(trigger2);
         // Important; we must do this step to ensure that the dependency graphs
@@ -222,7 +222,7 @@ public class PipelineBuildTest extends HudsonTestCase {
 
         final FreeStyleProject project1 = createFreeStyleProject(proj1);
         final FreeStyleProject project2 = createFreeStyleProject(proj2);
-        final BuildPipelineTrigger trigger2 = new BuildPipelineTrigger(proj2);
+        final BuildPipelineTrigger trigger2 = new BuildPipelineTrigger(proj2, null);
 
         project1.getPublishersList().add(trigger2);
         // Important; we must do this step to ensure that the dependency graphs
@@ -318,7 +318,7 @@ public class PipelineBuildTest extends HudsonTestCase {
         FreeStyleProject upstreamProject = createFreeStyleProject(upstreamProjectName);
         FreeStyleProject downstreamProject = createFreeStyleProject(downstreamProjectName);
 
-        upstreamProject.getPublishersList().add(new BuildPipelineTrigger(downstreamProjectName));
+        upstreamProject.getPublishersList().add(new BuildPipelineTrigger(downstreamProjectName, null));
         Hudson.getInstance().rebuildDependencyGraph();
 
         FreeStyleBuild upstreamBuild = buildAndAssertSuccess(upstreamProject);

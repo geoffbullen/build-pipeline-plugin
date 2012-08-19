@@ -56,7 +56,7 @@ public class BuildPipelineTriggerTest extends HudsonTestCase {
     @Test(expected = IllegalArgumentException.class)
     public void testInvalidConstructor() {
         try {
-            new BuildPipelineTrigger(null);
+            new BuildPipelineTrigger(null, null);
             fail("An IllegalArgumentException should have been thrown.");
         } catch (final IllegalArgumentException e) {
 
@@ -69,11 +69,11 @@ public class BuildPipelineTriggerTest extends HudsonTestCase {
         final String proj2 = "Proj2";
         final FreeStyleProject project1 = createFreeStyleProject(proj1);
         // Add TEST_PROJECT2 as a post build action: build other project
-        project1.getPublishersList().add(new BuildPipelineTrigger(proj2));
+        project1.getPublishersList().add(new BuildPipelineTrigger(proj2, null));
         // Important; we must do this step to ensure that the dependency graphs are updated
         Hudson.getInstance().rebuildDependencyGraph();
 
-        final BuildPipelineTrigger myBPTrigger = new BuildPipelineTrigger(proj1);
+        final BuildPipelineTrigger myBPTrigger = new BuildPipelineTrigger(proj1, null);
 
         assertNotNull("A valid BuildPipelineTrigger should have been created.", myBPTrigger);
 
@@ -85,7 +85,7 @@ public class BuildPipelineTriggerTest extends HudsonTestCase {
         final String proj1 = "Proj1";
         final String proj2 = "Proj2";
         final String proj3 = "Proj3";
-        final BuildPipelineTrigger bpTrigger = new BuildPipelineTrigger(proj1);
+        final BuildPipelineTrigger bpTrigger = new BuildPipelineTrigger(proj1, null);
         bpTrigger.setDownstreamProjectNames(proj2 + ", " + proj3);
         assertTrue(bpTrigger.onDownstreamProjectRenamed(proj2, proj2 + "NEW"));
 
@@ -101,7 +101,7 @@ public class BuildPipelineTriggerTest extends HudsonTestCase {
         final String proj1 = "Proj1";
         final String proj2 = "Proj2";
         final String proj3 = "Proj3";
-        final BuildPipelineTrigger bpTrigger = new BuildPipelineTrigger(proj1);
+        final BuildPipelineTrigger bpTrigger = new BuildPipelineTrigger(proj1, null);
         bpTrigger.setDownstreamProjectNames(proj2 + ", " + proj3);
         assertTrue(bpTrigger.onDownstreamProjectDeleted(proj2));
 
@@ -119,7 +119,7 @@ public class BuildPipelineTriggerTest extends HudsonTestCase {
         final String proj3 = "Proj3";
         final FreeStyleProject project1 = createFreeStyleProject(proj1);
         final FreeStyleProject project2 = createFreeStyleProject(proj2);
-        project1.getPublishersList().add(new BuildPipelineTrigger(proj2 + "," + proj3));
+        project1.getPublishersList().add(new BuildPipelineTrigger(proj2 + "," + proj3, null));
         Hudson.getInstance().rebuildDependencyGraph();
 
         project2.renameTo(proj2 + "NEW");
@@ -140,7 +140,7 @@ public class BuildPipelineTriggerTest extends HudsonTestCase {
         final String proj3 = "Proj3";
         final FreeStyleProject project1 = createFreeStyleProject(proj1);
         final FreeStyleProject project2 = createFreeStyleProject(proj2);
-        project1.getPublishersList().add(new BuildPipelineTrigger(proj2 + "," + proj3));
+        project1.getPublishersList().add(new BuildPipelineTrigger(proj2 + "," + proj3, null));
         Hudson.getInstance().rebuildDependencyGraph();
 
         project2.delete();
@@ -172,7 +172,7 @@ public class BuildPipelineTriggerTest extends HudsonTestCase {
         final String proj1 = "Proj1";
         final String proj2 = "Proj2";
         final FreeStyleProject project1 = createFreeStyleProject(proj1);
-        final BuildPipelineTrigger buildPipelineTrigger = new BuildPipelineTrigger(proj2);
+        final BuildPipelineTrigger buildPipelineTrigger = new BuildPipelineTrigger(proj2, null);
         project1.getPublishersList().add(buildPipelineTrigger);
         Hudson.getInstance().rebuildDependencyGraph();
 
@@ -191,7 +191,7 @@ public class BuildPipelineTriggerTest extends HudsonTestCase {
     public void testCyclicDownstreamTrigger() throws IOException, InterruptedException {
         final String proj1 = "Proj1";
         final FreeStyleProject project1 = createFreeStyleProject(proj1);
-        final BuildPipelineTrigger cyclicPipelineTrigger = new BuildPipelineTrigger(proj1);
+        final BuildPipelineTrigger cyclicPipelineTrigger = new BuildPipelineTrigger(proj1, null);
         project1.getPublishersList().add(cyclicPipelineTrigger);
         Hudson.getInstance().rebuildDependencyGraph();
 

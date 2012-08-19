@@ -63,8 +63,8 @@ public class ProjectUtilTest extends HudsonTestCase {
         final FreeStyleProject project2 = createFreeStyleProject(proj2);
 
         // Add project2 as a post build action: build other project
-        project1.getPublishersList().add(new BuildPipelineTrigger(proj2));
-        project1.getPublishersList().add(new BuildPipelineTrigger(proj3));
+        project1.getPublishersList().add(new BuildPipelineTrigger(proj2, null));
+        project1.getPublishersList().add(new BuildPipelineTrigger(proj3, null));
 
         // Important; we must do this step to ensure that the dependency graphs are updated
         Hudson.getInstance().rebuildDependencyGraph();
@@ -87,7 +87,7 @@ public class ProjectUtilTest extends HudsonTestCase {
 
         // Add TEST_PROJECT2 as a Manually executed pipeline project
         // Add TEST_PROJECT3 as a Post-build action -> build other projects
-        project1.getPublishersList().add(new BuildPipelineTrigger(proj2));
+        project1.getPublishersList().add(new BuildPipelineTrigger(proj2, null));
         project1.getPublishersList().add(new BuildTrigger(proj3, true));
 
         // Important; we must do this step to ensure that the dependency graphs are updated
@@ -112,7 +112,7 @@ public class ProjectUtilTest extends HudsonTestCase {
         createFreeStyleProject(proj3);
 
         // Add project2 as a post build action: build other project
-        project1.getPublishersList().add(new BuildPipelineTrigger(proj2));
+        project1.getPublishersList().add(new BuildPipelineTrigger(proj2, null));
         project1.getPublishersList().add(new BuildTrigger(proj3, true));
 
         // Important; we must do this step to ensure that the dependency graphs are updated
