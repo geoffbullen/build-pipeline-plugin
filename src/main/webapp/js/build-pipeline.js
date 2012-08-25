@@ -9,21 +9,21 @@ var BuildPipeline = function(viewProxy, buildCardTemplate, projectCardTemplate, 
 BuildPipeline.prototype = {
 	showProgress : function(id, dependencies) {
 		var buildPipeline = this;
-		var intervalId = setInterval(function(){		    	
+		var intervalId = setInterval(function(){
 			buildPipeline.buildProxies[id].asJSON(function(data){
-	    		var buildData = jQuery.parseJSON(data.responseObject());
-	    		if (buildData.build.progress > 0) {
-	    			buildPipeline.updateBuildCardFromJSON(buildData, false);
-	    		} else {
-		    		buildPipeline.updateBuildCardFromJSON(buildData, true);
+				var buildData = jQuery.parseJSON(data.responseObject());
+				if (buildData.build.progress > 0) {
+					buildPipeline.updateBuildCardFromJSON(buildData, false);
+				} else {
+					buildPipeline.updateBuildCardFromJSON(buildData, true);
 					buildPipeline.updateProjectCardFromJSON(buildData.project);
-	    			clearInterval(intervalId);
-	    			//kick off status tracking for all dependencies
-	    			jQuery.each(dependencies, function(){
-		    			jQuery("#pipelines").trigger("show-status-" + this);
-	    			});
-	    		}
-	    	});
+					clearInterval(intervalId);
+					//kick off status tracking for all dependencies
+					jQuery.each(dependencies, function(){
+						jQuery("#pipelines").trigger("show-status-" + this);
+					});
+				}
+			});
 		}, buildPipeline.refreshFrequency);
 	},
 	updateBuildCard : function(id) {
@@ -57,7 +57,7 @@ BuildPipeline.prototype = {
 	},
 	updateNextBuildAndShowProgress : function(id, nextBuildNumber, dependencies) {
 		var buildPipeline = this;
-		//try to get the updated build, that's not pending 
+		//try to get the updated build, that's not pending
 		var intervalId = setInterval(function(){
 			buildPipeline.buildProxies[id].updatePipelineBuild(nextBuildNumber, function(updated){
 				if (updated.responseObject()) {
@@ -110,5 +110,5 @@ BuildPipeline.prototype = {
 	hideModalSpinner : function() {
 		$.fancybox.hideActivity();
 	}
-	
+
 }

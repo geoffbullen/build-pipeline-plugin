@@ -3,37 +3,37 @@
 -->
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:i="jelly:fmt">
 	<f:entry title="Build Pipeline View Title" field="buildViewTitle">
-		<f:textbox name="buildViewTitle"/> 
-  	</f:entry>
-  	  
-    <f:entry title="Select Initial Job" field="selectedJob">    
-		<f:select name="selectedJob"> 
-		</f:select>
-  	</f:entry>
-  
-  	<f:entry title="No Of Displayed Builds" field="noOfDisplayedBuilds">
-		<f:select name="noOfDisplayedBuilds">
-    	</f:select>
-  	</f:entry>
+		<f:textbox name="buildViewTitle"/>
+	</f:entry>
 
-  	<f:entry title="Restrict trigger to the most recent build" field="triggerOnlyLatestJob">
+	<f:entry title="Select Initial Job" field="selectedJob">
+		<f:select name="selectedJob">
+		</f:select>
+	</f:entry>
+
+	<f:entry title="No Of Displayed Builds" field="noOfDisplayedBuilds">
+		<f:select name="noOfDisplayedBuilds">
+		</f:select>
+	</f:entry>
+
+	<f:entry title="Restrict trigger to the most recent build" field="triggerOnlyLatestJob">
 		<f:booleanRadio field="triggerOnlyLatestJob" default="true"/>
-  	</f:entry>
-  	
-  	<f:entry title="Always allow manual trigger on pipeline steps" field="alwaysAllowManualTrigger">
-  	    <f:booleanRadio field="alwaysAllowManualTrigger" default="false"/>
-  	</f:entry>
-  	
-  	<f:entry title="Show pipeline parameters" field="showPipelineParameters">
-  		<f:booleanRadio field="showPipelineParameters" default="false"/>
-  	</f:entry>
-  	
-  	<f:entry title="Refresh frequency (in seconds)" field="refreshFrequency">
-  		<f:textbox name="refreshFrequency" clazz="number" />
-  	</f:entry>
-  	
-  	<f:entry title="Show pipeline definition header" field="showPipelineDefinitionHeader">
-  		<f:booleanRadio field="showPipelineDefinitionHeader" true="Yes" false="No" default="false"/>
-  	</f:entry>
+	</f:entry>
+
+	<f:entry title="Always allow manual trigger on pipeline steps" field="alwaysAllowManualTrigger">
+		<f:booleanRadio field="alwaysAllowManualTrigger" default="false"/>
+	</f:entry>
+
+	<f:entry title="Show pipeline parameters" field="showPipelineParameters">
+		<f:booleanRadio field="showPipelineParameters" default="false"/>
+	</f:entry>
+
+	<f:entry title="Refresh frequency (in seconds)" field="refreshFrequency">
+		<f:textbox name="refreshFrequency" clazz="number" />
+	</f:entry>
+
+	<f:entry title="Show pipeline definition header" field="showPipelineDefinitionHeader">
+		<f:booleanRadio field="showPipelineDefinitionHeader" true="Yes" false="No" default="false"/>
+	</f:entry>
 
 </j:jelly>

@@ -17,15 +17,15 @@
 				<div class="overflow-hidden">
 					<span class="pointer" title="{{project.name}}" onclick="buildPipeline.fillDialog('{{build.url}}')" name="{{id}}">
 						{{#unless build.isPending}}
-							{{#unless build.isReadyToBeManuallyBuilt}}								
-                                {{#if build.displayName}}
-                                    {{build.displayName}}
+							{{#unless build.isReadyToBeManuallyBuilt}}
+								{{#if build.displayName}}
+									{{build.displayName}}
 								{{else}}
-                                    #{{build.number}}
-                                {{/if}}
+									#{{build.number}}
+								{{/if}}
 							{{/unless}}
-						{{/unless}}						
-						{{project.name}}	
+						{{/unless}}
+						{{project.name}}
 					</span>
 				</div>
 			</td>
@@ -37,7 +37,7 @@
 				</div>
 				<div class="overflow-hidden build-duration-container">
 				{{#if build.isComplete}}
-					<span class="build-duration" title="{{build.duration}}">						
+					<span class="build-duration" title="{{build.duration}}">
 						{{build.duration}}
 					</span>
 				{{/if}}
@@ -49,11 +49,11 @@
 				</div>
 				{{#if build.userId}}
 					<div class="overflow-hidden build-user" title="{{build.userId}}">{{build.userId}}</div>
-				{{/if}}				
+				{{/if}}
 			</td>
 		</tr>
 		<tr class="build-actions">
-			<td>				
+			<td>
 				{{#unless project.disabled}}
 				<div class="status-bar" id="status-bar-{{id}}">
 					{{#if build.isBuilding}}
@@ -85,17 +85,17 @@
 								<img title="re-run" alt="re-run" src="${rootURL}/images/16x16/redo.png" />
 							</span>
 							{{/if}}
-							{{else}}
-							<span class="pointer trigger" onclick="buildPipeline.showSpinner({{id}}); buildPipeline.rerunSuccessfulBuild({{id}}, '{{build.extId}}', [{{build.dependencyIds}}])">
-								<img title="re-run" alt="re-run" src="${rootURL}/images/16x16/redo.png" />
-							</span>
+						{{else}}
+						<span class="pointer trigger" onclick="buildPipeline.showSpinner({{id}}); buildPipeline.rerunSuccessfulBuild({{id}}, '{{build.extId}}', [{{build.dependencyIds}}])">
+							<img title="re-run" alt="re-run" src="${rootURL}/images/16x16/redo.png" />
+						</span>
 						{{/if}}
 					{{/if}}
 					{{#if build.isReadyToBeManuallyBuilt}}
 						<span class="pointer trigger" onclick="buildPipeline.showSpinner({{id}}); buildPipeline.triggerBuild({{id}}, '{{upstream.projectName}}', {{upstream.buildNumber}}, '{{project.name}}', [{{build.dependencyIds}}])">
 							<img title="trigger" alt="trigger" src="${rootURL}/images/16x16/clock.png" />
 						</span>
-					{{/if}}						
+					{{/if}}
 				</div>
 				{{/unless}}
 				{{#if project.disabled}}
@@ -114,7 +114,7 @@
 		<tr class="header-name">
 			<td>
 				<div class="header-wrapper overflow-hidden">
-					<a href="{{url}}" title="{{name}}">																	
+					<a href="{{url}}" title="{{name}}">
 						<img src="${rootURL}/images/24x24/{{health}}" />
 						{{name}}
 					</a>
@@ -123,35 +123,35 @@
 		</tr>
 		<tr>
 			<td class="secondary-info">
-			    <table width="100%">
-				   <j:if test="${from.isShowPipelineParameters()}">
-					   {{#if lastSuccessfulBuildNumber}}
-						   <tr>
-						       <td>Last Build:</td>
-						       <td><a href="{{url}}{{lastSuccessfulBuildNumber}}">{{lastSuccessfulBuildNumber}}</a></td>
-	                       </tr>
-	                       {{#each lastSuccessfulBuildParams}}
-		                       <tr>
-		                           <td class="param-name">{{paramName}}:</td>
-		                           <td class="param-value">{{paramValue}}</td>
-		                       </tr>
-	                       {{/each}}
-                       {{else}}
-	                       <tr>
-	                           <td colspan="2">Awaiting Execution</td>
-	                       </tr>
-					   {{/if}}					 
-				   </j:if> 
+				<table width="100%">
+					<j:if test="${from.isShowPipelineParameters()}">
+						{{#if lastSuccessfulBuildNumber}}
+							<tr>
+								<td>Last Build:</td>
+								<td><a href="{{url}}{{lastSuccessfulBuildNumber}}">{{lastSuccessfulBuildNumber}}</a></td>
+							</tr>
+							{{#each lastSuccessfulBuildParams}}
+								<tr>
+									<td class="param-name">{{paramName}}:</td>
+									<td class="param-value">{{paramValue}}</td>
+								</tr>
+							{{/each}}
+						{{else}}
+							<tr>
+								<td colspan="2">Awaiting Execution</td>
+							</tr>
+						{{/if}}
+					</j:if>
 				</table>
 			</td>
-		</tr>												
+		</tr>
 	</tbody>
 </table>
 	</script>
-	<script type="text/javascript">	
+	<script type="text/javascript">
 		var buildCardTemplateSource = $("#build-card-template").html();
-		var projectCardTemplateSource = $("#project-card-template").html();	
-		var buildPipeline = new BuildPipeline(<st:bind value="${from}" />, Handlebars.compile(buildCardTemplateSource), Handlebars.compile(projectCardTemplateSource), ${from.getRefreshFrequencyInMillis()});		
+		var projectCardTemplateSource = $("#project-card-template").html();
+		var buildPipeline = new BuildPipeline(<st:bind value="${from}" />, Handlebars.compile(buildCardTemplateSource), Handlebars.compile(projectCardTemplateSource), ${from.getRefreshFrequencyInMillis()});
 	</script>
 	<style>
 	.trigger {
@@ -159,7 +159,7 @@
 	}
 	</style>
 	<form method="post" name="pipelineViewForm" action="manualExecution" id="manualExecutionForm">
-		
+
 		<input name="upstreamProjectName" id="upstreamProjectName" type="hidden" />
 		<input name="upstreamBuildNumber" id="upstreamBuildNumber" type="hidden" />
 		<input name="triggerProjectName" id="triggerProjectName" type="hidden" />
@@ -283,7 +283,7 @@
 									</j:if>
 								</j:forEach>
 							</tr>
-						</j:forEach>						
+						</j:forEach>
 					</tbody>
 				</j:if>
 				<!-- builds -->
@@ -313,7 +313,7 @@
 																		No parameters
 																	</j:when>
 																	<j:otherwise>
-																		<!-- 
+																		<!--
 																		<div id="build-parameters-trigger-${buildGrid.get(x).get(0).getId()}" class="pointer">Parameter Values</div>
 																		<div id="build-parameters-${buildGrid.get(x).get(0).getId()}" class="param-info hidden">
 																		-->
@@ -325,7 +325,7 @@
 																							<td class="param-name">${buildParam.getKey()}:</td>
 																							<td class="param-value">${buildParam.getValue()}</td>
 																						</tr>
-																					</j:forEach>																
+																					</j:forEach>
 																				</table>
 																			</div>
 																		</div>
@@ -338,7 +338,8 @@
 																		</script>
 																	</j:otherwise>
 																</j:choose>
-															</td>														</j:when>
+															</td>
+														</j:when>
 														<j:otherwise>
 															<td>
 																<div class="build-number-pipeline" id="buildNumber${buildGrid.get(x).get(0).getId()}"><span>${buildGrid.get(x).get(0).getRevision()}</span></div>
@@ -358,10 +359,10 @@
 									<j:if test="${build != null}">
 										<td id="build-${build.getId()}"></td>
 										<script>
-											//generate build-card 
+											//generate build-card
 											var buildData = ${build.asJSON()};
 											jQuery("#build-${build.getId()}").append(buildPipeline.buildCardTemplate(buildData));
-											
+
 											//add build proxy to proxies for future use
 											buildPipeline.buildProxies[${build.getId()}] = <st:bind value="${build}" />;
 											<j:if test="${build.getStatus() == 'BUILDING'}">
@@ -369,7 +370,7 @@
 											</j:if>
 											<j:if test="${build.getStatus() == 'PENDING'}">
 												jQuery("#pipelines").bind("show-status-${build.getId()}", function(){
-												
+
 												<j:choose>
 													<j:when test="${build.isManualTrigger()}">
 														buildPipeline.updateBuildCard(${build.getId()});
