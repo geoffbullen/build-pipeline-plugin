@@ -48,11 +48,6 @@ public class BuildForm {
     private List<BuildForm> dependencies = new ArrayList<BuildForm>();
 
     /**
-     * Is the build form going to be on the first row? Will have impact on re-running jobs
-     */
-    private boolean firstRow;
-
-    /**
      * @param pipelineBuild
      *            pipeline build domain used to see the form
      */
@@ -91,7 +86,7 @@ public class BuildForm {
      */
     @JavaScriptMethod
     public String asJSON() {
-        return BuildJSONBuilder.asJSON(pipelineBuild, id, projectId, getDependencyIds(), firstRow);
+        return BuildJSONBuilder.asJSON(pipelineBuild, id, projectId, getDependencyIds());
     }
 
     public int getId() {
@@ -134,14 +129,6 @@ public class BuildForm {
 
     public Integer getProjectId() {
         return projectId;
-    }
-
-    public boolean isFirstRow() {
-        return firstRow;
-    }
-
-    public void setFirstRow(boolean firstRow) {
-        this.firstRow = firstRow;
     }
 
 }

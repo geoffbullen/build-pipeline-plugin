@@ -414,6 +414,7 @@ public class BuildPipelineView extends View {
      */
     @JavaScriptMethod
     public int retryBuild(final String triggerProjectName) {
+        LOGGER.fine("Retrying build again: " + triggerProjectName); //$NON-NLS-1$
         final AbstractProject<?, ?> triggerProject = (AbstractProject<?, ?>) super.getJob(triggerProjectName);
         triggerProject.scheduleBuild(new MyUserIdCause());
 
@@ -426,8 +427,8 @@ public class BuildPipelineView extends View {
      * @return the number of re-run build
      */
     @JavaScriptMethod
-    public int rerunSuccessfulBuild(final String externalizableId) {
-        LOGGER.fine("Running successful build again: " + externalizableId); //$NON-NLS-1$
+    public int rerunBuild(final String externalizableId) {
+        LOGGER.fine("Running build again: " + externalizableId); //$NON-NLS-1$
         final AbstractBuild<?, ?> triggerBuild = (AbstractBuild<?, ?>) Run.fromExternalizableId(externalizableId);
         final AbstractProject<?, ?> triggerProject = triggerBuild.getProject();
         final Future<?> future = triggerProject.scheduleBuild2(triggerProject.getQuietPeriod(), new MyUserIdCause(),

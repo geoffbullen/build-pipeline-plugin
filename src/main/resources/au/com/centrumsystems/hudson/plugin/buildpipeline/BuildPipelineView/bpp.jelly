@@ -15,7 +15,7 @@
 		<tr class="header">
 			<td>
 				<div class="overflow-hidden">
-					<span class="pointer" title="{{project.name}}" onclick="buildPipeline.fillDialog('{{build.url}}')" name="{{id}}">
+					<a href="{{build.url}}" title="{{project.name}}">
 						{{#unless build.isPending}}
 							{{#unless build.isReadyToBeManuallyBuilt}}
 								{{#if build.displayName}}
@@ -26,7 +26,7 @@
 							{{/unless}}
 						{{/unless}}
 						{{project.name}}
-					</span>
+					</a>
 				</div>
 			</td>
 		</tr>
@@ -79,22 +79,38 @@
 						{{/unless}}
 					{{/unless}}
 					{{#if build.isRerunable}}
-						{{#if ${from.triggerOnlyLatestJob}}}
-							{{#if build.isFirstRow}}
-							<span class="pointer trigger" onclick="buildPipeline.showSpinner({{id}}); buildPipeline.rerunSuccessfulBuild({{id}}, '{{build.extId}}', [{{build.dependencyIds}}])">
+						{{#if build.isSuccess}}
+							{{#if ${!from.triggerOnlyLatestJob}}}
+							<span class="pointer trigger" onclick="buildPipeline.showSpinner({{id}}); buildPipeline.rerunBuild({{id}}, '{{build.extId}}', [{{build.dependencyIds}}])">
 								<img title="re-run" alt="re-run" src="${rootURL}/images/16x16/redo.png" />
 							</span>
 							{{/if}}
 						{{else}}
-						<span class="pointer trigger" onclick="buildPipeline.showSpinner({{id}}); buildPipeline.rerunSuccessfulBuild({{id}}, '{{build.extId}}', [{{build.dependencyIds}}])">
-							<img title="re-run" alt="re-run" src="${rootURL}/images/16x16/redo.png" />
-						</span>
+							{{#if ${from.triggerOnlyLatestJob}}}
+								{{#if build.isLatestBuild}}
+								<span class="pointer trigger" onclick="buildPipeline.showSpinner({{id}}); buildPipeline.rerunBuild({{id}}, '{{build.extId}}', [{{build.dependencyIds}}])">
+									<img title="retry" alt="retry" src="${rootURL}/images/16x16/redo.png" />
+								</span>
+								{{/if}}
+							{{else}}
+							<span class="pointer trigger" onclick="buildPipeline.showSpinner({{id}}); buildPipeline.retryBuild({{id}}, '{{project.name}}', [{{build.dependencyIds}}])">
+								<img title="retry" alt="retry" src="${rootURL}/images/16x16/redo.png" />
+							</span>
+							{{/if}}
 						{{/if}}
 					{{/if}}
 					{{#if build.isReadyToBeManuallyBuilt}}
+						{{#if ${from.triggerOnlyLatestJob}}}
+							{{#if build.isUpstreamBuildLatestSuccess}}
+							<span class="pointer trigger" onclick="buildPipeline.showSpinner({{id}}); buildPipeline.triggerBuild({{id}}, '{{upstream.projectName}}', {{upstream.buildNumber}}, '{{project.name}}', [{{build.dependencyIds}}])">
+								<img title="trigger" alt="trigger" src="${rootURL}/images/16x16/clock.png" />
+							</span>
+							{{/if}}
+						{{else}}
 						<span class="pointer trigger" onclick="buildPipeline.showSpinner({{id}}); buildPipeline.triggerBuild({{id}}, '{{upstream.projectName}}', {{upstream.buildNumber}}, '{{project.name}}', [{{build.dependencyIds}}])">
 							<img title="trigger" alt="trigger" src="${rootURL}/images/16x16/clock.png" />
 						</span>
+						{{/if}}
 					{{/if}}
 				</div>
 				{{/unless}}

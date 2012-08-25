@@ -16,7 +16,7 @@
 		</f:select>
 	</f:entry>
 
-	<f:entry title="Restrict trigger to the most recent build" field="triggerOnlyLatestJob">
+	<f:entry title="Restrict triggers to most recent successful builds" field="triggerOnlyLatestJob">
 		<f:booleanRadio field="triggerOnlyLatestJob" default="true"/>
 	</f:entry>
 

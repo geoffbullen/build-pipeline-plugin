@@ -79,9 +79,9 @@ BuildPipeline.prototype = {
 			buildPipeline.updateNextBuildAndShowProgress(id, data.responseObject(), dependencyIds);
 		});
 	},
-	rerunSuccessfulBuild : function(id, buildExternalizableId, dependencyIds) {
+	rerunBuild : function(id, buildExternalizableId, dependencyIds) {
 		var buildPipeline = this;
-		buildPipeline.viewProxy.rerunSuccessfulBuild(buildExternalizableId, function(data){
+		buildPipeline.viewProxy.rerunBuild(buildExternalizableId, function(data){
 			buildPipeline.updateNextBuildAndShowProgress(id, data.responseObject(), dependencyIds);
 		});
 	},

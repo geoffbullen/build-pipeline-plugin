@@ -53,15 +53,6 @@ public class BuildPipelineForm {
             buildGrids.add(buildGrid);
         }
 
-        // flag when build form is on the first row, affects rerun functionality
-        if (buildGrids != null && buildGrids.size() > 0) {
-            for (Integer key : buildGrids.get(0).keySet()) {
-                for (Integer buildFormKey : buildGrids.get(0).get(key).keySet()) {
-                    buildGrids.get(0).get(key).get(buildFormKey).setFirstRow(true);
-                }
-            }
-        }
-
     }
 
     /**
