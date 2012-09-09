@@ -88,9 +88,11 @@
 						{{else}}
 							{{#if ${from.triggerOnlyLatestJob}}}
 								{{#if build.isLatestBuild}}
-								<span class="pointer trigger" onclick="buildPipeline.showSpinner({{id}}); buildPipeline.rerunBuild({{id}}, '{{build.extId}}', [{{build.dependencyIds}}])">
-									<img title="retry" alt="retry" src="${rootURL}/images/16x16/redo.png" />
-								</span>
+									{{#if build.isUpstreamBuildLatest}}
+									<span class="pointer trigger" onclick="buildPipeline.showSpinner({{id}}); buildPipeline.rerunBuild({{id}}, '{{build.extId}}', [{{build.dependencyIds}}])">
+										<img title="retry" alt="retry" src="${rootURL}/images/16x16/redo.png" />
+									</span>
+									{{/if}}
 								{{/if}}
 							{{else}}
 							<span class="pointer trigger" onclick="buildPipeline.showSpinner({{id}}); buildPipeline.retryBuild({{id}}, '{{project.name}}', [{{build.dependencyIds}}])">
