@@ -164,23 +164,6 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
         return true;
     }
 
-    @Override
-    public BuildStepDescriptor<Publisher> getDescriptor() {
-        return new BuildStepDescriptor<Publisher>() {
-
-            @Override
-            @SuppressWarnings("rawtypes")
-            public boolean isApplicable(final Class<? extends AbstractProject> jobType) {
-                return false;
-            }
-
-            @Override
-            public String getDisplayName() {
-                return "Build Pipeline";
-                }
-            };
-    }
-
     /**
      * Renames a project contained in downstreamProjectNames
      *

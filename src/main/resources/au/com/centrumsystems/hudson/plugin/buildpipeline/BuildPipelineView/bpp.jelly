@@ -78,29 +78,23 @@
 						</span>
 						{{/unless}}
 					{{/unless}}
-					{{#if build.isRerunable}}
-						{{#if build.isSuccess}}
-							{{#if ${!from.triggerOnlyLatestJob}}}
-							<span class="pointer trigger" onclick="buildPipeline.showSpinner({{id}}); buildPipeline.rerunBuild({{id}}, '{{build.extId}}', [{{build.dependencyIds}}])">
-								<img title="re-run" alt="re-run" src="${rootURL}/images/16x16/redo.png" />
-							</span>
-							{{/if}}
-						{{else}}
-							{{#if ${from.triggerOnlyLatestJob}}}
-								{{#if build.isLatestBuild}}
-									{{#if build.isUpstreamBuildLatest}}
-									<span class="pointer trigger" onclick="buildPipeline.showSpinner({{id}}); buildPipeline.rerunBuild({{id}}, '{{build.extId}}', [{{build.dependencyIds}}])">
-										<img title="retry" alt="retry" src="${rootURL}/images/16x16/redo.png" />
-									</span>
-									{{/if}}
-								{{/if}}
-							{{else}}
-							<span class="pointer trigger" onclick="buildPipeline.showSpinner({{id}}); buildPipeline.retryBuild({{id}}, '{{project.name}}', [{{build.dependencyIds}}])">
-								<img title="retry" alt="retry" src="${rootURL}/images/16x16/redo.png" />
-							</span>
-							{{/if}}
-						{{/if}}
-					{{/if}}
+
+                    {{#if build.isRerunable}}
+                        {{#if ${!from.triggerOnlyLatestJob}}}
+                            <span class="pointer trigger" onclick="buildPipeline.showSpinner({{id}}); buildPipeline.rerunBuild({{id}}, '{{build.extId}}', [{{build.dependencyIds}}])">
+                                <img title="re-run" alt="re-run" src="${rootURL}/images/16x16/redo.png" />
+                            </span>
+                        {{else}}
+                            {{#if build.isLatestBuild}}
+                                {{#if build.isUpstreamBuildLatest}}
+                                    <span class="pointer trigger" onclick="buildPipeline.showSpinner({{id}}); buildPipeline.rerunBuild({{id}}, '{{build.extId}}', [{{build.dependencyIds}}])">
+                                        <img title="re-run" alt="re-run" src="${rootURL}/images/16x16/redo.png" />
+                                    </span>
+                                {{/if}}
+                            {{/if}}
+                        {{/if}}
+                    {{/if}}
+
 					{{#if build.isReadyToBeManuallyBuilt}}
 						{{#if ${from.triggerOnlyLatestJob}}}
 							{{#if build.isUpstreamBuildLatestSuccess}}
