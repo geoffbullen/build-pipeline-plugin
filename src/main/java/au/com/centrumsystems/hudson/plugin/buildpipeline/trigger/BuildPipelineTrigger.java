@@ -261,7 +261,7 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
     public static class DescriptorImpl extends BuildStepDescriptor<Publisher> {
 
         public List<Descriptor<AbstractBuildParameters>> getBuilderConfigDescriptors() {
-            return Hudson.getInstance().getDescriptorList(AbstractBuildParameters.class);
+            return new ArrayList<Descriptor<AbstractBuildParameters>>(Hudson.getInstance().getDescriptorList(AbstractBuildParameters.class));
         }
 
         /**

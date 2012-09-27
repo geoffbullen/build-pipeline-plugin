@@ -239,7 +239,13 @@ public class BuildPipelineView extends View {
         this.alwaysAllowManualTrigger = alwaysAllowManualTrigger;
         this.showPipelineParameters = showPipelineParameters;
         this.showPipelineDefinitionHeader = showPipelineDefinitionHeader;
-        this.refreshFrequency = refreshFrequency;
+        //not exactly understanding the lifecycle here, but I want a default of 3 (this is what the class variable is set to 3, if it's 0, set it to default, refresh of 0 does not make sense anyway)
+        if (refreshFrequency < 1) {
+            this.refreshFrequency = 3;
+        } else {
+            this.refreshFrequency = refreshFrequency;
+        }
+
     }
 
     /**

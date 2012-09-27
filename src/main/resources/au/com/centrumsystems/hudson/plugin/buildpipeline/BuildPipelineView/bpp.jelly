@@ -246,12 +246,11 @@
 				</j:if>
 			</div>
 
-			<j:if test="${empty(items)}">
-				<st:include page="noJob.jelly" />
-			</j:if>
-
 			<j:set var="buildPipelineForm" type="au.com.centrumsystems.hudson.plugin.buildpipeline.BuildPipelineForm" value="${from.getBuildPipelineForm()}" />
 
+            <j:if test="${empty(buildPipelineForm.getBuildGrids())}">
+                <st:include page="noJob.jelly" />
+            </j:if>
 
 			<table id="pipelines">
 				<j:set var="projectGrid" value="${buildPipelineForm.getProjectGrid()}" />
