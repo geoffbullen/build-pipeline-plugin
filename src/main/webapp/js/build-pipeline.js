@@ -2,6 +2,7 @@ var BuildPipeline = function(viewProxy, buildCardTemplate, projectCardTemplate, 
 	this.buildCardTemplate = buildCardTemplate;
 	this.projectCardTemplate = projectCardTemplate;
 	this.buildProxies = {};
+    this.projectProxies = {};
 	this.viewProxy = viewProxy;
 	this.refreshFrequency = refreshFrequency;
 };
@@ -16,12 +17,17 @@ BuildPipeline.prototype = {
 					buildPipeline.updateBuildCardFromJSON(buildData, false);
 				} else {
 					buildPipeline.updateBuildCardFromJSON(buildData, true);
-					buildPipeline.updateProjectCardFromJSON(buildData.project);
+                    if (!jQuery.isEmptyObject(buildPipeline.projectProxies)) {
+                        buildPipeline.updateProjectCard(buildData.project.id);
+                    }
 					clearInterval(intervalId);
-					//kick off status tracking for all dependencies
-					jQuery.each(dependencies, function(){
-						jQuery("#pipelines").trigger("show-status-" + this);
-					});
+                    //refresh all build cards since some statuses will be invalid for older builds
+                    buildPipeline.updateAllBuildCards(dependencies);
+                    // trigger all dependency tracking
+                    jQuery.each(dependencies, function(){
+                        jQuery("#pipelines").trigger("show-status-" + this);
+                    });
+
 				}
 			});
 		}, buildPipeline.refreshFrequency);
@@ -32,17 +38,18 @@ BuildPipeline.prototype = {
 			buildPipeline.updateBuildCardFromJSON(jQuery.parseJSON(data.responseObject()), true);
 		});
 	},
+    updateAllBuildCards : function(dependenciesNotToUpdate) {
+        var buildPipeline = this;
+        jQuery.each(buildPipeline.buildProxies, function(key, value){
+            if (jQuery.inArray(parseInt(key), dependenciesNotToUpdate) < 0) {
+                buildPipeline.updateBuildCard(key);
+            }
+        });
+    },
 	updateProjectCard : function(id) {
 		var buildPipeline = this;
 		buildPipeline.projectProxies[id].asJSON(function(data){
 			buildPipeline.updateProjectCardFromJSON(jQuery.parseJSON(data.responseObject()), true);
-		});
-	},
-	fetchLatestBuildNumber : function(id) {
-		var buildPipeline = this;
-		console.log(buildPipeline.buildProxies[id])
-		buildPipeline.buildProxies[id].asJSON(function(data){
-			console.log(jQuery.parseJSON(data.responseObject()).build.number)
 		});
 	},
 	updateBuildCardFromJSON : function(buildAsJSON, fadeIn) {

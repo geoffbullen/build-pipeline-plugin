@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import hudson.model.Hudson;
+import hudson.model.Project;
 import org.kohsuke.stapler.bind.JavaScriptMethod;
 
 /**
@@ -52,6 +54,9 @@ public class ProjectForm {
      */
     private final Map<String, String> lastSuccessfulBuildParams;
 
+    // keep reference to the project so that we can update it
+    private AbstractProject<?, ?> project;
+
     /**
      * @param name
      *            project name
@@ -88,6 +93,7 @@ public class ProjectForm {
         final AbstractBuild<?, ?> lastSuccessfulBuild = pipelineBuild.getProject().getLastSuccessfulBuild();
         lastSuccessfulBuildNumber = (null == lastSuccessfulBuild) ? "" : "" + lastSuccessfulBuild.getNumber();
         lastSuccessfulBuildParams = (null == lastSuccessfulBuild) ? new HashMap<String, String>() : lastSuccessfulBuild.getBuildVariables();
+        this.project = project;
     }
 
     public String getName() {
@@ -188,7 +194,7 @@ public class ProjectForm {
      */
     @JavaScriptMethod
     public String asJSON() {
-        return ProjectJSONBuilder.asJSON(this);
+        return ProjectJSONBuilder.asJSON(new ProjectForm(project));
     }
 
 }
