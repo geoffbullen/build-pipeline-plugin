@@ -260,10 +260,6 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
     @Extension
     public static class DescriptorImpl extends BuildStepDescriptor<Publisher> {
 
-        public List<Descriptor<AbstractBuildParameters>> getBuilderConfigDescriptors() {
-            return new ArrayList<Descriptor<AbstractBuildParameters>>(Hudson.getInstance().getDescriptorList(AbstractBuildParameters.class));
-        }
-
         /**
          * Returns true if it is possible to add parameters to the trigger. This is the case when the
          * parameterized-trigger plugin is both installed and active.
