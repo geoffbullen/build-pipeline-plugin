@@ -8,8 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import hudson.model.Hudson;
-import hudson.model.Project;
 import org.kohsuke.stapler.bind.JavaScriptMethod;
 
 /**
@@ -54,7 +52,9 @@ public class ProjectForm {
      */
     private final Map<String, String> lastSuccessfulBuildParams;
 
-    // keep reference to the project so that we can update it
+    /*
+     * keep reference to the project so that we can update it
+     */
     private AbstractProject<?, ?> project;
 
     /**

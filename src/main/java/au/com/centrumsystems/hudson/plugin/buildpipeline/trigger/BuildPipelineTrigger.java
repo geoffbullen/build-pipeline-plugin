@@ -37,7 +37,6 @@ import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.Hudson;
 import hudson.model.Project;
-import hudson.model.Descriptor;
 import hudson.model.listeners.ItemListener;
 import hudson.plugins.parameterizedtrigger.AbstractBuildParameters;
 import hudson.tasks.BuildStepDescriptor;
