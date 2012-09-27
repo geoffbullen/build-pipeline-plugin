@@ -52,7 +52,7 @@ public class ProjectForm {
      */
     private final Map<String, String> lastSuccessfulBuildParams;
 
-    /*
+    /**
      * keep reference to the project so that we can update it
      */
     private AbstractProject<?, ?> project;

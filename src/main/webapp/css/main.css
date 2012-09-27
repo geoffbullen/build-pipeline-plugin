@@ -193,6 +193,18 @@
     padding-right: 2px;
 }
 
+.param-name {
+    text-align: right;
+    font-weight: bold;
+    font-size: .9em;
+}
+
+.param-value {
+    text-align: left;
+    font-weight: normal;
+    font-size: .9em;
+}
+
 #pipelines {
     width: 100%;
     text-align: center;
@@ -259,6 +271,11 @@ tr.spacerRow td {
 .revision .build-number-pipeline {
 	padding-top: 0.25em;
 	font-size: 2em;
+}
+
+.revision .header div {
+    width: 98%;
+    overflow: hidden;
 }
 
 .disabled {

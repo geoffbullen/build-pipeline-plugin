@@ -136,24 +136,12 @@
 		<tr>
 			<td class="secondary-info">
 				<table width="100%">
-					<j:if test="${from.isShowPipelineParameters()}">
-						{{#if lastSuccessfulBuildNumber}}
-							<tr>
-								<td>Last Build:</td>
-								<td><a href="{{url}}{{lastSuccessfulBuildNumber}}">{{lastSuccessfulBuildNumber}}</a></td>
-							</tr>
-							{{#each lastSuccessfulBuildParams}}
-								<tr>
-									<td class="param-name">{{paramName}}:</td>
-									<td class="param-value">{{paramValue}}</td>
-								</tr>
-							{{/each}}
-						{{else}}
-							<tr>
-								<td colspan="2">Awaiting Execution</td>
-							</tr>
-						{{/if}}
-					</j:if>
+                    {{#if lastSuccessfulBuildNumber}}
+                        <tr>
+                            <td>Last Build:</td>
+                            <td><a href="{{url}}{{lastSuccessfulBuildNumber}}">{{lastSuccessfulBuildNumber}}</a></td>
+                        </tr>
+                    {{/if}}
 				</table>
 			</td>
 		</tr>
@@ -326,11 +314,7 @@
 																		No parameters
 																	</j:when>
 																	<j:otherwise>
-																		<!--
-																		<div id="build-parameters-trigger-${buildGrid.get(x).get(0).getId()}" class="pointer">Parameter Values</div>
-																		<div id="build-parameters-${buildGrid.get(x).get(0).getId()}" class="param-info hidden">
-																		-->
-																		<div id="build-parameters-${buildGrid.get(x).get(0).getId()}">
+																		<div class="build-parameters" id="build-parameters-${buildGrid.get(x).get(0).getId()}">
 																			<div>
 																				<table width="100%">
 																					<j:forEach items="${buildGrid.get(x).get(0).getParameters().entrySet()}" var="buildParam" indexVar="buildParamCtr">
