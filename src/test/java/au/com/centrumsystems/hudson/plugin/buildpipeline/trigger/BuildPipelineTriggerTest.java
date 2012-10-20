@@ -25,15 +25,18 @@
 package au.com.centrumsystems.hudson.plugin.buildpipeline.trigger;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
 import hudson.model.Descriptor;
 import hudson.model.FreeStyleProject;
 import hudson.model.Hudson;
+import hudson.plugins.parameterizedtrigger.AbstractBuildParameters;
 import hudson.tasks.Publisher;
 import hudson.util.DescribableList;
 import hudson.util.FormValidation;
 
 import java.io.IOException;
+import java.util.Collections;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -41,9 +44,9 @@ import org.jvnet.hudson.test.HudsonTestCase;
 
 /**
  * BuildPipelineTrigger test class
- * 
+ *
  * @author Centrum Systems
- * 
+ *
  */
 public class BuildPipelineTriggerTest extends HudsonTestCase {
 
@@ -203,5 +206,12 @@ public class BuildPipelineTriggerTest extends HudsonTestCase {
             }
         }
 
+    }
+
+    @Test
+    public void testGetBuilderConfigDescriptors() throws Exception {
+        final BuildPipelineTrigger.DescriptorImpl di = new BuildPipelineTrigger.DescriptorImpl();
+
+        assertThat(di.getBuilderConfigDescriptors(), is(not(Collections.<Descriptor<AbstractBuildParameters>>emptyList())));
     }
 }

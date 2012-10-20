@@ -28,15 +28,7 @@ import hudson.Extension;
 import hudson.Launcher;
 import hudson.PluginWrapper;
 import hudson.Util;
-import hudson.model.BuildListener;
-import hudson.model.DependecyDeclarer;
-import hudson.model.DependencyGraph;
-import hudson.model.Item;
-import hudson.model.Items;
-import hudson.model.AbstractBuild;
-import hudson.model.AbstractProject;
-import hudson.model.Hudson;
-import hudson.model.Project;
+import hudson.model.*;
 import hudson.model.listeners.ItemListener;
 import hudson.plugins.parameterizedtrigger.AbstractBuildParameters;
 import hudson.tasks.BuildStepDescriptor;
@@ -323,6 +315,11 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
             }
 
             return FormValidation.ok();
+        }
+
+        public List<Descriptor<AbstractBuildParameters>> getBuilderConfigDescriptors() {
+            return Hudson.getInstance().<AbstractBuildParameters,
+                    Descriptor<AbstractBuildParameters>>getDescriptorList(AbstractBuildParameters.class);
         }
 
         /**
