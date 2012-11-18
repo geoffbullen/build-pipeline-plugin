@@ -140,12 +140,24 @@
 		<tr>
 			<td class="secondary-info">
 				<table width="100%">
-                    {{#if lastSuccessfulBuildNumber}}
-                        <tr>
-                            <td>Last Build:</td>
-                            <td><a href="{{url}}{{lastSuccessfulBuildNumber}}">{{lastSuccessfulBuildNumber}}</a></td>
-                        </tr>
-                    {{/if}}
+					<j:if test="${from.isShowPipelineParameters()}">
+						{{#if lastSuccessfulBuildNumber}}
+							<tr>
+								<td>Last Build:</td>
+								<td><a href="{{url}}{{lastSuccessfulBuildNumber}}">{{lastSuccessfulBuildNumber}}</a></td>
+							</tr>
+							{{#each lastSuccessfulBuildParams}}
+								<tr>
+									<td class="param-name">{{paramName}}:</td>
+									<td class="param-value">{{paramValue}}</td>
+								</tr>
+							{{/each}}
+						{{else}}
+							<tr>
+								<td colspan="2">Awaiting Execution</td>
+							</tr>
+						{{/if}}
+					</j:if>
 				</table>
 			</td>
 		</tr>

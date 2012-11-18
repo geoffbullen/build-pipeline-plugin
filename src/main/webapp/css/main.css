@@ -343,10 +343,6 @@ tr.spacerRow td {
     display: table-row;
 }
 
-.param-value {
-	text-align: left;
-}
-
 .BuildViewMargin {
     margin-left: 30px;
 }
