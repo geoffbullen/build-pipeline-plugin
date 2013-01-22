@@ -134,18 +134,19 @@
 				<div class="header-wrapper overflow-hidden">
 					<img src="${rootURL}/images/24x24/{{health}}" />
 					<a href="{{url}}" title="{{name}}">{{name}}</a>
+					<j:if test="${from.isShowPipelineParametersInHeaders()}">
+						{{#if lastSuccessfulBuildNumber}}
+						<a href="{{url}}{{lastSuccessfulBuildNumber}}"> (#{{lastSuccessfulBuildNumber}})</a>
+						{{/if}}
+					</j:if>
 				</div>
 			</td>
 		</tr>
 		<tr>
 			<td class="secondary-info">
 				<table width="100%">
-					<j:if test="${from.isShowPipelineParameters()}">
+					<j:if test="${from.isShowPipelineParametersInHeaders()}">
 						{{#if lastSuccessfulBuildNumber}}
-							<tr>
-								<td>Last Build:</td>
-								<td><a href="{{url}}{{lastSuccessfulBuildNumber}}">{{lastSuccessfulBuildNumber}}</a></td>
-							</tr>
 							{{#each lastSuccessfulBuildParams}}
 								<tr>
 									<td class="param-name">{{paramName}}:</td>
@@ -313,12 +314,14 @@
 											<tbody>
 												<tr class="header">
 													<td colspan="2">
-														<div>
-															Pipeline
-															<j:if test="${from.isShowPipelineParameters()}">
-																${buildGrid.get(x).get(0).getRevision()}
-															</j:if>
-														</div>
+														<j:choose>
+															<j:when test="${from.isShowPipelineParameters()}">
+																<div>Pipeline ${buildGrid.get(x).get(0).getRevision()}</div>
+															</j:when>
+															<j:otherwise>
+																<div>Pipeline</div>
+															</j:otherwise>
+														</j:choose>
 													</td>
 												</tr>
 												<tr class="build-body">
@@ -359,9 +362,6 @@
 															</td>
 														</j:otherwise>
 													</j:choose>
-												</tr>
-												<tr class="build-actions">
-													<td></td>
 												</tr>
 											</tbody>
 										</table>

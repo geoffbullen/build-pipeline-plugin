@@ -46,9 +46,9 @@ import au.com.centrumsystems.hudson.plugin.buildpipeline.trigger.BuildPipelineTr
 
 /**
  * Test Build Pipeline View
- * 
+ *
  * @author Centrum Systems
- * 
+ *
  */
 public class BuildPipelineViewTest extends HudsonTestCase {
 
@@ -68,7 +68,7 @@ public class BuildPipelineViewTest extends HudsonTestCase {
 
 		// Test a valid case
 		BuildPipelineView testView = BuildPipelineViewFactory.getBuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds, false);
-    
+
 		Job<?, ?> testSelectedProject = testView.getSelectedProject();
 
 		assertEquals(proj1, testSelectedProject.getName());
@@ -126,7 +126,7 @@ public class BuildPipelineViewTest extends HudsonTestCase {
 		testView = new BuildPipelineView(bpViewName, bpViewTitle, "", noOfBuilds, false);
 		assertFalse(proj1, testView.isTriggerOnlyLatestJob());
 	}
-	
+
 	@Test
 	public void testAlwaysAllowManualTrigger() throws IOException {
 		final String bpViewName = "MyTestView";
@@ -136,14 +136,14 @@ public class BuildPipelineViewTest extends HudsonTestCase {
 		createFreeStyleProject(proj1);
 
 		// True
-		BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds, true, true, false, false, 2);
-		assertTrue(proj1, testView.isAlwaysAllowManualTrigger());
+		BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds, true, true, false, false, false, 2);
+		assertTrue("Failed to set AlwaysAllowManualTrigger flag", testView.isAlwaysAllowManualTrigger());
 
 		// False
-		testView = new BuildPipelineView(bpViewName, bpViewTitle, "", noOfBuilds, true, false, false, false, 2);
-		assertFalse(proj1, testView.isAlwaysAllowManualTrigger());
+		testView = new BuildPipelineView(bpViewName, bpViewTitle, "", noOfBuilds, true, false, false, false, false, 2);
+		assertFalse("Failed to unset AlwaysAllowManualTrigger flag", testView.isAlwaysAllowManualTrigger());
 	}
-	
+
 	@Test
 	public void testShowPipelineDefinitionHeader() throws IOException {
 		final String bpViewName = "MyTestView";
@@ -153,14 +153,14 @@ public class BuildPipelineViewTest extends HudsonTestCase {
 		createFreeStyleProject(proj1);
 
 		// True
-		BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds, true, false, false, true, 2);
-		assertTrue(proj1, testView.isShowPipelineDefinitionHeader());
+		BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds, true, false, false, false, true, 2);
+		assertTrue("Failed to set ShowPipelineDefinitionHeader flag", testView.isShowPipelineDefinitionHeader());
 
 		// False
-		testView = new BuildPipelineView(bpViewName, bpViewTitle, "", noOfBuilds, true, false, false, false, 2);
-		assertFalse(proj1, testView.isShowPipelineDefinitionHeader());
+		testView = new BuildPipelineView(bpViewName, bpViewTitle, "", noOfBuilds, true, false, false, false, false, 2);
+		assertFalse("Failed to unset ShowPipelineDefinitionHeader flag", testView.isShowPipelineDefinitionHeader());
 	}
-	
+
 	@Test
 	public void testShowPipelineParameters() throws IOException {
 		final String bpViewName = "MyTestView";
@@ -170,13 +170,28 @@ public class BuildPipelineViewTest extends HudsonTestCase {
 		createFreeStyleProject(proj1);
 
 		// True
-		BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds, true, false, true, false, 2);
-		assertTrue(proj1, testView.isShowPipelineParameters());
+		BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds, true, false, true, false, false, 2);
+		assertTrue("Failed to set ShowPipelineParameters flag", testView.isShowPipelineParameters());
 
 		// False
-		testView = new BuildPipelineView(bpViewName, bpViewTitle, "", noOfBuilds, true, false, false, false, 2);
-		assertFalse(proj1, testView.isShowPipelineParameters());
+		testView = new BuildPipelineView(bpViewName, bpViewTitle, "", noOfBuilds, true, false, false, false, false, 2);
+		assertFalse("Failed to unset ShowPipelineParameters flag", testView.isShowPipelineParameters());
 	}
+
+    @Test
+    public void testShowPipelineParametersInHeaders() throws IOException {
+        final String bpViewName = "MyTestView";
+        final String bpViewTitle = "MyTestViewTitle";
+        final String proj1 = "Proj1";
+        final String noOfBuilds = "5";
+        createFreeStyleProject(proj1);
+
+        BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds, true, false, true, true, false, 2);
+        assertTrue("Failed to set ShowPipelineParametersInHeaders flag", testView.isShowPipelineParametersInHeaders());
+
+        testView = new BuildPipelineView(bpViewName, bpViewTitle, proj1, noOfBuilds, true, false, true, false, false, 2);
+        assertFalse("Failed to unset ShowPipelineParametersInHeaders flag", testView.isShowPipelineParametersInHeaders());
+    }
 
 	@Test
 	public void testHasDownstreamProjects() throws IOException {

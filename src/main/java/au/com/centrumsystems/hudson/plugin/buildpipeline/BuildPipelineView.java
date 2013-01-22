@@ -24,12 +24,26 @@
  */
 package au.com.centrumsystems.hudson.plugin.buildpipeline;
 
-import au.com.centrumsystems.hudson.plugin.buildpipeline.trigger.BuildPipelineTrigger;
 import hudson.Extension;
-import hudson.model.*;
+import hudson.model.Action;
+import hudson.model.Item;
+import hudson.model.ParameterValue;
+import hudson.model.TaskListener;
+import hudson.model.TopLevelItem;
+import hudson.model.AbstractBuild;
+import hudson.model.AbstractProject;
+import hudson.model.Cause;
 import hudson.model.Cause.UserIdCause;
+import hudson.model.CauseAction;
 import hudson.model.Descriptor.FormException;
+import hudson.model.Hudson;
+import hudson.model.ParametersAction;
+import hudson.model.Run;
+import hudson.model.User;
+import hudson.model.View;
+import hudson.model.ViewDescriptor;
 import hudson.plugins.parameterizedtrigger.AbstractBuildParameters;
+import hudson.util.LogTaskListener;
 import hudson.util.ListBoxModel;
 
 import java.io.IOException;
@@ -45,12 +59,12 @@ import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 
-import hudson.util.LogTaskListener;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 import org.kohsuke.stapler.bind.JavaScriptMethod;
 
+import au.com.centrumsystems.hudson.plugin.buildpipeline.trigger.BuildPipelineTrigger;
 import au.com.centrumsystems.hudson.plugin.util.BuildUtil;
 import au.com.centrumsystems.hudson.plugin.util.ProjectUtil;
 
@@ -80,6 +94,9 @@ public class BuildPipelineView extends View {
 
     /** showPipelineParameters. */
     private boolean showPipelineParameters = true;
+    
+    /** showPipelineParametersInHeaders */
+    private boolean showPipelineParametersInHeaders;
 
     /**
      * Frequency at which the Build Pipeline Plugin updates the build cards in seconds
@@ -215,6 +232,9 @@ public class BuildPipelineView extends View {
      *            Indicates whether manual trigger will always be available.
      * @param showPipelineParameters
      *            Indicates whether pipeline parameter values should be shown.
+     * @param showPipelineParametersInHeaders
+     *            Indicates whether the pipeline headers should show the 
+     *            pipeline parameter values for the last successful instance.
      * @param showPipelineDefinitionHeader
      *            Indicates whether the pipeline headers should be shown.
      * @param refreshFrequency
@@ -223,10 +243,11 @@ public class BuildPipelineView extends View {
     @DataBoundConstructor
     public BuildPipelineView(final String name, final String buildViewTitle, final String selectedJob, final String noOfDisplayedBuilds,
             final boolean triggerOnlyLatestJob, final boolean alwaysAllowManualTrigger, final boolean showPipelineParameters,
-            final boolean showPipelineDefinitionHeader, final int refreshFrequency) {
+            final boolean showPipelineParametersInHeaders, final boolean showPipelineDefinitionHeader, final int refreshFrequency) {
         this(name, buildViewTitle, selectedJob, noOfDisplayedBuilds, triggerOnlyLatestJob);
         this.alwaysAllowManualTrigger = alwaysAllowManualTrigger;
         this.showPipelineParameters = showPipelineParameters;
+        this.showPipelineParametersInHeaders = showPipelineParametersInHeaders;
         this.showPipelineDefinitionHeader = showPipelineDefinitionHeader;
         //not exactly understanding the lifecycle here, but I want a default of 3
         //(this is what the class variable is set to 3, if it's 0, set it to default, refresh of 0 does not make sense anyway)
@@ -258,6 +279,7 @@ public class BuildPipelineView extends View {
         this.triggerOnlyLatestJob = Boolean.valueOf(req.getParameter("_.triggerOnlyLatestJob")); //$NON-NLS-1$
         this.alwaysAllowManualTrigger = Boolean.valueOf(req.getParameter("_.alwaysAllowManualTrigger")); //$NON-NLS-1$
         this.showPipelineParameters = Boolean.valueOf(req.getParameter("_.showPipelineParameters")); //$NON-NLS-1$
+        this.showPipelineParametersInHeaders = Boolean.valueOf(req.getParameter("_.showPipelineParametersInHeaders")); //$NON-NLS-1$
         this.showPipelineDefinitionHeader = Boolean.valueOf(req.getParameter("_.showPipelineDefinitionHeader")); //$NON-NLS-1$
         this.refreshFrequency = Integer.valueOf(req.getParameter("refreshFrequency")); //$NON-NLS-1$
     }
@@ -487,8 +509,8 @@ public class BuildPipelineView extends View {
         final List<Action> buildActions = new ArrayList<Action>();
         buildActions.add(new CauseAction(new MyUserIdCause()));
         ParametersAction parametersAction =
-                buildParametersAction instanceof ParametersAction ?
-                        (ParametersAction) buildParametersAction : new ParametersAction();
+                buildParametersAction instanceof ParametersAction
+                        ? (ParametersAction) buildParametersAction : new ParametersAction();
 
         if (upstreamBuild != null) {
 
@@ -496,7 +518,7 @@ public class BuildPipelineView extends View {
 
             final List<AbstractBuildParameters> configs = trigger.getConfigs();
 
-            for (AbstractBuildParameters config : configs) {
+            for (final AbstractBuildParameters config : configs) {
                 try {
                     final Action action = config.getAction(upstreamBuild, new LogTaskListener(LOGGER, Level.INFO));
                     if (action instanceof ParametersAction) {
@@ -504,11 +526,11 @@ public class BuildPipelineView extends View {
                     } else {
                         buildActions.add(action);
                     }
-                } catch (IOException e) {
+                } catch (final IOException e) {
                     LOGGER.log(Level.SEVERE, "I/O exception while adding build parameter", e); //$NON-NLS-1$
-                } catch (InterruptedException e) {
+                } catch (final InterruptedException e) {
                     LOGGER.log(Level.SEVERE, "Adding build parameter was interrupted", e); //$NON-NLS-1$
-                } catch (AbstractBuildParameters.DontTriggerException e) {
+                } catch (final AbstractBuildParameters.DontTriggerException e) {
                     LOGGER.log(Level.FINE, "Not triggering : " + config); //$NON-NLS-1$
                 }
             }
@@ -523,12 +545,14 @@ public class BuildPipelineView extends View {
     /*
      * From parameterized trigger plugin src/main/java/hudson/plugins/parameterizedtrigger/BuildTriggerConfig.java
      */
-    private static ParametersAction mergeParameters(ParametersAction base, ParametersAction overlay) {
-        LinkedHashMap<String,ParameterValue> params = new LinkedHashMap<String,ParameterValue>();
-        for (ParameterValue param : base.getParameters())
+    private static ParametersAction mergeParameters(final ParametersAction base, final ParametersAction overlay) {
+        final LinkedHashMap<String, ParameterValue> params = new LinkedHashMap<String, ParameterValue>();
+        for (final ParameterValue param : base.getParameters()) {
             params.put(param.getName(), param);
-        for (ParameterValue param : overlay.getParameters())
+        }
+        for (final ParameterValue param : overlay.getParameters()) {
             params.put(param.getName(), param);
+        }
         return new ParametersAction(params.values().toArray(new ParameterValue[params.size()]));
     }
 
@@ -694,6 +718,18 @@ public class BuildPipelineView extends View {
 
     public void setShowPipelineParameters(final boolean showPipelineParameters) {
         this.showPipelineParameters = showPipelineParameters;
+    }
+
+    public boolean isShowPipelineParametersInHeaders() {
+        return showPipelineParametersInHeaders;
+    }
+    
+    public String getShowPipelineParametersInHeaders() {
+        return Boolean.toString(showPipelineParametersInHeaders);
+    }
+    
+    public void setShowPipelineParametersInHeaders(final boolean showPipelineParametersInHeaders) {
+        this.showPipelineParametersInHeaders = showPipelineParametersInHeaders;
     }
 
     public int getRefreshFrequency() {

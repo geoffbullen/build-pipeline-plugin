@@ -24,16 +24,20 @@
 		<f:booleanRadio field="alwaysAllowManualTrigger" default="false"/>
 	</f:entry>
 
-	<f:entry title="Show pipeline parameters" field="showPipelineParameters">
+	<f:entry title="Show pipeline project headers" field="showPipelineDefinitionHeader">
+		<f:booleanRadio field="showPipelineDefinitionHeader" true="Yes" false="No" default="false"/>
+	</f:entry>
+
+    <f:entry title="Show pipeline parameters in project headers" field="showPipelineParametersInHeaders">
+        <f:booleanRadio field="showPipelineParametersInHeaders" default="false"/>
+    </f:entry>
+
+	<f:entry title="Show pipeline parameters in revision box" field="showPipelineParameters">
 		<f:booleanRadio field="showPipelineParameters" default="false"/>
 	</f:entry>
 
 	<f:entry title="Refresh frequency (in seconds)" field="refreshFrequency" >
 		<f:textbox name="refreshFrequency" clazz="number"/>
-	</f:entry>
-
-	<f:entry title="Show pipeline definition header" field="showPipelineDefinitionHeader">
-		<f:booleanRadio field="showPipelineDefinitionHeader" true="Yes" false="No" default="false"/>
 	</f:entry>
 
 </j:jelly>
