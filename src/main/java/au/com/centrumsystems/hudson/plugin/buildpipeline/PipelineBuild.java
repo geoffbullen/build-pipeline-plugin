@@ -91,8 +91,14 @@ public class PipelineBuild {
         this.upstreamBuildResult = ""; //$NON-NLS-1$
     }
 
+    /**
+     * Convenience method to create {@link PipelineBuild} from a build.
+     *
+     * @param build
+     *      The object to be wrapped.
+     */
     public PipelineBuild(final AbstractBuild<?, ?> build) {
-        this(build,build.getProject(),build.getPreviousBuild());
+        this(build, build.getProject(), build.getPreviousBuild());
     }
 
     /**

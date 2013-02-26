@@ -38,8 +38,10 @@ public class BuildPipelineDashboard extends DashboardPortlet {
      *      For backward compatibility. Back when we didn't have {@link #gridBuilder},
      *      this field stored the first job to display.
      */
+    @Deprecated
     private String selectedJob;
 
+    /** Controls the layout. */
     private ProjectGridBuilder gridBuilder;
 
     /**
@@ -59,13 +61,14 @@ public class BuildPipelineDashboard extends DashboardPortlet {
      *            the name of this view
      * @param description
      *            a brief description of this view
-     * @param selectedJob
-     *            the job to start the build-pipeline with
+     * @param gridBuilder
+     *            controls the layout
      * @param noOfDisplayedBuilds
      *            how many builds will be displayed for this job
      */
     @DataBoundConstructor
-    public BuildPipelineDashboard(final String name, final String description, final ProjectGridBuilder gridBuilder, final String noOfDisplayedBuilds) {
+    public BuildPipelineDashboard(final String name, final String description,
+                                  final ProjectGridBuilder gridBuilder, final String noOfDisplayedBuilds) {
         super(name);
         this.description = description;
         this.gridBuilder = gridBuilder;
@@ -80,8 +83,12 @@ public class BuildPipelineDashboard extends DashboardPortlet {
         this.gridBuilder = gridBuilder;
     }
 
+    /**
+     * @return
+     *      always this.
+     */
     protected Object readResolve() {
-        if (gridBuilder==null && selectedJob!=null) {
+        if (gridBuilder == null && selectedJob != null) {
             gridBuilder = new DownstreamProjectGridBuilder(selectedJob);
             selectedJob = null;
         }

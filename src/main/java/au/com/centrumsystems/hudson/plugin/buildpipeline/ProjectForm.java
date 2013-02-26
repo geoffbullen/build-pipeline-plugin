@@ -97,8 +97,16 @@ public class ProjectForm {
         this.project = project;
     }
 
-    public static ProjectForm as(AbstractProject<?,?> p) {
-        return p!=null ? new ProjectForm(p) : null;
+    /**
+     * Wraps possibly null {@link AbstractProject} into {@link ProjectForm}.
+     *
+     * @param p
+     *      project to be wrapped.
+     * @return
+     *      possibly null.
+     */
+    public static ProjectForm as(AbstractProject<?, ?> p) {
+        return p != null ? new ProjectForm(p) : null;
     }
 
     public String getName() {

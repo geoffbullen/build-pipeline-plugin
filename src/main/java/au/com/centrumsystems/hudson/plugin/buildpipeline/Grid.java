@@ -3,6 +3,8 @@ package au.com.centrumsystems.hudson.plugin.buildpipeline;
 /**
  * Two-dimensional finite sparse placement of things (such as projects and builds) into a grid/matrix layout.
  *
+ * @param <T>
+ *     The type of the data that gets placed in a two dimensional table.
  * @author Kohsuke Kawaguchi
  */
 public abstract class Grid<T> {
@@ -24,19 +26,22 @@ public abstract class Grid<T> {
      * Obtains the project placed at the specific position.
      *
      * @param row
-     *      0<=row<getRows()
+     *      {@code 0&lt;=row&lt;getRows()}
      * @param col
-     *      0<=col<getColumns()
+     *      {@code 0&lt;=col&lt;getColumns()}
      * @return
      *      null if there's nothing placed in that position.
      */
     public abstract T get(int row, int col);
 
     /**
-     * Returns true if this grid contains no {@link ProjectForm} at all.
+     * Tests if the layout is empty.
+     *
+     * @return
+     *      true if this grid contains no {@link ProjectForm} at all.
      */
     public boolean isEmpty() {
-        return getRows()==0; // && getColumns()==0; -- testing one is enough
+        return getRows() == 0; // && getColumns()==0; -- testing one is enough
     }
 
     /**
@@ -57,12 +62,13 @@ public abstract class Grid<T> {
      * @return - The row number to be used
      */
     public int getNextAvailableRow(final int currentRow, final int currentColumn) {
-        int rows = getRows();
-        for (int nextRow=currentRow; nextRow< rows; nextRow++) {
-            if (hasDataToRight(nextRow,currentColumn))
+        final int rows = getRows();
+        for (int nextRow = currentRow; nextRow < rows; nextRow++) {
+            if (hasDataToRight(nextRow, currentColumn)) {
                 nextRow++;
-            else
+            } else {
                 return nextRow;
+            }
         }
         return rows;
     }
@@ -79,9 +85,11 @@ public abstract class Grid<T> {
      */
     private boolean hasDataToRight(final int row, final int col) {
         final int cols = getColumns();
-        for (int i=col; i< cols; i++)
-            if (get(row,i)!=null)
+        for (int i = col; i < cols; i++) {
+            if (get(row, i) != null) {
                 return true;
+            }
+        }
         return false;
     }
 }

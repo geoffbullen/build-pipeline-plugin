@@ -2,11 +2,8 @@ package au.com.centrumsystems.hudson.plugin.buildpipeline;
 
 import com.google.common.collect.Iterables;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
 
 /**
@@ -35,12 +32,12 @@ public class BuildPipelineForm {
      * 
      * @param grid
      *            Project to be laid out in a grid
-     * @param buildForms
+     * @param builds
      *            builds to be laid out in a grid
      */
     public BuildPipelineForm(final ProjectGrid grid, final Iterable<BuildGrid> builds) {
         projectGrid = grid;
-        buildGrids = Arrays.asList(Iterables.toArray(builds,BuildGrid.class));
+        buildGrids = Arrays.asList(Iterables.toArray(builds, BuildGrid.class));
     }
 
     public ProjectGrid getProjectGrid() {

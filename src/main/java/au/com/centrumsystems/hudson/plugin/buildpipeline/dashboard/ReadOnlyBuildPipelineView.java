@@ -12,7 +12,6 @@ package au.com.centrumsystems.hudson.plugin.buildpipeline.dashboard;
 
 import au.com.centrumsystems.hudson.plugin.buildpipeline.BuildPipelineView;
 import au.com.centrumsystems.hudson.plugin.buildpipeline.ProjectGridBuilder;
-import hudson.model.AbstractProject;
 import hudson.security.Permission;
 
 /**

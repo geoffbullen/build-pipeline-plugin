@@ -83,8 +83,10 @@ public class BuildPipelineView extends View {
      *      For backward compatibility. Back when we didn't have {@link #gridBuilder},
      *      this field stored the first job to display.
      */
+    @Deprecated
     private volatile String selectedJob;
 
+    /** Builds {@link ProjectGrid} */
     private ProjectGridBuilder gridBuilder;
 
     /** noOfDisplayedBuilds. */
@@ -214,8 +216,9 @@ public class BuildPipelineView extends View {
      *            Indicates whether only the latest job will be triggered.
      */
     @DataBoundConstructor
-    public BuildPipelineView(final String name, final String buildViewTitle, final ProjectGridBuilder gridBuilder, final String noOfDisplayedBuilds,
-            final boolean triggerOnlyLatestJob) {
+    public BuildPipelineView(final String name, final String buildViewTitle,
+             final ProjectGridBuilder gridBuilder, final String noOfDisplayedBuilds,
+             final boolean triggerOnlyLatestJob) {
         super(name, Hudson.getInstance());
         this.buildViewTitle = buildViewTitle;
         this.gridBuilder = gridBuilder;
@@ -248,7 +251,8 @@ public class BuildPipelineView extends View {
      *            Frequency at which the build pipeline plugin refreshes build cards
      */
     @DataBoundConstructor
-    public BuildPipelineView(final String name, final String buildViewTitle, final ProjectGridBuilder gridBuilder, final String noOfDisplayedBuilds,
+    public BuildPipelineView(final String name, final String buildViewTitle, final ProjectGridBuilder gridBuilder,
+            final String noOfDisplayedBuilds,
             final boolean triggerOnlyLatestJob, final boolean alwaysAllowManualTrigger, final boolean showPipelineParameters,
             final boolean showPipelineParametersInHeaders, final boolean showPipelineDefinitionHeader, final int refreshFrequency) {
         this(name, buildViewTitle, gridBuilder, noOfDisplayedBuilds, triggerOnlyLatestJob);
@@ -265,8 +269,12 @@ public class BuildPipelineView extends View {
         }
     }
 
+    /**
+     * @return
+     *      must be always 'this'
+     */
     protected Object readResolve() {
-        if (gridBuilder==null && selectedJob!=null) {
+        if (gridBuilder == null && selectedJob != null) {
             gridBuilder = new DownstreamProjectGridBuilder(selectedJob);
             selectedJob = null;
         }
@@ -287,7 +295,7 @@ public class BuildPipelineView extends View {
      */
     @Override
     protected void submit(final StaplerRequest req) throws IOException, ServletException, FormException {
-        req.bindJSON(this,req.getSubmittedForm());
+        req.bindJSON(this, req.getSubmittedForm());
     }
 
     /**
@@ -349,11 +357,13 @@ public class BuildPipelineView extends View {
     public BuildPipelineForm getBuildPipelineForm() throws URISyntaxException {
         final int maxNoOfDisplayBuilds = Integer.valueOf(noOfDisplayedBuilds);
 
-        ProjectGrid project = gridBuilder.build(this);
-        if (project.isEmpty())  return null;
+        final ProjectGrid project = gridBuilder.build(this);
+        if (project.isEmpty()) {
+            return null;
+        }
         return new BuildPipelineForm(
                 project,
-                Iterables.limit(project.builds(),maxNoOfDisplayBuilds));
+                Iterables.limit(project.builds(), maxNoOfDisplayBuilds));
     }
 
     /**
@@ -517,8 +527,15 @@ public class BuildPipelineView extends View {
         return triggerProject.getNextBuildNumber();
     }
 
-    /*
+    /**
      * From parameterized trigger plugin src/main/java/hudson/plugins/parameterizedtrigger/BuildTriggerConfig.java
+     *
+     * @param base
+     *      One of the two parameters to merge.
+     * @param overlay
+     *      The other parameters to merge
+     * @return
+     *      Result of the merge.
      */
     private static ParametersAction mergeParameters(final ParametersAction base, final ParametersAction overlay) {
         final LinkedHashMap<String, ParameterValue> params = new LinkedHashMap<String, ParameterValue>();
@@ -735,7 +752,7 @@ public class BuildPipelineView extends View {
     public void onJobRenamed(final Item item, final String oldName, final String newName) {
         LOGGER.fine(String.format("Renaming job: %s -> %s", oldName, newName));
         try {
-            gridBuilder.onJobRenamed(this,item,oldName,newName);
+            gridBuilder.onJobRenamed(this, item, oldName, newName);
         } catch (IOException e) {
             LOGGER.log(Level.WARNING, "Failed to handle onJobRenamed", e);
         }
