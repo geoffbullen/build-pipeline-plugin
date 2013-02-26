@@ -1,3 +1,4 @@
+import au.com.centrumsystems.hudson.plugin.buildpipeline.DownstreamProjectGridBuilder
 import spock.lang.*
 
 import au.com.centrumsystems.hudson.plugin.buildpipeline.dashboard.BuildPipelineDashboard
@@ -6,7 +7,7 @@ import au.com.centrumsystems.hudson.plugin.buildpipeline.dashboard.ReadOnlyBuild
 class BuildPipelineDashboardTest extends Specification {
     def cut
     def setup() {
-        cut = new BuildPipelineDashboard('TestProject', 'Test Description', 'Job10', '5')
+        cut = new BuildPipelineDashboard('TestProject', 'Test Description', new DownstreamProjectGridBuilder('Job10'), '5')
     }
     
     def "should return a new BuildPipelineView"() {
@@ -15,7 +16,7 @@ class BuildPipelineDashboardTest extends Specification {
         expect:
             bpv != null
             bpv instanceof ReadOnlyBuildPipelineView
-            bpv.getSelectedJob() == 'Job10'
+            bpv.getGridBuilder().getFirstJob() == 'Job10'
             bpv.getNoOfDisplayedBuilds() == '5'
             bpv.getBuildViewTitle() == 'TestProject'
     }

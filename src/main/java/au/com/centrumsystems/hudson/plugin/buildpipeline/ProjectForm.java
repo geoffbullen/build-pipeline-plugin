@@ -55,7 +55,7 @@ public class ProjectForm {
     /**
      * keep reference to the project so that we can update it
      */
-    private AbstractProject<?, ?> project;
+    private final AbstractProject<?, ?> project;
 
     /**
      * @param name
@@ -70,6 +70,7 @@ public class ProjectForm {
         lastSuccessfulBuildParams = new HashMap<String, String>();
         dependencies = new ArrayList<ProjectForm>();
         this.displayTrigger = true;
+        project = null;
     }
 
     /**
@@ -94,6 +95,10 @@ public class ProjectForm {
         lastSuccessfulBuildNumber = (null == lastSuccessfulBuild) ? "" : "" + lastSuccessfulBuild.getNumber();
         lastSuccessfulBuildParams = (null == lastSuccessfulBuild) ? new HashMap<String, String>() : lastSuccessfulBuild.getBuildVariables();
         this.project = project;
+    }
+
+    public static ProjectForm as(AbstractProject<?,?> p) {
+        return p!=null ? new ProjectForm(p) : null;
     }
 
     public String getName() {

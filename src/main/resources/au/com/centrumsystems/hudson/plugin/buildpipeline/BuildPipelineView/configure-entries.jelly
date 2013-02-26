@@ -6,38 +6,34 @@
 		<f:textbox name="buildViewTitle"/>
 	</f:entry>
 
-	<f:entry title="Select Initial Job" field="selectedJob">
-		<f:select name="selectedJob">
-		</f:select>
-	</f:entry>
+  <f:dropdownDescriptorSelector field="gridBuilder" title="${%Layout}" />
 
 	<f:entry title="No Of Displayed Builds" field="noOfDisplayedBuilds">
-		<f:select name="noOfDisplayedBuilds">
-		</f:select>
+		<f:select />
 	</f:entry>
 
 	<f:entry title="Restrict triggers to most recent successful builds" field="triggerOnlyLatestJob">
-		<f:booleanRadio field="triggerOnlyLatestJob" default="true"/>
+		<f:booleanRadio default="true"/>
 	</f:entry>
 
 	<f:entry title="Always allow manual trigger on pipeline steps" field="alwaysAllowManualTrigger">
-		<f:booleanRadio field="alwaysAllowManualTrigger" default="false"/>
+		<f:booleanRadio default="false"/>
 	</f:entry>
 
 	<f:entry title="Show pipeline project headers" field="showPipelineDefinitionHeader">
-		<f:booleanRadio field="showPipelineDefinitionHeader" true="Yes" false="No" default="false"/>
+		<f:booleanRadio true="Yes" false="No" default="false"/>
 	</f:entry>
 
     <f:entry title="Show pipeline parameters in project headers" field="showPipelineParametersInHeaders">
-        <f:booleanRadio field="showPipelineParametersInHeaders" default="false"/>
+        <f:booleanRadio default="false"/>
     </f:entry>
 
 	<f:entry title="Show pipeline parameters in revision box" field="showPipelineParameters">
-		<f:booleanRadio field="showPipelineParameters" default="false"/>
+		<f:booleanRadio default="false"/>
 	</f:entry>
 
-	<f:entry title="Refresh frequency (in seconds)" field="refreshFrequency" >
-		<f:textbox name="refreshFrequency" clazz="number"/>
+	<f:entry title="Refresh frequency (in seconds)" field="refreshFrequency">
+		<f:textbox clazz="number"/>
 	</f:entry>
 
 </j:jelly>

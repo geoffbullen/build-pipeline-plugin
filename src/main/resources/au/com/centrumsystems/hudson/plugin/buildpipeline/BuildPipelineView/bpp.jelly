@@ -188,24 +188,23 @@
 				</h1>
 			</div>
 			<div>${from.getDescription()}</div>
+
+      <j:set var="buildPipelineForm" type="au.com.centrumsystems.hudson.plugin.buildpipeline.BuildPipelineForm" value="${from.getBuildPipelineForm()}" />
+      <j:set var="projectGrid" value="${buildPipelineForm.getProjectGrid()}" />
+
 			<div id="icon-bar">
 				<!-- If the user has the Build Project permission include a hyperlink to build the base project.-->
-				<j:if test="${from.hasSelectedProject()}">
-					<j:set var="hasBuildPermission" type="boolean" value="${from.hasBuildPermission(from.getSelectedProject())}" />
-					<j:if test="${hasBuildPermission}">
-						<div class="icon-container">
-							<div>
-								<a href='${rootURL}/job/${from.getSelectedProject().getName()}/build?delay=0sec'>
-									<img src="${rootURL}/images/24x24/clock.png" alt="Trigger a Pipeline" class="icon-with-caption" />
-								</a>
-							</div>
-							<div>Run</div>
-						</div>
-					</j:if>
-				</j:if>
-				<j:if test="${!(from.hasSelectedProject())}">
-					<j:set var="hasBuildPermission" type="boolean" value="false" />
-				</j:if>
+        <j:set var="hasBuildPermission" type="boolean" value="${from.hasBuildPermission()}" />
+        <j:if test="${hasBuildPermission}">
+          <div class="icon-container">
+            <div>
+              <a href='gridBuilder/build'>
+                <img src="${rootURL}/images/24x24/clock.png" alt="Trigger a Pipeline" class="icon-with-caption" />
+              </a>
+            </div>
+            <div>Run</div>
+          </div>
+        </j:if>
 
 				<div class="icon-container">
 					<div>
@@ -251,14 +250,12 @@
 				</j:if>
 			</div>
 
-			<j:set var="buildPipelineForm" type="au.com.centrumsystems.hudson.plugin.buildpipeline.BuildPipelineForm" value="${from.getBuildPipelineForm()}" />
 
             <j:if test="${empty(buildPipelineForm.getBuildGrids())}">
                 <st:include page="noJob.jelly" />
             </j:if>
 
 			<table id="pipelines">
-				<j:set var="projectGrid" value="${buildPipelineForm.getProjectGrid()}" />
 				<j:if test="${from.showPipelineDefinitionHeader}">
 					<!-- projects header -->
 					<tbody>
@@ -268,7 +265,7 @@
 								<td></td>
 								<td class="next"></td>
 								<j:forEach begin="${0}" end="${buildPipelineForm.getGridWidth() - 1}" indexVar="y">
-								<j:set var="project" type="au.com.centrumsystems.hudson.plugin.buildpipeline.ProjectForm" value="${projectGrid.get(x).get(y)}"/>
+								<j:set var="project" type="au.com.centrumsystems.hudson.plugin.buildpipeline.ProjectForm" value="${projectGrid.get(x,y)}"/>
 									<j:if test="${project != null}">
 										<td id="project-${project.getId()}"></td>
 										<script>
@@ -291,7 +288,7 @@
 										<j:if test="${y + 1 != buildPipelineForm.getGridWidth()}">
 											<j:set var="nextIndex" value="${y + 1}"/>
 												<td class="next">
-													<j:if test="${projectGrid.get(x).containsKey(nextIndex.intValue())}">
+													<j:if test="${projectGrid.get(x,nextIndex)!=null}">
 														<span class="status next">
 															<img src="${rootURL}/images/24x24/next.png" />
 														</span>
@@ -307,7 +304,7 @@
 				<!-- builds -->
 				<j:forEach items="${buildPipelineForm.getBuildGrids()}" var="buildGrid" indexVar="i">
 					<tbody class="pipelineGroup">
-						<j:forEach begin="${0}" end="${buildGrid.keySet().size() - 1}" indexVar="x">
+						<j:forEach begin="${0}" end="${buildGrid.rows - 1}" indexVar="x">
 							<tr class='build-pipeline'>
 								<td class="revision-cell"><j:if test="${x == 0}">
 										<table class="revision rounded build-card">
@@ -316,7 +313,7 @@
 													<td colspan="2">
 														<j:choose>
 															<j:when test="${from.isShowPipelineParameters()}">
-																<div>Pipeline ${buildGrid.get(x).get(0).getRevision()}</div>
+																<div>Pipeline ${buildGrid.get(x,0).getRevision()}</div>
 															</j:when>
 															<j:otherwise>
 																<div>Pipeline</div>
@@ -329,14 +326,14 @@
 														<j:when test="${from.isShowPipelineParameters()}">
 															<td class="secondary-info">
 																<j:choose>
-																	<j:when test="${buildGrid.get(x).get(0).getParameters().isEmpty()}">
+																	<j:when test="${buildGrid.get(x,0).getParameters().isEmpty()}">
 																		No parameters
 																	</j:when>
 																	<j:otherwise>
-																		<div class="build-parameters" id="build-parameters-${buildGrid.get(x).get(0).getId()}">
+																		<div class="build-parameters" id="build-parameters-${buildGrid.get(x,0).getId()}">
 																			<div>
 																				<table width="100%">
-																					<j:forEach items="${buildGrid.get(x).get(0).getParameters().entrySet()}" var="buildParam" indexVar="buildParamCtr">
+																					<j:forEach items="${buildGrid.get(x,0).getParameters().entrySet()}" var="buildParam" indexVar="buildParamCtr">
 																						<tr>
 																							<td class="param-name">${buildParam.getKey()}:</td>
 																							<td class="param-value">${buildParam.getValue()}</td>
@@ -346,9 +343,9 @@
 																			</div>
 																		</div>
 																		<script>
-																			jQuery('#build-parameters-trigger-${buildGrid.get(x).get(0).getId()}').tooltip({
+																			jQuery('#build-parameters-trigger-${buildGrid.get(x,0).getId()}').tooltip({
 																				bodyHandler: function() {
-																					return jQuery('#build-parameters-${buildGrid.get(x).get(0).getId()}').html();
+																					return jQuery('#build-parameters-${buildGrid.get(x,0).getId()}').html();
 																				}
 																			});
 																		</script>
@@ -358,7 +355,7 @@
 														</j:when>
 														<j:otherwise>
 															<td>
-																<div class="build-number-pipeline" id="buildNumber${buildGrid.get(x).get(0).getId()}"><span>${buildGrid.get(x).get(0).getRevision()}</span></div>
+																<div class="build-number-pipeline" id="buildNumber${buildGrid.get(x,0).getId()}"><span>${buildGrid.get(x,0).getRevision()}</span></div>
 															</td>
 														</j:otherwise>
 													</j:choose>
@@ -368,7 +365,7 @@
 									</j:if></td>
 								<td class="next"></td>
 								<j:forEach begin="${0}" end="${buildPipelineForm.getGridWidth() - 1}" indexVar="y">
-									<j:set var="build" type="au.com.centrumsystems.hudson.plugin.buildpipeline.BuildForm" value="${buildGrid.get(x).get(y)}" />
+									<j:set var="build" type="au.com.centrumsystems.hudson.plugin.buildpipeline.BuildForm" value="${buildGrid.get(x,y)}" />
 									<j:if test="${build != null}">
 										<td id="build-${build.getId()}"></td>
 										<script>
@@ -405,7 +402,7 @@
 										<td></td>
 										<j:if test="${y + 1 != buildPipelineForm.getGridWidth()}">
 											<j:set var="nextIndex" value="${y + 1}" />
-											<td class="next"><j:if test="${buildGrid.get(x).containsKey(nextIndex.intValue())}">
+											<td class="next"><j:if test="${buildGrid.get(x,nextIndex)!=null}">
 													<span class="status next"> <img src="${rootURL}/images/24x24/next.png" />
 													</span>
 												</j:if></td>

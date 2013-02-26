@@ -18,20 +18,16 @@
         <f:textbox name="buildViewTitle"/> 
     </f:entry>-->
     <f:entry title="Display name">
-        <f:textbox name="portlet.name" field="name" default="${descriptor.getDisplayName()}" />
+        <f:textbox field="name" default="${descriptor.getDisplayName()}" />
     </f:entry>
   	  
     <f:entry title="Description" field="description">    
-        <f:textbox name="description" /> 
+        <f:textbox />
     </f:entry>
   
-    <f:entry title="Select Initial Job" field="selectedJob">    
-        <f:select name="selectedJob"> 
-        </f:select>
-    </f:entry>
+    <f:dropdownDescriptorSelector field="gridBuilder" title="${%Layout}" />
   
     <f:entry title="No Of Displayed Builds" field="noOfDisplayedBuilds">
-        <f:select name="noOfDisplayedBuilds">
-        </f:select>
+        <f:select />
     </f:entry>
 </j:jelly>

@@ -91,6 +91,10 @@ public class PipelineBuild {
         this.upstreamBuildResult = ""; //$NON-NLS-1$
     }
 
+    public PipelineBuild(final AbstractBuild<?, ?> build) {
+        this(build,build.getProject(),build.getPreviousBuild());
+    }
+
     /**
      * @param project
      *            project

@@ -24,6 +24,7 @@
  */
 package au.com.centrumsystems.hudson.plugin.buildpipeline;
 
+import com.google.common.collect.Iterables;
 import hudson.Extension;
 import hudson.model.Action;
 import hudson.model.Item;
@@ -77,8 +78,14 @@ import au.com.centrumsystems.hudson.plugin.util.ProjectUtil;
  */
 public class BuildPipelineView extends View {
 
-    /** selectedJob. */
-    private String selectedJob;
+    /**
+     * @deprecated
+     *      For backward compatibility. Back when we didn't have {@link #gridBuilder},
+     *      this field stored the first job to display.
+     */
+    private volatile String selectedJob;
+
+    private ProjectGridBuilder gridBuilder;
 
     /** noOfDisplayedBuilds. */
     private String noOfDisplayedBuilds;
@@ -199,19 +206,19 @@ public class BuildPipelineView extends View {
      *            the name of the pipeline build view.
      * @param buildViewTitle
      *            the build view title.
-     * @param selectedJob
-     *            the first job in the build pipeline.
+     * @param gridBuilder
+     *            controls the data to be displayed.
      * @param noOfDisplayedBuilds
      *            a count of the number of builds displayed on the view
      * @param triggerOnlyLatestJob
      *            Indicates whether only the latest job will be triggered.
      */
     @DataBoundConstructor
-    public BuildPipelineView(final String name, final String buildViewTitle, final String selectedJob, final String noOfDisplayedBuilds,
+    public BuildPipelineView(final String name, final String buildViewTitle, final ProjectGridBuilder gridBuilder, final String noOfDisplayedBuilds,
             final boolean triggerOnlyLatestJob) {
         super(name, Hudson.getInstance());
         this.buildViewTitle = buildViewTitle;
-        this.selectedJob = selectedJob;
+        this.gridBuilder = gridBuilder;
         this.noOfDisplayedBuilds = noOfDisplayedBuilds;
         this.triggerOnlyLatestJob = triggerOnlyLatestJob;
     }
@@ -222,8 +229,8 @@ public class BuildPipelineView extends View {
      *            the name of the pipeline build view.
      * @param buildViewTitle
      *            the build view title.
-     * @param selectedJob
-     *            the first job in the build pipeline.
+     * @param gridBuilder
+     *            controls the data to be displayed.
      * @param noOfDisplayedBuilds
      *            a count of the number of builds displayed on the view
      * @param triggerOnlyLatestJob
@@ -241,10 +248,10 @@ public class BuildPipelineView extends View {
      *            Frequency at which the build pipeline plugin refreshes build cards
      */
     @DataBoundConstructor
-    public BuildPipelineView(final String name, final String buildViewTitle, final String selectedJob, final String noOfDisplayedBuilds,
+    public BuildPipelineView(final String name, final String buildViewTitle, final ProjectGridBuilder gridBuilder, final String noOfDisplayedBuilds,
             final boolean triggerOnlyLatestJob, final boolean alwaysAllowManualTrigger, final boolean showPipelineParameters,
             final boolean showPipelineParametersInHeaders, final boolean showPipelineDefinitionHeader, final int refreshFrequency) {
-        this(name, buildViewTitle, selectedJob, noOfDisplayedBuilds, triggerOnlyLatestJob);
+        this(name, buildViewTitle, gridBuilder, noOfDisplayedBuilds, triggerOnlyLatestJob);
         this.alwaysAllowManualTrigger = alwaysAllowManualTrigger;
         this.showPipelineParameters = showPipelineParameters;
         this.showPipelineParametersInHeaders = showPipelineParametersInHeaders;
@@ -256,7 +263,14 @@ public class BuildPipelineView extends View {
         } else {
             this.refreshFrequency = refreshFrequency;
         }
+    }
 
+    protected Object readResolve() {
+        if (gridBuilder==null && selectedJob!=null) {
+            gridBuilder = new DownstreamProjectGridBuilder(selectedJob);
+            selectedJob = null;
+        }
+        return this;
     }
 
     /**
@@ -273,54 +287,17 @@ public class BuildPipelineView extends View {
      */
     @Override
     protected void submit(final StaplerRequest req) throws IOException, ServletException, FormException {
-        this.selectedJob = req.getParameter("selectedJob"); //$NON-NLS-1$
-        this.noOfDisplayedBuilds = req.getParameter("noOfDisplayedBuilds"); //$NON-NLS-1$
-        this.buildViewTitle = req.getParameter("buildViewTitle"); //$NON-NLS-1$
-        this.triggerOnlyLatestJob = Boolean.valueOf(req.getParameter("_.triggerOnlyLatestJob")); //$NON-NLS-1$
-        this.alwaysAllowManualTrigger = Boolean.valueOf(req.getParameter("_.alwaysAllowManualTrigger")); //$NON-NLS-1$
-        this.showPipelineParameters = Boolean.valueOf(req.getParameter("_.showPipelineParameters")); //$NON-NLS-1$
-        this.showPipelineParametersInHeaders = Boolean.valueOf(req.getParameter("_.showPipelineParametersInHeaders")); //$NON-NLS-1$
-        this.showPipelineDefinitionHeader = Boolean.valueOf(req.getParameter("_.showPipelineDefinitionHeader")); //$NON-NLS-1$
-        this.refreshFrequency = Integer.valueOf(req.getParameter("refreshFrequency")); //$NON-NLS-1$
+        req.bindJSON(this,req.getSubmittedForm());
     }
 
     /**
-     * Gets the selected project
+     * Checks whether the user has a permission to start a new instance of the pipeline.
      *
-     * @return - The selected project in the current view
-     */
-    public AbstractProject<?, ?> getSelectedProject() {
-        AbstractProject<?, ?> selectedProject = null;
-        if (getSelectedJob() != null) {
-            selectedProject = (AbstractProject<?, ?>) super.getJob(getSelectedJob());
-        }
-        return selectedProject;
-    }
-
-    /**
-     * Tests if the selected project exists.
-     *
-     * @return - true: Selected project exists; false: Selected project does not exist.
-     */
-    public boolean hasSelectedProject() {
-        boolean result = false;
-        final AbstractProject<?, ?> testProject = getSelectedProject();
-        if (testProject != null) {
-            result = true;
-        }
-        return result;
-    }
-
-    /**
-     * Checks whether the user has Build permission for the current project.
-     *
-     * @param currentProject
-     *            - The project being viewed.
      * @return - true: Has Build permission; false: Does not have Build permission
      * @see hudson.model.Item
      */
-    public boolean hasBuildPermission(final AbstractProject<?, ?> currentProject) {
-        return currentProject.hasPermission(Item.BUILD);
+    public boolean hasBuildPermission() {
+        return getGridBuilder().hasBuildPermission(this);
     }
 
     /**
@@ -330,6 +307,14 @@ public class BuildPipelineView extends View {
      */
     public boolean hasConfigurePermission() {
         return this.hasPermission(CONFIGURE);
+    }
+
+    public ProjectGridBuilder getGridBuilder() {
+        return gridBuilder;
+    }
+
+    public void setGridBuilder(ProjectGridBuilder gridBuilder) {
+        this.gridBuilder = gridBuilder;
     }
 
     /**
@@ -362,22 +347,13 @@ public class BuildPipelineView extends View {
      *             {@link URISyntaxException}
      */
     public BuildPipelineForm getBuildPipelineForm() throws URISyntaxException {
-        final AbstractProject<?, ?> project = getSelectedProject();
-        BuildPipelineForm buildPipelineForm = null;
-        if (project != null) {
-            final int maxNoOfDisplayBuilds = Integer.valueOf(noOfDisplayedBuilds);
-            int rowsAppended = 0;
-            final List<BuildForm> buildForms = new ArrayList<BuildForm>();
-            for (final AbstractBuild<?, ?> currentBuild : project.getBuilds()) {
-                buildForms.add(new BuildForm(new PipelineBuild(currentBuild, project, null)));
-                rowsAppended++;
-                if (rowsAppended >= maxNoOfDisplayBuilds) {
-                    break;
-                }
-            }
-            buildPipelineForm = new BuildPipelineForm(new ProjectForm(project), buildForms);
-        }
-        return buildPipelineForm;
+        final int maxNoOfDisplayBuilds = Integer.valueOf(noOfDisplayedBuilds);
+
+        ProjectGrid project = gridBuilder.build(this);
+        if (project.isEmpty())  return null;
+        return new BuildPipelineForm(
+                project,
+                Iterables.limit(project.builds(),maxNoOfDisplayBuilds));
     }
 
     /**
@@ -387,7 +363,6 @@ public class BuildPipelineView extends View {
      *            - The project
      * @return URL - of the project
      * @throws URISyntaxException
-     * @see {@link ProjectUtil#getProjectURL(AbstractProject)}
      * @throws URISyntaxException
      *             {@link URISyntaxException}
      */
@@ -621,19 +596,6 @@ public class BuildPipelineView extends View {
         }
 
         /**
-         * Display Job List Item in the Edit View Page
-         *
-         * @return ListBoxModel
-         */
-        public ListBoxModel doFillSelectedJobItems() {
-            final hudson.util.ListBoxModel options = new hudson.util.ListBoxModel();
-            for (final String jobName : Hudson.getInstance().getJobNames()) {
-                options.add(jobName);
-            }
-            return options;
-        }
-
-        /**
          * Display No Of Builds Items in the Edit View Page
          *
          * @return ListBoxModel
@@ -674,14 +636,6 @@ public class BuildPipelineView extends View {
 
     public void setNoOfDisplayedBuilds(final String noOfDisplayedBuilds) {
         this.noOfDisplayedBuilds = noOfDisplayedBuilds;
-    }
-
-    public String getSelectedJob() {
-        return selectedJob;
-    }
-
-    public void setSelectedJob(final String selectedJob) {
-        this.selectedJob = selectedJob;
     }
 
     public boolean isTriggerOnlyLatestJob() {
@@ -780,10 +734,10 @@ public class BuildPipelineView extends View {
     @Override
     public void onJobRenamed(final Item item, final String oldName, final String newName) {
         LOGGER.fine(String.format("Renaming job: %s -> %s", oldName, newName));
-        if (item instanceof AbstractProject) {
-            if ((oldName != null) && (oldName.equals(this.selectedJob))) {
-                setSelectedJob(newName);
-            }
+        try {
+            gridBuilder.onJobRenamed(this,item,oldName,newName);
+        } catch (IOException e) {
+            LOGGER.log(Level.WARNING, "Failed to handle onJobRenamed", e);
         }
     }
 
@@ -791,5 +745,4 @@ public class BuildPipelineView extends View {
     public Item doCreateItem(final StaplerRequest req, final StaplerResponse rsp) throws IOException, ServletException {
         return Hudson.getInstance().doCreateItem(req, rsp);
     }
-
 }
