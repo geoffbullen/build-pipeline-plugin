@@ -92,6 +92,16 @@ public class PipelineBuild {
     }
 
     /**
+     * Convenience method to create {@link PipelineBuild} from a build.
+     *
+     * @param build
+     *      The object to be wrapped.
+     */
+    public PipelineBuild(final AbstractBuild<?, ?> build) {
+        this(build, build.getProject(), build.getPreviousBuild());
+    }
+
+    /**
      * @param project
      *            project
      */

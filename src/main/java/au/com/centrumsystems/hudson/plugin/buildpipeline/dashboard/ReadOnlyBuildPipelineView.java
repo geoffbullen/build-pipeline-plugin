@@ -11,7 +11,7 @@
 package au.com.centrumsystems.hudson.plugin.buildpipeline.dashboard;
 
 import au.com.centrumsystems.hudson.plugin.buildpipeline.BuildPipelineView;
-import hudson.model.AbstractProject;
+import au.com.centrumsystems.hudson.plugin.buildpipeline.ProjectGridBuilder;
 import hudson.security.Permission;
 
 /**
@@ -28,22 +28,22 @@ public class ReadOnlyBuildPipelineView extends BuildPipelineView {
      *            display name of build pipeline view
      * @param description
      *            description of build pipeline view
-     * @param selectedJob
-     *            selected job of build pipeline view
+     * @param gridBuilder
+     *            controls the data to be displayed.
      * @param noOfDisplayedBuilds
      *            number of displayed build of build pipeline view
      * @param triggerOnlyLatestJob
      *            is trigger only latest job?
      */
-    public ReadOnlyBuildPipelineView(final String displayName, final String description, final String selectedJob,
+    public ReadOnlyBuildPipelineView(final String displayName, final String description, final ProjectGridBuilder gridBuilder,
             final String noOfDisplayedBuilds, final boolean triggerOnlyLatestJob) {
-        super(displayName, displayName, selectedJob, noOfDisplayedBuilds, triggerOnlyLatestJob);
+        super(displayName, displayName, gridBuilder, noOfDisplayedBuilds, triggerOnlyLatestJob);
         // this is ugly, but there is no other way to set the description of the view
         super.description = description;
     }
 
     @Override
-    public boolean hasBuildPermission(final AbstractProject<?, ?> currentProject) {
+    public boolean hasBuildPermission() {
         // we are not a 'real view' in this case and we don't care in R/O mode
         return false;
     }
@@ -51,15 +51,5 @@ public class ReadOnlyBuildPipelineView extends BuildPipelineView {
     @Override
     public boolean hasPermission(final Permission p) {
         return false;
-    }
-
-    @Override
-    public AbstractProject<?, ?> getSelectedProject() {
-        AbstractProject<?, ?> selectedProject = null;
-        if (getSelectedJob() != null) {
-            selectedProject = (AbstractProject<?, ?>) jenkins.model.Jenkins.getInstance().getItem(getSelectedJob());
-        }
-
-        return selectedProject;
     }
 }
