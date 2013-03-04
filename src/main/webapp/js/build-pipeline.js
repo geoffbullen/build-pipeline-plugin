@@ -93,11 +93,11 @@ BuildPipeline.prototype = {
 		});
 	},
 	showSpinner : function(id){
-		$("#status-bar-" + id).html('<table class="progress-bar" align="center"><tbody><tr class="unknown"><td></td></tr></tbody></table>');
-		$("#icons-" + id).empty();
+		jQuery("#status-bar-" + id).html('<table class="progress-bar" align="center"><tbody><tr class="unknown"><td></td></tr></tbody></table>');
+		jQuery("#icons-" + id).empty();
 	},
 	fillDialog : function(href, title) {
-		$.fancybox({
+		jQuery.fancybox({
 			type: 'iframe',
 			title: title,
 			titlePosition: 'outside',
@@ -109,13 +109,13 @@ BuildPipeline.prototype = {
 		});
 	},
 	closeDialog : function() {
-		$.fancybox.close();
+		jQuery.fancybox.close();
 	},
 	showModalSpinner : function() {
-		$.fancybox.showActivity();
+		jQuery.fancybox.showActivity();
 	},
 	hideModalSpinner : function() {
-		$.fancybox.hideActivity();
+		jQuery.fancybox.hideActivity();
 	}
 
 }
