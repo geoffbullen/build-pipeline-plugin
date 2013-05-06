@@ -17,11 +17,11 @@
 			<url>http://www.opensource.org/licenses/mit-license.php</url>
 		</license>
 	</licenses>
-	<scm>
-		<connection>scm:hg:https://build-pipeline-plugin.googlecode.com/hg/</connection>
-		<developerConnection>scm:hg:https://build-pipeline-plugin.googlecode.com/hg/</developerConnection>
-		<url>https://build-pipeline-plugin.googlecode.com/hg/</url>
-	</scm>
+    <scm>
+        <connection>scm:git:ssh://github.com/jenkinsci/build-pipeline-plugin.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/jenkinsci/build-pipeline-plugin.git</developerConnection>
+        <url>https://github.com/jenkinsci/build-pipeline-plugin</url>
+    </scm>
 	<properties>
 		<code.coverage.percentage>50</code.coverage.percentage>
 		<checkstyle.rules.file>checkstyle_rules.xml</checkstyle.rules.file>
