@@ -15,9 +15,7 @@ public class DownstreamProjectGridBuilderTest extends HudsonTestCase {
         jenkins.addView(v);
         configRoundtrip(v);
         BuildPipelineView av = (BuildPipelineView)jenkins.getView(v.getViewName());
-        assertNotSame(v,av);
-        assertEqualDataBoundBeans(v,av);
-        assertNotSame(gridBuilder,av.getGridBuilder());
-        assertEqualDataBoundBeans(gridBuilder,av.getGridBuilder());
+        assertSame(v,av);
+        assertNotSame(gridBuilder,(DownstreamProjectGridBuilder)av.getGridBuilder());
     }
 }
