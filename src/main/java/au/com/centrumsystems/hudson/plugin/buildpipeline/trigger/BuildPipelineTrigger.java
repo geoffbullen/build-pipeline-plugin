@@ -176,6 +176,7 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
      *            - The new name of the project
      * @return - true: A downstream project has been renamed; false No downstream projects were renamed
      */
+    // TODO should these names be relative names? cf. onDownstreamProjectDeleted, removeDownstreamTrigger, onRenamed, onDeleted
     public boolean onDownstreamProjectRenamed(final String oldName, final String newName) {
         LOGGER.fine(String.format("Renaming project %s -> %s", oldName, newName)); //$NON-NLS-1$
         boolean changed = false;
@@ -344,7 +345,7 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
         public static final class ItemListenerImpl extends ItemListener {
             @Override
             public void onRenamed(final Item item, final String oldName, final String newName) {
-                for (final Project<?, ?> p : Hudson.getInstance().getProjects()) {
+                for (final Project<?, ?> p : Jenkins.getInstance().getAllItems(Project.class)) {
                     final BuildPipelineTrigger bpTrigger = p.getPublishersList().get(BuildPipelineTrigger.class);
                     if (bpTrigger != null) {
                         boolean changed = false;
@@ -365,7 +366,7 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
 
             @Override
             public void onDeleted(final Item item) {
-                for (final Project<?, ?> p : Hudson.getInstance().getProjects()) {
+                for (final Project<?, ?> p : Jenkins.getInstance().getAllItems(Project.class)) {
                     final String oldName = item.getName();
                     final BuildPipelineTrigger bpTrigger = p.getPublishersList().get(BuildPipelineTrigger.class);
                     if (bpTrigger != null) {
