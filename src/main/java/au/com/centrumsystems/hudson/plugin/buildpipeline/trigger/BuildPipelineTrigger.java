@@ -58,6 +58,9 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 
 import au.com.centrumsystems.hudson.plugin.buildpipeline.Strings;
+import hudson.model.ItemGroup;
+import jenkins.model.Jenkins;
+import org.kohsuke.stapler.AncestorInPath;
 
 /**
  * The build pipeline trigger allows the creation of downstream jobs which aren't triggered automatically. This allows us to have manual
@@ -123,7 +126,7 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
     @SuppressWarnings("rawtypes")
     public void buildDependencyGraph(final AbstractProject owner, final DependencyGraph graph) {
         if ((downstreamProjectNames != null) && (downstreamProjectNames.length() > 0)) {
-            for (final Object o : Items.fromNameList(downstreamProjectNames, AbstractProject.class)) {
+            for (final Object o : Items.fromNameList(owner.getParent(), downstreamProjectNames, AbstractProject.class)) {
                 final AbstractProject downstream = (AbstractProject) o;
 
                 if (owner != downstream) {
@@ -305,24 +308,27 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
          *            - The entered project names
          * @return hudson.util.FormValidation
          */
-        public FormValidation doCheckDownstreamProjectNames(@QueryParameter("downstreamProjectNames") final String value) {
+        public FormValidation doCheckDownstreamProjectNames(@AncestorInPath ItemGroup context, @QueryParameter("downstreamProjectNames") final String value) {
             final StringTokenizer tokens = new StringTokenizer(Util.fixNull(value), ","); //$NON-NLS-1$
+            boolean some = false;
             while (tokens.hasMoreTokens()) {
                 final String projectName = tokens.nextToken().trim();
                 if ("".equals(projectName)) { //$NON-NLS-1$
-                    return FormValidation.error(Messages.BuildTrigger_NoSuchProject(projectName, AbstractProject.findNearest(projectName)
-                            .getName()));
+                    continue;
                 }
-                final Item item = Hudson.getInstance().getItemByFullName(projectName, Item.class);
+                some = true;
+                final Item item = Jenkins.getInstance().getItem(projectName, context, Item.class);
                 if (item == null) {
-                    return FormValidation.error(Messages.BuildTrigger_NoSuchProject(projectName, AbstractProject.findNearest(projectName)
-                            .getName()));
+                    return FormValidation.error(Messages.BuildTrigger_NoSuchProject(projectName,
+                            AbstractProject.findNearest(projectName, context).getRelativeNameFrom(context)));
                 }
                 if (!(item instanceof AbstractProject)) {
                     return FormValidation.error(Messages.BuildTrigger_NotBuildable(projectName));
                 }
             }
-
+            if (!some) {
+                return FormValidation.error(Messages.BuildTrigger_NoProjectSpecified());
+            }
             return FormValidation.ok();
         }
 
