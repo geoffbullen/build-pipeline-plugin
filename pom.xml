@@ -28,7 +28,6 @@
 		<pmd.config.file>pmd_rules.xml</pmd.config.file>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<groovy.version>1.8.6</groovy.version>
-        <maven-hpi-plugin.version>1.96</maven-hpi-plugin.version>
 	</properties>
 	<developers>
 		<developer>
@@ -295,15 +294,23 @@
 
 	<repositories>
 		<repository>
+			<id>maven-central</id>
+			<url>http://repo1.maven.org/maven2</url>
+		</repository>
+		<repository>
 			<id>maven.jenkins-ci.org</id>
 			<url>http://repo.jenkins-ci.org/public</url>
 		</repository>
 	</repositories>
 	<pluginRepositories>
-        <pluginRepository>
-            <id>maven.jenkins-ci.org</id>
-            <url>http://repo.jenkins-ci.org/public</url>
-        </pluginRepository>
+		<pluginRepository>
+			<id>maven-central</id>
+			<url>http://repo1.maven.org/maven2</url>
+		</pluginRepository>
+		<pluginRepository>
+			<id>maven.jenkins-ci.org</id>
+			<url>http://repo.jenkins-ci.org/public</url>
+		</pluginRepository>
 	</pluginRepositories>
 
 </project>
