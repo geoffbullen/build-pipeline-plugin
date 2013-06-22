@@ -9,6 +9,7 @@ import hudson.util.AdaptedIterator;
 import hudson.util.HttpResponses;
 import hudson.util.ListBoxModel;
 import jenkins.model.Jenkins;
+import jenkins.util.TimeDuration;
 import org.kohsuke.stapler.AncestorInPath;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.HttpResponse;
@@ -177,7 +178,10 @@ public class DownstreamProjectGridBuilder extends ProjectGridBuilder {
         return new HttpResponse() {
             @Override
             public void generateResponse(StaplerRequest req, StaplerResponse rsp, Object node) throws IOException, ServletException {
-                p.doBuild(req, rsp);
+                rsp.sendRedirect("..");
+                rsp.setStatus(200);
+                p.doBuild(req, rsp, new TimeDuration(0));
+
             }
         };
     }
@@ -217,7 +221,7 @@ public class DownstreamProjectGridBuilder extends ProjectGridBuilder {
         public ListBoxModel doFillFirstJobItems(@AncestorInPath ItemGroup<?> context) {
             final hudson.util.ListBoxModel options = new hudson.util.ListBoxModel();
             for (final AbstractProject<?,?> p : Jenkins.getInstance().getAllItems(AbstractProject.class)) {
-                options.add(/* TODO 1.515: p.getRelativeDisplayNameFrom(context) */p.getFullDisplayName(), p.getRelativeNameFrom(context));
+                    options.add(/* TODO 1.515: p.getRelativeDisplayNameFrom(context) */p.getFullDisplayName(), p.getRelativeNameFrom(context));
             }
             return options;
         }
