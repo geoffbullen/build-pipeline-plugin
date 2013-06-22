@@ -80,9 +80,11 @@
 					{{#if build.isRerunable}}
 						{{#if build.isSuccess}}
 							{{#if ${!from.triggerOnlyLatestJob}}}
+							<j:if test="${hasBuildPermission}">
 							<span class="pointer trigger" onclick="buildPipeline.showSpinner({{id}}); buildPipeline.rerunBuild({{id}}, '{{build.extId}}', [{{build.dependencyIds}}])">
 								<img title="re-run" alt="re-run" src="${rootURL}/images/16x16/redo.png" />
 							</span>
+							</j:if>
 							{{/if}}
 						{{else}}
 							{{#if ${from.triggerOnlyLatestJob}}}
