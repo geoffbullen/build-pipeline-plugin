@@ -33,8 +33,7 @@ public class DownstreamProjectGridBuilder extends ProjectGridBuilder {
     private String firstJob;
 
     /**
-     * @param firstJob
-     *      Name of the job to lead the piepline.
+     * @param firstJob Name of the job to lead the piepline.
      */
     @DataBoundConstructor
     public DownstreamProjectGridBuilder(String firstJob) {
@@ -51,8 +50,7 @@ public class DownstreamProjectGridBuilder extends ProjectGridBuilder {
         private final AbstractProject<?, ?> start;
 
         /**
-         * @param start
-         *      The first project to lead the pipeline.
+         * @param start The first project to lead the pipeline.
          */
         private GridImpl(AbstractProject<?, ?> start) {
             this.start = start;
@@ -62,13 +60,10 @@ public class DownstreamProjectGridBuilder extends ProjectGridBuilder {
         /**
          * Function called recursively to place a project form in a grid
          *
-         * @param startingRow
-         *            project will be placed in the starting row and 1st child as well. Each subsequent
-         *            child will be placed in a row below the previous.
-         * @param startingColumn
-         *            project will be placed in starting column. All children will be placed in next column.
-         * @param projectForm
-         *            project to be placed
+         * @param startingRow    project will be placed in the starting row and 1st child as well. Each subsequent
+         *                       child will be placed in a row below the previous.
+         * @param startingColumn project will be placed in starting column. All children will be placed in next column.
+         * @param projectForm    project to be placed
          */
         private void placeProjectInGrid(final int startingRow, final int startingColumn, final ProjectForm projectForm) {
             if (projectForm == null) {
@@ -116,8 +111,7 @@ public class DownstreamProjectGridBuilder extends ProjectGridBuilder {
      */
     private static final class BuildGridImpl extends DefaultBuildGridImpl {
         /**
-         * @param start
-         *      The first build to lead the pipeline instance.
+         * @param start The first build to lead the pipeline instance.
          */
         private BuildGridImpl(final BuildForm start) {
             placeBuildInGrid(0, 0, start);
@@ -126,13 +120,10 @@ public class DownstreamProjectGridBuilder extends ProjectGridBuilder {
         /**
          * Function called recursively to place a build form in a grid
          *
-         * @param startingRow
-         *            build will be placed in the starting row and 1st child as well. Each subsequent child
-         *            will be placed in a row below the previous.
-         * @param startingColumn
-         *            build will be placed in starting column. All children will be placed in next column.
-         * @param buildForm
-         *            build to be placed
+         * @param startingRow    build will be placed in the starting row and 1st child as well. Each subsequent child
+         *                       will be placed in a row below the previous.
+         * @param startingColumn build will be placed in starting column. All children will be placed in next column.
+         * @param buildForm      build to be placed
          */
         private void placeBuildInGrid(final int startingRow, final int startingColumn, final BuildForm buildForm) {
             int row = getNextAvailableRow(startingRow, startingColumn);
@@ -153,10 +144,8 @@ public class DownstreamProjectGridBuilder extends ProjectGridBuilder {
     /**
      * The job that's configured as the head of the pipeline.
      *
-     * @param owner
-     *      View that this builder is operating under.
-     * @return
-     *      possibly null
+     * @param owner View that this builder is operating under.
+     * @return possibly null
      */
     public AbstractProject<?, ?> getFirstJob(BuildPipelineView owner) {
         return Jenkins.getInstance().getItem(firstJob, owner.getOwnerItemGroup(), AbstractProject.class);
@@ -214,14 +203,14 @@ public class DownstreamProjectGridBuilder extends ProjectGridBuilder {
         /**
          * Display Job List Item in the Edit View Page
          *
-         * @param context
-         *      What to resolve relative job names against?
+         * @param context What to resolve relative job names against?
          * @return ListBoxModel
          */
         public ListBoxModel doFillFirstJobItems(@AncestorInPath ItemGroup<?> context) {
             final hudson.util.ListBoxModel options = new hudson.util.ListBoxModel();
-            for (final AbstractProject<?,?> p : Jenkins.getInstance().getAllItems(AbstractProject.class)) {
-                    options.add(/* TODO 1.515: p.getRelativeDisplayNameFrom(context) */p.getFullDisplayName(), p.getRelativeNameFrom(context));
+            for (final AbstractProject<?, ?> p : Jenkins.getInstance().getAllItems(AbstractProject.class)) {
+                options.add(/* TODO 1.515: p.getRelativeDisplayNameFrom(context) */p.getFullDisplayName(),
+                        p.getRelativeNameFrom(context));
             }
             return options;
         }
