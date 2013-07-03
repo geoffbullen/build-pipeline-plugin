@@ -166,7 +166,7 @@
 	</tbody>
 </table>
 	</script>
-	<st:bind var="buildPipelineViewProxy" value="${from}">
+	<st:bind var="buildPipelineViewProxy" value="${from}" />
 	<script type="text/javascript">
 		var buildCardTemplateSource = jQuery("#build-card-template").html();
 		var projectCardTemplateSource = jQuery("#project-card-template").html();
