@@ -79,17 +79,17 @@
 }
 
 .overflow-hidden {
-/*	-o-text-overflow: ellipsis;
+	-o-text-overflow: ellipsis;
 	-icab-text-overflow: ellipsis;
 	-khtml-text-overflow: ellipsis;
 	-moz-text-overflow: ellipsis;
 	-webkit-text-overflow: ellipsis;
 	text-overflow: ellipsis;
 	overflow: hidden;
-	white-space: nowrap;*/
+	white-space: nowrap;
 
-    word-wrap: break-word;
-	/*overflow: auto;*/
+    /*word-wrap: break-word;
+	*/
 }
 
 
