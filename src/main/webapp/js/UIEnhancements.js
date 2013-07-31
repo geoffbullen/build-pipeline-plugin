@@ -1,4 +1,4 @@
-var flag = false;
+/*var flag = false;
 function display_alert(classname){
 	var elements = document.getElementsByClassName(classname);
 	if (flag == false){
@@ -18,3 +18,22 @@ function display_alert(classname){
 		flag = false;
 	}
 }
+
+if (person!=null)
+  	{
+  		x=person;
+  		document.write('<link rel="stylesheet" type="text/css" href=x />');
+
+  	}
+
+
+	<link href="${rootURL}/plugin/build-pipeline-plugin/css/main.css" type="text/css" rel="stylesheet" />
+
+*/
+
+function display_alert(classname){
+	var link = document.getElementById(classname);
+	link.setAttribute("href", "${rootURL}/plugin/build-pipeline-plugin/css/UIEnhancements.css");
+	location.reload();
+
+	}

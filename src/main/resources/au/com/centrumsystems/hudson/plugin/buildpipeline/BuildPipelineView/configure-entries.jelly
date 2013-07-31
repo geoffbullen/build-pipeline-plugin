@@ -36,4 +36,8 @@
 		<f:textbox clazz="number"/>
 	</f:entry>
 
+	<f:entry title="Url for custom Css files" field="cssUrl">
+		<f:textbox />
+	</f:entry>
+
 </j:jelly>
