@@ -1,21 +1,9 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:i="jelly:fmt">
 
-<script type='text/javascript'>
-	var url=prompt("Please enter a URL for css","${rootURL}/plugin/build-pipeline-plugin/css/main.css");
-
-	if (url!=null)
-  	{
-  		document.write('<link rel="stylesheet" type="text/css" href=" '+url+' " />');
-
-  	}
-
-</script>
 	<link href="${rootURL}/plugin/build-pipeline-plugin/css/main.css" type="text/css" rel="stylesheet" />
 
 	<j:if test="${!empty(from.cssUrl)}">
-		<j:set var="url" value="${from.cssUrl}"/>
-		URL is ${url} and rootURL is ${rootURL}
-		<link href="${url}" type="text/css" rel="stylesheet" />
+		<link href="${from.cssUrl}" type="text/css" rel="stylesheet" />
 	</j:if>
 
 
@@ -46,7 +34,7 @@
 								{{/if}}
 							{{/unless}}
 						{{/unless}}
-						{{project.name}} ${from.cssUrl}
+						{{project.name}}
 					</a>
 				</div>
 			</td>
@@ -92,9 +80,6 @@
 				</div>
 
 				<div class="icons" id="icons-{{id}}">
-					<span class="job-size" onclick="display_alert('stylesheet_css')">
-							<img title="toggle" alt="Toggle View" src="${rootURL}/images/16x16/toggle.png" />
-						</span>
 					{{#unless build.isPending}}
 						{{#unless build.isReadyToBeManuallyBuilt}}
 						<span class="pointer" onclick="buildPipeline.fillDialog('{{build.url}}console', 'Console output for {{project.name}} #{{build.number}}')">

@@ -29,6 +29,17 @@ if (person!=null)
 
 	<link href="${rootURL}/plugin/build-pipeline-plugin/css/main.css" type="text/css" rel="stylesheet" />
 
+	<script type='text/javascript'>
+	var url=prompt("Please enter a URL for css","${rootURL}/plugin/build-pipeline-plugin/css/main.css");
+
+	if (url!=null)
+  	{
+  		document.write('<link rel="stylesheet" type="text/css" href=" '+url+' " />');
+
+  	}
+
+</script>
+
 */
 
 function display_alert(classname){
