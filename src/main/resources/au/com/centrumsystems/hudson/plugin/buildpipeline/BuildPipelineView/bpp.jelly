@@ -2,6 +2,7 @@
 
 	<link href="${rootURL}/plugin/build-pipeline-plugin/css/main.css" type="text/css" rel="stylesheet" />
 
+	<!-- If the user specifies a custom CSS link, load it.-->
 	<j:if test="${!empty(from.cssUrl)}">
 		<link href="${from.cssUrl}" type="text/css" rel="stylesheet" />
 	</j:if>
@@ -286,6 +287,8 @@
 										</script>
 										<j:if test="${(y + 1 != buildPipelineForm.getGridWidth())}">
 											<td class="next">
+
+												<!-- Changing length to size() to get rid of arrows when there are no more child jobs.-->
 												<j:if test="${!(project.getDependencies().size() == 0)}">
 													<span class="status next">
 														<img src="${rootURL}/images/24x24/next.png" />
@@ -404,6 +407,8 @@
 											</j:if>
 										</script>
 										<j:if test="${(y + 1 != buildPipelineForm.getGridWidth())}">
+
+											<!-- Changing length to size() to get rid of arrows when there are no more child jobs.-->
 											<td class="next"><j:if test="${!(build.getDependencies().size() == 0)}">
 													<span class="status next"><img src="${rootURL}/images/24x24/next.png" /></span>
 												</j:if></td>

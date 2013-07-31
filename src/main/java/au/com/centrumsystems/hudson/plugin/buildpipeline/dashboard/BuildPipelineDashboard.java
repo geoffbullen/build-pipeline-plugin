@@ -54,6 +54,9 @@ public class BuildPipelineDashboard extends DashboardPortlet {
      */
     private String description;
 
+    /**
+     * URL for custom CSS file.
+     */
     private String cssUrl;
 
     /**

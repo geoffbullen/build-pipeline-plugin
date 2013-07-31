@@ -95,7 +95,7 @@ public class BuildPipelineView extends View {
     /** buildViewTitle. */
     private String buildViewTitle = ""; //$NON-NLS-1$
 
-    /** Custom CSS Url */
+    /** URL for custom CSS file */
     private String cssUrl = "";
 
     /** Indicates whether only the latest job will be triggered. **/
@@ -208,6 +208,8 @@ public class BuildPipelineView extends View {
      *            a count of the number of builds displayed on the view
      * @param triggerOnlyLatestJob
      *            Indicates whether only the latest job will be triggered.
+     * @param cssUrl
+     *            URL for the custom CSS file.
      */
     public BuildPipelineView(final String name, final String buildViewTitle,
              final ProjectGridBuilder gridBuilder, final String noOfDisplayedBuilds,
@@ -243,6 +245,8 @@ public class BuildPipelineView extends View {
      *            Indicates whether the pipeline headers should be shown.
      * @param refreshFrequency
      *            Frequency at which the build pipeline plugin refreshes build cards
+     * @param cssUrl
+     *            URL for the custom CSS file.
      */
     @DataBoundConstructor
     public BuildPipelineView(final String name, final String buildViewTitle, final ProjectGridBuilder gridBuilder,
