@@ -492,6 +492,7 @@ public class BuildPipelineView extends View {
         final Cause.UpstreamCause upstreamCause = (null == upstreamBuild) ? null : new Cause.UpstreamCause((Run<?, ?>) upstreamBuild);
         final List<Action> buildActions = new ArrayList<Action>();
         final CauseAction causeAction = new CauseAction(new MyUserIdCause());
+        // TODO hack obsolete as of 1.531 when CauseAction.<init>(Cause...) available:
         causeAction.getCauses().add(upstreamCause);
         buildActions.add(causeAction);
         ParametersAction parametersAction =
