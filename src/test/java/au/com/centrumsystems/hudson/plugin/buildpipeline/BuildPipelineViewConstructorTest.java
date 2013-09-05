@@ -22,11 +22,11 @@ public class BuildPipelineViewConstructorTest {
     public void testAlwaysAllowManualTrigger() throws IOException {
 
         // True
-        BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, gridBuilder, noOfBuilds, true, true, false, false, false, 2);
+        BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, gridBuilder, noOfBuilds, true, true, false, false, false, 2, null);
         assertTrue(testView.isAlwaysAllowManualTrigger());
 
         // False
-        testView = new BuildPipelineView(bpViewName, bpViewTitle, nullGridBuilder, noOfBuilds, true, false, false, false, false, 2);
+        testView = new BuildPipelineView(bpViewName, bpViewTitle, nullGridBuilder, noOfBuilds, true, false, false, false, false, 2, null);
         assertFalse(testView.isAlwaysAllowManualTrigger());
     }
 
@@ -34,11 +34,11 @@ public class BuildPipelineViewConstructorTest {
     public void testShowPipelineParameters() throws IOException {
 
         // True
-        BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, gridBuilder, noOfBuilds, true, false, true, false, false, 2);
+        BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, gridBuilder, noOfBuilds, true, false, true, false, false, 2, null);
         assertTrue(testView.isShowPipelineParameters());
 
         // False
-        testView = new BuildPipelineView(bpViewName, bpViewTitle, nullGridBuilder, noOfBuilds, true, false, false, false, false, 2);
+        testView = new BuildPipelineView(bpViewName, bpViewTitle, nullGridBuilder, noOfBuilds, true, false, false, false, false, 2, null);
         assertFalse(testView.isShowPipelineParameters());
     }
 
@@ -46,11 +46,11 @@ public class BuildPipelineViewConstructorTest {
     public void testShowPipelineParametersInHeaders() throws IOException {
 
         // True
-        BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, gridBuilder, noOfBuilds, true, false, true, true, false, 2);
+        BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, gridBuilder, noOfBuilds, true, false, true, true, false, 2, null);
         assertTrue(testView.isShowPipelineParametersInHeaders());
 
         // False
-        testView = new BuildPipelineView(bpViewName, bpViewTitle, nullGridBuilder, noOfBuilds, true, false, false, false, false, 2);
+        testView = new BuildPipelineView(bpViewName, bpViewTitle, nullGridBuilder, noOfBuilds, true, false, false, false, false, 2, null);
         assertFalse(testView.isShowPipelineParametersInHeaders());
     }
 
@@ -58,7 +58,7 @@ public class BuildPipelineViewConstructorTest {
     public void testRefreshFrequency() throws IOException {
 
         // False
-        final BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, nullGridBuilder, noOfBuilds, true, false, false, false, false, 2);
+        final BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, nullGridBuilder, noOfBuilds, true, false, false, false, false, 2, null);
         assertThat(testView.getRefreshFrequency(), is(2));
         assertThat(testView.getRefreshFrequencyInMillis(), is(2000));
     }

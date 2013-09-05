@@ -91,7 +91,7 @@ public class BuildPipelineViewTest extends HudsonTestCase {
 		final FreeStyleProject project1 = createFreeStyleProject(proj1);
 
 		final BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle,
-                new DownstreamProjectGridBuilder(proj1), noOfBuilds, false);
+                new DownstreamProjectGridBuilder(proj1), noOfBuilds, false, null);
 		assertTrue(testView.hasBuildPermission());
 	}
 
@@ -104,11 +104,11 @@ public class BuildPipelineViewTest extends HudsonTestCase {
 		createFreeStyleProject(proj1);
 
 		// True
-		BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, new DownstreamProjectGridBuilder(proj1), noOfBuilds, true);
+		BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, new DownstreamProjectGridBuilder(proj1), noOfBuilds, true, null);
 		assertTrue(proj1, testView.isTriggerOnlyLatestJob());
 
 		// False
-		testView = new BuildPipelineView(bpViewName, bpViewTitle, new DownstreamProjectGridBuilder(""), noOfBuilds, false);
+		testView = new BuildPipelineView(bpViewName, bpViewTitle, new DownstreamProjectGridBuilder(""), noOfBuilds, false, null);
 		assertFalse(proj1, testView.isTriggerOnlyLatestJob());
 	}
 
@@ -121,11 +121,11 @@ public class BuildPipelineViewTest extends HudsonTestCase {
 		createFreeStyleProject(proj1);
 
 		// True
-		BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, new DownstreamProjectGridBuilder(proj1), noOfBuilds, true, true, false, false, false, 2);
+		BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, new DownstreamProjectGridBuilder(proj1), noOfBuilds, true, true, false, false, false, 2, null);
 		assertTrue("Failed to set AlwaysAllowManualTrigger flag", testView.isAlwaysAllowManualTrigger());
 
 		// False
-		testView = new BuildPipelineView(bpViewName, bpViewTitle, new DownstreamProjectGridBuilder(""), noOfBuilds, true, false, false, false, false, 2);
+		testView = new BuildPipelineView(bpViewName, bpViewTitle, new DownstreamProjectGridBuilder(""), noOfBuilds, true, false, false, false, false, 2, null);
 		assertFalse("Failed to unset AlwaysAllowManualTrigger flag", testView.isAlwaysAllowManualTrigger());
 	}
 
@@ -138,11 +138,11 @@ public class BuildPipelineViewTest extends HudsonTestCase {
 		createFreeStyleProject(proj1);
 
 		// True
-		BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, new DownstreamProjectGridBuilder(proj1), noOfBuilds, true, false, false, false, true, 2);
+		BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, new DownstreamProjectGridBuilder(proj1), noOfBuilds, true, false, false, false, true, 2, null);
 		assertTrue("Failed to set ShowPipelineDefinitionHeader flag", testView.isShowPipelineDefinitionHeader());
 
 		// False
-		testView = new BuildPipelineView(bpViewName, bpViewTitle, new DownstreamProjectGridBuilder(""), noOfBuilds, true, false, false, false, false, 2);
+		testView = new BuildPipelineView(bpViewName, bpViewTitle, new DownstreamProjectGridBuilder(""), noOfBuilds, true, false, false, false, false, 2, null);
 		assertFalse("Failed to unset ShowPipelineDefinitionHeader flag", testView.isShowPipelineDefinitionHeader());
 	}
 
@@ -155,11 +155,11 @@ public class BuildPipelineViewTest extends HudsonTestCase {
 		createFreeStyleProject(proj1);
 
 		// True
-		BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, new DownstreamProjectGridBuilder(proj1), noOfBuilds, true, false, true, false, false, 2);
+		BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, new DownstreamProjectGridBuilder(proj1), noOfBuilds, true, false, true, false, false, 2, null);
 		assertTrue("Failed to set ShowPipelineParameters flag", testView.isShowPipelineParameters());
 
 		// False
-		testView = new BuildPipelineView(bpViewName, bpViewTitle, new DownstreamProjectGridBuilder(""), noOfBuilds, true, false, false, false, false, 2);
+		testView = new BuildPipelineView(bpViewName, bpViewTitle, new DownstreamProjectGridBuilder(""), noOfBuilds, true, false, false, false, false, 2, null);
 		assertFalse("Failed to unset ShowPipelineParameters flag", testView.isShowPipelineParameters());
 	}
 
@@ -171,10 +171,10 @@ public class BuildPipelineViewTest extends HudsonTestCase {
         final String noOfBuilds = "5";
         createFreeStyleProject(proj1);
 
-        BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, new DownstreamProjectGridBuilder(proj1), noOfBuilds, true, false, true, true, false, 2);
+        BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, new DownstreamProjectGridBuilder(proj1), noOfBuilds, true, false, true, true, false, 2, null);
         assertTrue("Failed to set ShowPipelineParametersInHeaders flag", testView.isShowPipelineParametersInHeaders());
 
-        testView = new BuildPipelineView(bpViewName, bpViewTitle, new DownstreamProjectGridBuilder(proj1), noOfBuilds, true, false, true, false, false, 2);
+        testView = new BuildPipelineView(bpViewName, bpViewTitle, new DownstreamProjectGridBuilder(proj1), noOfBuilds, true, false, true, false, false, 2, null);
         assertFalse("Failed to unset ShowPipelineParametersInHeaders flag", testView.isShowPipelineParametersInHeaders());
     }
 
@@ -195,7 +195,7 @@ public class BuildPipelineViewTest extends HudsonTestCase {
 		Hudson.getInstance().rebuildDependencyGraph();
 
 		// Test a valid case
-		final BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, new DownstreamProjectGridBuilder(proj1), noOfBuilds, false);
+		final BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, new DownstreamProjectGridBuilder(proj1), noOfBuilds, false, null);
 
 		assertTrue(testView.hasDownstreamProjects(project1));
 		assertFalse(testView.hasDownstreamProjects(project2));
@@ -218,7 +218,7 @@ public class BuildPipelineViewTest extends HudsonTestCase {
 		Hudson.getInstance().rebuildDependencyGraph();
 
 		// Test a valid case
-		final BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, new DownstreamProjectGridBuilder(proj1), noOfBuilds, false);
+		final BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, new DownstreamProjectGridBuilder(proj1), noOfBuilds, false, null);
 
 		assertEquals(testView.getDownstreamProjects(project1).get(0), project2);
 		assertEquals(testView.getDownstreamProjects(project2).size(), 0);
@@ -302,7 +302,7 @@ public class BuildPipelineViewTest extends HudsonTestCase {
     static class BuildPipelineViewFactory {
         public static BuildPipelineView getBuildPipelineView(final String bpViewName, final String bpViewTitle, final ProjectGridBuilder gridBuilder,
                 final String noOfBuilds, final boolean triggerOnlyLatestJob) {
-            return new BuildPipelineView(bpViewName, bpViewTitle, gridBuilder, noOfBuilds, triggerOnlyLatestJob) {
+            return new BuildPipelineView(bpViewName, bpViewTitle, gridBuilder, noOfBuilds, triggerOnlyLatestJob, null) {
 
                 @Override
                 public ItemGroup<? extends TopLevelItem> getOwnerItemGroup() {
