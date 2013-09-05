@@ -184,6 +184,7 @@
 		background: url("${rootURL}/images/16x16/clock.png") no-repeat center center !important;
 	}
 	</style>
+  <form method="post" action="gridBuilder/build" id="triggerPipelineForm" />
 	<form method="post" name="pipelineViewForm" action="manualExecution" id="manualExecutionForm">
 
 		<input name="upstreamProjectName" id="upstreamProjectName" type="hidden" />
@@ -207,8 +208,8 @@
         <j:if test="${hasBuildPermission}">
           <div class="icon-container">
             <div>
-              <a href='gridBuilder/build'>
-                <img src="${rootURL}/images/24x24/clock.png" alt="Trigger a Pipeline" class="icon-with-caption" />
+              <a href='#' onclick="$('triggerPipelineForm').submit()">
+                <img src="${rootURL}/images/24x24/clock.png" alt="Trigger a Pipeline" class="icon-with-caption"/>
               </a>
             </div>
             <div>Run</div>

@@ -15,6 +15,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.HttpResponse;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
+import org.kohsuke.stapler.interceptor.RequirePOST;
 
 import javax.servlet.ServletException;
 import java.io.IOException;
@@ -158,6 +159,7 @@ public class DownstreamProjectGridBuilder extends ProjectGridBuilder {
     }
 
     @Override
+    @RequirePOST
     public HttpResponse doBuild(StaplerRequest req, @AncestorInPath BuildPipelineView owner) throws IOException {
         final AbstractProject<?, ?> p = getFirstJob(owner);
         if (p == null) {
