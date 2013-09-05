@@ -24,7 +24,7 @@
  */
 package au.com.centrumsystems.hudson.plugin.buildpipeline;
 
-import hudson.model.Action;
+import hudson.Util;
 import hudson.model.Item;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
@@ -42,6 +42,8 @@ import java.util.logging.Logger;
 import au.com.centrumsystems.hudson.plugin.util.BuildUtil;
 import au.com.centrumsystems.hudson.plugin.util.HudsonResult;
 import au.com.centrumsystems.hudson.plugin.util.ProjectUtil;
+import hudson.plugins.parameterizedtrigger.BlockableBuildTriggerConfig;
+import hudson.plugins.parameterizedtrigger.SubProjectsAction;
 
 /**
  * @author Centrum Systems
@@ -179,27 +181,20 @@ public class PipelineBuild {
             pbList.add(newPB);
         }
         if (Hudson.getInstance().getPlugin("parameterized-trigger") != null) {
-            for (Action action : currentProject.getActions()) {
-            	// Was giving a null pointer exception here, hence proceed only if action is not null
-            	if(action != null){
-            		if (action.getClass().equals(hudson.plugins.parameterizedtrigger.SubProjectsAction.class)) {
-                        final hudson.plugins.parameterizedtrigger.SubProjectsAction subProjectsAction =
-                            (hudson.plugins.parameterizedtrigger.SubProjectsAction) action;
-                        for (hudson.plugins.parameterizedtrigger.BlockableBuildTriggerConfig config : subProjectsAction.getConfigs()) {
-                            for (final AbstractProject<?, ?> dependency : config.getProjectList(currentProject.getParent(), null)) {
-                                AbstractBuild<?, ?> returnedBuild = null;
-                                if (this.currentBuild != null) {
-                                    returnedBuild = BuildUtil.getDownstreamBuild(dependency, currentBuild);
-                                }
-                                final PipelineBuild candidate = new PipelineBuild(returnedBuild, dependency, this.currentBuild);
-                                // if subprojects come back as downstreams someday, no duplicates wanted
-                                if (!pbList.contains(candidate)) {
-                                    pbList.add(candidate);
-                                }
-                            }
+            for (SubProjectsAction action : Util.filter(currentProject.getActions(), SubProjectsAction.class)) {
+                for (BlockableBuildTriggerConfig config : action.getConfigs()) {
+                    for (final AbstractProject<?, ?> dependency : config.getProjectList(currentProject.getParent(), null)) {
+                        AbstractBuild<?, ?> returnedBuild = null;
+                        if (this.currentBuild != null) {
+                            returnedBuild = BuildUtil.getDownstreamBuild(dependency, currentBuild);
+                        }
+                        final PipelineBuild candidate = new PipelineBuild(returnedBuild, dependency, this.currentBuild);
+                        // if subprojects come back as downstreams someday, no duplicates wanted
+                        if (!pbList.contains(candidate)) {
+                            pbList.add(candidate);
                         }
                     }
-            	}
+                }
             }
         }
 

@@ -252,7 +252,8 @@ public class BuildPipelineView extends View {
     public BuildPipelineView(final String name, final String buildViewTitle, final ProjectGridBuilder gridBuilder,
             final String noOfDisplayedBuilds,
             final boolean triggerOnlyLatestJob, final boolean alwaysAllowManualTrigger, final boolean showPipelineParameters,
-            final boolean showPipelineParametersInHeaders, final boolean showPipelineDefinitionHeader, final int refreshFrequency, final String cssUrl) {
+            final boolean showPipelineParametersInHeaders, final boolean showPipelineDefinitionHeader,
+            final int refreshFrequency, final String cssUrl) {
         this(name, buildViewTitle, gridBuilder, noOfDisplayedBuilds, triggerOnlyLatestJob, cssUrl);
         this.alwaysAllowManualTrigger = alwaysAllowManualTrigger;
         this.showPipelineParameters = showPipelineParameters;

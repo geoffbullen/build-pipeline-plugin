@@ -1,6 +1,6 @@
 package au.com.centrumsystems.hudson.plugin.buildpipeline;
 
-import hudson.model.Action;
+import hudson.Util;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.Hudson;
@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import hudson.plugins.parameterizedtrigger.SubProjectsAction;
 import org.kohsuke.stapler.bind.JavaScriptMethod;
 
 /**
@@ -92,23 +93,16 @@ public class ProjectForm {
             dependencies.add(new ProjectForm(dependency));
         }
         if (Hudson.getInstance().getPlugin("parameterized-trigger") != null) {
-            for (Action action : project.getActions()) {
-            	// Was giving a null pointer exception here, hence proceed only if action is not null
-            	if(action != null){
-            		if (action.getClass().equals(hudson.plugins.parameterizedtrigger.SubProjectsAction.class)) {
-                        final hudson.plugins.parameterizedtrigger.SubProjectsAction subProjectsAction =
-                            (hudson.plugins.parameterizedtrigger.SubProjectsAction) action;
-                        for (hudson.plugins.parameterizedtrigger.BlockableBuildTriggerConfig config : subProjectsAction.getConfigs()) {
-                            for (final AbstractProject<?, ?> dependency : config.getProjectList(project.getParent(), null)) {
-                                final ProjectForm candidate = new ProjectForm(dependency);
-                                // if subprojects come back as downstreams someday, no duplicates wanted
-                                if (!dependencies.contains(candidate)) {
-                                    dependencies.add(candidate);
-                                }
-                            }
+            for (SubProjectsAction action : Util.filter(project.getActions(), SubProjectsAction.class)) {
+                for (hudson.plugins.parameterizedtrigger.BlockableBuildTriggerConfig config : action.getConfigs()) {
+                    for (final AbstractProject<?, ?> dependency : config.getProjectList(project.getParent(), null)) {
+                        final ProjectForm candidate = new ProjectForm(dependency);
+                        // if subprojects come back as downstreams someday, no duplicates wanted
+                        if (!dependencies.contains(candidate)) {
+                            dependencies.add(candidate);
                         }
                     }
-            	}
+                }
             }
         }
         this.displayTrigger = true;
