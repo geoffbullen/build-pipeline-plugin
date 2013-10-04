@@ -96,7 +96,7 @@ public class BuildPipelineView extends View {
     private String buildViewTitle = ""; //$NON-NLS-1$
 
     /** consoleOutputLinkStyle. */
-    private String consoleOutputLinkStyle = "Lightbox"; //$NON-NLS-1$
+    private String consoleOutputLinkStyle = LinkStyle.LIGHTBOX;
 
     /** URL for custom CSS file */
     private String cssUrl = "";
@@ -644,9 +644,9 @@ public class BuildPipelineView extends View {
 
         public ListBoxModel doFillConsoleOutputLinkStyleItems() {
             hudson.util.ListBoxModel options = new hudson.util.ListBoxModel();
-            options.add("Lightbox"); //$NON-NLS-1$
-            options.add("New Window"); //$NON-NLS-1$
-            options.add("This Window"); //$NON-NLS-1$
+            options.add(LinkStyle.LIGHTBOX);
+            options.add(LinkStyle.NEW_WINDOW);
+            options.add(LinkStyle.THIS_WINDOW);
             return options;
         }
     }
@@ -684,11 +684,11 @@ public class BuildPipelineView extends View {
     }
 
     public boolean isNewWindowConsoleOutputLinkStyle() {
-        return "New Window".equals(consoleOutputLinkStyle); //$NON-NLS-1$
+        return LinkStyle.NEW_WINDOW.equals(consoleOutputLinkStyle);
     }
 
     public boolean isThisWindowConsoleOutputLinkStyle() {
-        return "This Window".equals(consoleOutputLinkStyle); //$NON-NLS-1$
+        return LinkStyle.THIS_WINDOW.equals(consoleOutputLinkStyle);
     }
 
     public boolean isTriggerOnlyLatestJob() {
@@ -797,5 +797,11 @@ public class BuildPipelineView extends View {
     @Override
     public Item doCreateItem(final StaplerRequest req, final StaplerResponse rsp) throws IOException, ServletException {
         return Hudson.getInstance().doCreateItem(req, rsp);
+    }
+
+    private static final class LinkStyle {
+        static final String LIGHTBOX = "Lightbox"; //$NON-NLS-1$
+        static final String NEW_WINDOW = "New Window"; //$NON-NLS-1$
+        static final String THIS_WINDOW = "This Window"; //$NON-NLS-1$
     }
 }
