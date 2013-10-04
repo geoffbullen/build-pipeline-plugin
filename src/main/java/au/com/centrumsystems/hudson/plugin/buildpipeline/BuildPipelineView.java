@@ -95,6 +95,9 @@ public class BuildPipelineView extends View {
     /** buildViewTitle. */
     private String buildViewTitle = ""; //$NON-NLS-1$
 
+    /** consoleOutputLinkStyle. */
+    private String consoleOutputLinkStyle = "Lightbox"; //$NON-NLS-1$
+
     /** URL for custom CSS file */
     private String cssUrl = "";
 
@@ -639,6 +642,13 @@ public class BuildPipelineView extends View {
             return options;
         }
 
+        public ListBoxModel doFillConsoleOutputLinkStyleItems() {
+            hudson.util.ListBoxModel options = new hudson.util.ListBoxModel();
+            options.add("Lightbox"); //$NON-NLS-1$
+            options.add("New Window"); //$NON-NLS-1$
+            options.add("This Window"); //$NON-NLS-1$
+            return options;
+        }
     }
 
     public String getBuildViewTitle() {
@@ -663,6 +673,22 @@ public class BuildPipelineView extends View {
 
     public void setNoOfDisplayedBuilds(final String noOfDisplayedBuilds) {
         this.noOfDisplayedBuilds = noOfDisplayedBuilds;
+    }
+
+    public String getConsoleOutputLinkStyle() {
+        return consoleOutputLinkStyle;
+    }
+
+    public void setConsoleOutputLinkStyle(String consoleOutputLinkStyle) {
+        this.consoleOutputLinkStyle = consoleOutputLinkStyle;
+    }
+
+    public boolean isNewWindowConsoleOutputLinkStyle() {
+        return "New Window".equals(consoleOutputLinkStyle); //$NON-NLS-1$
+    }
+
+    public boolean isThisWindowConsoleOutputLinkStyle() {
+        return "This Window".equals(consoleOutputLinkStyle); //$NON-NLS-1$
     }
 
     public boolean isTriggerOnlyLatestJob() {
