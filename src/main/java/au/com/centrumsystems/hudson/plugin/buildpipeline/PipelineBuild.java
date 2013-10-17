@@ -425,6 +425,13 @@ public class PipelineBuild {
         return isManualTrigger() && this.currentBuild == null && upstreamBuildSucceeded() && hasBuildPermission();
     }
 
+    public boolean isRerunnable() {
+        return !isReadyToBeManuallyBuilt() &&
+                !getCurrentBuildResult().equals("PENDING") &&
+                !getCurrentBuildResult().equals("BUILDING") &&
+                hasBuildPermission();
+    }
+
     /**
      * @return upstream build is existed and successful.
      */

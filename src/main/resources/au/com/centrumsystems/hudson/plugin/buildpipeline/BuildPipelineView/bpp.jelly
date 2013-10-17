@@ -99,6 +99,8 @@
 							</j:choose>
 						{{/unless}}
 					{{/unless}}
+
+
 					{{#if build.isRerunable}}
 						{{#if build.isSuccess}}
 							{{#if ${!from.triggerOnlyLatestJob}}}
@@ -118,7 +120,7 @@
 									{{/if}}
 								{{/if}}
 							{{else}}
-							<span class="pointer trigger" onclick="buildPipeline.showSpinner({{id}}); buildPipeline.retryBuild({{id}}, '{{project.name}}', [{{build.dependencyIds}}])">
+							<span class="pointer trigger" onclick="buildPipeline.showSpinner({{id}}); buildPipeline.triggerBuild({{id}}, '{{upstream.projectName}}', {{upstream.buildNumber}}, '{{project.name}}', [{{build.dependencyIds}}])">
 								<img title="retry" alt="retry" src="${rootURL}/images/16x16/redo.png" />
 							</span>
 							{{/if}}
@@ -223,7 +225,7 @@
         <j:if test="${hasBuildPermission}">
           <div class="icon-container">
             <div>
-              <a href='#' onclick="$('triggerPipelineForm').submit()">
+              <a id="trigger-pipeline-button" href='#' onclick="$('triggerPipelineForm').submit()">
                 <img src="${rootURL}/images/24x24/clock.png" alt="Trigger a Pipeline" class="icon-with-caption"/>
               </a>
             </div>

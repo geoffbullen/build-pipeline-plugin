@@ -1,10 +1,8 @@
 package au.com.centrumsystems.hudson.plugin.buildpipeline
 
-import au.com.centrumsystems.hudson.plugin.buildpipeline.PipelineBuild;
 import groovy.json.JsonBuilder
-import hudson.model.Cause;
-import hudson.model.Cause.UserIdCause;
-import hudson.model.Item;
+import hudson.model.Cause
+import hudson.model.Item
 
 class BuildJSONBuilder {
 
@@ -26,7 +24,7 @@ class BuildJSONBuilder {
 				isSuccess(buildStatus == 'SUCCESS')
 				isReadyToBeManuallyBuilt(pipelineBuild.isReadyToBeManuallyBuilt())
 				isManualTrigger(pipelineBuild.isManualTrigger())
-				isRerunable(buildStatus != 'PENDING' && buildStatus != 'BUILDING' && !pipelineBuild.isReadyToBeManuallyBuilt())
+				isRerunable(pipelineBuild.isRerunnable())
 				isLatestBuild(null != pipelineBuild.currentBuild?.number && pipelineBuild.currentBuild?.number == pipelineBuild.project.getLastBuild()?.number)
 				isUpstreamBuildLatest(null != pipelineBuild.upstreamBuild?.number && pipelineBuild.upstreamBuild?.number == pipelineBuild.upstreamPipelineBuild?.project?.getLastBuild()?.number)
 				isUpstreamBuildLatestSuccess(null != pipelineBuild.upstreamBuild?.number && pipelineBuild.upstreamBuild?.number == pipelineBuild.upstreamPipelineBuild?.project?.lastSuccessfulBuild?.number)
