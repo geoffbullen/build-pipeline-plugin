@@ -426,10 +426,10 @@ public class PipelineBuild {
     }
 
     public boolean isRerunnable() {
-        return !isReadyToBeManuallyBuilt() &&
-                !getCurrentBuildResult().equals("PENDING") &&
-                !getCurrentBuildResult().equals("BUILDING") &&
-                hasBuildPermission();
+        return !isReadyToBeManuallyBuilt()
+                && !"PENDING".equals(getCurrentBuildResult())
+                && !"BUILDING".equals(getCurrentBuildResult())
+                && hasBuildPermission();
     }
 
     /**
