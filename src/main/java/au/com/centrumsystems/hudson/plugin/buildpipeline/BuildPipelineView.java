@@ -354,8 +354,6 @@ public class BuildPipelineView extends View {
      * Returns BuildPipelineForm containing the build pipeline to display.
      *
      * @return - Representation of the projects and their related builds making up the build pipeline view
-     * @throws URISyntaxException
-     *             {@link URISyntaxException}
      */
     public BuildPipelineForm getBuildPipelineForm() {
         final int maxNoOfDisplayBuilds = Integer.valueOf(noOfDisplayedBuilds);
