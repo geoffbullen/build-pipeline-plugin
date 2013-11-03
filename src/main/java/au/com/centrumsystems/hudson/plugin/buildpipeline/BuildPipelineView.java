@@ -778,9 +778,8 @@ public class BuildPipelineView extends View {
                 for (int col = 0; col < grid.getColumns(); col++) {
                     final ProjectForm form = grid.get(row, col);
                     if (form != null) {
-                        TopLevelItem item;
                         try {
-                            item = Jenkins.getInstance().getItem(form.getName());
+                            final TopLevelItem item = Jenkins.getInstance().getItem(form.getName());
                             if (item != null) {
                                 items.add(item);
                             }
