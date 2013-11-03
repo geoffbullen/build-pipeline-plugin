@@ -354,10 +354,8 @@ public class BuildPipelineView extends View {
      * Returns BuildPipelineForm containing the build pipeline to display.
      *
      * @return - Representation of the projects and their related builds making up the build pipeline view
-     * @throws URISyntaxException
-     *             {@link URISyntaxException}
      */
-    public BuildPipelineForm getBuildPipelineForm() throws URISyntaxException {
+    public BuildPipelineForm getBuildPipelineForm() {
         final int maxNoOfDisplayBuilds = Integer.valueOf(noOfDisplayedBuilds);
 
         final ProjectGrid project = gridBuilder.build(this);
@@ -772,29 +770,20 @@ public class BuildPipelineView extends View {
     @Override
     public Collection<TopLevelItem> getItems() {
         final Collection<TopLevelItem> items = new ArrayList<TopLevelItem>();
-        try {
-            final ProjectGrid grid = getBuildPipelineForm().getProjectGrid();
-            for (int row = 0; row < grid.getRows(); row++) {
-                for (int col = 0; col < grid.getColumns(); col++) {
-                    final ProjectForm form = grid.get(row, col);
-                    if (form != null) {
-                        TopLevelItem item;
-                        try {
-                            item = Jenkins.getInstance().getItem(form.getName());
-                            if (item != null) {
-                                items.add(item);
-                            }
-                        } catch (final Exception e) {
-                            e.printStackTrace();
-                        }
+        final ProjectGrid grid = getBuildPipelineForm().getProjectGrid();
+        for (int row = 0; row < grid.getRows(); row++) {
+            for (int col = 0; col < grid.getColumns(); col++) {
+                final ProjectForm form = grid.get(row, col);
+                if (form != null) {
+                    TopLevelItem item;
+                    item = Jenkins.getInstance().getItem(form.getName());
+                    if (item != null) {
+                        items.add(item);
                     }
                 }
             }
-            return items;
-        } catch (final URISyntaxException e) {
-            e.printStackTrace();
-            return null;
         }
+        return items;
     }
 
     @Override
