@@ -771,7 +771,7 @@ public class BuildPipelineView extends View {
     public Collection<TopLevelItem> getItems() {
         final Collection<TopLevelItem> items = new ArrayList<TopLevelItem>();
         BuildPipelineForm buildPipelineForm = getBuildPipelineForm();
-        if (buildPipelineForm!= null) {
+        if (buildPipelineForm != null) {
             final ProjectGrid grid = buildPipelineForm.getProjectGrid();
             for (int row = 0; row < grid.getRows(); row++) {
                 for (int col = 0; col < grid.getColumns(); col++) {
