@@ -257,12 +257,14 @@ public class BuildPipelineView extends View {
             final String noOfDisplayedBuilds,
             final boolean triggerOnlyLatestJob, final boolean alwaysAllowManualTrigger, final boolean showPipelineParameters,
             final boolean showPipelineParametersInHeaders, final boolean showPipelineDefinitionHeader,
-            final int refreshFrequency, final String cssUrl) {
+            final int refreshFrequency, final String cssUrl, final String selectedJob) {
         this(name, buildViewTitle, gridBuilder, noOfDisplayedBuilds, triggerOnlyLatestJob, cssUrl);
         this.alwaysAllowManualTrigger = alwaysAllowManualTrigger;
         this.showPipelineParameters = showPipelineParameters;
         this.showPipelineParametersInHeaders = showPipelineParametersInHeaders;
         this.showPipelineDefinitionHeader = showPipelineDefinitionHeader;
+        
+        this.selectedJob = selectedJob;
         //not exactly understanding the lifecycle here, but I want a default of 3
         //(this is what the class variable is set to 3, if it's 0, set it to default, refresh of 0 does not make sense anyway)
         if (refreshFrequency < 1) {
@@ -270,6 +272,17 @@ public class BuildPipelineView extends View {
         } else {
             this.refreshFrequency = refreshFrequency;
         }
+        
+        //for remote api support
+    	if (this.gridBuilder == null) {
+    		if(this.selectedJob!=null)
+    			this.gridBuilder = new DownstreamProjectGridBuilder(this.selectedJob);
+        }
+    	
+    	if(this.selectedJob == null) {
+    		if(this.gridBuilder != null && this.gridBuilder instanceof DownstreamProjectGridBuilder)
+    			this.selectedJob = ((DownstreamProjectGridBuilder)this.gridBuilder).getFirstJob();
+    	}
     }
 
     /**
@@ -277,9 +290,9 @@ public class BuildPipelineView extends View {
      *      must be always 'this'
      */
     protected Object readResolve() {
-        if (gridBuilder == null && selectedJob != null) {
-            gridBuilder = new DownstreamProjectGridBuilder(selectedJob);
-            selectedJob = null;
+    	if (gridBuilder == null) {
+    		if(selectedJob!=null)
+    			gridBuilder = new DownstreamProjectGridBuilder(selectedJob);
         }
         return this;
     }
