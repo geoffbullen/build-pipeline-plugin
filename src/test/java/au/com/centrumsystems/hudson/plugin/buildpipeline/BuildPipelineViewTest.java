@@ -122,11 +122,11 @@ public class BuildPipelineViewTest extends HudsonTestCase {
 		createFreeStyleProject(proj1);
 
 		// True
-		BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, new DownstreamProjectGridBuilder(proj1), noOfBuilds, true, true, false, false, false, 2, null);
+		BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, new DownstreamProjectGridBuilder(proj1), noOfBuilds, true, true, false, false, false, 2, null, null);
 		assertTrue("Failed to set AlwaysAllowManualTrigger flag", testView.isAlwaysAllowManualTrigger());
 
 		// False
-		testView = new BuildPipelineView(bpViewName, bpViewTitle, new DownstreamProjectGridBuilder(""), noOfBuilds, true, false, false, false, false, 2, null);
+		testView = new BuildPipelineView(bpViewName, bpViewTitle, new DownstreamProjectGridBuilder(""), noOfBuilds, true, false, false, false, false, 2, null, null);
 		assertFalse("Failed to unset AlwaysAllowManualTrigger flag", testView.isAlwaysAllowManualTrigger());
 	}
 
@@ -139,11 +139,11 @@ public class BuildPipelineViewTest extends HudsonTestCase {
 		createFreeStyleProject(proj1);
 
 		// True
-		BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, new DownstreamProjectGridBuilder(proj1), noOfBuilds, true, false, false, false, true, 2, null);
+		BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, new DownstreamProjectGridBuilder(proj1), noOfBuilds, true, false, false, false, true, 2, null, null);
 		assertTrue("Failed to set ShowPipelineDefinitionHeader flag", testView.isShowPipelineDefinitionHeader());
 
 		// False
-		testView = new BuildPipelineView(bpViewName, bpViewTitle, new DownstreamProjectGridBuilder(""), noOfBuilds, true, false, false, false, false, 2, null);
+		testView = new BuildPipelineView(bpViewName, bpViewTitle, new DownstreamProjectGridBuilder(""), noOfBuilds, true, false, false, false, false, 2, null, null);
 		assertFalse("Failed to unset ShowPipelineDefinitionHeader flag", testView.isShowPipelineDefinitionHeader());
 	}
 
@@ -156,11 +156,11 @@ public class BuildPipelineViewTest extends HudsonTestCase {
 		createFreeStyleProject(proj1);
 
 		// True
-		BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, new DownstreamProjectGridBuilder(proj1), noOfBuilds, true, false, true, false, false, 2, null);
+		BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, new DownstreamProjectGridBuilder(proj1), noOfBuilds, true, false, true, false, false, 2, null, null);
 		assertTrue("Failed to set ShowPipelineParameters flag", testView.isShowPipelineParameters());
 
 		// False
-		testView = new BuildPipelineView(bpViewName, bpViewTitle, new DownstreamProjectGridBuilder(""), noOfBuilds, true, false, false, false, false, 2, null);
+		testView = new BuildPipelineView(bpViewName, bpViewTitle, new DownstreamProjectGridBuilder(""), noOfBuilds, true, false, false, false, false, 2, null, null);
 		assertFalse("Failed to unset ShowPipelineParameters flag", testView.isShowPipelineParameters());
 	}
 
@@ -172,10 +172,10 @@ public class BuildPipelineViewTest extends HudsonTestCase {
         final String noOfBuilds = "5";
         createFreeStyleProject(proj1);
 
-        BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, new DownstreamProjectGridBuilder(proj1), noOfBuilds, true, false, true, true, false, 2, null);
+        BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, new DownstreamProjectGridBuilder(proj1), noOfBuilds, true, false, true, true, false, 2, null, null);
         assertTrue("Failed to set ShowPipelineParametersInHeaders flag", testView.isShowPipelineParametersInHeaders());
 
-        testView = new BuildPipelineView(bpViewName, bpViewTitle, new DownstreamProjectGridBuilder(proj1), noOfBuilds, true, false, true, false, false, 2, null);
+        testView = new BuildPipelineView(bpViewName, bpViewTitle, new DownstreamProjectGridBuilder(proj1), noOfBuilds, true, false, true, false, false, 2, null, null);
         assertFalse("Failed to unset ShowPipelineParametersInHeaders flag", testView.isShowPipelineParametersInHeaders());
     }
 
