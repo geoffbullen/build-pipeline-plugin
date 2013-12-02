@@ -1,5 +1,12 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:i="jelly:fmt">
+
 	<link href="${rootURL}/plugin/build-pipeline-plugin/css/main.css" type="text/css" rel="stylesheet" />
+
+	<!-- If the user specifies a custom CSS link, load it.-->
+	<j:if test="${!empty(from.cssUrl)}">
+		<link href="${from.cssUrl}" type="text/css" rel="stylesheet" />
+	</j:if>
+
 	<link rel="stylesheet" href="${rootURL}/plugin/build-pipeline-plugin/css/redmond/jquery-ui-1.8.14.custom.css"></link>
 	<link rel="stylesheet" href="${rootURL}/plugin/build-pipeline-plugin/css/jquery.fancybox-1.3.4.css"></link>
 	<link rel="stylesheet" href="${rootURL}/plugin/build-pipeline-plugin/css/jquery.tooltip.css"></link>
@@ -72,17 +79,36 @@
 				<div class="icons" id="icons-{{id}}">
 					{{#unless build.isPending}}
 						{{#unless build.isReadyToBeManuallyBuilt}}
-						<span class="pointer" onclick="buildPipeline.fillDialog('{{build.url}}console', 'Console output for {{project.name}} #{{build.number}}')">
-							<img title="console" alt="console" src="${rootURL}/images/16x16/terminal.png" />
-						</span>
+							<j:set var="consoleOutputIconUrl" value="${rootURL}/images/16x16/terminal.png" />
+							<j:choose>
+								<j:when test="${from.newWindowConsoleOutputLinkStyle}">
+									<a href="{{build.url}}console" target="_blank">
+										<img title="console" alt="console" src="${consoleOutputIconUrl}" />
+									</a>
+								</j:when>
+								<j:when test="${from.thisWindowConsoleOutputLinkStyle}">
+									<a href="{{build.url}}console">
+										<img title="console" alt="console" src="${consoleOutputIconUrl}" />
+									</a>
+								</j:when>
+								<j:otherwise>
+									<span class="pointer" onclick="buildPipeline.fillDialog('{{build.url}}console', 'Console output for {{project.name}} #{{build.number}}')">
+										<img title="console" alt="console" src="${consoleOutputIconUrl}" />
+									</span>
+								</j:otherwise>
+							</j:choose>
 						{{/unless}}
 					{{/unless}}
+
+
 					{{#if build.isRerunable}}
 						{{#if build.isSuccess}}
 							{{#if ${!from.triggerOnlyLatestJob}}}
+							<j:if test="${hasBuildPermission}">
 							<span class="pointer trigger" onclick="buildPipeline.showSpinner({{id}}); buildPipeline.rerunBuild({{id}}, '{{build.extId}}', [{{build.dependencyIds}}])">
 								<img title="re-run" alt="re-run" src="${rootURL}/images/16x16/redo.png" />
 							</span>
+							</j:if>
 							{{/if}}
 						{{else}}
 							{{#if ${from.triggerOnlyLatestJob}}}
@@ -94,7 +120,7 @@
 									{{/if}}
 								{{/if}}
 							{{else}}
-							<span class="pointer trigger" onclick="buildPipeline.showSpinner({{id}}); buildPipeline.retryBuild({{id}}, '{{project.name}}', [{{build.dependencyIds}}])">
+							<span class="pointer trigger" onclick="buildPipeline.showSpinner({{id}}); buildPipeline.triggerBuild({{id}}, '{{upstream.projectName}}', {{upstream.buildNumber}}, '{{project.name}}', [{{build.dependencyIds}}])">
 								<img title="retry" alt="retry" src="${rootURL}/images/16x16/redo.png" />
 							</span>
 							{{/if}}
@@ -164,16 +190,18 @@
 	</tbody>
 </table>
 	</script>
+	<st:bind var="buildPipelineViewProxy" value="${from}" />
 	<script type="text/javascript">
 		var buildCardTemplateSource = jQuery("#build-card-template").html();
 		var projectCardTemplateSource = jQuery("#project-card-template").html();
-		var buildPipeline = new BuildPipeline(<st:bind value="${from}" />, Handlebars.compile(buildCardTemplateSource), Handlebars.compile(projectCardTemplateSource), ${from.getRefreshFrequencyInMillis()});
+		var buildPipeline = new BuildPipeline(buildPipelineViewProxy, Handlebars.compile(buildCardTemplateSource), Handlebars.compile(projectCardTemplateSource), ${from.getRefreshFrequencyInMillis()});
 	</script>
 	<style>
 	.trigger {
 		background: url("${rootURL}/images/16x16/clock.png") no-repeat center center !important;
 	}
 	</style>
+  <form method="post" action="gridBuilder/build" id="triggerPipelineForm" />
 	<form method="post" name="pipelineViewForm" action="manualExecution" id="manualExecutionForm">
 
 		<input name="upstreamProjectName" id="upstreamProjectName" type="hidden" />
@@ -197,8 +225,8 @@
         <j:if test="${hasBuildPermission}">
           <div class="icon-container">
             <div>
-              <a href='gridBuilder/build'>
-                <img src="${rootURL}/images/24x24/clock.png" alt="Trigger a Pipeline" class="icon-with-caption" />
+              <a id="trigger-pipeline-button" href='#' onclick="$('triggerPipelineForm').submit()">
+                <img src="${rootURL}/images/24x24/clock.png" alt="Trigger a Pipeline" class="icon-with-caption"/>
               </a>
             </div>
             <div>Run</div>
@@ -240,7 +268,7 @@
 					</div>
 					<div class="icon-container">
 						<div>
-							<a href='../../manage'>
+							<a href='${rootURL}/manage'>
 								<img src="${rootURL}/images/24x24/setting.png" class="icon-with-caption" />
 							</a>
 						</div>
@@ -274,7 +302,9 @@
 										</script>
 										<j:if test="${(y + 1 != buildPipelineForm.getGridWidth())}">
 											<td class="next">
-												<j:if test="${!(project.getDependencies().length() == 0)}">
+
+												<!-- Changing length to size() to get rid of arrows when there are no more child jobs.-->
+												<j:if test="${!(project.getDependencies().size() == 0)}">
 													<span class="status next">
 														<img src="${rootURL}/images/24x24/next.png" />
 													</span>
@@ -392,7 +422,9 @@
 											</j:if>
 										</script>
 										<j:if test="${(y + 1 != buildPipelineForm.getGridWidth())}">
-											<td class="next"><j:if test="${!(build.getDependencies().length() == 0)}">
+
+											<!-- Changing length to size() to get rid of arrows when there are no more child jobs.-->
+											<td class="next"><j:if test="${!(build.getDependencies().size() == 0)}">
 													<span class="status next"><img src="${rootURL}/images/24x24/next.png" /></span>
 												</j:if></td>
 										</j:if>

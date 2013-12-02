@@ -1,0 +1,16 @@
+.classpath
+.project
+.settings
+
+*.iml
+
+**/*.iml
+
+target
+work
+
+# IntelliJ
+.idea/
+*.iml
+*.ipr
+*.iws
