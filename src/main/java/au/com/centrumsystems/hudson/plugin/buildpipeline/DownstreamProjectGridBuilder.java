@@ -174,6 +174,7 @@ public class DownstreamProjectGridBuilder extends ProjectGridBuilder {
                 try {
                     p.doBuild(req, rsp, new TimeDuration(0));
                 } catch (IllegalStateException e) {
+                    ;
                     // Ignore because sendRedirect(String) gets called twice. We do not want to hit the top
                     // level of the project but instead we want to be redirected back 1 directory.
                 }
