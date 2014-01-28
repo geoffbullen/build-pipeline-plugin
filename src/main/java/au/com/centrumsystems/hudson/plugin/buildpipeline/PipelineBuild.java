@@ -299,10 +299,26 @@ public class PipelineBuild {
     public PipelineBuild getUpstreamPipelineBuild() {
         @SuppressWarnings("rawtypes")
         final List<AbstractProject> upstreamProjects = getProject().getUpstreamProjects();
-        final AbstractProject<?, ?> previousProject;
+        AbstractProject<?, ?> previousProject = null;
+        String upstreamBuildName;
         final PipelineBuild previousPB = new PipelineBuild();
-        if (upstreamProjects.size() > 0) {
-            previousProject = upstreamProjects.get(0);
+        if (this.upstreamBuild != null) {
+            upstreamBuildName = this.upstreamBuild.getProject().getName();
+        } else {
+            upstreamBuildName = "";
+        }
+        if (upstreamProjects.size() > 0) { 
+            if (isManualTrigger()) {
+                for (AbstractProject upstreamProject : upstreamProjects) {
+                    if (upstreamProject.getName().equals(upstreamBuildName)) {
+                        previousProject = upstreamProject;
+                      break;
+                    }
+                }
+            }
+            if (previousProject == null) {
+                previousProject = upstreamProjects.get(0);
+            }
             previousPB.setCurrentBuild(this.getUpstreamBuild());
             previousPB.setProject(previousProject);
         }
