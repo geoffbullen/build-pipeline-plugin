@@ -282,8 +282,9 @@ public class PipelineBuild {
 
         if (upstreamPB != null) {
             if (this.getUpstreamBuild() != null) {
-                if (getUpstreamBuildResult().equals(HudsonResult.SUCCESS.toString()) || 
-                		getUpstreamBuildResult().equals(HudsonResult.UNSTABLE.toString())) {
+                if (getUpstreamBuildResult().equals(HudsonResult.SUCCESS.toString()) 
+            || 
+            getUpstreamBuildResult().equals(HudsonResult.UNSTABLE.toString())) {
                     if (ProjectUtil.isManualTrigger(this.upstreamBuild.getProject(), this.project)) {
                         pendingStatus = HudsonResult.MANUAL.toString();
                     }
@@ -425,7 +426,7 @@ public class PipelineBuild {
      * @return is ready to be manually built.
      */
     public boolean isReadyToBeManuallyBuilt() {
-        return isManualTrigger() && this.currentBuild == null && ( upstreamBuildSucceeded() || upstreamBuildUnstable() ) && hasBuildPermission();
+     return isManualTrigger() && this.currentBuild == null && (upstreamBuildSucceeded() || upstreamBuildUnstable()) && hasBuildPermission();
     }
 
     public boolean isRerunnable() {
