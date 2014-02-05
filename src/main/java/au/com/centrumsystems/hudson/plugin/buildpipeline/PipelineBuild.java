@@ -275,13 +275,15 @@ public class PipelineBuild {
      * @return - PENDING: Current currentBuild is pending the execution of upstream builds. MANUAL: Current currentBuild requires a manual
      *         trigger
      */
+
     private String getPendingStatus() {
         String pendingStatus = HudsonResult.PENDING.toString();
         final PipelineBuild upstreamPB = getUpstreamPipelineBuild();
 
         if (upstreamPB != null) {
             if (this.getUpstreamBuild() != null) {
-                if (getUpstreamBuildResult().equals(HudsonResult.SUCCESS.toString())) {
+                if (getUpstreamBuildResult().equals(HudsonResult.SUCCESS.toString()) || 
+                		getUpstreamBuildResult().equals(HudsonResult.UNSTABLE.toString())) {
                     if (ProjectUtil.isManualTrigger(this.upstreamBuild.getProject(), this.project)) {
                         pendingStatus = HudsonResult.MANUAL.toString();
                     }
@@ -290,6 +292,7 @@ public class PipelineBuild {
         }
         return pendingStatus;
     }
+
 
     /**
      * Returns the upstream PipelineBuild object from the current PipelineBuild object.
@@ -419,10 +422,10 @@ public class PipelineBuild {
     }
 
     /**
-     * @return is ready to be mannlly built.
+     * @return is ready to be manually built.
      */
     public boolean isReadyToBeManuallyBuilt() {
-        return isManualTrigger() && this.currentBuild == null && upstreamBuildSucceeded() && hasBuildPermission();
+        return isManualTrigger() && this.currentBuild == null && ( upstreamBuildSucceeded() || upstreamBuildUnstable() ) && hasBuildPermission();
     }
 
     public boolean isRerunnable() {
@@ -438,6 +441,14 @@ public class PipelineBuild {
     private boolean upstreamBuildSucceeded() {
         return this.getUpstreamBuild() != null && HudsonResult.SUCCESS.toString().equals(getBuildResult(this.upstreamBuild));
     }
+
+   /**
+    * @return upstream build exists and unstable.
+    */
+   private boolean upstreamBuildUnstable() {
+       return this.getUpstreamBuild() != null && HudsonResult.UNSTABLE.toString().equals(getBuildResult(this.upstreamBuild));
+   }
+
 
     /**
      * Determine if the project is triggered manually, regardless of the state of its upstream builds
