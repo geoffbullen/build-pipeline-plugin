@@ -207,7 +207,7 @@ public class PipelineBuild {
      * @return URL of the currentBuild
      */
     public String getBuildResultURL() {
-        return currentBuild != null ? currentBuild.getAbsoluteUrl() : ""; //$NON-NLS-1$
+        return currentBuild != null ? currentBuild.getUrl() : ""; //$NON-NLS-1$
     }
 
     /**

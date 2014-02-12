@@ -21,7 +21,7 @@
 		<tr class="header">
 			<td>
 				<div class="overflow-hidden">
-					<a href="{{build.url}}" title="{{project.name}}">
+					<a href="${rootURL}/{{build.url}}" title="{{project.name}}">
 						{{#unless build.isPending}}
 							{{#unless build.isReadyToBeManuallyBuilt}}
 								{{#if build.displayName}}
@@ -63,7 +63,7 @@
 				{{#unless project.disabled}}
 				<div class="status-bar" id="status-bar-{{id}}">
 					{{#if build.isBuilding}}
-						<div class="pointer" onclick="buildPipeline.fillDialog('{{build.url}}console', 'Console output for {{project.name}} #{{build.number}}')">
+						<div class="pointer" onclick="buildPipeline.fillDialog('${rootURL}/{{build.url}}console', 'Console output for {{project.name}} #{{build.number}}')">
 							<table class="progress-bar" align="center">
 								<tbody>
 									<tr title="Estimated remaining time: {{build.estimatedRemainingTime}}">
@@ -82,17 +82,17 @@
 							<j:set var="consoleOutputIconUrl" value="${rootURL}/images/16x16/terminal.png" />
 							<j:choose>
 								<j:when test="${from.newWindowConsoleOutputLinkStyle}">
-									<a href="{{build.url}}console" target="_blank">
+									<a href="${rootURL}/{{build.url}}console" target="_blank">
 										<img title="console" alt="console" src="${consoleOutputIconUrl}" />
 									</a>
 								</j:when>
 								<j:when test="${from.thisWindowConsoleOutputLinkStyle}">
-									<a href="{{build.url}}console">
+									<a href="${rootURL}/{{build.url}}console">
 										<img title="console" alt="console" src="${consoleOutputIconUrl}" />
 									</a>
 								</j:when>
 								<j:otherwise>
-									<span class="pointer" onclick="buildPipeline.fillDialog('{{build.url}}console', 'Console output for {{project.name}} #{{build.number}}')">
+									<span class="pointer" onclick="buildPipeline.fillDialog('${rootURL}/{{build.url}}console', 'Console output for {{project.name}} #{{build.number}}')">
 										<img title="console" alt="console" src="${consoleOutputIconUrl}" />
 									</span>
 								</j:otherwise>
@@ -158,10 +158,10 @@
 			<td>
 				<div class="header-wrapper overflow-hidden">
 					<img src="${rootURL}/images/24x24/{{health}}" />
-					<a href="{{url}}" title="{{name}}">{{name}}</a>
+					<a href="${rootURL}/{{url}}" title="{{name}}">{{name}}</a>
 					<j:if test="${from.isShowPipelineParametersInHeaders()}">
 						{{#if lastSuccessfulBuildNumber}}
-						<a href="{{url}}{{lastSuccessfulBuildNumber}}"> (#{{lastSuccessfulBuildNumber}})</a>
+						<a href="${rootURL}/{{url}}{{lastSuccessfulBuildNumber}}"> (#{{lastSuccessfulBuildNumber}})</a>
 						{{/if}}
 					</j:if>
 				</div>
