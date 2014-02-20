@@ -77,6 +77,10 @@
 				</div>
 
 				<div class="icons" id="icons-{{id}}">
+					{{#if project.parameters.length}}
+						<j:set var="hasParameterIconUrl" value="${rootURL}/plugin/build-pipeline-plugin/images/has-parameter.png" />
+						<img title="This job has parameters" alt="This job has parameters" src="${hasParameterIconUrl}"/>
+					{{/if}}		
 					{{#unless build.isPending}}
 						{{#unless build.isReadyToBeManuallyBuilt}}
 							<j:set var="consoleOutputIconUrl" value="${rootURL}/images/16x16/terminal.png" />
