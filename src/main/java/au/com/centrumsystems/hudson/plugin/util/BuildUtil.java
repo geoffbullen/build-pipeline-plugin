@@ -31,8 +31,10 @@ import hudson.model.AbstractProject;
 import hudson.model.Cause;
 import hudson.model.Cause.UpstreamCause;
 import hudson.model.CauseAction;
+import hudson.model.FileParameterValue;
 import hudson.model.ParametersAction;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -110,6 +112,15 @@ public final class BuildUtil {
             for (final Action nextAction : build.getActions()) {
                 if (nextAction instanceof ParametersAction) {
                     buildParametersAction = (ParametersAction) nextAction;
+
+                    final List<ParameterValue> parameters = new ArrayList<ParameterValue>();
+                    for (ParameterValue parameter : buildParametersAction.getParameters()) {
+                        // FileParameterValue is currently not reusable, so omit these:
+                        if (!(parameter instanceof FileParameterValue)) {
+                            parameters.add(parameter);
+                        }
+                    }
+                    buildParametersAction = new ParametersAction(parameters);
                 }
             }
         }
