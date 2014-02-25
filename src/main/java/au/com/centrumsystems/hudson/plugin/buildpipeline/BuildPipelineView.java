@@ -25,6 +25,7 @@
 package au.com.centrumsystems.hudson.plugin.buildpipeline;
 
 import com.google.common.collect.Iterables;
+
 import hudson.Extension;
 import hudson.model.Action;
 import hudson.model.Item;
@@ -39,6 +40,8 @@ import hudson.model.CauseAction;
 import hudson.model.Descriptor.FormException;
 import hudson.model.Hudson;
 import hudson.model.ParametersAction;
+import hudson.model.ParametersDefinitionProperty;
+import hudson.model.Project;
 import hudson.model.Run;
 import hudson.model.User;
 import hudson.model.View;
@@ -113,6 +116,11 @@ public class BuildPipelineView extends View {
 
     /** showPipelineParametersInHeaders */
     private boolean showPipelineParametersInHeaders;
+    
+    /**
+     * informs if the first job has parameters
+     */
+    private boolean startsWithParameters;
 
     /**
      * Frequency at which the Build Pipeline Plugin updates the build cards in seconds
@@ -224,6 +232,7 @@ public class BuildPipelineView extends View {
         this.noOfDisplayedBuilds = noOfDisplayedBuilds;
         this.triggerOnlyLatestJob = triggerOnlyLatestJob;
         this.cssUrl = cssUrl;
+        this.startsWithParameters = gridBuilder.startsWithParameters(this);
     }
 
     /**
@@ -265,7 +274,7 @@ public class BuildPipelineView extends View {
         this.showPipelineParameters = showPipelineParameters;
         this.showPipelineParametersInHeaders = showPipelineParametersInHeaders;
         this.showPipelineDefinitionHeader = showPipelineDefinitionHeader;
-        
+        this.startsWithParameters = gridBuilder.startsWithParameters(this);
         this.selectedJob = selectedJob;
         //not exactly understanding the lifecycle here, but I want a default of 3
         //(this is what the class variable is set to 3, if it's 0, set it to default, refresh of 0 does not make sense anyway)
@@ -367,7 +376,7 @@ public class BuildPipelineView extends View {
     public boolean hasDownstreamProjects(final AbstractProject<?, ?> currentProject) {
         return (getDownstreamProjects(currentProject).size() > 0);
     }
-
+    
     /**
      * Returns BuildPipelineForm containing the build pipeline to display.
      *
@@ -748,6 +757,18 @@ public class BuildPipelineView extends View {
     public void setShowPipelineParameters(final boolean showPipelineParameters) {
         this.showPipelineParameters = showPipelineParameters;
     }
+    
+    public boolean isStartsWithParameters() {
+        return startsWithParameters;
+    }
+
+    public String getStartsWithParameters() {
+        return Boolean.toString(startsWithParameters);
+    }
+
+    public void setStartsWithParameters(final boolean startsWithParameters) {
+        this.startsWithParameters = startsWithParameters;
+    }    
 
     public boolean isShowPipelineParametersInHeaders() {
         return showPipelineParametersInHeaders;
