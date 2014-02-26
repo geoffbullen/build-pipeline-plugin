@@ -25,6 +25,7 @@
 package au.com.centrumsystems.hudson.plugin.buildpipeline;
 
 import com.google.common.collect.Iterables;
+
 import hudson.Extension;
 import hudson.model.Action;
 import hudson.model.Item;
@@ -44,6 +45,7 @@ import hudson.model.User;
 import hudson.model.View;
 import hudson.model.ViewDescriptor;
 import hudson.plugins.parameterizedtrigger.AbstractBuildParameters;
+import hudson.security.Permission;
 import hudson.util.LogTaskListener;
 import hudson.util.ListBoxModel;
 import jenkins.model.Jenkins;
@@ -847,5 +849,21 @@ public class BuildPipelineView extends View {
         static final String NEW_WINDOW = "New Window"; //$NON-NLS-1$
         /** this window link style option */
         static final String THIS_WINDOW = "This Window"; //$NON-NLS-1$
+    }
+    
+    @Override
+    public boolean hasPermission(final Permission p) {
+        boolean display = true;
+        //tester la liste vide seulement en lecture
+        if (READ.name.equals(p.name)) {
+            if (this.getItems() == null || this.getItems().isEmpty()) {
+                display = false;
+            }
+        } else {
+            //Pas en lecture => permission standard
+            display = super.hasPermission(p);
+        }
+
+        return display;
     }
 }
