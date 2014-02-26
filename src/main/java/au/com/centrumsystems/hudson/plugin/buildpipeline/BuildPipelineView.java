@@ -222,17 +222,20 @@ public class BuildPipelineView extends View {
      *            Indicates whether only the latest job will be triggered.
      * @param cssUrl
      *            URL for the custom CSS file.
+     *            
+     * @param startsWithParameters
+     * 			  Indicates whether the first job of the pipeline takes parameters
      */
     public BuildPipelineView(final String name, final String buildViewTitle,
              final ProjectGridBuilder gridBuilder, final String noOfDisplayedBuilds,
-             final boolean triggerOnlyLatestJob, final String cssUrl) {
+             final boolean triggerOnlyLatestJob, final String cssUrl, final boolean startsWithParameters) {
         super(name, Hudson.getInstance());
         this.buildViewTitle = buildViewTitle;
         this.gridBuilder = gridBuilder;
         this.noOfDisplayedBuilds = noOfDisplayedBuilds;
         this.triggerOnlyLatestJob = triggerOnlyLatestJob;
         this.cssUrl = cssUrl;
-        this.startsWithParameters = gridBuilder.startsWithParameters(this);
+        this.startsWithParameters = startsWithParameters;
     }
 
     /**
@@ -262,19 +265,21 @@ public class BuildPipelineView extends View {
      *            URL for the custom CSS file.
      * @param selectedJob
      *            the first job name in the pipeline. it can be set to null when gridBuilder is passed.
+     * @param startsWithParameters
+     * 			  Indicates whether the first job of the pipeline takes parameters
      */
     @DataBoundConstructor
     public BuildPipelineView(final String name, final String buildViewTitle, final ProjectGridBuilder gridBuilder,
             final String noOfDisplayedBuilds,
             final boolean triggerOnlyLatestJob, final boolean alwaysAllowManualTrigger, final boolean showPipelineParameters,
             final boolean showPipelineParametersInHeaders, final boolean showPipelineDefinitionHeader,
-            final int refreshFrequency, final String cssUrl, final String selectedJob) {
-        this(name, buildViewTitle, gridBuilder, noOfDisplayedBuilds, triggerOnlyLatestJob, cssUrl);
+            final int refreshFrequency, final String cssUrl, final String selectedJob, final boolean startsWithParameters) {
+        this(name, buildViewTitle, gridBuilder, noOfDisplayedBuilds, triggerOnlyLatestJob, cssUrl, startsWithParameters);
         this.alwaysAllowManualTrigger = alwaysAllowManualTrigger;
         this.showPipelineParameters = showPipelineParameters;
         this.showPipelineParametersInHeaders = showPipelineParametersInHeaders;
         this.showPipelineDefinitionHeader = showPipelineDefinitionHeader;
-        this.startsWithParameters = gridBuilder.startsWithParameters(this);
+        this.startsWithParameters = startsWithParameters;
         this.selectedJob = selectedJob;
         //not exactly understanding the lifecycle here, but I want a default of 3
         //(this is what the class variable is set to 3, if it's 0, set it to default, refresh of 0 does not make sense anyway)
