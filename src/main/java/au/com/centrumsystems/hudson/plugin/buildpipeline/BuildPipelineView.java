@@ -873,4 +873,18 @@ public class BuildPipelineView extends View {
         /** this window link style option */
         static final String THIS_WINDOW = "This Window"; //$NON-NLS-1$
     }
+    
+    @Override
+    public boolean hasPermission(final Permission p) {
+        boolean display = true;
+        if (READ.name.equals(p.name)) {
+            if (this.getItems() == null || this.getItems().isEmpty()) {
+                display = false;
+            }
+        } else {
+            display = super.hasPermission(p);
+        }
+
+        return display;
+    }
 }
