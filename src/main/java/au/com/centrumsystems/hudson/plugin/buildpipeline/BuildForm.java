@@ -103,7 +103,7 @@ public class BuildForm {
      */
     @JavaScriptMethod
     public String asJSON() {
-        return BuildJSONBuilder.asJSON(pipelineBuild, id, projectId, getDependencyIds(), parameters);
+        return BuildJSONBuilder.asJSON(pipelineBuild, id, projectId, getDependencyIds(), getParameterList());
     }
 
     public int getId() {
@@ -142,6 +142,10 @@ public class BuildForm {
 
     public Map<String, String> getParameters() {
         return pipelineBuild.getBuildParameters();
+    }
+    
+    public ArrayList<String> getParameterList() {
+    	return parameters;
     }
 
     public Integer getProjectId() {
