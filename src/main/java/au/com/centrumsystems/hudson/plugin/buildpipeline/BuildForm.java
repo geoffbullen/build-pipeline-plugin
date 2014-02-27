@@ -67,14 +67,14 @@ public class BuildForm {
             dependencies.add(new BuildForm(downstream));
         }
         id = hashCode();
-        AbstractProject<?,?> project = pipelineBuild.getProject();
+        final AbstractProject<?, ?> project = pipelineBuild.getProject();
         projectId = project.getFullName().hashCode();
-        ParametersDefinitionProperty params = project.getProperty(ParametersDefinitionProperty.class);
-        ArrayList<String> paramList = new ArrayList<String>();
-        if(params != null) {
-	        for(String p : params.getParameterDefinitionNames()) {
-	        	paramList.add(p);
-	        }
+        final ParametersDefinitionProperty params = project.getProperty(ParametersDefinitionProperty.class);
+        final ArrayList<String> paramList = new ArrayList<String>();
+        if (params != null) {
+            for (String p : params.getParameterDefinitionNames()) {
+                paramList.add(p);
+            }
         }
         parameters = paramList;
     }
@@ -145,7 +145,7 @@ public class BuildForm {
     }
     
     public ArrayList<String> getParameterList() {
-    	return parameters;
+        return parameters;
     }
 
     public Integer getProjectId() {

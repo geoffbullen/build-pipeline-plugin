@@ -163,8 +163,8 @@ public class DownstreamProjectGridBuilder extends ProjectGridBuilder {
     
     @Override
     public boolean startsWithParameters(BuildPipelineView owner) {
-        AbstractProject<?,?> firstJob = this.getFirstJob(owner);
-        ParametersDefinitionProperty pdp = firstJob.getProperty(ParametersDefinitionProperty.class);
+        final AbstractProject<?, ?> firstJob = this.getFirstJob(owner);
+        final ParametersDefinitionProperty pdp = firstJob.getProperty(ParametersDefinitionProperty.class);
         return pdp != null;
     }
 

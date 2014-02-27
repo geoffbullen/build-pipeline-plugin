@@ -40,8 +40,6 @@ import hudson.model.CauseAction;
 import hudson.model.Descriptor.FormException;
 import hudson.model.Hudson;
 import hudson.model.ParametersAction;
-import hudson.model.ParametersDefinitionProperty;
-import hudson.model.Project;
 import hudson.model.Run;
 import hudson.model.User;
 import hudson.model.View;
@@ -74,8 +72,9 @@ import au.com.centrumsystems.hudson.plugin.util.BuildUtil;
 import au.com.centrumsystems.hudson.plugin.util.ProjectUtil;
 
 /**
- * This view displays the set of jobs that are related based on their upstream\downstream relationships as a pipeline. Each build pipeline
- * becomes a row on the view.
+ * This view displays the set of jobs that are related
+ * based on their upstream\downstream relationships as a pipeline. Each
+ * build pipeline becomes a row on the view.
  *
  * @author Centrum Systems
  *
@@ -222,9 +221,9 @@ public class BuildPipelineView extends View {
      *            Indicates whether only the latest job will be triggered.
      * @param cssUrl
      *            URL for the custom CSS file.
-     *            
      * @param startsWithParameters
-     * 			  Indicates whether the first job of the pipeline takes parameters
+     *            Indicates whether the first job of the pipeline takes
+     *            parameters
      */
     public BuildPipelineView(final String name, final String buildViewTitle,
              final ProjectGridBuilder gridBuilder, final String noOfDisplayedBuilds,
@@ -266,7 +265,7 @@ public class BuildPipelineView extends View {
      * @param selectedJob
      *            the first job name in the pipeline. it can be set to null when gridBuilder is passed.
      * @param startsWithParameters
-     * 			  Indicates whether the first job of the pipeline takes parameters
+     *            indicates whether the first job of the pipeline takes parameters
      */
     @DataBoundConstructor
     public BuildPipelineView(final String name, final String buildViewTitle, final ProjectGridBuilder gridBuilder,

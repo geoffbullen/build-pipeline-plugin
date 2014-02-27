@@ -36,6 +36,8 @@ public class ReadOnlyBuildPipelineView extends BuildPipelineView {
      *            is trigger only latest job?
      * @param cssUrl
      *            URL for the custom CSS file.
+     * @param startsWithParameters
+     *            indicates if the first job in the view takes parameters
      */
     public ReadOnlyBuildPipelineView(final String displayName, final String description, final ProjectGridBuilder gridBuilder,
             final String noOfDisplayedBuilds, final boolean triggerOnlyLatestJob, final String cssUrl, final boolean startsWithParameters) {
