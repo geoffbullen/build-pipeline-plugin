@@ -40,8 +40,6 @@ import hudson.model.CauseAction;
 import hudson.model.Descriptor.FormException;
 import hudson.model.Hudson;
 import hudson.model.ParametersAction;
-import hudson.model.ParametersDefinitionProperty;
-import hudson.model.Project;
 import hudson.model.Run;
 import hudson.model.User;
 import hudson.model.View;
