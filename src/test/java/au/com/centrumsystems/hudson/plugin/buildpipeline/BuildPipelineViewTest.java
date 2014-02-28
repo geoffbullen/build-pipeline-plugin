@@ -55,29 +55,29 @@ import au.com.centrumsystems.hudson.plugin.buildpipeline.trigger.BuildPipelineTr
  */
 public class BuildPipelineViewTest extends HudsonTestCase {
 
-	@Override
-	@Before
-	public void setUp() throws Exception {
-		super.setUp();
-	}
+    @Override
+    @Before
+    public void setUp() throws Exception {
+        super.setUp();
+    }
 
-	@Test
-	public void testGetSelectedProject() throws IOException {
-		final String bpViewName = "MyTestView";
-		final String bpViewTitle = "MyTestViewTitle";
-		final String proj1 = "Proj1";
-		final String noOfBuilds = "5";
-		createFreeStyleProject(proj1);
+    @Test
+    public void testGetSelectedProject() throws IOException {
+        final String bpViewName = "MyTestView";
+        final String bpViewTitle = "MyTestViewTitle";
+        final String proj1 = "Proj1";
+        final String noOfBuilds = "5";
+        createFreeStyleProject(proj1);
 
 		// Test a valid case
         DownstreamProjectGridBuilder gridBuilder = new DownstreamProjectGridBuilder(proj1);
 		BuildPipelineView testView = BuildPipelineViewFactory.getBuildPipelineView(bpViewName, bpViewTitle, gridBuilder, noOfBuilds, false, false);
 
-		Job<?, ?> testSelectedProject = gridBuilder.getFirstJob(testView);
+        Job<?, ?> testSelectedProject = gridBuilder.getFirstJob(testView);
 
-		assertEquals(proj1, testSelectedProject.getName());
+        assertEquals(proj1, testSelectedProject.getName());
 
-		// Test the null case
+        // Test the null case
         gridBuilder = new DownstreamProjectGridBuilder("");
 		testView = BuildPipelineViewFactory.getBuildPipelineView(bpViewName, bpViewTitle, gridBuilder, noOfBuilds, false, false);
 		testSelectedProject = gridBuilder.getFirstJob(testView);
@@ -85,26 +85,26 @@ public class BuildPipelineViewTest extends HudsonTestCase {
         assertNull(testSelectedProject);
     }
 
-	@Test
-	public void testHasBuildPermission() throws IOException {
-		final String bpViewName = "MyTestView";
-		final String bpViewTitle = "MyTestViewTitle";
-		final String proj1 = "Proj1";
-		final String noOfBuilds = "5";
-		final FreeStyleProject project1 = createFreeStyleProject(proj1);
+    @Test
+    public void testHasBuildPermission() throws IOException {
+        final String bpViewName = "MyTestView";
+        final String bpViewTitle = "MyTestViewTitle";
+        final String proj1 = "Proj1";
+        final String noOfBuilds = "5";
+        final FreeStyleProject project1 = createFreeStyleProject(proj1);
 
 		final BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle,
                 new DownstreamProjectGridBuilder(proj1), noOfBuilds, false, null, false);
 		assertTrue(testView.hasBuildPermission());
 	}
 
-	@Test
-	public void testTriggerOnlyLatestJob() throws IOException {
-		final String bpViewName = "MyTestView";
-		final String bpViewTitle = "MyTestViewTitle";
-		final String proj1 = "Proj1";
-		final String noOfBuilds = "5";
-		createFreeStyleProject(proj1);
+    @Test
+    public void testTriggerOnlyLatestJob() throws IOException {
+        final String bpViewName = "MyTestView";
+        final String bpViewTitle = "MyTestViewTitle";
+        final String proj1 = "Proj1";
+        final String noOfBuilds = "5";
+        createFreeStyleProject(proj1);
 
 		// True
 		BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, new DownstreamProjectGridBuilder(proj1), noOfBuilds, true, null, false);
@@ -115,13 +115,13 @@ public class BuildPipelineViewTest extends HudsonTestCase {
 		assertFalse(proj1, testView.isTriggerOnlyLatestJob());
 	}
 
-	@Test
-	public void testAlwaysAllowManualTrigger() throws IOException {
-		final String bpViewName = "MyTestView";
-		final String bpViewTitle = "MyTestViewTitle";
-		final String proj1 = "Proj1";
-		final String noOfBuilds = "5";
-		createFreeStyleProject(proj1);
+    @Test
+    public void testAlwaysAllowManualTrigger() throws IOException {
+        final String bpViewName = "MyTestView";
+        final String bpViewTitle = "MyTestViewTitle";
+        final String proj1 = "Proj1";
+        final String noOfBuilds = "5";
+        createFreeStyleProject(proj1);
 
 		// True
 		BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, new DownstreamProjectGridBuilder(proj1), noOfBuilds, true, true, false, false, false, 2, null, null, false);
@@ -132,13 +132,13 @@ public class BuildPipelineViewTest extends HudsonTestCase {
 		assertFalse("Failed to unset AlwaysAllowManualTrigger flag", testView.isAlwaysAllowManualTrigger());
 	}
 
-	@Test
-	public void testShowPipelineDefinitionHeader() throws IOException {
-		final String bpViewName = "MyTestView";
-		final String bpViewTitle = "MyTestViewTitle";
-		final String proj1 = "Proj1";
-		final String noOfBuilds = "5";
-		createFreeStyleProject(proj1);
+    @Test
+    public void testShowPipelineDefinitionHeader() throws IOException {
+        final String bpViewName = "MyTestView";
+        final String bpViewTitle = "MyTestViewTitle";
+        final String proj1 = "Proj1";
+        final String noOfBuilds = "5";
+        createFreeStyleProject(proj1);
 
 		// True
 		BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, new DownstreamProjectGridBuilder(proj1), noOfBuilds, true, false, false, false, true, 2, null, null, false);
@@ -149,13 +149,13 @@ public class BuildPipelineViewTest extends HudsonTestCase {
 		assertFalse("Failed to unset ShowPipelineDefinitionHeader flag", testView.isShowPipelineDefinitionHeader());
 	}
 
-	@Test
-	public void testShowPipelineParameters() throws IOException {
-		final String bpViewName = "MyTestView";
-		final String bpViewTitle = "MyTestViewTitle";
-		final String proj1 = "Proj1";
-		final String noOfBuilds = "5";
-		createFreeStyleProject(proj1);
+    @Test
+    public void testShowPipelineParameters() throws IOException {
+        final String bpViewName = "MyTestView";
+        final String bpViewTitle = "MyTestViewTitle";
+        final String proj1 = "Proj1";
+        final String noOfBuilds = "5";
+        createFreeStyleProject(proj1);
 
 		// True
 		BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, new DownstreamProjectGridBuilder(proj1), noOfBuilds, true, false, true, false, false, 2, null, null, false);
