@@ -211,7 +211,7 @@
 
 td.next {
     width: 40px;
-    vertical-align: middle;
+    vertical-align: top;
 }
 
 tbody.pipelineGroup {
