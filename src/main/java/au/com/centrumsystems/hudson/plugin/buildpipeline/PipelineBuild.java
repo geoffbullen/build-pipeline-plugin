@@ -442,7 +442,7 @@ public class PipelineBuild {
      * @return is ready to be manually built.
      */
     public boolean isReadyToBeManuallyBuilt() {
-     return isManualTrigger() && this.currentBuild == null && (upstreamBuildSucceeded() || upstreamBuildUnstable()) && hasBuildPermission();
+      return  this.currentBuild == null && (upstreamBuildSucceeded() || upstreamBuildUnstable()) && hasBuildPermission();
     }
 
     public boolean isRerunnable() {
