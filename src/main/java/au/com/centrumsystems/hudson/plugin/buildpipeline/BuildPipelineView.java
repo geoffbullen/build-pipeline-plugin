@@ -24,10 +24,13 @@
  */
 package au.com.centrumsystems.hudson.plugin.buildpipeline;
 
+import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
 
+import com.google.common.collect.Sets;
 import hudson.Extension;
 import hudson.model.Action;
+import hudson.model.Descriptor;
 import hudson.model.Item;
 import hudson.model.ParameterValue;
 import hudson.model.TaskListener;
@@ -45,7 +48,11 @@ import hudson.model.User;
 import hudson.model.View;
 import hudson.model.ViewDescriptor;
 import hudson.plugins.parameterizedtrigger.AbstractBuildParameters;
+import hudson.plugins.parameterizedtrigger.BuildTrigger;
+import hudson.plugins.parameterizedtrigger.BuildTriggerConfig;
 import hudson.security.Permission;
+import hudson.tasks.Publisher;
+import hudson.util.DescribableList;
 import hudson.util.LogTaskListener;
 import hudson.util.ListBoxModel;
 import jenkins.model.Jenkins;
@@ -56,6 +63,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
@@ -535,9 +543,13 @@ public class BuildPipelineView extends View {
 
         if (upstreamBuild != null) {
 
-            final BuildPipelineTrigger trigger = upstreamBuild.getProject().getPublishersList().get(BuildPipelineTrigger.class);
 
-            final List<AbstractBuildParameters> configs = trigger.getConfigs();
+            final List<AbstractBuildParameters> configs = retrieveUpstreamProjectTriggerConfig(triggerProject, upstreamBuild);
+
+            if (configs == null) {
+                LOGGER.log(Level.SEVERE, "No upstream trigger found for this project" + triggerProject.getFullDisplayName());
+                throw new IllegalStateException("No upstream trigger found for this project" + triggerProject.getFullDisplayName());
+            }
 
             for (final AbstractBuildParameters config : configs) {
                 try {
@@ -561,6 +573,41 @@ public class BuildPipelineView extends View {
 
         triggerProject.scheduleBuild(triggerProject.getQuietPeriod(), null, buildActions.toArray(new Action[buildActions.size()]));
         return triggerProject.getNextBuildNumber();
+    }
+
+    /**
+     * Used to retrieve the parameters from the upstream project build trigger relative to the given downstream project
+     * @param project the downstream project
+     * @param upstreamBuild the upstream project build
+     * @return the trigger config relative to the given downstream project
+     */
+    private List<AbstractBuildParameters> retrieveUpstreamProjectTriggerConfig(final AbstractProject<?, ?> project,
+                                                                               final AbstractBuild<?, ?> upstreamBuild) {
+        final DescribableList<Publisher, Descriptor<Publisher>> upstreamProjectPublishersList =
+                upstreamBuild.getProject().getPublishersList();
+
+        List<AbstractBuildParameters> configs = null;
+
+        final BuildPipelineTrigger manualTrigger = upstreamProjectPublishersList.get(BuildPipelineTrigger.class);
+        if (manualTrigger != null) {
+            final Set<String> downstreamProjectsNames =
+                    Sets.newHashSet(Splitter.on(",").split(manualTrigger.getDownstreamProjectNames()));
+            if (downstreamProjectsNames.contains(project.getName())) {
+                configs = manualTrigger.getConfigs();
+            }
+        }
+
+        final BuildTrigger autoTrigger = upstreamProjectPublishersList.get(BuildTrigger.class);
+        if (autoTrigger != null) {
+            for (BuildTriggerConfig config : autoTrigger.getConfigs()) {
+                final Set<String> downstreamProjectsNames = Sets.newHashSet(Splitter.on(",").split(config.getProjects()));
+                if (downstreamProjectsNames.contains(project.getName())) {
+                    configs = config.getConfigs();
+                }
+            }
+        }
+
+        return configs;
     }
 
     /**
