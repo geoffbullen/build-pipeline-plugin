@@ -172,7 +172,8 @@ public final class BuildUtil {
                 for (String paramName : sensitiveBuildVariables) {
                     if (retval.containsKey(paramName)) {
                         // We have the choice to hide the parameter or to replace it with special characters
-                        retval.remove(paramName);
+                        retval.put(paramName, "********");
+                        //retval.remove(paramName);
                     }
                 }
             }
