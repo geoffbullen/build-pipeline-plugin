@@ -17,13 +17,13 @@ import hudson.security.Permission;
 /**
  * This class provides a read-only view for the existing build-pipeline view. All calls checking permissions return false. The other reason
  * for this class is that it's used in a different context and not as a child of the view tab.
- * 
+ *
  * @author Ingo Richter (irichter@adobe.com)
  * @since 04/01/2012
  */
 public class ReadOnlyBuildPipelineView extends BuildPipelineView {
     /**
-     * 
+     *
      * @param displayName
      *            display name of build pipeline view
      * @param description
@@ -34,10 +34,14 @@ public class ReadOnlyBuildPipelineView extends BuildPipelineView {
      *            number of displayed build of build pipeline view
      * @param triggerOnlyLatestJob
      *            is trigger only latest job?
+     * @param cssUrl
+     *            URL for the custom CSS file.
+     * @param startsWithParameters
+     *            indicates if the first job in the view takes parameters
      */
     public ReadOnlyBuildPipelineView(final String displayName, final String description, final ProjectGridBuilder gridBuilder,
-            final String noOfDisplayedBuilds, final boolean triggerOnlyLatestJob) {
-        super(displayName, displayName, gridBuilder, noOfDisplayedBuilds, triggerOnlyLatestJob);
+            final String noOfDisplayedBuilds, final boolean triggerOnlyLatestJob, final String cssUrl, final boolean startsWithParameters) {
+        super(displayName, displayName, gridBuilder, noOfDisplayedBuilds, triggerOnlyLatestJob, cssUrl, startsWithParameters);
         // this is ugly, but there is no other way to set the description of the view
         super.description = description;
     }

@@ -58,13 +58,14 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 
 import au.com.centrumsystems.hudson.plugin.buildpipeline.Strings;
+import jenkins.model.Jenkins;
+import org.kohsuke.stapler.AncestorInPath;
 
 /**
  * The build pipeline trigger allows the creation of downstream jobs which aren't triggered automatically. This allows us to have manual
  * "approval" steps in the process where jobs are manually promoted along the pipeline by a user pressing a button on the view.
  *
  * @author Centrum Systems
- *
  */
 public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer {
     /**
@@ -77,7 +78,9 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
      */
     private final List<AbstractBuildParameters> configs;
 
-    /** downstream project name */
+    /**
+     * downstream project name
+     */
     private String downstreamProjectNames;
 
     public String getDownstreamProjectNames() {
@@ -95,11 +98,8 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
     /**
      * Construct the trigger setting the project name and manual build promotion option
      *
-     * @param downstreamProjectNames
-     *            - the job name of the downstream build
-     *
-     * @param configs
-     *            - the build parameters
+     * @param downstreamProjectNames - the job name of the downstream build
+     * @param configs                - the build parameters
      */
     @DataBoundConstructor
     public BuildPipelineTrigger(final String downstreamProjectNames, final List<AbstractBuildParameters> configs) {
@@ -114,16 +114,14 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
     /**
      * this method is required to rebuild the dependency graph of the downstream project
      *
-     * @param owner
-     *            owner
-     * @param graph
-     *            graph
+     * @param owner owner
+     * @param graph graph
      */
     @Override
     @SuppressWarnings("rawtypes")
     public void buildDependencyGraph(final AbstractProject owner, final DependencyGraph graph) {
         if ((downstreamProjectNames != null) && (downstreamProjectNames.length() > 0)) {
-            for (final Object o : Items.fromNameList(downstreamProjectNames, AbstractProject.class)) {
+            for (final Object o : Items.fromNameList(owner.getParent(), downstreamProjectNames, AbstractProject.class)) {
                 final AbstractProject downstream = (AbstractProject) o;
 
                 if (owner != downstream) {
@@ -138,10 +136,8 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
     /**
      * Create a new DownstreamDependency
      *
-     * @param owner
-     *            - upstream project
-     * @param downstream
-     *            - downstream project
+     * @param owner      - upstream project
+     * @param downstream - downstream project
      * @return downstream dependency
      */
     private DownstreamDependency createDownstreamDependency(final AbstractProject<?, ?> owner, final AbstractProject<?, ?> downstream) {
@@ -167,12 +163,11 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
     /**
      * Renames a project contained in downstreamProjectNames
      *
-     * @param oldName
-     *            - The old name of the project
-     * @param newName
-     *            - The new name of the project
+     * @param oldName - The old name of the project
+     * @param newName - The new name of the project
      * @return - true: A downstream project has been renamed; false No downstream projects were renamed
      */
+    // TODO should these names be relative names? cf. onDownstreamProjectDeleted, removeDownstreamTrigger, onRenamed, onDeleted
     public boolean onDownstreamProjectRenamed(final String oldName, final String newName) {
         LOGGER.fine(String.format("Renaming project %s -> %s", oldName, newName)); //$NON-NLS-1$
         boolean changed = false;
@@ -205,8 +200,7 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
     /**
      * Deletes a project from downstreamProjectNames.
      *
-     * @param oldName
-     *            - Project to be deleted
+     * @param oldName - Project to be deleted
      * @return - true; project deleted: false; project not deleted {@link #onDownstreamProjectRenamed(String, String)}
      */
     public boolean onDownstreamProjectDeleted(final String oldName) {
@@ -218,15 +212,12 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
      * Removes a downstream trigger (BuildPipelineTrigger) from a project. This removes both: - The downstream project name from the
      * downstreamProjectNames attribute - The BuildPipelineTrigger from the AbstractProject publishers list
      *
-     * @param bpTrigger
-     *            - The BuildPipelineTrigger to be removed
-     * @param ownerProject
-     *            - The AbstractProject from which to removed the BuildPipelineTrigger
-     * @param downstreamProjectName
-     *            - The name of the AbstractProject associated with the BuildPipelineTrigger
+     * @param bpTrigger             - The BuildPipelineTrigger to be removed
+     * @param ownerProject          - The AbstractProject from which to removed the BuildPipelineTrigger
+     * @param downstreamProjectName - The name of the AbstractProject associated with the BuildPipelineTrigger
      */
     public void removeDownstreamTrigger(final BuildPipelineTrigger bpTrigger, final AbstractProject<?, ?> ownerProject,
-            final String downstreamProjectName) {
+                                        final String downstreamProjectName) {
         if (bpTrigger != null) {
             boolean changed = false;
 
@@ -255,7 +246,6 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
      * configuration page
      *
      * @author Centrum Systems
-     *
      */
     @Extension
     public static class DescriptorImpl extends BuildStepDescriptor<Publisher> {
@@ -301,28 +291,32 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
         /**
          * Validates that the downstream project names entered are valid projects.
          *
-         * @param value
-         *            - The entered project names
+         * @param value   - The entered project names
+         * @param project - the containing project
          * @return hudson.util.FormValidation
          */
-        public FormValidation doCheckDownstreamProjectNames(@QueryParameter("downstreamProjectNames") final String value) {
+        public FormValidation doCheckDownstreamProjectNames(@AncestorInPath AbstractProject project,
+                                                            @QueryParameter("downstreamProjectNames") final String value) {
             final StringTokenizer tokens = new StringTokenizer(Util.fixNull(value), ","); //$NON-NLS-1$
+            boolean some = false;
             while (tokens.hasMoreTokens()) {
                 final String projectName = tokens.nextToken().trim();
                 if ("".equals(projectName)) { //$NON-NLS-1$
-                    return FormValidation.error(Messages.BuildTrigger_NoSuchProject(projectName, AbstractProject.findNearest(projectName)
-                            .getName()));
+                    continue;
                 }
-                final Item item = Hudson.getInstance().getItemByFullName(projectName, Item.class);
+                some = true;
+                final Item item = Jenkins.getInstance().getItem(projectName, project, Item.class);
                 if (item == null) {
-                    return FormValidation.error(Messages.BuildTrigger_NoSuchProject(projectName, AbstractProject.findNearest(projectName)
-                            .getName()));
+                    return FormValidation.error(Messages.BuildTrigger_NoSuchProject(projectName,
+                            AbstractProject.findNearest(projectName, project.getParent()).getRelativeNameFrom(project)));
                 }
                 if (!(item instanceof AbstractProject)) {
                     return FormValidation.error(Messages.BuildTrigger_NotBuildable(projectName));
                 }
             }
-
+            if (!some) {
+                return FormValidation.error(Messages.BuildTrigger_NoProjectSpecified());
+            }
             return FormValidation.ok();
         }
 
@@ -338,7 +332,7 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
         public static final class ItemListenerImpl extends ItemListener {
             @Override
             public void onRenamed(final Item item, final String oldName, final String newName) {
-                for (final Project<?, ?> p : Hudson.getInstance().getProjects()) {
+                for (final Project<?, ?> p : Jenkins.getInstance().getAllItems(Project.class)) {
                     final BuildPipelineTrigger bpTrigger = p.getPublishersList().get(BuildPipelineTrigger.class);
                     if (bpTrigger != null) {
                         boolean changed = false;
@@ -359,7 +353,7 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
 
             @Override
             public void onDeleted(final Item item) {
-                for (final Project<?, ?> p : Hudson.getInstance().getProjects()) {
+                for (final Project<?, ?> p : Jenkins.getInstance().getAllItems(Project.class)) {
                     final String oldName = item.getName();
                     final BuildPipelineTrigger bpTrigger = p.getPublishersList().get(BuildPipelineTrigger.class);
                     if (bpTrigger != null) {
