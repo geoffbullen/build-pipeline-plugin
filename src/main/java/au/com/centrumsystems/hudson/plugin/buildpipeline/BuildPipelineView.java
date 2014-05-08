@@ -29,9 +29,25 @@ import com.google.common.collect.Iterables;
 
 import com.google.common.collect.Sets;
 import hudson.Extension;
-import hudson.model.*;
+import hudson.model.Action;
+import hudson.model.Item;
+import hudson.model.ItemGroup;
+import hudson.model.ParameterValue;
+import hudson.model.TaskListener;
+import hudson.model.TopLevelItem;
+import hudson.model.AbstractBuild;
+import hudson.model.AbstractProject;
+import hudson.model.Cause;
 import hudson.model.Cause.UserIdCause;
+import hudson.model.CauseAction;
+import hudson.model.Descriptor;
 import hudson.model.Descriptor.FormException;
+import hudson.model.Hudson;
+import hudson.model.ParametersAction;
+import hudson.model.Run;
+import hudson.model.User;
+import hudson.model.View;
+import hudson.model.ViewDescriptor;
 import hudson.plugins.parameterizedtrigger.AbstractBuildParameters;
 import hudson.plugins.parameterizedtrigger.BuildTrigger;
 import hudson.plugins.parameterizedtrigger.BuildTriggerConfig;
@@ -419,7 +435,7 @@ public class BuildPipelineView extends View {
      */
     @JavaScriptMethod
     public int triggerManualBuild(final Integer upstreamBuildNumber, final String triggerProjectName, final String upstreamProjectName) {
-        ItemGroup context = getOwnerItemGroup();
+        final ItemGroup context = getOwnerItemGroup();
         final AbstractProject<?, ?> triggerProject = (AbstractProject<?, ?>) Jenkins.getInstance().getItem(triggerProjectName, context);
         final AbstractProject<?, ?> upstreamProject = (AbstractProject<?, ?>) Jenkins.getInstance().getItem(upstreamProjectName, context);
 
