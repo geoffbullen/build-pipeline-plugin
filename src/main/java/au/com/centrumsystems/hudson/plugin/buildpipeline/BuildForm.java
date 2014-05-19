@@ -2,6 +2,7 @@ package au.com.centrumsystems.hudson.plugin.buildpipeline;
 
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
+import hudson.model.ItemGroup;
 import hudson.model.ParametersDefinitionProperty;
 
 import java.util.ArrayList;
@@ -54,17 +55,20 @@ public class BuildForm {
      * project stringfied list of parameters for the project
      * */
     private final ArrayList<String> parameters;
-    
+
+    private final ItemGroup context;
+
     /**
      * @param pipelineBuild
      *            pipeline build domain used to see the form
      */
-    public BuildForm(final PipelineBuild pipelineBuild) {
+    public BuildForm(ItemGroup context, final PipelineBuild pipelineBuild) {
+        this.context = context;
         this.pipelineBuild = pipelineBuild;
         status = pipelineBuild.getCurrentBuildResult();
         dependencies = new ArrayList<BuildForm>();
         for (final PipelineBuild downstream : pipelineBuild.getDownstreamPipeline()) {
-            dependencies.add(new BuildForm(downstream));
+            dependencies.add(new BuildForm(context, downstream));
         }
         id = hashCode();
         final AbstractProject<?, ?> project = pipelineBuild.getProject();
@@ -103,7 +107,7 @@ public class BuildForm {
      */
     @JavaScriptMethod
     public String asJSON() {
-        return BuildJSONBuilder.asJSON(pipelineBuild, id, projectId, getDependencyIds(), getParameterList());
+        return BuildJSONBuilder.asJSON(context, pipelineBuild, id, projectId, getDependencyIds(), getParameterList());
     }
 
     public int getId() {
