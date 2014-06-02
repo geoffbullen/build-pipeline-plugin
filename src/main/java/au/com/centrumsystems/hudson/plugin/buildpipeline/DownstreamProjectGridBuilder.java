@@ -53,10 +53,15 @@ public class DownstreamProjectGridBuilder extends ProjectGridBuilder {
          */
         private final AbstractProject<?, ?> start;
 
+        /**
+         * The item group pipeline view belongs to
+         */
         private final ItemGroup context;
 
         /**
-         * @param start The first project to lead the pipeline.
+         * @param context
+         *            item group pipeline view belongs to, used to compute relative item names
+         * @param start The first project to lead the pipeline.        
          */
         private GridImpl(ItemGroup context, AbstractProject<?, ?> start) {
             this.context = context;

@@ -56,11 +56,16 @@ public class BuildForm {
      * */
     private final ArrayList<String> parameters;
 
+    /**
+     * The item group pipeline view belongs to
+     */
     private final ItemGroup context;
 
     /**
      * @param pipelineBuild
      *            pipeline build domain used to see the form
+     * @param context
+     *            item group pipeline view belongs to, used to compute relative item names
      */
     public BuildForm(ItemGroup context, final PipelineBuild pipelineBuild) {
         this.context = context;
