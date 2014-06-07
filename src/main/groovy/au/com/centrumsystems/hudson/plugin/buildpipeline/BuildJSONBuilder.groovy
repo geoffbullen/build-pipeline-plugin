@@ -3,10 +3,11 @@ package au.com.centrumsystems.hudson.plugin.buildpipeline
 import groovy.json.JsonBuilder
 import hudson.model.Cause
 import hudson.model.Item
+import hudson.model.ItemGroup
 
 class BuildJSONBuilder {
 
-	static String asJSON(PipelineBuild pipelineBuild, Integer formId, Integer projectId, List<Integer> buildDependencyIds, ArrayList<String> params) {
+	static String asJSON(ItemGroup context, PipelineBuild pipelineBuild, Integer formId, Integer projectId, List<Integer> buildDependencyIds, ArrayList<String> params) {
 		def builder = new JsonBuilder()
 		def buildStatus = pipelineBuild.currentBuildResult
 		def root = builder {
@@ -40,14 +41,14 @@ class BuildJSONBuilder {
 			}
 			project {
 				disabled(pipelineBuild.projectDisabled)
-				name(pipelineBuild.project.getRelativeNameFrom(pipelineBuild.project.parent))
+				name(pipelineBuild.project.getRelativeNameFrom(context))
 				url(pipelineBuild.projectURL)
 				health(pipelineBuild.projectHealth)
 				id(projectId)
 				parameters(params)
 			}
 			upstream {
-				projectName(pipelineBuild.upstreamPipelineBuild?.project?.getRelativeNameFrom(pipelineBuild.project.parent))
+				projectName(pipelineBuild.upstreamPipelineBuild?.project?.getRelativeNameFrom(context))
 				buildNumber(pipelineBuild.upstreamBuild?.number)
 			}
 		}

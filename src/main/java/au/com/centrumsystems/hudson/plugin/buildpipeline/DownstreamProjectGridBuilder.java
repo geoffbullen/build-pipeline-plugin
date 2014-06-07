@@ -54,9 +54,17 @@ public class DownstreamProjectGridBuilder extends ProjectGridBuilder {
         private final AbstractProject<?, ?> start;
 
         /**
-         * @param start The first project to lead the pipeline.
+         * The item group pipeline view belongs to
          */
-        private GridImpl(AbstractProject<?, ?> start) {
+        private final ItemGroup context;
+
+        /**
+         * @param context
+         *            item group pipeline view belongs to, used to compute relative item names
+         * @param start The first project to lead the pipeline.        
+         */
+        private GridImpl(ItemGroup context, AbstractProject<?, ?> start) {
+            this.context = context;
             this.start = start;
             placeProjectInGrid(0, 0, ProjectForm.as(start));
         }
@@ -98,7 +106,7 @@ public class DownstreamProjectGridBuilder extends ProjectGridBuilder {
                 return new AdaptedIterator<AbstractBuild<?, ?>, BuildGrid>(base) {
                     @Override
                     protected BuildGrid adapt(AbstractBuild<?, ?> item) {
-                        return new BuildGridImpl(new BuildForm(new PipelineBuild(item)));
+                        return new BuildGridImpl(new BuildForm(context, new PipelineBuild(item)));
                     }
                 };
             }
@@ -194,7 +202,7 @@ public class DownstreamProjectGridBuilder extends ProjectGridBuilder {
 
     @Override
     public ProjectGrid build(BuildPipelineView owner) {
-        return new GridImpl(getFirstJob(owner));
+        return new GridImpl(owner.getOwnerItemGroup(), getFirstJob(owner));
     }
 
     @Override
