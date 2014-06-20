@@ -7,7 +7,10 @@ import hudson.model.AbstractProject;
 import hudson.model.Hudson;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -82,7 +85,16 @@ public class ProjectForm {
      *            project
      */
     public ProjectForm(final AbstractProject<?, ?> project) {
+        this(project, new LinkedHashSet<AbstractProject<?, ?>>(Arrays.asList(project)));
+    }
 
+    /**
+     * @param project
+     *            project
+     * @param parentPath
+     *            already traversed projects
+     */
+    private ProjectForm(final AbstractProject<?, ?> project, final Collection<AbstractProject<?, ?>> parentPath) {
         final PipelineBuild pipelineBuild = new PipelineBuild(project.getLastBuild(), project, null);
 
         name = pipelineBuild.getProject().getFullName();
@@ -91,16 +103,22 @@ public class ProjectForm {
         url = pipelineBuild.getProjectURL();
         dependencies = new ArrayList<ProjectForm>();
         for (final AbstractProject<?, ?> dependency : project.getDownstreamProjects()) {
-            dependencies.add(new ProjectForm(dependency));
+            final Collection<AbstractProject<?, ?>> forkedPath = new LinkedHashSet<AbstractProject<?, ?>>(parentPath);
+            if (forkedPath.add(dependency)) {
+                dependencies.add(new ProjectForm(dependency, forkedPath));
+            }
         }
         if (Hudson.getInstance().getPlugin("parameterized-trigger") != null) {
             for (SubProjectsAction action : Util.filter(project.getActions(), SubProjectsAction.class)) {
                 for (hudson.plugins.parameterizedtrigger.BlockableBuildTriggerConfig config : action.getConfigs()) {
                     for (final AbstractProject<?, ?> dependency : config.getProjectList(project.getParent(), null)) {
-                        final ProjectForm candidate = new ProjectForm(dependency);
-                        // if subprojects come back as downstreams someday, no duplicates wanted
-                        if (!dependencies.contains(candidate)) {
-                            dependencies.add(candidate);
+                        final Collection<AbstractProject<?, ?>> forkedPath = new LinkedHashSet<AbstractProject<?, ?>>(parentPath);
+                        if (forkedPath.add(dependency)) {
+                            final ProjectForm candidate = new ProjectForm(dependency, forkedPath);
+                            // if subprojects come back as downstreams someday, no duplicates wanted
+                            if (!dependencies.contains(candidate)) {
+                                dependencies.add(candidate);
+                            }
                         }
                     }
                 }
