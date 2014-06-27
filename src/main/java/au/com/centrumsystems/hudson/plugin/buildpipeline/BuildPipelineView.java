@@ -126,8 +126,9 @@ public class BuildPipelineView extends View {
     /** showPipelineParametersInHeaders */
     private boolean showPipelineParametersInHeaders;
 
-    
     /**
+     * @deprecated
+     *
      * Don't need an input from UI store this
      */
     @Deprecated    
@@ -233,9 +234,6 @@ public class BuildPipelineView extends View {
      *            Indicates whether only the latest job will be triggered.
      * @param cssUrl
      *            URL for the custom CSS file.
-     * @param startsWithParameters
-     *            Indicates whether the first job of the pipeline takes
-     *            parameters
      */
     public BuildPipelineView(final String name, final String buildViewTitle,
              final ProjectGridBuilder gridBuilder, final String noOfDisplayedBuilds,
@@ -924,9 +922,5 @@ public class BuildPipelineView extends View {
         }
 
         return display;
-    }
-    
-	public boolean isProjectParameterized() {
-        return gridBuilder.startsWithParameters(this);
-    }      
+    } 
 }
