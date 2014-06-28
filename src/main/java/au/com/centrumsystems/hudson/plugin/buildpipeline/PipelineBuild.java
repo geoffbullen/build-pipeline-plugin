@@ -258,7 +258,7 @@ public class PipelineBuild {
             if (build.isBuilding()) {
                 buildResult = HudsonResult.BUILDING.toString();
             } else {
-                Result result = build.getResult();
+                final Result result = build.getResult();
                 if (result == null) {
                     throw new IllegalStateException("Build with a null result after build has finished");
                 }
