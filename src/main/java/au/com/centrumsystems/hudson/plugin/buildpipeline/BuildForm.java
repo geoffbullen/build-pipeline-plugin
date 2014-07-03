@@ -6,6 +6,9 @@ import hudson.model.ItemGroup;
 import hudson.model.ParametersDefinitionProperty;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -68,12 +71,27 @@ public class BuildForm {
      *            item group pipeline view belongs to, used to compute relative item names
      */
     public BuildForm(ItemGroup context, final PipelineBuild pipelineBuild) {
+        this(context, pipelineBuild, new LinkedHashSet<AbstractProject<?, ?>>(Arrays.asList(pipelineBuild.getProject())));
+    }
+
+    /**
+     * @param pipelineBuild
+     *            pipeline build domain used to see the form
+     * @param context
+     *            item group pipeline view belongs to, used to compute relative item names
+     * @param parentPath
+     *            already traversed projects
+     */
+    private BuildForm(ItemGroup context, final PipelineBuild pipelineBuild, final Collection<AbstractProject<?, ?>> parentPath) {
         this.context = context;
         this.pipelineBuild = pipelineBuild;
         status = pipelineBuild.getCurrentBuildResult();
         dependencies = new ArrayList<BuildForm>();
         for (final PipelineBuild downstream : pipelineBuild.getDownstreamPipeline()) {
-            dependencies.add(new BuildForm(context, downstream));
+            final Collection<AbstractProject<?, ?>> forkedPath = new LinkedHashSet<AbstractProject<?, ?>>(parentPath);
+            if (forkedPath.add(downstream.getProject())) {
+                dependencies.add(new BuildForm(context, downstream, forkedPath));
+            }
         }
         id = hashCode();
         final AbstractProject<?, ?> project = pipelineBuild.getProject();
