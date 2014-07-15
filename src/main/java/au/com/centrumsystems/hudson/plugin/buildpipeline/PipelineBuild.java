@@ -30,6 +30,7 @@ import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.FreeStyleProject;
 import hudson.model.Hudson;
+import hudson.model.Result;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -257,7 +258,11 @@ public class PipelineBuild {
             if (build.isBuilding()) {
                 buildResult = HudsonResult.BUILDING.toString();
             } else {
-                buildResult = HudsonResult.values()[build.getResult().ordinal].toString();
+                final Result result = build.getResult();
+                if (result == null) {
+                    throw new IllegalStateException("Build with a null result after build has finished");
+                }
+                buildResult = HudsonResult.values()[result.ordinal].toString();
             }
         } else {
             // Otherwise determine its pending status
@@ -281,8 +286,8 @@ public class PipelineBuild {
 
         if (upstreamPB != null) {
             if (this.getUpstreamBuild() != null) {
-                if (getUpstreamBuildResult().equals(HudsonResult.SUCCESS.toString()) 
-            || 
+                if (getUpstreamBuildResult().equals(HudsonResult.SUCCESS.toString())
+            ||
             getUpstreamBuildResult().equals(HudsonResult.UNSTABLE.toString())) {
                     if (ProjectUtil.isManualTrigger(this.upstreamBuild.getProject(), this.project)) {
                         pendingStatus = HudsonResult.MANUAL.toString();
@@ -310,7 +315,7 @@ public class PipelineBuild {
         } else {
             upstreamBuildName = "";
         }
-        if (upstreamProjects.size() > 0) { 
+        if (upstreamProjects.size() > 0) {
             if (isManualTrigger()) {
                 for (AbstractProject upstreamProject : upstreamProjects) {
                     if (upstreamProject.getName().equals(upstreamBuildName)) {
