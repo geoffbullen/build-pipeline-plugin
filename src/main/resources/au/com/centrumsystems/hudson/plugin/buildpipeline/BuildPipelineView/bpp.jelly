@@ -205,7 +205,7 @@
 		background: url("${rootURL}/images/16x16/clock.png") no-repeat center center !important;
 	}
 	</style>
-  <form method="post" action="gridBuilder/build" id="triggerPipelineForm" />
+    <form method="post" action="gridBuilder/build" id="triggerPipelineForm" class="no-json"/>
 	<form method="post" name="pipelineViewForm" action="manualExecution" id="manualExecutionForm">
 
 		<input name="upstreamProjectName" id="upstreamProjectName" type="hidden" />
