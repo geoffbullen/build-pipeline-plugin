@@ -913,7 +913,7 @@ public class BuildPipelineView extends View {
         boolean display = true;
         //tester la liste vide seulement en lecture
         if (READ.name.equals(p.name)) {
-          Collection<TopLevelItem> items = this.getItems();
+          final Collection<TopLevelItem> items = this.getItems();
           if (items == null || items.isEmpty()) {
                 display = false;
             }
