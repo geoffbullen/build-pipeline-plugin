@@ -393,10 +393,16 @@ public class BuildPipelineView extends View {
      * @return - Representation of the projects and their related builds making up the build pipeline view
      */
     public BuildPipelineForm getBuildPipelineForm() {
-      if (noOfDisplayedBuilds == null) return null;
+        if (noOfDisplayedBuilds == null) {
+          return null;
+        }
+
         final int maxNoOfDisplayBuilds = Integer.valueOf(noOfDisplayedBuilds);
 
-      if (gridBuilder == null) return null;
+        if (gridBuilder == null)  {
+          return null;
+        }
+
         final ProjectGrid project = gridBuilder.build(this);
         if (project.isEmpty()) {
             return null;
