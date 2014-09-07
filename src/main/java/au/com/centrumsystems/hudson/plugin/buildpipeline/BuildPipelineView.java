@@ -241,7 +241,7 @@ public class BuildPipelineView extends View {
         super(name, Hudson.getInstance());
         this.buildViewTitle = buildViewTitle;
         this.gridBuilder = gridBuilder;
-        this.noOfDisplayedBuilds = (noOfDisplayedBuilds == null) ? "1" : noOfDisplayedBuilds;
+        this.noOfDisplayedBuilds = noOfDisplayedBuilds;
         this.triggerOnlyLatestJob = triggerOnlyLatestJob;
         this.cssUrl = cssUrl;
     }
