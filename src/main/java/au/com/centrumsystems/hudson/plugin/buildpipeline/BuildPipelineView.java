@@ -598,7 +598,7 @@ public class BuildPipelineView extends View {
         if (manualTrigger != null) {
             final Set<String> downstreamProjectsNames =
                     Sets.newHashSet(Splitter.on(",").trimResults().split(manualTrigger.getDownstreamProjectNames()));
-            if (downstreamProjectsNames.contains(project.getName())) {
+            if (downstreamProjectsNames.contains(project.getFullName())) {
                 configs = manualTrigger.getConfigs();
             }
         }
@@ -607,7 +607,7 @@ public class BuildPipelineView extends View {
         if (autoTrigger != null) {
             for (BuildTriggerConfig config : autoTrigger.getConfigs()) {
                 final Set<String> downstreamProjectsNames = Sets.newHashSet(Splitter.on(",").trimResults().split(config.getProjects()));
-                if (downstreamProjectsNames.contains(project.getName())) {
+                if (downstreamProjectsNames.contains(project.getFullName())) {
                     configs = config.getConfigs();
                 }
             }
