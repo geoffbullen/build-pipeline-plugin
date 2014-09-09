@@ -305,7 +305,7 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
                     continue;
                 }
                 some = true;
-                final Item item = Jenkins.getInstance().getItem(projectName, project, Item.class);
+                final Item item = Jenkins.getInstance().getItemByFullName(projectName);
                 if (item == null) {
                     return FormValidation.error(Messages.BuildTrigger_NoSuchProject(projectName,
                             AbstractProject.findNearest(projectName, project.getParent()).getRelativeNameFrom(project)));
