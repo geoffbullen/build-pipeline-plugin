@@ -891,6 +891,7 @@ public class BuildPipelineView extends View {
      */
     @Override
     public void onJobRenamed(final Item item, final String oldName, final String newName) {
+        if (gridBuilder == null) return;
         LOGGER.fine(String.format("Renaming job: %s -> %s", oldName, newName));
         try {
             gridBuilder.onJobRenamed(this, item, oldName, newName);
