@@ -229,7 +229,7 @@
         <j:if test="${hasBuildPermission}">
           <div class="icon-container">
 		<j:if test="${from.startsWithParameters}">
-			<div onclick="buildPipeline.fillDialog('${rootURL}/job/${from.gridBuilder.firstJob}/build?delay=0sec', 'Starts the pipeline with parameters')">
+			<div onclick="buildPipeline.fillDialog('${rootURL}/${from.gridBuilder.firstJobLink}/build?delay=0sec', 'Starts the pipeline with parameters')">
                 <img src="${rootURL}/images/24x24/clock.png" alt="Trigger a Pipeline" class="icon-with-caption"/>
             </div>
 		</j:if>
