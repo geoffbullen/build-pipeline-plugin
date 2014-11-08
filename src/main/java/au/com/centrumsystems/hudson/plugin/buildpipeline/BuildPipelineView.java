@@ -349,6 +349,14 @@ public class BuildPipelineView extends View {
     }
 
     /**
+     * Checks if this build starts with parameters
+     * @return - true: The build has parameters; false: Does not have parameters
+     */ 
+    public boolean isProjectParameterized() {
+        return getGridBuilder().startsWithParameters(this);
+    }
+
+    /**
      * Checks whether the user has Configure permission for the current project.
      *
      * @return - true: Has Configure permission; false: Does not have Configure permission
