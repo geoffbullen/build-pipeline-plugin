@@ -1,7 +1,6 @@
 package au.com.centrumsystems.hudson.plugin.buildpipeline;
 
 import hudson.Extension;
-import hudson.Functions;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.Item;
@@ -218,11 +217,11 @@ public class DownstreamProjectGridBuilder extends ProjectGridBuilder {
 
     @Override
     public ProjectGrid build(BuildPipelineView owner) {
-        AbstractProject<?, ?> project = Jenkins.getInstance().getItem(firstJob,owner.getOwnerItemGroup(),AbstractProject.class);            
-        if ( project != null ) {
+        final AbstractProject<?, ?> project = Jenkins.getInstance().getItem(firstJob, 
+            owner.getOwnerItemGroup(), AbstractProject.class);            
+        if (project != null) {
             this.firstJobLink = project.getUrl();
-        }
-        else {
+        } else {
             this.firstJobLink = "";
         }
         return new GridImpl(owner.getOwnerItemGroup(), getFirstJob(owner));
