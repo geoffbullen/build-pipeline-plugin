@@ -40,6 +40,11 @@ public class DownstreamProjectGridBuilder extends ProjectGridBuilder {
     private String firstJob;
 
     /**
+     * Url to the first job in the grid, relative to the owner view
+     */
+    private String firstJobLink;
+
+    /**
      * @param firstJob Name of the job to lead the piepline.
      */
     @DataBoundConstructor
@@ -156,6 +161,10 @@ public class DownstreamProjectGridBuilder extends ProjectGridBuilder {
         return firstJob;
     }
 
+    public String getFirstJobLink() {        
+        return firstJobLink;
+    }
+
     /**
      * The job that's configured as the head of the pipeline.
      *
@@ -190,7 +199,6 @@ public class DownstreamProjectGridBuilder extends ProjectGridBuilder {
         if (p == null) {
             return HttpResponses.error(StaplerResponse.SC_BAD_REQUEST, "No such project: " + getFirstJob());
         }
-
         return new HttpResponse() {
             @Override
             public void generateResponse(StaplerRequest req, StaplerResponse rsp, Object node) throws IOException, ServletException {
@@ -209,6 +217,13 @@ public class DownstreamProjectGridBuilder extends ProjectGridBuilder {
 
     @Override
     public ProjectGrid build(BuildPipelineView owner) {
+        final AbstractProject<?, ?> project = Jenkins.getInstance().getItem(firstJob, 
+            owner.getOwnerItemGroup(), AbstractProject.class);            
+        if (project != null) {
+            this.firstJobLink = project.getUrl();
+        } else {
+            this.firstJobLink = "";
+        }
         return new GridImpl(owner.getOwnerItemGroup(), getFirstJob(owner));
     }
 
