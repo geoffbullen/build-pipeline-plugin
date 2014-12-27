@@ -25,6 +25,7 @@
 package au.com.centrumsystems.hudson.plugin.buildpipeline;
 
 import hudson.model.Action;
+import hudson.model.Cause;
 import hudson.model.FreeStyleBuild;
 import hudson.model.ItemGroup;
 import hudson.model.TopLevelItem;
@@ -41,11 +42,15 @@ import java.util.List;
 
 import jenkins.model.Jenkins;
 
-import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
-import org.jvnet.hudson.test.HudsonTestCase;
+import org.jvnet.hudson.test.Bug;
 
 import au.com.centrumsystems.hudson.plugin.buildpipeline.trigger.BuildPipelineTrigger;
+import org.jvnet.hudson.test.JenkinsRule;
+import org.jvnet.hudson.test.recipes.LocalData;
+
+import static org.junit.Assert.*;
 
 /**
  * Test Build Pipeline View
@@ -53,13 +58,11 @@ import au.com.centrumsystems.hudson.plugin.buildpipeline.trigger.BuildPipelineTr
  * @author Centrum Systems
  * 
  */
-public class BuildPipelineViewTest extends HudsonTestCase {
+public class BuildPipelineViewTest {
 
-    @Override
-    @Before
-    public void setUp() throws Exception {
-        super.setUp();
-    }
+    @Rule
+    public JenkinsRule jenkins = new JenkinsRule();
+
 
     @Test
     public void testGetSelectedProject() throws IOException {
@@ -67,7 +70,7 @@ public class BuildPipelineViewTest extends HudsonTestCase {
         final String bpViewTitle = "MyTestViewTitle";
         final String proj1 = "Proj1";
         final String noOfBuilds = "5";
-        createFreeStyleProject(proj1);
+        jenkins.createFreeStyleProject(proj1);
 
 		// Test a valid case
         DownstreamProjectGridBuilder gridBuilder = new DownstreamProjectGridBuilder(proj1);
@@ -91,7 +94,7 @@ public class BuildPipelineViewTest extends HudsonTestCase {
         final String bpViewTitle = "MyTestViewTitle";
         final String proj1 = "Proj1";
         final String noOfBuilds = "5";
-        final FreeStyleProject project1 = createFreeStyleProject(proj1);
+        final FreeStyleProject project1 = jenkins.createFreeStyleProject(proj1);
 
 		final BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle,
                 new DownstreamProjectGridBuilder(proj1), noOfBuilds, false, null);
@@ -104,7 +107,7 @@ public class BuildPipelineViewTest extends HudsonTestCase {
         final String bpViewTitle = "MyTestViewTitle";
         final String proj1 = "Proj1";
         final String noOfBuilds = "5";
-        createFreeStyleProject(proj1);
+        jenkins.createFreeStyleProject(proj1);
 
 		// True
 		BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, new DownstreamProjectGridBuilder(proj1), noOfBuilds, true, null);
@@ -121,7 +124,7 @@ public class BuildPipelineViewTest extends HudsonTestCase {
         final String bpViewTitle = "MyTestViewTitle";
         final String proj1 = "Proj1";
         final String noOfBuilds = "5";
-        createFreeStyleProject(proj1);
+        jenkins.createFreeStyleProject(proj1);
 
 		// True
 		BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, new DownstreamProjectGridBuilder(proj1), noOfBuilds, true, true, false, false, false, 2, null, null);
@@ -138,7 +141,7 @@ public class BuildPipelineViewTest extends HudsonTestCase {
         final String bpViewTitle = "MyTestViewTitle";
         final String proj1 = "Proj1";
         final String noOfBuilds = "5";
-        createFreeStyleProject(proj1);
+        jenkins.createFreeStyleProject(proj1);
 
 		// True
 		BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, new DownstreamProjectGridBuilder(proj1), noOfBuilds, true, false, false, false, true, 2, null, null);
@@ -155,7 +158,7 @@ public class BuildPipelineViewTest extends HudsonTestCase {
         final String bpViewTitle = "MyTestViewTitle";
         final String proj1 = "Proj1";
         final String noOfBuilds = "5";
-        createFreeStyleProject(proj1);
+        jenkins.createFreeStyleProject(proj1);
 
 		// True
 		BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, new DownstreamProjectGridBuilder(proj1), noOfBuilds, true, false, true, false, false, 2, null, null);
@@ -172,7 +175,7 @@ public class BuildPipelineViewTest extends HudsonTestCase {
         final String bpViewTitle = "MyTestViewTitle";
         final String proj1 = "Proj1";
         final String noOfBuilds = "5";
-        createFreeStyleProject(proj1);
+        jenkins.createFreeStyleProject(proj1);
 
         BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, new DownstreamProjectGridBuilder(proj1), noOfBuilds, true, false, true, true, false, 2, null, null);
         assertTrue("Failed to set ShowPipelineParametersInHeaders flag", testView.isShowPipelineParametersInHeaders());
@@ -188,8 +191,8 @@ public class BuildPipelineViewTest extends HudsonTestCase {
 		final String proj1 = "Proj1";
 		final String proj2 = "Proj2";
 		final String noOfBuilds = "5";
-		final FreeStyleProject project1 = createFreeStyleProject(proj1);
-		final FreeStyleProject project2 = createFreeStyleProject(proj2);
+		final FreeStyleProject project1 = jenkins.createFreeStyleProject(proj1);
+		final FreeStyleProject project2 = jenkins.createFreeStyleProject(proj2);
 
         // Add project2 as a post build action: build other project
         project1.getPublishersList().add(new BuildPipelineTrigger(proj2, null));
@@ -212,8 +215,8 @@ public class BuildPipelineViewTest extends HudsonTestCase {
         final String proj1 = "Proj1";
         final String proj2 = "Proj2";
         final String noOfBuilds = "5";
-        final FreeStyleProject project1 = createFreeStyleProject(proj1);
-        final FreeStyleProject project2 = createFreeStyleProject(proj2);
+        final FreeStyleProject project1 = jenkins.createFreeStyleProject(proj1);
+        final FreeStyleProject project2 = jenkins.createFreeStyleProject(proj2);
 
         // Add project2 as a post build action: build other project
         project1.getPublishersList().add(new BuildPipelineTrigger(proj2, null));
@@ -238,9 +241,9 @@ public class BuildPipelineViewTest extends HudsonTestCase {
         final String proj3 = "Proj3";
         FreeStyleBuild build1;
         final String noOfBuilds = "5";
-        final FreeStyleProject project1 = createFreeStyleProject(proj1);
-        final FreeStyleProject project2 = createFreeStyleProject(proj2);
-        final FreeStyleProject project3 = createFreeStyleProject(proj3);
+        final FreeStyleProject project1 = jenkins.createFreeStyleProject(proj1);
+        final FreeStyleProject project2 = jenkins.createFreeStyleProject(proj2);
+        final FreeStyleProject project3 = jenkins.createFreeStyleProject(proj3);
 
         // Add project2 as a post build action: build other project
         project1.getPublishersList().add(new BuildPipelineTrigger(proj2, null));
@@ -251,8 +254,8 @@ public class BuildPipelineViewTest extends HudsonTestCase {
         Hudson.getInstance().rebuildDependencyGraph();
 
         // Build project1
-        build1 = buildAndAssertSuccess(project1);
-        waitUntilNoActivity();
+        build1 = jenkins.buildAndAssertSuccess(project1);
+        jenkins.waitUntilNoActivity();
 
 		// Test a valid case
 		final BuildPipelineView testView = BuildPipelineViewFactory.getBuildPipelineView(bpViewName, bpViewTitle, new DownstreamProjectGridBuilder(proj1), noOfBuilds, false);
@@ -262,13 +265,13 @@ public class BuildPipelineViewTest extends HudsonTestCase {
         final List<Action> buildActions = new ArrayList<Action>();
         project2.scheduleBuild(0, upstreamCause,
                 buildActions.toArray(new Action[buildActions.size()]));
-        waitUntilNoActivity();
+        jenkins.waitUntilNoActivity();
 
         upstreamCause = new hudson.model.Cause.UpstreamCause(
                 (Run<?, ?>) project2.getBuildByNumber(1));
         project3.scheduleBuild(0, upstreamCause,
                 buildActions.toArray(new Action[buildActions.size()]));
-        waitUntilNoActivity();
+        jenkins.waitUntilNoActivity();
 
         final BuildPipelineForm testForm = testView.getBuildPipelineForm();
 
@@ -289,7 +292,7 @@ public class BuildPipelineViewTest extends HudsonTestCase {
         final String proj2 = "Proj2";
         final String proj3 = "Proj3";
         final String noOfBuilds = "5";
-        final FreeStyleProject project1 = createFreeStyleProject(proj1);
+        final FreeStyleProject project1 = jenkins.createFreeStyleProject(proj1);
 
         // Add project2 as a post build action: build other project
         project1.getPublishersList().add(new BuildPipelineTrigger(proj2, null));
@@ -312,7 +315,7 @@ public class BuildPipelineViewTest extends HudsonTestCase {
         final String bpViewTitle = "MyTestViewTitle";
         final String proj1 = "Proj1";
         final String noOfBuilds = "5";
-        final FreeStyleProject project1 = createFreeStyleProject(proj1);
+        final FreeStyleProject project1 = jenkins.createFreeStyleProject(proj1);
 
 		final BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle,
                 new DownstreamProjectGridBuilder(proj1), noOfBuilds, false, null);
@@ -321,7 +324,7 @@ public class BuildPipelineViewTest extends HudsonTestCase {
 		assertTrue(testView.getItems().contains(item1));
 
         final String proj2 = "Proj2";
-        final FreeStyleProject project2 = createFreeStyleProject(proj2);
+        final FreeStyleProject project2 = jenkins.createFreeStyleProject(proj2);
         TopLevelItem item2 = Jenkins.getInstance().getItem(proj2);
         assertNotNull(item2);
         assertFalse(testView.getItems().contains(item2));
@@ -339,6 +342,18 @@ public class BuildPipelineViewTest extends HudsonTestCase {
                 noOfBuilds, false, null);
 
         assertTrue(testView.hasPermission(Permission.READ));
+    }
+
+    @Test
+    @LocalData
+    @Bug(19755)
+    public void testMyUserIdCauseConversion() throws Exception {
+        FreeStyleProject projectB = (FreeStyleProject) jenkins.getInstance().getItem("B");
+        FreeStyleBuild buildB = projectB.getBuildByNumber(1);
+        assertNotNull(buildB);
+        Cause.UserIdCause cause = buildB.getCause(Cause.UserIdCause.class);
+        assertNotNull(cause);
+        assertEquals("bill", cause.getUserId());
     }
 
     /**

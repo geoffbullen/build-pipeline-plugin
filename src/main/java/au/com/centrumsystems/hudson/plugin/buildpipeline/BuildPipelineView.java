@@ -33,7 +33,6 @@ import hudson.model.Action;
 import hudson.model.Item;
 import hudson.model.ItemGroup;
 import hudson.model.ParameterValue;
-import hudson.model.TaskListener;
 import hudson.model.TopLevelItem;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
@@ -45,7 +44,6 @@ import hudson.model.Descriptor.FormException;
 import hudson.model.Hudson;
 import hudson.model.ParametersAction;
 import hudson.model.Run;
-import hudson.model.User;
 import hudson.model.View;
 import hudson.model.ViewDescriptor;
 import hudson.plugins.parameterizedtrigger.AbstractBuildParameters;
@@ -151,71 +149,12 @@ public class BuildPipelineView extends View {
     private static final Logger LOGGER = Logger.getLogger(BuildPipelineView.class.getName());
 
     /**
-     * An instance of {@link Cause.UserIdCause} related to the current user. Must be transient, or xstream will include it in the
-     * serialization
+     * An instance of {@link Cause.UserIdCause} related to the current user.
+     * Just kept for backwards comparability.
+     * @deprecated Use Cause.UserIdCause instead
      */
-    private class MyUserIdCause extends Cause.UserIdCause {
-        /**
-         * user
-         */
-        private User user;
-
-        /**
-         *
-         */
-        public MyUserIdCause() {
-            try {
-                // this block can generate a CyclicGraphDetector.CycleDetectedException
-                // in cases that I haven't quite figured out yet
-                // also an org.acegisecurity.AccessDeniedException when the user
-                // is not logged in
-                user = Hudson.getInstance().getMe();
-            } catch (final Exception e) {
-                // do nothing
-                LOGGER.fine(e.getMessage());
-            }
-        }
-
-        @Override
-        public String getUserId() {
-            return (null == user) ? null : user.getId();
-        }
-
-        @Override
-        public String getUserName() {
-            return (null == user) ? null : user.getDisplayName();
-        }
-
-        @Override
-        public String toString() {
-            return getUserName();
-        }
-
-        @Override
-        public int hashCode() {
-            if (getUserId() == null) {
-                return super.hashCode();
-            } else {
-                return getUserId().hashCode();
-            }
-        }
-
-        @Override
-        public boolean equals(final Object o) {
-            if (null == o) {
-                return false;
-            }
-            if (!(o instanceof Cause.UserIdCause)) {
-                return false;
-            }
-
-            return hashCode() == o.hashCode();
-        }
-
-        @Override
-        public void print(final TaskListener listener) {
-            // do nothing
-        }
+    @Deprecated
+    private static class MyUserIdCause extends Cause.UserIdCause {
     }
 
     /**
@@ -505,7 +444,7 @@ public class BuildPipelineView extends View {
             final Action buildParametersAction) {
         LOGGER.fine("Triggering build for project: " + triggerProject.getFullDisplayName()); //$NON-NLS-1$
         final List<Action> buildActions = new ArrayList<Action>();
-        final CauseAction causeAction = new CauseAction(new MyUserIdCause());
+        final CauseAction causeAction = new CauseAction(new UserIdCause());
         if (upstreamBuild != null) {
             causeAction.getCauses().add(new Cause.UpstreamCause((Run<?, ?>) upstreamBuild));
         }

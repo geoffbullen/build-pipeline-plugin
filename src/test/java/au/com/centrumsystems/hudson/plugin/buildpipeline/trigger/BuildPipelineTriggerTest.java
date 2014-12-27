@@ -28,8 +28,12 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
 
+import au.com.centrumsystems.hudson.plugin.buildpipeline.BuildPipelineView;
+import au.com.centrumsystems.hudson.plugin.buildpipeline.DownstreamProjectGridBuilder;
 import hudson.model.AbstractProject;
+import hudson.model.Cause;
 import hudson.model.Descriptor;
+import hudson.model.FreeStyleBuild;
 import hudson.model.FreeStyleProject;
 import hudson.model.Hudson;
 import hudson.plugins.parameterizedtrigger.AbstractBuildParameters;
@@ -40,9 +44,12 @@ import hudson.util.FormValidation;
 import java.io.IOException;
 import java.util.Collections;
 
-import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
-import org.jvnet.hudson.test.HudsonTestCase;
+import org.jvnet.hudson.test.Bug;
+import org.jvnet.hudson.test.JenkinsRule;
+
+import static org.junit.Assert.*;
 
 /**
  * BuildPipelineTrigger test class
@@ -50,29 +57,21 @@ import org.jvnet.hudson.test.HudsonTestCase;
  * @author Centrum Systems
  *
  */
-public class BuildPipelineTriggerTest extends HudsonTestCase {
+public class BuildPipelineTriggerTest {
 
-    @Override
-    @Before
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
+    @Rule
+    public JenkinsRule jenkins = new JenkinsRule();
 
     @Test(expected = IllegalArgumentException.class)
     public void testInvalidConstructor() {
-        try {
-            new BuildPipelineTrigger(null, null);
-            fail("An IllegalArgumentException should have been thrown.");
-        } catch (final IllegalArgumentException e) {
-
-        }
+        new BuildPipelineTrigger(null, null);
     }
 
     @Test
     public void testBuildPipelineTrigger() throws IOException {
         final String proj1 = "Proj1";
         final String proj2 = "Proj2";
-        final FreeStyleProject project1 = createFreeStyleProject(proj1);
+        final FreeStyleProject project1 = jenkins.createFreeStyleProject(proj1);
         // Add TEST_PROJECT2 as a post build action: build other project
         project1.getPublishersList().add(new BuildPipelineTrigger(proj2, null));
         // Important; we must do this step to ensure that the dependency graphs are updated
@@ -122,8 +121,8 @@ public class BuildPipelineTriggerTest extends HudsonTestCase {
         final String proj1 = "Proj1";
         final String proj2 = "Proj2";
         final String proj3 = "Proj3";
-        final FreeStyleProject project1 = createFreeStyleProject(proj1);
-        final FreeStyleProject project2 = createFreeStyleProject(proj2);
+        final FreeStyleProject project1 = jenkins.createFreeStyleProject(proj1);
+        final FreeStyleProject project2 = jenkins.createFreeStyleProject(proj2);
         project1.getPublishersList().add(new BuildPipelineTrigger(proj2 + "," + proj3, null));
         Hudson.getInstance().rebuildDependencyGraph();
 
@@ -143,8 +142,8 @@ public class BuildPipelineTriggerTest extends HudsonTestCase {
         final String proj1 = "Proj1";
         final String proj2 = "Proj2";
         final String proj3 = "Proj3";
-        final FreeStyleProject project1 = createFreeStyleProject(proj1);
-        final FreeStyleProject project2 = createFreeStyleProject(proj2);
+        final FreeStyleProject project1 = jenkins.createFreeStyleProject(proj1);
+        final FreeStyleProject project2 = jenkins.createFreeStyleProject(proj2);
         project1.getPublishersList().add(new BuildPipelineTrigger(proj2 + "," + proj3, null));
         Hudson.getInstance().rebuildDependencyGraph();
 
@@ -161,11 +160,11 @@ public class BuildPipelineTriggerTest extends HudsonTestCase {
 
     @Test
     public void testDoCheckDownstreamProjectNames() throws IOException, InterruptedException {
-        final AbstractProject upstreamProject = createFreeStyleProject("Upstream");
+        final AbstractProject upstreamProject = jenkins.createFreeStyleProject("Upstream");
 
         final String proj1 = "Proj1";
         final String proj2 = "Proj2";
-        createFreeStyleProject(proj1);
+        jenkins.createFreeStyleProject(proj1);
 
         final BuildPipelineTrigger.DescriptorImpl di = new BuildPipelineTrigger.DescriptorImpl();
 
@@ -178,7 +177,7 @@ public class BuildPipelineTriggerTest extends HudsonTestCase {
     public void testRemoveDownstreamTrigger() throws IOException, InterruptedException {
         final String proj1 = "Proj1";
         final String proj2 = "Proj2";
-        final FreeStyleProject project1 = createFreeStyleProject(proj1);
+        final FreeStyleProject project1 = jenkins.createFreeStyleProject(proj1);
         final BuildPipelineTrigger buildPipelineTrigger = new BuildPipelineTrigger(proj2, null);
         project1.getPublishersList().add(buildPipelineTrigger);
         Hudson.getInstance().rebuildDependencyGraph();
@@ -197,7 +196,7 @@ public class BuildPipelineTriggerTest extends HudsonTestCase {
     @Test
     public void testCyclicDownstreamTrigger() throws IOException, InterruptedException {
         final String proj1 = "Proj1";
-        final FreeStyleProject project1 = createFreeStyleProject(proj1);
+        final FreeStyleProject project1 = jenkins.createFreeStyleProject(proj1);
         final BuildPipelineTrigger cyclicPipelineTrigger = new BuildPipelineTrigger(proj1, null);
         project1.getPublishersList().add(cyclicPipelineTrigger);
         Hudson.getInstance().rebuildDependencyGraph();
@@ -217,5 +216,29 @@ public class BuildPipelineTriggerTest extends HudsonTestCase {
         final BuildPipelineTrigger.DescriptorImpl di = new BuildPipelineTrigger.DescriptorImpl();
 
         assertThat(di.getBuilderConfigDescriptors(), is(not(Collections.<Descriptor<AbstractBuildParameters>>emptyList())));
+    }
+
+    @Test
+    @Bug(22665)
+    public void testManualTriggerCause() throws Exception {
+        FreeStyleProject projectA = jenkins.createFreeStyleProject("A");
+        FreeStyleProject projectB = jenkins.createFreeStyleProject("B");
+        projectA.getPublishersList().add(new BuildPipelineTrigger("B", null));
+        jenkins.getInstance().rebuildDependencyGraph();
+
+        BuildPipelineView view = new BuildPipelineView("Pipeline", "Title", new DownstreamProjectGridBuilder("A"), "1", false, "");
+
+        jenkins.buildAndAssertSuccess(projectA);
+
+        view.triggerManualBuild(1, "B", "A");
+        jenkins.waitUntilNoActivity();
+
+        assertNotNull(projectB.getLastBuild());
+        FreeStyleBuild build = projectB.getLastBuild();
+        Cause.UserIdCause cause = build.getCause(Cause.UserIdCause.class);
+        assertNotNull(cause);
+        //Check that cause is of core class Cause.UserIdCause and not MyUserIdCause
+        assertEquals(Cause.UserIdCause.class.getName(), cause.getClass().getName());
+
     }
 }
