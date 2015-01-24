@@ -316,12 +316,10 @@ public class PipelineBuild {
             upstreamBuildName = "";
         }
         if (upstreamProjects.size() > 0) {
-            if (isManualTrigger()) {
-                for (AbstractProject upstreamProject : upstreamProjects) {
-                    if (upstreamProject.getName().equals(upstreamBuildName)) {
-                        previousProject = upstreamProject;
-                      break;
-                    }
+            for (AbstractProject upstreamProject : upstreamProjects) {
+                if (upstreamProject.getName().equals(upstreamBuildName)) {
+                    previousProject = upstreamProject;
+                  break;
                 }
             }
             if (previousProject == null) {

@@ -545,11 +545,11 @@ public class BuildPipelineView extends View {
     private int triggerBuild(final AbstractProject<?, ?> triggerProject, final AbstractBuild<?, ?> upstreamBuild,
             final Action buildParametersAction) {
         LOGGER.fine("Triggering build for project: " + triggerProject.getFullDisplayName()); //$NON-NLS-1$
-        final Cause.UpstreamCause upstreamCause = (null == upstreamBuild) ? null : new Cause.UpstreamCause((Run<?, ?>) upstreamBuild);
         final List<Action> buildActions = new ArrayList<Action>();
         final CauseAction causeAction = new CauseAction(new MyUserIdCause());
-        // TODO hack obsolete as of 1.531 when CauseAction.<init>(Cause...) available:
-        causeAction.getCauses().add(upstreamCause);
+        if (upstreamBuild != null) {
+            causeAction.getCauses().add(new Cause.UpstreamCause((Run<?, ?>) upstreamBuild));
+        }
         buildActions.add(causeAction);
         ParametersAction parametersAction =
                 buildParametersAction instanceof ParametersAction
