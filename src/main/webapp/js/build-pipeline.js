@@ -81,6 +81,18 @@ BuildPipeline.prototype = {
 			buildPipeline.updateNextBuildAndShowProgress(id, data.responseObject(), dependencyIds);
 		});
 	},
+	retryBuild : function(id, triggerProjectName, dependencyIds) {
+		var buildPipeline = this;
+		buildPipeline.viewProxy.retryBuild(triggerProjectName, function(data){
+			buildPipeline.updateNextBuildAndShowProgress(id, data.responseObject(), dependencyIds);
+		});
+	},
+	rerunBuild : function(id, buildExternalizableId, dependencyIds) {
+		var buildPipeline = this;
+		buildPipeline.viewProxy.rerunBuild(buildExternalizableId, function(data){
+			buildPipeline.updateNextBuildAndShowProgress(id, data.responseObject(), dependencyIds);
+		});
+	},
 	showSpinner : function(id){
 		jQuery("#status-bar-" + id).html('<table class="progress-bar" align="center"><tbody><tr class="unknown"><td></td></tr></tbody></table>');
 		jQuery("#icons-" + id).empty();

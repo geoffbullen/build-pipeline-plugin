@@ -109,7 +109,7 @@
 						{{#if build.isSuccess}}
 							{{#if ${!from.triggerOnlyLatestJob}}}
 							<j:if test="${from.hasBuildPermission()}">
-							<span class="pointer trigger" onclick="buildPipeline.showSpinner({{id}}); buildPipeline.triggerBuild({{id}}, '{{upstream.projectName}}', {{upstream.buildNumber}}, '{{project.name}}', [{{build.dependencyIds}}])">
+							<span class="pointer trigger" onclick="buildPipeline.showSpinner({{id}}); buildPipeline.rerunBuild({{id}}, '{{build.extId}}', [{{build.dependencyIds}}])">
 								<img title="re-run" alt="re-run" src="${rootURL}/images/16x16/redo.png" />
 							</span>
 							</j:if>
@@ -118,7 +118,7 @@
 							{{#if ${from.triggerOnlyLatestJob}}}
 								{{#if build.isLatestBuild}}
 									{{#if build.isUpstreamBuildLatest}}
-									<span class="pointer trigger" onclick="buildPipeline.showSpinner({{id}}); buildPipeline.triggerBuild({{id}}, '{{upstream.projectName}}', {{upstream.buildNumber}}, '{{project.name}}', [{{build.dependencyIds}}])">
+									<span class="pointer trigger" onclick="buildPipeline.showSpinner({{id}}); buildPipeline.rerunBuild({{id}}, '{{build.extId}}', [{{build.dependencyIds}}])">
 										<img title="retry" alt="retry" src="${rootURL}/images/16x16/redo.png" />
 									</span>
 									{{/if}}
