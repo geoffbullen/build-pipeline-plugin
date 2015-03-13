@@ -65,6 +65,8 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -461,6 +463,45 @@ public class BuildPipelineView extends View {
         }
 
         return triggerBuild(triggerProject, upstreamBuild, buildParametersAction);
+    }
+
+    /**
+     * @param triggerProjectName
+     *            the triggerProjectName
+     * @return the number of re-tried build
+     */
+    @JavaScriptMethod
+    public int retryBuild(final String triggerProjectName) {
+        LOGGER.fine("Retrying build again: " + triggerProjectName); //$NON-NLS-1$
+        final AbstractProject<?, ?> triggerProject = (AbstractProject<?, ?>) super.getJob(triggerProjectName);
+        triggerProject.scheduleBuild(new MyUserIdCause());
+
+        return triggerProject.getNextBuildNumber();
+    }
+
+    /**
+     * @param externalizableId
+     *            the externalizableId
+     * @return the number of re-run build
+     */
+    @JavaScriptMethod
+    public int rerunBuild(final String externalizableId) {
+        LOGGER.fine("Running build again: " + externalizableId); //$NON-NLS-1$
+        final AbstractBuild<?, ?> triggerBuild = (AbstractBuild<?, ?>) Run.fromExternalizableId(externalizableId);
+        final AbstractProject<?, ?> triggerProject = triggerBuild.getProject();
+        final Future<?> future = triggerProject.scheduleBuild2(triggerProject.getQuietPeriod(), new MyUserIdCause(),
+                removeUserIdCauseActions(triggerBuild.getActions()));
+
+        AbstractBuild<?, ?> result = triggerBuild;
+        try {
+            result = (AbstractBuild<?, ?>) future.get();
+        } catch (final InterruptedException e) {
+            e.printStackTrace();
+        } catch (final ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        return result.getNumber();
     }
 
     /**
