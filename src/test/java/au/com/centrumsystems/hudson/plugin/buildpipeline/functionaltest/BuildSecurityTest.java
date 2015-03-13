@@ -97,6 +97,7 @@ public class BuildSecurityTest extends PipelineWebDriverTestBase {
     @Test
     public void retryButtonShouldBeShownIfPermitted() throws Exception {
         jr.buildAndAssertSuccess(initialJob);
+        jr.waitUntilNoActivity();
 
         loginLogoutPage.login(PRIVILEGED_USER);
         pipelinePage.open();

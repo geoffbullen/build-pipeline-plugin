@@ -4,16 +4,15 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-import java.util.concurrent.TimeUnit;
-
 import static au.com.centrumsystems.hudson.plugin.buildpipeline.testsupport.TestUtils.elementIsPresent;
 import static au.com.centrumsystems.hudson.plugin.buildpipeline.testsupport.TestUtils.waitForElement;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 public class BuildCardComponent {
 
-    private static final String TRIGGER_SPAN_XPATH = "//span[@class='pointer trigger']";
-    private static final String RETRY_IMG_XPATH = "//span[@class='pointer trigger']/img[@alt='retry']";
+    private static final String TRIGGER_SPAN_XPATH = ".//span[@class='pointer trigger']";
+    private static final String RETRY_IMG_XPATH = ".//span[@class='pointer trigger']/img[@alt='retry']";
+    private static final String RERUN_IMG_XPATH = ".//span[@class='pointer trigger']/img[@alt='re-run']";
 
     private final WebDriver webDriver;
     private final int pipelineGroup;
@@ -35,7 +34,7 @@ public class BuildCardComponent {
     }
 
     public BuildCardComponent waitForBuildToStart() throws Exception {
-        waitForElement(By.xpath("//table[@class='progress-bar']"), webDriver);
+        waitForElement(By.xpath(".//table[@class='progress-bar']"), webDriver);
         return this;
     }
 
@@ -45,7 +44,7 @@ public class BuildCardComponent {
 
     public BuildCardComponent waitForStatus(String status) {
         waitForElement(
-                By.xpath("//table[contains(@class, '" + status + "')]"),
+                By.xpath(".//table[contains(@class, '" + status + "')]"),
                 cardWebElement,
                 20, SECONDS);
         return this;
