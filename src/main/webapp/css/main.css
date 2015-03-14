@@ -351,11 +351,8 @@ tr.spacerRow td {
     display: none;
 }
 
-#main-panel {
-    margin-left: 15px;
-}
-
 .fixedGridLayout #main-panel {
+    margin-left: 15px;
     padding-left: 0;
 }
 
