@@ -36,4 +36,12 @@
 		<f:textbox clazz="number"/>
 	</f:entry>
 
+	<f:entry title="URL for custom CSS files" field="cssUrl">
+		<f:textbox />
+	</f:entry>
+
+	<f:entry title="Console Output Link Style" field="consoleOutputLinkStyle">
+		<f:select />
+	</f:entry>
+
 </j:jelly>

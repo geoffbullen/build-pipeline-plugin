@@ -37,7 +37,6 @@
     background: #000000;
     position: absolute;
     top: 0;
-    -moz-opacity:0.6;
     -khtml-opacity: 0.6;
     opacity: 0.6;
     filter:alpha(opacity=75);
@@ -82,26 +81,23 @@
 	-o-text-overflow: ellipsis;
 	-icab-text-overflow: ellipsis;
 	-khtml-text-overflow: ellipsis;
-	-moz-text-overflow: ellipsis;
 	-webkit-text-overflow: ellipsis;
 	text-overflow: ellipsis;
 	overflow: hidden;
 	white-space: nowrap;
 }
 
+
 /*************************** build card *******************************/
 .rounded {
     height: 70px;
-	width: 141px !important;
-    -moz-opacity: 0.9;
+    width: 141px;
     -webkit-opacity: 0.9;
-    opacity: 0.9;	
+    opacity: 0.9;
 
-    -moz-border-radius: 4px;
     -webkit-border-radius: 4px;
     border-radius: 4px;
 
-    -moz-box-shadow: 4px 4px 4px #555;
     -webkit-box-shadow: 4px 4px 4px #555;
     box-shadow: 4px 4px 4px #555;
 
@@ -117,11 +113,9 @@
     color: #333;
     padding: 3px;
 
-    -moz-border-radius-topright: 4px;
     -webkit-border-top-right-radius: 4px;
     border-top-right-radius: 4px;
 
-    -moz-border-radius-topleft: 4px;
     -webkit-border-top-left-radius: 4px;
     border-top-left-radius: 4px;
 }
@@ -134,7 +128,7 @@
 
 .build-duration {
 	background: url("../images/clock-small.png") no-repeat left center;
-	padding-left: 14px;	
+	padding-left: 14px;
 }
 
 .build-duration-container {
@@ -154,8 +148,13 @@
 
 .build-user {
 	background: url("../images/user-small.png") no-repeat left center;
-	padding-left: 14px;		
+	padding-left: 14px;
 	width: 102px;
+}
+
+.build-card {
+    float: left;
+    width: 100%;
 }
 
 .build-card .build-body {
@@ -170,7 +169,7 @@
     height: 18px;
 }
 
-.build-card .build-actions .status-bar { 
+.build-card .build-actions .status-bar {
     float: left;
     height: 100%;
     padding-left: 4px;
@@ -217,7 +216,7 @@
 
 td.next {
     width: 40px;
-    vertical-align: middle;
+    vertical-align: top;
 }
 
 tbody.pipelineGroup {
@@ -226,27 +225,23 @@ tbody.pipelineGroup {
 }
 
 tbody > tr:first-child > td:first-child {
-    -moz-border-radius-topleft: 4px;
-    -webkit-border-top-left-radius: 4px; 
-    border-top-left-radius: 4px; 
+    -webkit-border-top-left-radius: 4px;
+    border-top-left-radius: 4px;
 }
 
-tbody >  tr:first-child > td:last-child { 	
-    -moz-border-radius-topright: 4px;
-    -webkit-border-top-right-radius: 4px; 
-    border-top-right-radius: 4px; 
+tbody >  tr:first-child > td:last-child {
+    -webkit-border-top-right-radius: 4px;
+    border-top-right-radius: 4px;
 }
 
-tbody >  tr:last-child > td:first-child { 
-    -moz-border-radius-bottomleft: 4px;
-    -webkit-border-bottom-left-radius: 4px;  
-    border-bottom-left-radius: 4px; 
+tbody >  tr:last-child > td:first-child {
+    -webkit-border-bottom-left-radius: 4px;
+    border-bottom-left-radius: 4px;
 }
 
-tbody >  tr:last-child > td:last-child { 
-    -moz-border-radius-bottomright: 4px;
+tbody >  tr:last-child > td:last-child {
     -webkit-border-bottom-right-radius: 4px;
-    border-bottom-right-radius: 4px; 
+    border-bottom-right-radius: 4px;
 }
 
 
@@ -333,7 +328,6 @@ tr.spacerRow td {
 }
 
 .PROJECT .header-name div.header-wrapper {
-	width: 141px;
 	text-align: left;
 }
 
@@ -346,7 +340,7 @@ tr.spacerRow td {
 }
 
 #projectHeader {
-    -moz-border-radius: 10px;
+    border-radius: 10px;
     -webkit-border-radius: 10px;
     border-width: 10px;
     font-size: 12px;
@@ -355,6 +349,11 @@ tr.spacerRow td {
 
 #side-panel {
     display: none;
+}
+
+.fixedGridLayout #main-panel {
+    margin-left: 15px;
+    padding-left: 0;
 }
 
 #view-message {
