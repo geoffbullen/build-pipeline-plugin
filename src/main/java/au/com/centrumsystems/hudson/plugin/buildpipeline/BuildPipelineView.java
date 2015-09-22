@@ -887,7 +887,7 @@ public class BuildPipelineView extends View {
      */
     private boolean isEmpty() {
         if (noOfDisplayedBuilds == null || gridBuilder == null) {
-            return false;
+            return true;
         }
         return gridBuilder.build(this).isEmpty();
     }
