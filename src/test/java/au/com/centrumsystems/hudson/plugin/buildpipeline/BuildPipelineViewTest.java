@@ -25,23 +25,14 @@
 package au.com.centrumsystems.hudson.plugin.buildpipeline;
 
 import hudson.Launcher;
-import hudson.model.AbstractBuild;
-import hudson.model.Action;
-import hudson.model.BuildListener;
-import hudson.model.Cause;
-import hudson.model.FreeStyleBuild;
-import hudson.model.ItemGroup;
-import hudson.model.TopLevelItem;
+import hudson.model.*;
 import hudson.model.Cause.UpstreamCause;
-import hudson.model.FreeStyleProject;
-import hudson.model.Hudson;
-import hudson.model.Job;
-import hudson.model.Run;
 import hudson.security.Permission;
 
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import hudson.triggers.SCMTrigger;
@@ -408,9 +399,11 @@ public class BuildPipelineViewTest {
         jenkins.waitUntilNoActivity();
 
         // mock trigget the downstream build as being triggered by upstream
+        ParametersAction parametersAction = new ParametersAction(
+                Arrays.asList((ParameterValue)new StringParameterValue("foo", "bar")));
         UpstreamCause upstreamCause = new hudson.model.Cause.UpstreamCause(
                 (Run<?, ?>) upstreamBuild.getLastBuild());
-        downstreamBuild.scheduleBuild2(0, upstreamCause);
+        downstreamBuild.scheduleBuild2(0, upstreamCause, parametersAction);
         jenkins.waitUntilNoActivity();
 
         BuildPipelineView pipeline = BuildPipelineViewFactory.getBuildPipelineView("pipeline", "",
@@ -426,6 +419,11 @@ public class BuildPipelineViewTest {
         assertEquals(1, downstreamBuild.getLastBuild().getActions(MockAction.class).size());
         // upstream cause copied
         assertEquals(1, downstreamBuild.getLastBuild().getCauses().size());
+        // parametersAction copied
+        assertNotNull(downstreamBuild.getLastBuild().getAction(ParametersAction.class));
+        StringParameterValue stringParam = (StringParameterValue) downstreamBuild.getLastBuild()
+                .getAction(ParametersAction.class).getParameter("foo");
+        assertEquals("bar", stringParam.value);
         assertEquals(upstreamCause, downstreamBuild.getLastBuild().getCauses().get(0));
         assertEquals(mockScmTriggerCause, upstreamCause.getUpstreamCauses().get(0));
     }

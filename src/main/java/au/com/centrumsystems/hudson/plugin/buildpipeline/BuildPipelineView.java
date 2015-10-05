@@ -418,7 +418,7 @@ public class BuildPipelineView extends View {
         final AbstractBuild<?, ?> triggerBuild = (AbstractBuild<?, ?>) Run.fromExternalizableId(externalizableId);
         final AbstractProject<?, ?> triggerProject = triggerBuild.getProject();
         final Future<?> future = triggerProject.scheduleBuild2(triggerProject.getQuietPeriod(), new MyUserIdCause(),
-                filterCauseActions(triggerBuild.getActions()));
+                filterActions(triggerBuild.getActions()));
 
         AbstractBuild<?, ?> result = triggerBuild;
         try {
@@ -575,8 +575,8 @@ public class BuildPipelineView extends View {
 
 
     /**
-     * Filter out the list of actions so that it only includes CauseActions, but exclude
-     * CauseActions containing a UserIdCause
+     * Filter out the list of actions so that it only includes {@link ParametersAction} and
+     * CauseActions, but exclude CauseActions containing a UserIdCause
      *
      * We want to include CauseAction because that includes upstream cause actions, which
      * are inherited in downstream builds.
@@ -592,7 +592,7 @@ public class BuildPipelineView extends View {
      *            a collection of build actions.
      * @return a collection of build actions with all UserId causes removed.
      */
-    private List<Action> filterCauseActions(final List<Action> actions) {
+    private List<Action> filterActions(final List<Action> actions) {
         final List<Action> retval = new ArrayList<Action>();
         for (final Action action : actions) {
             if (action instanceof CauseAction) {
@@ -600,6 +600,9 @@ public class BuildPipelineView extends View {
                 if (!actionHasUserIdCause(causeAction)) {
                     retval.add(action);
                 }
+            }
+            else if (action instanceof ParametersAction) {
+                retval.add(action);
             }
         }
         return retval;
