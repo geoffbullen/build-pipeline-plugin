@@ -405,8 +405,11 @@ public class BuildPipelineView extends View {
     }
 
     /**
+     * Re-run a project, passing in the CauseActions from the previous completed {@link Run} so
+     * that the new run will appear in the same pipeline.
+     *
      * @param externalizableId
-     *            the externalizableId
+     *            the externalizableId of the Run. See {@link Run#getExternalizableId()}
      * @return the number of re-run build
      */
     @JavaScriptMethod

@@ -24,7 +24,10 @@
  */
 package au.com.centrumsystems.hudson.plugin.buildpipeline;
 
+import hudson.Launcher;
+import hudson.model.AbstractBuild;
 import hudson.model.Action;
+import hudson.model.BuildListener;
 import hudson.model.Cause;
 import hudson.model.FreeStyleBuild;
 import hudson.model.ItemGroup;
@@ -37,9 +40,11 @@ import hudson.model.Run;
 import hudson.security.Permission;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import hudson.triggers.SCMTrigger;
 import jenkins.model.Jenkins;
 
 import org.junit.Rule;
@@ -47,7 +52,9 @@ import org.junit.Test;
 import org.jvnet.hudson.test.Bug;
 
 import au.com.centrumsystems.hudson.plugin.buildpipeline.trigger.BuildPipelineTrigger;
+import org.jvnet.hudson.test.Issue;
 import org.jvnet.hudson.test.JenkinsRule;
+import org.jvnet.hudson.test.TestBuilder;
 import org.jvnet.hudson.test.recipes.LocalData;
 
 import static org.junit.Assert.*;
@@ -256,7 +263,6 @@ public class BuildPipelineViewTest {
         // Build project1
         build1 = jenkins.buildAndAssertSuccess(project1);
         jenkins.waitUntilNoActivity();
-
 		// Test a valid case
 		final BuildPipelineView testView = BuildPipelineViewFactory.getBuildPipelineView(bpViewName, bpViewTitle, new DownstreamProjectGridBuilder(proj1), noOfBuilds, false);
 
@@ -372,6 +378,78 @@ public class BuildPipelineViewTest {
                     return Hudson.getInstance();
                 }
             };
+        }
+    }
+
+    @Test
+    @Issue("JENKINS-30801")
+    public void testRetriggerSuccessfulBuild() throws Exception {
+        final FreeStyleProject upstreamBuild = jenkins.createFreeStyleProject("upstream");
+        final FreeStyleProject downstreamBuild = jenkins.createFreeStyleProject("downstream");
+        upstreamBuild.getPublishersList().add(new BuildPipelineTrigger("downstream", null));
+        downstreamBuild.getBuildersList().add(new TestBuilder()
+        {
+            @Override
+            public boolean perform(AbstractBuild<?, ?> abstractBuild, Launcher launcher, BuildListener buildListener)
+                    throws InterruptedException, IOException
+            {
+                abstractBuild.addAction(new MockAction());
+                return true;
+            }
+        });
+
+        // Important; we must do this step to ensure that the dependency graphs
+        // are updated
+        Hudson.getInstance().rebuildDependencyGraph();
+
+        // mock the upstream build as being caused by SCM trigger
+        Cause mockScmTriggerCause = new SCMTrigger.SCMTriggerCause("mock");
+        upstreamBuild.scheduleBuild2(0, mockScmTriggerCause);
+        jenkins.waitUntilNoActivity();
+
+        // mock trigget the downstream build as being triggered by upstream
+        UpstreamCause upstreamCause = new hudson.model.Cause.UpstreamCause(
+                (Run<?, ?>) upstreamBuild.getLastBuild());
+        downstreamBuild.scheduleBuild2(0, upstreamCause);
+        jenkins.waitUntilNoActivity();
+
+        BuildPipelineView pipeline = BuildPipelineViewFactory.getBuildPipelineView("pipeline", "",
+                new DownstreamProjectGridBuilder(upstreamBuild.getFullName()), "1", false);
+
+        jenkins.getInstance().addView(pipeline);
+        assertNotNull(downstreamBuild.getLastBuild());
+        // re-run the build as if we clicked re-run in the UI
+        pipeline.rerunBuild(downstreamBuild.getLastBuild().getExternalizableId());
+        jenkins.waitUntilNoActivity();
+
+        // MockAction is not copied from one run to another
+        assertEquals(1, downstreamBuild.getLastBuild().getActions(MockAction.class).size());
+        // upstream cause copied
+        assertEquals(1, downstreamBuild.getLastBuild().getCauses().size());
+        assertEquals(upstreamCause, downstreamBuild.getLastBuild().getCauses().get(0));
+        assertEquals(mockScmTriggerCause, upstreamCause.getUpstreamCauses().get(0));
+    }
+
+    public static class MockAction implements Action, Serializable {
+
+        private static final long serialVersionUID = 5677631606354259250L;
+
+        @Override
+        public String getIconFileName()
+        {
+            return null;
+        }
+
+        @Override
+        public String getDisplayName()
+        {
+            return null;
+        }
+
+        @Override
+        public String getUrlName()
+        {
+            return null;
         }
     }
 }
