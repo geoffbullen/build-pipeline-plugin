@@ -10,9 +10,11 @@ target
 work
 
 .checkstyle
+checkstyle-cachefile
 
 # IntelliJ
 .idea/
 *.iml
 *.ipr
 *.iws
+
