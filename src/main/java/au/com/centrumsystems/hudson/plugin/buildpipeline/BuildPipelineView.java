@@ -600,8 +600,7 @@ public class BuildPipelineView extends View {
                 if (!actionHasUserIdCause(causeAction)) {
                     retval.add(action);
                 }
-            }
-            else if (action instanceof ParametersAction) {
+            } else if (action instanceof ParametersAction) {
                 retval.add(action);
             }
         }
