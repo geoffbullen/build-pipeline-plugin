@@ -576,7 +576,7 @@ public class BuildPipelineView extends View {
 
     /**
      * Filter out the list of actions so that it only includes {@link ParametersAction} and
-     * CauseActions, but exclude CauseActions containing a UserIdCause
+     * CauseActions, removing the UserIdAction from the CauseAction's list of Causes.
      *
      * We want to include CauseAction because that includes upstream cause actions, which
      * are inherited in downstream builds.
@@ -597,9 +597,8 @@ public class BuildPipelineView extends View {
         for (final Action action : actions) {
             if (action instanceof CauseAction) {
                 final CauseAction causeAction = (CauseAction) action;
-                if (!actionHasUserIdCause(causeAction)) {
-                    retval.add(action);
-                }
+                filterOutUserIdCause(causeAction);
+                retval.add(causeAction);
             } else if (action instanceof ParametersAction) {
                 retval.add(action);
             }
@@ -608,17 +607,21 @@ public class BuildPipelineView extends View {
     }
 
     /**
+     * Filter out {@link UserIdCause} from the given {@link CauseAction}.
+     *
+     * We want to do this because re-run will want to contribute its own
+     * {@link UserIdCause}, not copy it from the previous run.
+     *
      * @param causeAction
-     *  the causeAction to query
+     *  the causeAction to remove UserIdCause from
      * @return whether the action has a {@link UserIdCause}
      */
-    private boolean actionHasUserIdCause(CauseAction causeAction) {
+    private void filterOutUserIdCause(CauseAction causeAction) {
         for (final Cause cause : causeAction.getCauses()) {
             if (cause instanceof UserIdCause) {
-                return true;
+                causeAction.getCauses().remove(cause);
             }
         }
-        return false;
     }
 
     /**
