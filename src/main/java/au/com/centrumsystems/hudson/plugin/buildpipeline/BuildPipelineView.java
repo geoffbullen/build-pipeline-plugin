@@ -614,7 +614,6 @@ public class BuildPipelineView extends View {
      *
      * @param causeAction
      *  the causeAction to remove UserIdCause from
-     * @return whether the action has a {@link UserIdCause}
      */
     private void filterOutUserIdCause(CauseAction causeAction) {
         for (final Cause cause : causeAction.getCauses()) {
