@@ -60,6 +60,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
@@ -598,7 +599,9 @@ public class BuildPipelineView extends View {
             if (action instanceof CauseAction) {
                 final CauseAction causeAction = (CauseAction) action;
                 filterOutUserIdCause(causeAction);
-                retval.add(causeAction);
+                if (!causeAction.getCauses().isEmpty()) {
+                    retval.add(causeAction);
+                }
             } else if (action instanceof ParametersAction) {
                 retval.add(action);
             }
@@ -616,9 +619,11 @@ public class BuildPipelineView extends View {
      *  the causeAction to remove UserIdCause from
      */
     private void filterOutUserIdCause(CauseAction causeAction) {
-        for (final Cause cause : causeAction.getCauses()) {
+        final Iterator<Cause> it = causeAction.getCauses().iterator();
+        while (it.hasNext()) {
+            final Cause cause = it.next();
             if (cause instanceof UserIdCause) {
-                causeAction.getCauses().remove(cause);
+                it.remove();
             }
         }
     }

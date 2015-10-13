@@ -49,6 +49,7 @@ import org.jvnet.hudson.test.TestBuilder;
 import org.jvnet.hudson.test.recipes.LocalData;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
 
 /**
  * Test Build Pipeline View
@@ -426,6 +427,35 @@ public class BuildPipelineViewTest {
         assertEquals("bar", stringParam.value);
         assertEquals(upstreamCause, downstreamBuild.getLastBuild().getCauses().get(0));
         assertEquals(mockScmTriggerCause, upstreamCause.getUpstreamCauses().get(0));
+    }
+
+    @Test
+    public void testFilterUserIdCause() throws Exception {
+        final FreeStyleProject upstreamBuild = jenkins.createFreeStyleProject("upstream");
+        final FreeStyleProject downstreamBuild = jenkins.createFreeStyleProject("downstream");
+        upstreamBuild.getPublishersList().add(new BuildPipelineTrigger("downstream", null));
+        // Important; we must do this step to ensure that the dependency graphs
+        // are updated
+        Hudson.getInstance().rebuildDependencyGraph();
+        Cause mockUserIdCause = mock(Cause.UserIdCause.class);
+        upstreamBuild.scheduleBuild2(0, mockUserIdCause);
+        jenkins.waitUntilNoActivity();
+        UpstreamCause upstreamCause = new hudson.model.Cause.UpstreamCause(
+                (Run<?, ?>) upstreamBuild.getLastBuild());
+        downstreamBuild.scheduleBuild2(0, upstreamCause);
+        jenkins.waitUntilNoActivity();
+
+        BuildPipelineView pipeline = BuildPipelineViewFactory.getBuildPipelineView("pipeline", "",
+                new DownstreamProjectGridBuilder(upstreamBuild.getFullName()), "1", false);
+        jenkins.getInstance().addView(pipeline);
+        assertNotNull(downstreamBuild.getLastBuild());
+        // re-run the build as if we clicked re-run in the UI
+        pipeline.rerunBuild(upstreamBuild.getLastBuild().getExternalizableId());
+        jenkins.waitUntilNoActivity();
+        assertEquals(2, upstreamBuild.getBuilds().size());
+        assertNotNull(upstreamBuild.getLastBuild().getCause(Cause.UserIdCause.class));
+        assertNotSame(upstreamBuild.getLastBuild().getCause(Cause.UserIdCause.class),
+                mockUserIdCause);
     }
 
     public static class MockAction implements Action, Serializable {
