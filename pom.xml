@@ -3,7 +3,7 @@
     <parent>
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
-        <version>1.554.3</version>
+        <version>1.609.3</version>
     </parent>
     <artifactId>build-pipeline-plugin</artifactId>
     <version>1.4.9-SNAPSHOT</version>
@@ -85,8 +85,7 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <!-- enables mocking of classes without default constructor (together with
-                CGLIB) -->
+            <!-- enables mocking of classes without default constructor (together with CGLIB) -->
             <groupId>org.objenesis</groupId>
             <artifactId>objenesis</artifactId>
             <version>1.2</version>
