@@ -344,15 +344,6 @@ tr.spacerRow td {
     font-weight: bold;
 }
 
-#side-panel {
-    display: none;
-}
-
-.fixedGridLayout #main-panel {
-    margin-left: 15px;
-    padding-left: 0;
-}
-
 #view-message {
     display: none;
 }
