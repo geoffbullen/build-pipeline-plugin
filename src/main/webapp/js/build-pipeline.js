@@ -81,12 +81,6 @@ BuildPipeline.prototype = {
 			buildPipeline.updateNextBuildAndShowProgress(id, data.responseObject(), dependencyIds);
 		});
 	},
-	retryBuild : function(id, triggerProjectName, dependencyIds) {
-		var buildPipeline = this;
-		buildPipeline.viewProxy.retryBuild(triggerProjectName, function(data){
-			buildPipeline.updateNextBuildAndShowProgress(id, data.responseObject(), dependencyIds);
-		});
-	},
 	rerunBuild : function(id, buildExternalizableId, dependencyIds) {
 		var buildPipeline = this;
 		buildPipeline.viewProxy.rerunBuild(buildExternalizableId, function(data){

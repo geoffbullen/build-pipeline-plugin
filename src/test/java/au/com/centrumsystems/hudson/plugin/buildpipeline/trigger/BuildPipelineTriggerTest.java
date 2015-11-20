@@ -47,6 +47,7 @@ import java.util.Collections;
 import org.junit.Rule;
 import org.junit.Test;
 import org.jvnet.hudson.test.Bug;
+import org.jvnet.hudson.test.Issue;
 import org.jvnet.hudson.test.JenkinsRule;
 
 import static org.junit.Assert.*;
@@ -220,7 +221,8 @@ public class BuildPipelineTriggerTest {
 
     @Test
     @Bug(22665)
-    public void testManualTriggerCause() throws Exception {
+    public void testManualTriggerCause() throws Exception
+    {
         FreeStyleProject projectA = jenkins.createFreeStyleProject("A");
         FreeStyleProject projectB = jenkins.createFreeStyleProject("B");
         projectA.getPublishersList().add(new BuildPipelineTrigger("B", null));
@@ -239,6 +241,41 @@ public class BuildPipelineTriggerTest {
         assertNotNull(cause);
         //Check that cause is of core class Cause.UserIdCause and not MyUserIdCause
         assertEquals(Cause.UserIdCause.class.getName(), cause.getClass().getName());
+        Cause.UpstreamCause upstreamCause = build.getCause(Cause.UpstreamCause.class);
+        assertNotNull(upstreamCause);
+    }
 
+    @Test
+    @Issue("JENKINS-24883")
+    public void testReRunBuildPipelineTrigger()
+        throws Exception
+    {
+        FreeStyleProject projectA = jenkins.createFreeStyleProject("A");
+        FreeStyleProject projectB = jenkins.createFreeStyleProject("B");
+        projectA.getPublishersList().add(new BuildPipelineTrigger("B", null));
+        jenkins.getInstance().rebuildDependencyGraph();
+
+        BuildPipelineView view = new BuildPipelineView("Pipeline", "Title", new DownstreamProjectGridBuilder("A"), "1", false, "");
+
+        jenkins.buildAndAssertSuccess(projectA);
+
+        view.triggerManualBuild(1, "B", "A");
+        jenkins.waitUntilNoActivity();
+
+        assertNotNull(projectB.getLastBuild());
+        FreeStyleBuild build = projectB.getLastBuild();
+        Cause.UserIdCause cause = build.getCause(Cause.UserIdCause.class);
+        assertNotNull(cause);
+        //Check that cause is of core class Cause.UserIdCause and not MyUserIdCause
+        assertEquals(Cause.UserIdCause.class.getName(), cause.getClass().getName());
+        Cause.UpstreamCause upstreamCause = build.getCause(Cause.UpstreamCause.class);
+        assertNotNull(upstreamCause);
+
+        // re-triggering the build should preserve upstream context (JENKINS-24883
+        view.rerunBuild(projectB.getLastBuild().getExternalizableId());
+        jenkins.waitUntilNoActivity();
+        build = projectB.getLastBuild();
+        upstreamCause = build.getCause(Cause.UpstreamCause.class);
+        assertNotNull(upstreamCause);
     }
 }

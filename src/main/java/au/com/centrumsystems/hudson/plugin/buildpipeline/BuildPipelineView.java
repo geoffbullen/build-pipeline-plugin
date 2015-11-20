@@ -60,6 +60,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
@@ -405,31 +406,20 @@ public class BuildPipelineView extends View {
     }
 
     /**
-     * @param triggerProjectName
-     *            the triggerProjectName
-     * @return the number of re-tried build
-     */
-    @JavaScriptMethod
-    public int retryBuild(final String triggerProjectName) {
-        LOGGER.fine("Retrying build again: " + triggerProjectName); //$NON-NLS-1$
-        final AbstractProject<?, ?> triggerProject = (AbstractProject<?, ?>) super.getJob(triggerProjectName);
-        triggerProject.scheduleBuild(new MyUserIdCause());
-
-        return triggerProject.getNextBuildNumber();
-    }
-
-    /**
+     * Re-run a project, passing in the CauseActions from the previous completed {@link Run} so
+     * that the new run will appear in the same pipeline.
+     *
      * @param externalizableId
-     *            the externalizableId
+     *            the externalizableId of the Run. See {@link Run#getExternalizableId()}
      * @return the number of re-run build
      */
     @JavaScriptMethod
     public int rerunBuild(final String externalizableId) {
-        LOGGER.fine("Running build again: " + externalizableId); //$NON-NLS-1$
+        LOGGER.info("Running build again: " + externalizableId); //$NON-NLS-1$
         final AbstractBuild<?, ?> triggerBuild = (AbstractBuild<?, ?>) Run.fromExternalizableId(externalizableId);
         final AbstractProject<?, ?> triggerProject = triggerBuild.getProject();
         final Future<?> future = triggerProject.scheduleBuild2(triggerProject.getQuietPeriod(), new MyUserIdCause(),
-                removeUserIdCauseActions(triggerBuild.getActions()));
+                filterActions(triggerBuild.getActions()));
 
         AbstractBuild<?, ?> result = triggerBuild;
         try {
@@ -584,43 +574,58 @@ public class BuildPipelineView extends View {
         return new ParametersAction(params.values().toArray(new ParameterValue[params.size()]));
     }
 
+
     /**
-     * Checks whether the given {@link Action} contains a reference to a {@link UserIdCause} object.
+     * Filter out the list of actions so that it only includes {@link ParametersAction} and
+     * CauseActions, removing the UserIdAction from the CauseAction's list of Causes.
      *
-     * @param buildAction
-     *            the action to check.
-     * @return <code>true</code> if the action has a reference to a userId cause.
+     * We want to include CauseAction because that includes upstream cause actions, which
+     * are inherited in downstream builds.
+     *
+     * We do not want to inherit the UserId cause, because the user initiating a retry may
+     * be different than the user who originated the upstream build, and so should be
+     * re-identified.
+     *
+     * We do not want to inherit any other CauseAction because that will result in duplicating
+     * actions from publishers, and builders from previous builds corrupting the retriggered build.
+     *
+     * @param actions
+     *            a collection of build actions.
+     * @return a collection of build actions with all UserId causes removed.
      */
-    private boolean isUserIdCauseAction(final Action buildAction) {
-        boolean retval = false;
-        if (buildAction instanceof CauseAction) {
-            for (final Cause cause : ((CauseAction) buildAction).getCauses()) {
-                if (cause instanceof UserIdCause) {
-                    retval = true;
-                    break;
+    private List<Action> filterActions(final List<Action> actions) {
+        final List<Action> retval = new ArrayList<Action>();
+        for (final Action action : actions) {
+            if (action instanceof CauseAction) {
+                final CauseAction causeAction = (CauseAction) action;
+                filterOutUserIdCause(causeAction);
+                if (!causeAction.getCauses().isEmpty()) {
+                    retval.add(causeAction);
                 }
+            } else if (action instanceof ParametersAction) {
+                retval.add(action);
             }
         }
         return retval;
     }
 
     /**
-     * Removes any UserId cause action from the given actions collection. This is used by downstream builds that inherit upstream actions.
-     * The downstream build can be initiated by another user that is different from the user who initiated the upstream build, so the
-     * downstream build needs to remove the old user action inherited from upstream, and add its own.
+     * Filter out {@link UserIdCause} from the given {@link CauseAction}.
      *
-     * @param actions
-     *            a collection of build actions.
-     * @return a collection of build actions with all UserId causes removed.
+     * We want to do this because re-run will want to contribute its own
+     * {@link UserIdCause}, not copy it from the previous run.
+     *
+     * @param causeAction
+     *  the causeAction to remove UserIdCause from
      */
-    private List<Action> removeUserIdCauseActions(final List<Action> actions) {
-        final List<Action> retval = new ArrayList<Action>();
-        for (final Action action : actions) {
-            if (!isUserIdCauseAction(action)) {
-                retval.add(action);
+    private void filterOutUserIdCause(CauseAction causeAction) {
+        final Iterator<Cause> it = causeAction.getCauses().iterator();
+        while (it.hasNext()) {
+            final Cause cause = it.next();
+            if (cause instanceof UserIdCause) {
+                it.remove();
             }
         }
-        return retval;
     }
 
     /**
