@@ -13,7 +13,7 @@
     margin-left: auto;
     margin-right: auto;
 	padding: 10px;
-
+	overflow: auto;
 }
 
 /******************** popup ***************************/
@@ -152,7 +152,6 @@ table.build-card div.header a {
 
 .build-card {
     width: 100%;
-    table-layout: fixed;
 }
 
 .build-card .build-body {
@@ -368,4 +367,8 @@ a:hover {
 
 .hidden {
 	display: none;
+}
+
+#main-panel {
+    position: relative;
 }
