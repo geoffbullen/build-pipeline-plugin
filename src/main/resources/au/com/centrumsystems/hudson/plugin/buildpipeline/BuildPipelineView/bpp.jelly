@@ -222,79 +222,66 @@
         <input name="triggerProjectName" id="triggerProjectName" type="hidden" />
 
         <div id="build-pipeline-plugin-content">
-            <div>
-                <h1>
-                    Build Pipeline<j:if test="${!empty(from.getBuildViewTitle())}">: ${from.getBuildViewTitle()}</j:if>
-                </h1>
-            </div>
+            <h1>Build Pipeline<j:if test="${!empty(from.getBuildViewTitle())}">: ${from.getBuildViewTitle()}</j:if></h1>
             <div>${from.getDescription()}</div>
 
-      <j:set var="buildPipelineForm" type="au.com.centrumsystems.hudson.plugin.buildpipeline.BuildPipelineForm" value="${from.getBuildPipelineForm()}" />
-      <j:set var="projectGrid" value="${buildPipelineForm.getProjectGrid()}" />
+            <j:set var="buildPipelineForm" type="au.com.centrumsystems.hudson.plugin.buildpipeline.BuildPipelineForm" value="${from.getBuildPipelineForm()}" />
+            <j:set var="projectGrid" value="${buildPipelineForm.getProjectGrid()}" />
 
             <div id="icon-bar">
                 <!-- If the user has the Build Project permission include a hyperlink to build the base project.-->
-        <j:set var="hasBuildPermission" type="boolean" value="${from.hasBuildPermission()}" />
-        <j:if test="${hasBuildPermission}">
-            <div class="icon-container">
-            <j:if test="${from.isProjectParameterized()}">
-                <span class="pointer" onclick="buildPipeline.fillDialog('${app.rootUrl}${from.gridBuilder.firstJobLink}/build?delay=0sec', 'Starts the pipeline with parameters')">
-                    <img src="${rootURL}/images/24x24/clock.png" alt="Trigger a Pipeline" class="icon-with-caption"/>
-                </span>
-            </j:if>
-            <j:if test="${!from.isProjectParameterized()}">
-              <a id="trigger-pipeline-button" href='#' onclick="$('triggerPipelineForm').submit()">
-                <img src="${rootURL}/images/24x24/clock.png" alt="Trigger a Pipeline" class="icon-with-caption"/>
-              </a>
-            </j:if>
-            <div>Run</div>
-          </div>
-        </j:if>
+                <j:set var="hasBuildPermission" type="boolean" value="${from.hasBuildPermission()}" />
+                <j:if test="${hasBuildPermission}">
+                    <div class="icon-container">
+                        <j:if test="${from.isProjectParameterized()}">
+                            <span class="pointer" onclick="buildPipeline.fillDialog('${app.rootUrl}${from.gridBuilder.firstJobLink}/build?delay=0sec', 'Starts the pipeline with parameters')">
+                                <img src="${rootURL}/images/24x24/clock.png" alt="Trigger a Pipeline" class="icon-with-caption"/>
+                                <span>Run</span>
+                            </span>
+                        </j:if>
+                        <j:if test="${!from.isProjectParameterized()}">
+                            <a id="trigger-pipeline-button" href='#' onclick="$('triggerPipelineForm').submit()">
+                                <img src="${rootURL}/images/24x24/clock.png" alt="Trigger a Pipeline" class="icon-with-caption"/>
+                                <span>Run</span>
+                            </a>
+                        </j:if>
+                    </div>
+                </j:if>
 
                 <div class="icon-container">
-                    <div>
-                        <a href='builds'>
-                            <img src="${rootURL}/images/24x24/notepad.png" alt="Pipeline History" class="icon-with-caption" />
-                        </a>
-                    </div>
-                    <div>History</div>
+                    <a href="builds">
+                        <img src="${rootURL}/images/24x24/notepad.png" alt="Pipeline History" class="icon-with-caption" />
+                        <span>History</span>
+                    </a>
                 </div>
+
                 <j:if test="${from.hasConfigurePermission()}">
                     <div class="icon-container">
-                        <div>
-                            <a href='configure'>
-                                <img src="${rootURL}/images/24x24/setting.png" alt="Configure" class="icon-with-caption" />
-                            </a>
-                        </div>
-                        <div>Configure</div>
+                        <a href='configure'>
+                            <img src="${rootURL}/images/24x24/setting.png" alt="Configure" class="icon-with-caption" />
+                            <span>Configure</span>
+                        </a>
                     </div>
                     <div class="icon-container">
-                        <div>
-                            <a href='newJob'>
-                                <img src="${rootURL}/images/24x24/new-package.png" alt="Add Step" class="icon-with-caption" />
-                            </a>
-                        </div>
-                        <div>Add Step</div>
+                        <a href='newJob'>
+                            <img src="${rootURL}/images/24x24/new-package.png" alt="Add Step" class="icon-with-caption" />
+                            <span>Add Step</span>
+                        </a>
                     </div>
                     <div class="icon-container">
-                        <div>
-                            <a href='delete'>
-                                <img src="${rootURL}/images/24x24/edit-delete.png" class="icon-with-caption" />
-                            </a>
-                        </div>
-                        <div>Delete</div>
+                        <a href='delete'>
+                            <img src="${rootURL}/images/24x24/edit-delete.png" class="icon-with-caption" />
+                            <span>Delete</span>
+                        </a>
                     </div>
                     <div class="icon-container">
-                        <div>
-                            <a href='${rootURL}/manage'>
-                                <img src="${rootURL}/images/24x24/setting.png" class="icon-with-caption" />
-                            </a>
-                        </div>
-                        <div>Manage</div>
+                        <a href='${rootURL}/manage'>
+                            <img src="${rootURL}/images/24x24/setting.png" class="icon-with-caption" />
+                            <span>Manage</span>
+                        </a>
                     </div>
                 </j:if>
             </div>
-
 
             <j:if test="${empty(buildPipelineForm.getBuildGrids())}">
                 <st:include page="noJob.jelly" />
@@ -360,6 +347,8 @@
                         </j:forEach>
                     </tbody>
                 </j:if>
+            </table>
+            <table id="pipelines">
                 <!-- builds -->
                 <j:forEach items="${buildPipelineForm.getBuildGrids()}" var="buildGrid" indexVar="i">
                     <tbody class="pipelineGroup">
@@ -457,21 +446,23 @@
                                             </j:if>
                                         </script>
                                         <j:if test="${(y + 1 != buildPipelineForm.getGridWidth())}">
-
                                             <!-- Changing length to size() to get rid of arrows when there are no more child jobs.-->
-                                            <td class="next"><j:if test="${!(build.getDependencies().size() == 0)}">
+                                            <td class="next">
+                                                <j:if test="${!(build.getDependencies().size() == 0)}">
                                                     <span class="status next"><img src="${rootURL}/images/24x24/next.png" /></span>
-                                                </j:if></td>
+                                                </j:if>
+                                            </td>
                                         </j:if>
                                     </j:if>
                                     <j:if test="${build == null}">
                                         <td></td>
                                         <j:if test="${y + 1 != buildPipelineForm.getGridWidth()}">
                                             <j:set var="nextIndex" value="${y + 1}" />
-                                            <td class="next"><j:if test="${buildGrid.get(x,nextIndex)!=null}">
-                                                    <span class="status next"> <img src="${rootURL}/images/24x24/next.png" />
-                                                    </span>
-                                                </j:if></td>
+                                            <td class="next">
+                                                <j:if test="${buildGrid.get(x,nextIndex)!=null}">
+                                                    <span class="status next"><img src="${rootURL}/images/24x24/next.png" /></span>
+                                                </j:if>
+                                            </td>
                                         </j:if>
                                     </j:if>
                                 </j:forEach>
