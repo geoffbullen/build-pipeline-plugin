@@ -39,6 +39,11 @@
             <email>plugins@centrumsystems.com.au</email>
             <url>http://www.centrumsystems.com.au</url>
         </developer>
+        <developer>
+            <id>dalvizu</id>
+            <name>Dan Alvizu</name>
+            <email>alvizu@gmail.com</email>
+        </developer>
     </developers>
     <dependencies>
         <dependency>
