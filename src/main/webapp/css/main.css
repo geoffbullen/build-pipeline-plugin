@@ -228,13 +228,13 @@ table.pipelines {
     border-collapse: collapse;
 }
 
+table.pipelines > tbody > tr > td {
+    padding: 0 8px 8px 0;
+}
+
 table.pipelines td.next {
     width: 30px;
     vertical-align: middle;
-}
-
-.legend {
-    background-color: #8b8989;
 }
 
 .revision {
