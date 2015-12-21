@@ -101,7 +101,7 @@
                 {{#if build.isSuccess}}
                     {{#if ${!from.triggerOnlyLatestJob}}}
                     <j:if test="${from.hasBuildPermission()}">
-                    <span class="pointer trigger" onclick="buildPipeline.showSpinner({{id}}); buildPipeline.rerunBuild({{id}}, '{{build.extId}}', [{{build.dependencyIds}}])">
+                    <span onclick="buildPipeline.showSpinner({{id}}); buildPipeline.rerunBuild({{id}}, '{{build.extId}}', [{{build.dependencyIds}}])">
                         <img title="re-run" alt="re-run" src="${rootURL}/images/16x16/redo.png" />
                     </span>
                     </j:if>
@@ -110,18 +110,18 @@
                     {{#if ${from.triggerOnlyLatestJob}}}
                         {{#if build.isLatestBuild}}
                             {{#if build.isUpstreamBuildLatest}}
-                            <span class="pointer trigger" onclick="buildPipeline.showSpinner({{id}}); buildPipeline.rerunBuild({{id}}, '{{build.extId}}', [{{build.dependencyIds}}])">
+                            <span onclick="buildPipeline.showSpinner({{id}}); buildPipeline.rerunBuild({{id}}, '{{build.extId}}', [{{build.dependencyIds}}])">
                                 <img title="retry" alt="retry" src="${rootURL}/images/16x16/redo.png" />
                             </span>
                             {{/if}}
                         {{/if}}
                     {{else}}
                         {{#if build.isManual}}
-                            <span class="pointer trigger" onclick="buildPipeline.showSpinner({{id}}); buildPipeline.triggerBuild({{id}}, '{{upstream.projectName}}', {{upstream.buildNumber}}, '{{project.name}}', [{{build.dependencyIds}}])">
-                                <img title="retry" alt="retry" src="${rootURL}/images/16x16/redo.png" />
+                            <span onclick="buildPipeline.showSpinner({{id}}); buildPipeline.triggerBuild({{id}}, '{{upstream.projectName}}', {{upstream.buildNumber}}, '{{project.name}}', [{{build.dependencyIds}}])">
+                                <img title="retry" alt="retry" src="${rootURL}/images/16x16/clock.png" />
                             </span>
                         {{else}}
-                            <span class="pointer trigger" onclick="buildPipeline.showSpinner({{id}}); buildPipeline.rerunBuild({{id}}, '{{build.extId}}', [{{build.dependencyIds}}])">
+                            <span onclick="buildPipeline.showSpinner({{id}}); buildPipeline.rerunBuild({{id}}, '{{build.extId}}', [{{build.dependencyIds}}])">
                                 <img title="retry" alt="retry" src="${rootURL}/images/16x16/redo.png" />
                             </span>
                         {{/if}}
@@ -132,12 +132,12 @@
             {{#if build.isReadyToBeManuallyBuilt}}
                 {{#if ${from.triggerOnlyLatestJob}}}
                     {{#if build.isUpstreamBuildLatestSuccess}}
-                    <span class="pointer trigger" onclick="buildPipeline.showSpinner({{id}}); buildPipeline.triggerBuild({{id}}, '{{upstream.projectName}}', {{upstream.buildNumber}}, '{{project.name}}', [{{build.dependencyIds}}])">
+                    <span onclick="buildPipeline.showSpinner({{id}}); buildPipeline.triggerBuild({{id}}, '{{upstream.projectName}}', {{upstream.buildNumber}}, '{{project.name}}', [{{build.dependencyIds}}])">
                         <img title="trigger" alt="trigger" src="${rootURL}/images/16x16/clock.png" />
                     </span>
                     {{/if}}
                 {{else}}
-                <span class="pointer trigger" onclick="buildPipeline.showSpinner({{id}}); buildPipeline.triggerBuild({{id}}, '{{upstream.projectName}}', {{upstream.buildNumber}}, '{{project.name}}', [{{build.dependencyIds}}])">
+                <span onclick="buildPipeline.showSpinner({{id}}); buildPipeline.triggerBuild({{id}}, '{{upstream.projectName}}', {{upstream.buildNumber}}, '{{project.name}}', [{{build.dependencyIds}}])">
                     <img title="trigger" alt="trigger" src="${rootURL}/images/16x16/clock.png" />
                 </span>
                 {{/if}}
@@ -155,27 +155,30 @@
 
 <script id="project-card-template" type="text/x-handlebars-template">
 <div class="build-card rounded">
-    <div class="header-alt">
-        <a href="${rootURL}/{{url}}" title="{{name}}" style="background: url('${rootURL}/images/24x24/{{health}}')
-        no-repeat 4px center; padding-left: 32px">{{name}}</a>
-        <j:if test="${from.isShowPipelineParametersInHeaders()}">
-            {{#if lastSuccessfulBuildNumber}}
-            <a href="${rootURL}/{{url}}{{lastSuccessfulBuildNumber}}"> (#{{lastSuccessfulBuildNumber}})</a>
-            {{/if}}
-        </j:if>
+    <div class="header">
+        <a href="${rootURL}/{{url}}" title="{{name}}">{{name}}</a>
     </div>
     <div>
-    <j:if test="${from.isShowPipelineParametersInHeaders()}">
-        {{#if lastSuccessfulBuildNumber}}
-            <ul>
-            {{#each lastSuccessfulBuildParams}}
-                <li>{{paramName}}: {{paramValue}}</li>
-            {{/each}}
-            </ul>
-        {{else}}
-            <span>Awaiting Execution</span>
-        {{/if}}
-    </j:if>
+        <ul>
+            <li>Health: <img src="${rootURL}/images/16x16/{{health}}" /></li>
+            <j:if test="${from.isShowPipelineParametersInHeaders()}">
+                {{#if lastSuccessfulBuildNumber}}
+                <li>Execution: <a href="${rootURL}/{{url}}{{lastSuccessfulBuildNumber}}">
+                #{{lastSuccessfulBuildNumber}}</a></li>
+                {{/if}}
+            </j:if>
+        </ul>
+        <j:if test="${from.isShowPipelineParametersInHeaders()}">
+            {{#if lastSuccessfulBuildNumber}}
+                <ul>
+                {{#each lastSuccessfulBuildParams}}
+                    <li>{{paramName}}: {{paramValue}}</li>
+                {{/each}}
+                </ul>
+            {{else}}
+                <span>Awaiting Execution</span>
+            {{/if}}
+        </j:if>
     </div>
 </div>
 </script>
@@ -186,11 +189,6 @@
         var projectCardTemplateSource = jQuery("#project-card-template").html();
         var buildPipeline = new BuildPipeline(buildPipelineViewProxy, Handlebars.compile(buildCardTemplateSource), Handlebars.compile(projectCardTemplateSource), ${from.getRefreshFrequencyInMillis()});
     </script>
-    <style>
-    .trigger {
-        background: url("${rootURL}/images/16x16/clock.png") no-repeat center center !important;
-    }
-    </style>
     <form method="post" action="gridBuilder/build" id="triggerPipelineForm" class="no-json"/>
     <form method="post" name="pipelineViewForm" action="manualExecution" id="manualExecutionForm">
 
@@ -327,8 +325,8 @@
             </j:if>
 
 
+            <j:forEach items="${buildPipelineForm.getBuildGrids()}" var="buildGrid" indexVar="i">
             <div class="pipeline-wrapper">
-                <j:forEach items="${buildPipelineForm.getBuildGrids()}" var="buildGrid" indexVar="i">
                 <div class="pipeline-info">
                     <div class="revision rounded">
                     <j:choose>
@@ -429,9 +427,8 @@
                         </tbody>
                     </table>
                 </div>
-                </j:forEach>
             </div>
-
+            </j:forEach>
         </div>
     </form>
 </j:jelly>
