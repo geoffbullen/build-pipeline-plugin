@@ -145,32 +145,42 @@ div.pipeline-wrapper div.pipeline {
 }
 
 .build-card .build-info {
-    margin-top: 8px;
+    margin: 8px 0 0 0;
 }
 
-.build-card .build-info div {
-    padding: 0 0 0 20px;
+.build-card .build-info ul {
+    margin: 0;
+    padding: 0;
+}
+
+.build-card .build-info ul li {
+    padding: 0 0 0 6px;
     margin: 0 0 4px 0;
     font-size: 11px;
     text-align: left;
     font-weight: normal;
     line-height: 16px;
+    list-style: none;
 }
 
-.build-card .build-info .build-number {
+.build-card .build-info li.build-number {
     background: url("../images/gear-small.png") no-repeat 0 -1px;
+    padding: 0 0 0 18px;
 }
 
-.build-card .build-info .build-duration {
+.build-card .build-info li.build-duration {
     background: url("../images/clock.png") no-repeat 0 -1px;
+    padding: 0 0 0 18px;
 }
 
-.build-card .build-info .build-time {
+.build-card .build-info li.build-time {
     background: url("../images/application_view_list.png") no-repeat 0 -1px;
+    padding: 0 0 0 18px;
 }
 
-.build-card .build-info .build-user {
+.build-card .build-info li.build-user {
     background: url("../images/user-small.png") no-repeat 0 -1px;
+    padding: 0 0 0 18px;
 }
 
 .build-card .header {
@@ -197,6 +207,7 @@ div.pipeline-wrapper div.pipeline {
     float: left;
     height: 100%;
     padding-left: 4px;
+    cursor: pointer;
 }
 
 .build-card .build-actions .status-bar table {
@@ -215,29 +226,6 @@ div.pipeline-wrapper div.pipeline {
     cursor: pointer;
 }
 
-.build-card ul {
-    margin: 0;
-    padding: 0 0 0 6px;
-}
-
-.build-card ul li {
-    list-style: none;
-    text-align: left;
-    line-height: 16px;
-}
-
-.param-name {
-    text-align: right;
-    font-weight: bold;
-    font-size: .9em;
-}
-
-.param-value {
-    text-align: left;
-    font-weight: normal;
-    font-size: .9em;
-}
-
 table.pipelines {
     width: 100%;
     text-align: center;
@@ -245,7 +233,7 @@ table.pipelines {
 }
 
 table.pipelines > tbody > tr > td {
-    padding: 0 8px 8px 0;
+    padding: 0 8px 12px 0;
 }
 
 table.pipelines td.next {
@@ -265,7 +253,7 @@ table.pipelines td.next {
     background-color: rgba(255, 255, 255, 0.7);
 }
 
-.revision div.description {
+.revision .description {
     display: block;
     padding: 8px 0 6px 0;
     font-size: 11px;
@@ -332,12 +320,4 @@ a:hover {
     color: inherit;
     color: expression(this.parentNode.currentStyle['color']);
     font-weight: inherit;
-}
-
-.hidden {
-	display: none;
-}
-
-#main-panel {
-    position: relative;
 }
