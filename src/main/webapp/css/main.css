@@ -179,7 +179,7 @@ div.pipeline-wrapper div.pipeline {
 }
 
 .build-card .build-info li.build-user {
-    background: url("../images/user-small.png") no-repeat 0 -1px;
+    background: url("../images/user.png") no-repeat 0 -1px;
     padding: 0 0 0 18px;
 }
 
