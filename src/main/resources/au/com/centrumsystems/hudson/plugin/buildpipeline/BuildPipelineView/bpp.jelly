@@ -340,7 +340,7 @@
                                     <div class="description">No parameters</div>
                                 </j:when>
                                 <j:otherwise>
-                                    <div class="build-parameters" id="build-parameters-${buildGrid.get(0,0).getId()}">
+                                    <div class="description" id="build-parameters-${buildGrid.get(0,0).getId()}">
                                         <ul>
                                         <j:forEach items="${buildGrid.get(0,0).getParameters().entrySet()}" var="buildParam" indexVar="buildParamCtr">
                                             <li>${buildParam.getKey()}: ${buildParam.getValue()}</li>
