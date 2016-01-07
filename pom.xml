@@ -29,7 +29,7 @@
         <pmd.config.file>pmd_rules.xml</pmd.config.file>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <groovy.version>1.8.6</groovy.version>
-        <selenium.version>2.45.0</selenium.version>
+        <selenium.version>2.48.0</selenium.version>
         <exclude.tests>**/functionaltest/*.java</exclude.tests>
     </properties>
     <developers>
