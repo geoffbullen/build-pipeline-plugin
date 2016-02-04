@@ -10,7 +10,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
 
 import org.kohsuke.stapler.bind.JavaScriptMethod;
@@ -167,16 +166,16 @@ public class BuildForm {
         return pipelineBuild.isManualTrigger();
     }
 
-    public Map<String, String> getParameters() {
-        return pipelineBuild.getBuildParameters();
-    }
-    
     public ArrayList<String> getParameterList() {
         return parameters;
     }
 
     public Integer getProjectId() {
         return projectId;
+    }
+
+    public AbstractBuild<?, ?> getCurrentBuild() {
+        return pipelineBuild.getCurrentBuild();
     }
 
 }

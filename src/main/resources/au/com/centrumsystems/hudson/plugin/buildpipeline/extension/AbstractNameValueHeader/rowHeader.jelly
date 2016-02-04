@@ -1,0 +1,49 @@
+<j:jelly xmlns:j="jelly:core"
+         xmlns:st="jelly:stapler"
+         xmlns:d="jelly:define"
+         xmlns:l="/lib/layout"
+         xmlns:t="/lib/hudson"
+         xmlns:f="/lib/form">
+    <table class="revision rounded build-card">
+        <thead>
+            <tr>
+                <td>
+                    <div class="header">
+                        Pipeline ${buildGrid.get(x,0).getRevision()}
+                    </div>
+                </td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="build-body">
+                <td class="secondary-info">
+                    <j:choose>
+                        <j:set var="buildParams" value="${it.getRowHeaders().getParameters(buildGrid.get(x,0).getCurrentBuild())}"/>
+                        <j:when test="${buildParams.isEmpty()}">
+                            No parameters
+                        </j:when>
+                        <j:otherwise>
+                            <div class="build-parameters" id="build-parameters-${buildGrid.get(x,0).getId()}">
+                                <div>
+                                    <table width="100%">
+                                        <j:forEach items="${buildParams.entrySet()}"
+                                                   var="buildParam"
+                                                   indexVar="buildParamCtr">
+                                            <tr>
+                                                <td class="param-name">${buildParam.getKey()}:</td>
+                                                <td class="param-value">${buildParam.getValue()}</td>
+                                            </tr>
+                                        </j:forEach>
+                                    </table>
+                                </div>
+                            </div>
+                        </j:otherwise>
+                    </j:choose>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <!-- No content -->
+
+</j:jelly>
+

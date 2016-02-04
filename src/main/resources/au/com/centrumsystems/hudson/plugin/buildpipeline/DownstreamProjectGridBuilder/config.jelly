@@ -1,8 +1,11 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:i="jelly:fmt">
     <f:description>
-        ${%This layout mode derives the pipeline structure based on the upstream/downstream trigger relationship between jobs.}
+        ${%This layout mode derives the pipeline structure based on the upstream/downstream trigger relationship
+         between jobs. This is the only out-of-the-box supported layout mode, but is open for extension.}
     </f:description>
-    <f:entry title="${%Select Initial Job}" field="firstJob">
-        <f:select />
-    </f:entry>
+    <f:section title="Upstream / downstream config">
+        <f:entry title="${%Select Initial Job}" field="firstJob">
+            <f:select />
+        </f:entry>
+    </f:section>
 </j:jelly>

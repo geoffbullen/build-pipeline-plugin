@@ -1,0 +1,27 @@
+<j:jelly xmlns:j="jelly:core"
+         xmlns:st="jelly:stapler"
+         xmlns:d="jelly:define"
+         xmlns:l="/lib/layout"
+         xmlns:t="/lib/hudson"
+         xmlns:f="/lib/form">
+    <table class="revision rounded build-card">
+        <thead>
+            <tr>
+                <td>
+                    <div class="header">
+                        Pipeline
+                    </div>
+                </td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="build-body">
+                <td>
+                   <div class="build-number-pipeline" id="buildNumber${buildGrid.get(x,0).getId()}">${buildGrid.get(x,0).getRevision()}</div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+</j:jelly>
+

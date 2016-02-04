@@ -1,0 +1,14 @@
+<j:jelly xmlns:j="jelly:core"
+         xmlns:st="jelly:stapler"
+         xmlns:d="jelly:define"
+         xmlns:l="/lib/layout"
+         xmlns:t="/lib/hudson"
+         xmlns:f="/lib/form">
+
+    <f:description>
+        Show all variables in the current build, and obfuscate sensitive values. Variables
+        are drawn from Build#getBuildVariables().
+    </f:description>
+
+</j:jelly>
+

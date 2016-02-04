@@ -34,7 +34,7 @@ public class PipelineWebDriverTestBase {
 
         initialJob = jr.createFreeStyleProject(INITIAL_JOB);
 
-        pipelineView = new BuildPipelineView("pipeline", "Pipeline", new DownstreamProjectGridBuilder(INITIAL_JOB), "5", false, true, false, false, false, 1, null, null);
+        pipelineView = new BuildPipelineView("pipeline", "Pipeline", new DownstreamProjectGridBuilder(INITIAL_JOB), "5", false, true, false, false, false, 1, null, null, null, null);
         jr.jenkins.addView(pipelineView);
 
         webDriver = new FirefoxDriver();

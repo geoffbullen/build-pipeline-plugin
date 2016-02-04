@@ -36,7 +36,6 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
 
 import au.com.centrumsystems.hudson.plugin.util.BuildUtil;
@@ -513,12 +512,6 @@ public class PipelineBuild {
         return formattedStartTime;
     }
 
-    /**
-     * @return a map including build parameters
-     */
-    public Map<String, String> getBuildParameters() {
-        return BuildUtil.getUnsensitiveParameters(currentBuild);
-    }
 
     public boolean isProjectDisabled() {
         return getProject().isDisabled();

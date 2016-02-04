@@ -59,7 +59,7 @@ public class BuildPipelineViewTest {
                 false, // parameters
                 false, //params in header
                 false, //definition header
-                1, null, null);
+                1, null, null, null, null);
 
         j.getInstance().addView(pipeline);
 
