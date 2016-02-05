@@ -39,8 +39,7 @@ import java.util.Set;
  * @author dalvizu
  */
 @Extension
-public class BuildVariablesHeader
-    extends AbstractNameValueHeader {
+public class BuildVariablesHeader extends AbstractNameValueHeader {
 
     /**
      * Default constructor

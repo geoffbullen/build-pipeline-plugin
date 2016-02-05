@@ -815,12 +815,17 @@ public class BuildPipelineView extends View {
     }
 
     /**
-     * Because java 6
+     * A function which accepts an argument and returns a result. Necessary to parameterize behavior,
+     * because we do not require JDK8 yet.
      *
+     * @see <a href="http://docs.oracle.com/javase/8/docs/api/java/util/function/Function.html">
+     *     JDK8 java.lang.Function
+     *     </a>
      */
     public interface Function<F, T> {
+
         /**
-         *
+         * Applies this function to the argument
          * @param input
          *  an input
          * @return

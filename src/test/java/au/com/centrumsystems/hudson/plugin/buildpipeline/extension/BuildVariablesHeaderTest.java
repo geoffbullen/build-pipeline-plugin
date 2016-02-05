@@ -45,8 +45,7 @@ public class BuildVariablesHeaderTest {
     private Map<String, String> buildVariableMap;
 
     @Before
-    public void setup()
-    {
+    public void setup() {
         buildVariableMap = new HashMap<String, String>();
         buildVariableMap.put("FOO", "BAR");
         buildVariableMap.put("SECRET", "PASSWORD");

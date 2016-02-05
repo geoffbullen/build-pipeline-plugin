@@ -35,7 +35,6 @@ package au.com.centrumsystems.hudson.plugin.buildpipeline.extension;
  *
  * @author dalvizu
  */
-public abstract class AbstractNameValueHeader
-    extends PipelineHeaderExtension {
+public abstract class AbstractNameValueHeader extends PipelineHeaderExtension {
 
 }

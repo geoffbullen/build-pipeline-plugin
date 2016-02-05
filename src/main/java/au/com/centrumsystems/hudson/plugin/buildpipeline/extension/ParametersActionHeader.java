@@ -43,8 +43,7 @@ import java.util.Map;
  * @author dalvizu
  */
 @Extension(optional = true)
-public class ParametersActionHeader
-    extends AbstractNameValueHeader {
+public class ParametersActionHeader extends AbstractNameValueHeader {
 
     /**
      * Default constructor

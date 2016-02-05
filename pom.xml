@@ -241,7 +241,6 @@
                         <goals>
                             <goal>check</goal>
                         </goals>
-                        <phase>process-classes</phase>
                     </execution>
                 </executions>
             </plugin>
