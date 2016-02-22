@@ -8,6 +8,7 @@ import hudson.model.FreeStyleProject;
 import hudson.tasks.BuildTrigger;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.jvnet.hudson.test.JenkinsRule;
@@ -40,6 +41,7 @@ public class BuildPipelineViewTest {
     /**
      * checks that UI re-run button works
      */
+    @Ignore
     @Test
     public void testReRunButton() throws Exception {
         final FreeStyleProject freestyle1 = j.createFreeStyleProject("freestyle1");
