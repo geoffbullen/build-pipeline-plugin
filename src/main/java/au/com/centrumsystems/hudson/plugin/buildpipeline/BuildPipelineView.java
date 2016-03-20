@@ -475,10 +475,12 @@ public class BuildPipelineView extends View {
             final Action buildParametersAction) {
         LOGGER.fine("Triggering build for project: " + triggerProject.getFullDisplayName()); //$NON-NLS-1$
         final List<Action> buildActions = new ArrayList<Action>();
-        final CauseAction causeAction = new CauseAction(new UserIdCause());
+        final List<Cause> causes = new ArrayList<Cause>();
+        causes.add(new UserIdCause());
         if (upstreamBuild != null) {
-            causeAction.getCauses().add(new Cause.UpstreamCause((Run<?, ?>) upstreamBuild));
+            causes.add(new Cause.UpstreamCause((Run<?, ?>) upstreamBuild));
         }
+        final CauseAction causeAction = new CauseAction(causes);
         buildActions.add(causeAction);
         ParametersAction parametersAction =
                 buildParametersAction instanceof ParametersAction
