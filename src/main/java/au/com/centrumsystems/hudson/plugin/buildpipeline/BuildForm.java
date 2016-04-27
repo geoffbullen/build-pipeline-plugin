@@ -98,7 +98,7 @@ public class BuildForm {
         projectId = project.getFullName().hashCode();
         final ParametersDefinitionProperty params = project.getProperty(ParametersDefinitionProperty.class);
         final ArrayList<String> paramList = new ArrayList<String>();
-        if (params != null) {
+        if (params != null && params.getParameterDefinitionNames() != null) {
             for (String p : params.getParameterDefinitionNames()) {
                 paramList.add(p);
             }
