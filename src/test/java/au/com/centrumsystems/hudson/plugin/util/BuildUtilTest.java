@@ -38,6 +38,9 @@ import hudson.tasks.BuildTrigger;
 import org.junit.Before;
 import org.junit.Test;
 import org.jvnet.hudson.test.HudsonTestCase;
+import org.jvnet.hudson.test.RunLoadCounter;
+
+import java.util.concurrent.Callable;
 
 public class BuildUtilTest extends HudsonTestCase {
 
@@ -46,6 +49,40 @@ public class BuildUtilTest extends HudsonTestCase {
     public void setUp() throws Exception {
         super.setUp();
     }
+
+    @Test
+    public void testGetDownstreamBuildWithLimit() throws Exception {
+        int max_upstream_depth = 3;
+        int total_proj2_builds = 5;
+        System.setProperty(BuildUtil.class.getCanonicalName() + ".MAX_DOWNSTREAM_DEPTH", String.valueOf(max_upstream_depth));
+
+        final FreeStyleProject proj1 = createFreeStyleProject();
+        final FreeStyleProject proj2 = createFreeStyleProject();
+
+
+        final FreeStyleBuild freeStyleBuild = proj1.scheduleBuild2(0).get();
+        assertBuildStatusSuccess(freeStyleBuild);
+
+        proj1.getPublishersList().add(new BuildTrigger(proj2.getName(), true));
+
+        jenkins.rebuildDependencyGraph();
+
+        // Schedule a build 10 times
+        for (int i = 0; i < total_proj2_builds; i++) {
+            assertBuildStatusSuccess(proj1.scheduleBuild2(0));
+            waitUntilNoActivity();
+        }
+        assertEquals("Proj2 does not have the correct number of builds.", total_proj2_builds + 1, proj2.getNextBuildNumber());
+        RunLoadCounter.prepare(proj2);
+
+        assertFalse(RunLoadCounter.assertMaxLoads(proj2, max_upstream_depth - 1, new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                return BuildUtil.getDownstreamBuild(proj2, freeStyleBuild) != null;
+            }
+        }));
+    }
+
 
     @Test
     public void testGetDownstreamBuild() throws Exception {
