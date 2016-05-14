@@ -53,7 +53,7 @@ public class BuildUtilTest extends HudsonTestCase {
     @Test
     public void testGetDownstreamBuildWithLimit() throws Exception {
         int max_upstream_depth = 3;
-        int total_proj2_builds = 5;
+        int total_proj2_builds = 10;
         System.setProperty(BuildUtil.class.getCanonicalName() + ".MAX_DOWNSTREAM_DEPTH", String.valueOf(max_upstream_depth));
 
         final FreeStyleProject proj1 = createFreeStyleProject();
@@ -75,10 +75,10 @@ public class BuildUtilTest extends HudsonTestCase {
         assertEquals("Proj2 does not have the correct number of builds.", total_proj2_builds + 1, proj2.getNextBuildNumber());
         RunLoadCounter.prepare(proj2);
 
-        assertFalse(RunLoadCounter.assertMaxLoads(proj2, max_upstream_depth - 1, new Callable<Boolean>() {
+        assertNull(RunLoadCounter.assertMaxLoads(proj2, max_upstream_depth + 2, new Callable<AbstractBuild<?, ?>>() {
             @Override
-            public Boolean call() throws Exception {
-                return BuildUtil.getDownstreamBuild(proj2, freeStyleBuild) != null;
+            public AbstractBuild<?, ?> call() throws Exception {
+                return BuildUtil.getDownstreamBuild(proj2, freeStyleBuild);
             }
         }));
     }
