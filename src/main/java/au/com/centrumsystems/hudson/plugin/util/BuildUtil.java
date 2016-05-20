@@ -24,14 +24,12 @@
  */
 package au.com.centrumsystems.hudson.plugin.util;
 
-import hudson.model.Action;
-import hudson.model.ParameterValue;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
-import hudson.model.Cause;
+import hudson.model.Action;
 import hudson.model.Cause.UpstreamCause;
-import hudson.model.CauseAction;
 import hudson.model.FileParameterValue;
+import hudson.model.ParameterValue;
 import hudson.model.ParametersAction;
 
 import java.util.ArrayList;
@@ -59,21 +57,30 @@ public final class BuildUtil {
      * @return - The next downstream build based on the upstream build and downstream project, or null if there is no downstream project.
      */
     public static AbstractBuild<?, ?> getDownstreamBuild(final AbstractProject<?, ?> downstreamProject,
-            final AbstractBuild<?, ?> upstreamBuild) {
+                                                         final AbstractBuild<?, ?> upstreamBuild) {
         if ((downstreamProject != null) && (upstreamBuild != null)) {
+            // We set the MAX_DOWNSTREAM_DEPTH to search everything. This is to prevent breaking current behavior. This
+            // flag can be set via groovy console, so users can adjust this parameter without having to restart Jenkins.
+            final int maxDownstreamDepth = Integer.getInteger(BuildUtil.class.getCanonicalName() + ".MAX_DOWNSTREAM_DEPTH",
+                                                                                                    Integer.MAX_VALUE);
+
+            // This can cause a major performance issue specifically when it tries to search through all of the builds,
+            // and it never finds the correct upstream cause action. It might never be able to find the correct cause action because
+            // a pipeline was executed and later terminated early. If that is the case, then we go through the entire list
+            // of builds even though we terminated early.
+            //
+            // To counter any potential performance issue the system property
+            // au.com.centurmsystems.hudson.plugin.util.BuildUtil.MAX_DOWNSTREAM_DEPTH
+            // can be set which sets the max limit for how many builds should be loaded for the max depth.
+
             @SuppressWarnings("unchecked")
-            final List<AbstractBuild<?, ?>> downstreamBuilds = (List<AbstractBuild<?, ?>>) downstreamProject.getBuilds();
+            final List<AbstractBuild<?, ?>> downstreamBuilds = (List<AbstractBuild<?, ?>>) downstreamProject
+                                                                                                .getBuilds()
+                                                                                                .limit(maxDownstreamDepth);
             for (final AbstractBuild<?, ?> innerBuild : downstreamBuilds) {
-                for (final CauseAction action : innerBuild.getActions(CauseAction.class)) {
-                    for (final Cause cause : action.getCauses()) {
-                        if (cause instanceof UpstreamCause) {
-                            final UpstreamCause upstreamCause = (UpstreamCause) cause;
-                            if (upstreamCause.getUpstreamProject().equals(upstreamBuild.getProject().getFullName())
-                                    && (upstreamCause.getUpstreamBuild() == upstreamBuild.getNumber())) {
-                                return innerBuild;
-                            }
-                        }
-                    }
+                final UpstreamCause cause = innerBuild.getCause(UpstreamCause.class);
+                if (cause != null && cause.pointsTo(upstreamBuild)) {
+                        return innerBuild;
                 }
             }
         }
@@ -90,8 +97,8 @@ public final class BuildUtil {
      *            - The AbstractProject
      * @return - AbstractBuild's ParametersAction
      */
-    public static Action getAllBuildParametersAction(//
-            final AbstractBuild<?, ?> upstreamBuild, final AbstractProject<?, ?> downstreamProject) { //
+    public static Action getAllBuildParametersAction(final AbstractBuild<?, ?> upstreamBuild,
+                                                     final AbstractProject<?, ?> downstreamProject) {
         // Retrieve the List of Actions from the downstream project
         final ParametersAction dsProjectParametersAction = ProjectUtil.getProjectParametersAction(downstreamProject);
 
