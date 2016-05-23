@@ -599,8 +599,7 @@ public class BuildPipelineView extends View {
         final List<Action> retval = new ArrayList<Action>();
         for (final Action action : actions) {
             if (action instanceof CauseAction) {
-                final CauseAction causeAction = (CauseAction) action;
-                filterOutUserIdCause(causeAction);
+                final CauseAction causeAction  = filterOutUserIdCause((CauseAction) action);
                 if (!causeAction.getCauses().isEmpty()) {
                     retval.add(causeAction);
                 }
@@ -619,15 +618,18 @@ public class BuildPipelineView extends View {
      *
      * @param causeAction
      *  the causeAction to remove UserIdCause from
+     * @return a causeAction with UserIdCause removed
      */
-    private void filterOutUserIdCause(CauseAction causeAction) {
+    private CauseAction filterOutUserIdCause(CauseAction causeAction) {
+        final List<Cause> causes = new ArrayList<Cause>();
         final Iterator<Cause> it = causeAction.getCauses().iterator();
         while (it.hasNext()) {
             final Cause cause = it.next();
-            if (cause instanceof UserIdCause) {
-                it.remove();
+            if (!(cause instanceof UserIdCause)) {
+                causes.add(cause);
             }
         }
+        return new CauseAction(causes);
     }
 
     /**
