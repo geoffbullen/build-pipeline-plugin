@@ -30,8 +30,12 @@
                     {{/if}}
                 {{/unless}}
             {{/unless}}
-            {{project.name}}
-        </a>
+            {{#if project.displayName}}
+                {{project.displayName}}
+            {{else}}
+                {{project.name}}
+            {{/if}}
+		</a>
     </div>
     <div class="build-info">
         <ul>

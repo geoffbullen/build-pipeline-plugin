@@ -54,6 +54,10 @@ public class BuildCardComponent {
         return elementIsPresent(By.xpath(TRIGGER_SPAN_XPATH), webDriver);
     }
 
+    public boolean hasDisplayName(String displayName) {
+        return elementIsPresent(By.xpath(".//a[@title='" + displayName + "']"), webDriver);
+    }
+
     public boolean hasRetryButton() {
         return elementIsPresent(By.xpath(RETRY_IMG_XPATH), webDriver);
     }
