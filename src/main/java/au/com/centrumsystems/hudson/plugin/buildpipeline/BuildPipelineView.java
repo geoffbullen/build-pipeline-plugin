@@ -605,6 +605,8 @@ public class BuildPipelineView extends View {
                 }
             } else if (action instanceof ParametersAction) {
                 retval.add(action);
+            } else if ("hudson.plugins.git.RevisionParameterAction".equals(action.getClass().getName())) {
+                 retval.add(action);
             }
         }
         return retval;
