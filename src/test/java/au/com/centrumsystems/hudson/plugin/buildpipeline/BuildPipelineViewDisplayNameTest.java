@@ -1,7 +1,9 @@
-package au.com.centrumsystems.hudson.plugin.buildpipeline.functionaltest;
+package au.com.centrumsystems.hudson.plugin.buildpipeline;
 
 import au.com.centrumsystems.hudson.plugin.buildpipeline.BuildPipelineView;
 import au.com.centrumsystems.hudson.plugin.buildpipeline.DownstreamProjectGridBuilder;
+import au.com.centrumsystems.hudson.plugin.buildpipeline.extension.NullColumnHeader;
+import au.com.centrumsystems.hudson.plugin.buildpipeline.extension.PipelineHeaderExtension;
 import au.com.centrumsystems.hudson.plugin.buildpipeline.testsupport.BuildCardComponent;
 import au.com.centrumsystems.hudson.plugin.buildpipeline.testsupport.PipelinePage;
 import hudson.model.FreeStyleProject;
@@ -18,7 +20,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import static org.junit.Assert.*;
 
-public class BuildPipelineViewTest {
+public class BuildPipelineViewDisplayNameTest {
     protected WebDriver webDriver;
 
     @Rule
@@ -39,16 +41,14 @@ public class BuildPipelineViewTest {
     }
 
     /**
-     * checks that UI re-run button works
+     * checks that pipeline box uses displayName
      */
     @Ignore
     @Test
-    public void testReRunButton() throws Exception {
+    public void testDisplayName() throws Exception {
         final FreeStyleProject freestyle1 = j.createFreeStyleProject("freestyle1");
-        final FreeStyleProject freestyle2 = j.createFreeStyleProject("freestyle2");
-        freestyle1.getPublishersList().add(new BuildTrigger("freestyle2", true));
-        final FreeStyleProject freestyle3 = j.createFreeStyleProject("freestyle3");
-        freestyle2.getPublishersList().add(new BuildTrigger("freestyle3", true));
+
+        freestyle1.setDisplayName("fancyname1");
 
         freestyle1.scheduleBuild();
         j.waitUntilNoActivity();
@@ -63,19 +63,16 @@ public class BuildPipelineViewTest {
                 false, //definition header
                 1, null, null, null, null);
 
+
+
         j.getInstance().addView(pipeline);
 
         PipelinePage pipelinePage = new PipelinePage(webDriver, pipeline.getViewName(), j.getURL());
         pipelinePage.open();
 
         BuildCardComponent buildCardComponent = pipelinePage.buildCard(1, 1, 2);
-        buildCardComponent.clickTriggerButton();
 
-        j.waitUntilNoActivity();
-        pipelinePage.reload();
-
-        assertEquals(freestyle1.getBuilds().size(), 1);
-        assertEquals(freestyle2.getBuilds().size(), 2);
-        assertEquals(freestyle3.getBuilds().size(), 2);
+        assertTrue("The displayName should be visible",
+                buildCardComponent.hasDisplayName("fancyname1"));
     }
 }

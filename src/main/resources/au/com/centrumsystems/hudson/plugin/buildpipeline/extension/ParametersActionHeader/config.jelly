@@ -4,7 +4,7 @@
          xmlns:l="/lib/layout"
          xmlns:t="/lib/hudson"
          xmlns:f="/lib/form">
-    <st:include page="updateLayout.jelly"/>
+
     <f:description>
         Show only build parameters, those defined in 'This Build Is Parameterized...' configuration. Obfuscates
         sensitive values.

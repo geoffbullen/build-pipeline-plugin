@@ -545,10 +545,12 @@ public class BuildPipelineView extends View {
             final Action buildParametersAction) {
         LOGGER.fine("Triggering build for project: " + triggerProject.getFullDisplayName()); //$NON-NLS-1$
         final List<Action> buildActions = new ArrayList<Action>();
-        final CauseAction causeAction = new CauseAction(new UserIdCause());
+        final List<Cause> causes = new ArrayList<Cause>();
+        causes.add(new UserIdCause());
         if (upstreamBuild != null) {
-            causeAction.getCauses().add(new Cause.UpstreamCause((Run<?, ?>) upstreamBuild));
+            causes.add(new Cause.UpstreamCause((Run<?, ?>) upstreamBuild));
         }
+        final CauseAction causeAction = new CauseAction(causes);
         buildActions.add(causeAction);
         ParametersAction parametersAction =
                 buildParametersAction instanceof ParametersAction
@@ -673,13 +675,14 @@ public class BuildPipelineView extends View {
         final List<Action> retval = new ArrayList<Action>();
         for (final Action action : actions) {
             if (action instanceof CauseAction) {
-                final CauseAction causeAction = (CauseAction) action;
-                filterOutUserIdCause(causeAction);
+                final CauseAction causeAction  = filterOutUserIdCause((CauseAction) action);
                 if (!causeAction.getCauses().isEmpty()) {
                     retval.add(causeAction);
                 }
             } else if (action instanceof ParametersAction) {
                 retval.add(action);
+            } else if ("hudson.plugins.git.RevisionParameterAction".equals(action.getClass().getName())) {
+                 retval.add(action);
             }
         }
         return retval;
@@ -693,15 +696,18 @@ public class BuildPipelineView extends View {
      *
      * @param causeAction
      *  the causeAction to remove UserIdCause from
+     * @return a causeAction with UserIdCause removed
      */
-    private void filterOutUserIdCause(CauseAction causeAction) {
+    private CauseAction filterOutUserIdCause(CauseAction causeAction) {
+        final List<Cause> causes = new ArrayList<Cause>();
         final Iterator<Cause> it = causeAction.getCauses().iterator();
         while (it.hasNext()) {
             final Cause cause = it.next();
-            if (cause instanceof UserIdCause) {
-                it.remove();
+            if (!(cause instanceof UserIdCause)) {
+                causes.add(cause);
             }
         }
+        return new CauseAction(causes);
     }
 
     /**

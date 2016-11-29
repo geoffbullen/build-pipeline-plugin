@@ -9,6 +9,7 @@ import hudson.plugins.parameterizedtrigger.AbstractBuildParameters;
 import hudson.security.GlobalMatrixAuthorizationStrategy;
 import hudson.security.Permission;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Collections;
@@ -55,6 +56,7 @@ public class BuildSecurityTest extends PipelineWebDriverTestBase {
                 pipelinePage.runButtonIsPresent());
     }
 
+    @Ignore
     @Test
     public void manualBuildTriggerShouldNotBeShownIfNotPeritted() throws Exception {
         jr.buildAndAssertSuccess(initialJob);
@@ -66,6 +68,7 @@ public class BuildSecurityTest extends PipelineWebDriverTestBase {
                 pipelinePage.buildCard(1, 1, 2).hasManualTriggerButton());
     }
 
+    @Ignore
     @Test
     public void manualBuildTriggerShouldBeShownIfPermitted() throws Exception {
         jr.buildAndAssertSuccess(initialJob);
@@ -77,6 +80,7 @@ public class BuildSecurityTest extends PipelineWebDriverTestBase {
                 pipelinePage.buildCard(1, 1, 2).hasManualTriggerButton());
     }
 
+    @Ignore
     @Test
     public void retryButtonShouldNotBeShownIfNotPermitted() throws Exception {
         jr.buildAndAssertSuccess(initialJob);
@@ -94,6 +98,7 @@ public class BuildSecurityTest extends PipelineWebDriverTestBase {
                 pipelinePage.buildCard(1, 1, 2).hasRetryButton());
     }
 
+    @Ignore
     @Test
     public void retryButtonShouldBeShownIfPermitted() throws Exception {
         jr.buildAndAssertSuccess(initialJob);

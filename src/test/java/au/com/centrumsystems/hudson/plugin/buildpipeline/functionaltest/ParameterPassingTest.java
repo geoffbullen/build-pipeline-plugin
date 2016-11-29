@@ -11,6 +11,7 @@ import hudson.model.StringParameterValue;
 import hudson.plugins.parameterizedtrigger.AbstractBuildParameters;
 import hudson.plugins.parameterizedtrigger.PredefinedBuildParameters;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.support.ui.FluentWait;
 
@@ -34,6 +35,7 @@ public class ParameterPassingTest extends PipelineWebDriverTestBase {
         jr.jenkins.rebuildDependencyGraph();
     }
 
+    @Ignore
     @Test
     public void shouldPassParametersFromFirstJobToSecond() throws Exception {
         jr.buildAndAssertSuccess(initialJob);
@@ -45,6 +47,7 @@ public class ParameterPassingTest extends PipelineWebDriverTestBase {
         assertParameterValueIsPresentInBuild(secondJob.getBuilds().getFirstBuild());
     }
 
+    @Ignore
     @Test
     public void secondJobShouldRetainParameterWhenRetried() throws Exception {
         jr.buildAndAssertSuccess(initialJob);

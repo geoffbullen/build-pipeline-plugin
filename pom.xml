@@ -3,10 +3,10 @@
     <parent>
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
-        <version>1.609.3</version>
+        <version>1.619</version>
     </parent>
     <artifactId>build-pipeline-plugin</artifactId>
-    <version>1.4.10-SNAPSHOT</version>
+    <version>1.5.5-SNAPSHOT</version>
     <packaging>hpi</packaging>
     <name>Build Pipeline Plugin</name>
     <description>This plugin provides build pipeline functionality to Hudson and Jenkins. This allows a chain of jobs to be visualised in a new view.  Manual jobs in the pipeline can be triggered by a user with the appropriate permissions manually confirming.</description>
@@ -18,8 +18,8 @@
         </license>
     </licenses>
     <scm>
-        <connection>scm:git:https://github.com/jenkinsci/${project.artifactId}.git</connection>
-        <developerConnection>scm:git:https://github.com/jenkinsci/${project.artifactId}.git</developerConnection>
+        <connection>scm:git:git://github.com/jenkinsci/${project.artifactId}.git</connection>
+        <developerConnection>scm:git:git@github.com:jenkinsci/${project.artifactId}.git</developerConnection>
         <url>https://github.com/jenkinsci/build-pipeline-plugin</url>
         <tag>HEAD</tag>
     </scm>
@@ -29,7 +29,7 @@
         <pmd.config.file>pmd_rules.xml</pmd.config.file>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <groovy.version>1.8.6</groovy.version>
-        <selenium.version>2.45.0</selenium.version>
+        <selenium.version>2.48.0</selenium.version>
         <exclude.tests>**/functionaltest/*.java</exclude.tests>
     </properties>
     <developers>
@@ -169,6 +169,20 @@
 
     <build>
         <plugins>
+            <!-- work-around for INFRA-588 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>2.6</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.maven.wagon</groupId>
+                        <artifactId>wagon-http</artifactId>
+                        <version>2.10</version>
+                        <type>jar</type>
+                    </dependency>
+                </dependencies>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>

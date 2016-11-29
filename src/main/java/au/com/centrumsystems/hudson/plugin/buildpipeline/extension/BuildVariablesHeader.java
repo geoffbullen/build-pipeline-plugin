@@ -81,7 +81,7 @@ public class BuildVariablesHeader extends AbstractNameValueHeader {
 
         @Override
         public String getDisplayName() {
-            return "Build variables";
+            return "All build variables and parameters";
         }
     }
 }

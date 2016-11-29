@@ -4,37 +4,24 @@
          xmlns:l="/lib/layout"
          xmlns:t="/lib/hudson"
          xmlns:f="/lib/form">
-    <table class="PROJECT build-card rounded">
-        <tbody>
-            <tr class="header-name">
-                <td>
-                    <div class="header-wrapper overflow-hidden">
-                        <img src="${rootURL}/images/24x24/{{health}}" />
-                        <a href="${rootURL}/{{url}}" title="{{name}}">{{name}}</a>
-                        {{#if lastSuccessfulBuildNumber}}
-                        <a href="${rootURL}/{{url}}{{lastSuccessfulBuildNumber}}"> (#{{lastSuccessfulBuildNumber}})</a>
-                        {{/if}}
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td class="secondary-info">
-                    <table width="100%">
-                        {{#if lastSuccessfulBuildNumber}}
-                            {{#each lastSuccessfulBuildParams}}
-                            <tr>
-                                <td class="param-name">{{paramName}}:</td>
-                                <td class="param-value">{{paramValue}}</td>
-                            </tr>
-                            {{/each}}
-                        {{else}}
-                            <tr>
-                                <td colspan="2">Awaiting Execution</td>
-                            </tr>
-                        {{/if}}
-                    </table>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+
+    <div class="build-card rounded">
+        <div class="header">
+            <a href="${rootURL}/{{url}}" title="{{name}}">{{name}}</a>
+        </div>
+        <div class="build-info">
+            {{#if lastSuccessfulBuildNumber}}
+            <ul>
+                <li>Health: <img src="${rootURL}/images/16x16/{{health}}" /></li>
+                <li>Build <abbr title="Number">No.</abbr>: <a href="${rootURL}/{{url}}{{lastSuccessfulBuildNumber}}">#{{lastSuccessfulBuildNumber}}</a></li>
+                {{#each lastSuccessfulBuildParams}}
+                <li>{{paramName}}: {{paramValue}}</li>
+                {{/each}}
+            </ul>
+            {{else}}
+            Awaiting Execution
+            {{/if}}
+        </div>
+    </div>
+
 </j:jelly>
