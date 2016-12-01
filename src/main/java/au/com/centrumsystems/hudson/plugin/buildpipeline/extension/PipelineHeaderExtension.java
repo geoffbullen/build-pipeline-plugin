@@ -43,7 +43,7 @@ public abstract class PipelineHeaderExtension
         Comparable<PipelineHeaderExtension> {
 
     /**
-     * @return all known <code>BuildParameterProvider</code>s
+     * @return all known <code>PipelineHeaderExtension</code>s
      */
     public static ExtensionList<PipelineHeaderExtension> all() {
         return Jenkins.getInstance().getExtensionList(PipelineHeaderExtension.class);

@@ -11,6 +11,10 @@
     </f:section>
 
     <f:section title="Trigger Options">
+
+        <f:dropdownDescriptorSelector field="buildCard" title="${%Build Cards}"
+                                      descriptors="${descriptor.getBuildCardDescriptors()}"/>
+
         <f:entry title="Restrict triggers to most recent successful builds" field="triggerOnlyLatestJob">
             <f:booleanRadio default="true"/>
         </f:entry>

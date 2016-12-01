@@ -61,7 +61,7 @@ public class BuildPipelineViewDisplayNameTest {
                 false, // parameters
                 false, //params in header
                 false, //definition header
-                1, null, null, null, null);
+                1, null, null, null, null, null);
 
 
 

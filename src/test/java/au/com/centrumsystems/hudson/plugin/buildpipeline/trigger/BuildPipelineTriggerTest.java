@@ -30,6 +30,7 @@ import static org.junit.Assert.assertThat;
 
 import au.com.centrumsystems.hudson.plugin.buildpipeline.BuildPipelineView;
 import au.com.centrumsystems.hudson.plugin.buildpipeline.DownstreamProjectGridBuilder;
+import au.com.centrumsystems.hudson.plugin.buildpipeline.extension.StandardBuildCard;
 import hudson.model.AbstractProject;
 import hudson.model.Cause;
 import hudson.model.Descriptor;
@@ -229,7 +230,7 @@ public class BuildPipelineTriggerTest {
         jenkins.getInstance().rebuildDependencyGraph();
 
         BuildPipelineView view = new BuildPipelineView("Pipeline", "Title", new DownstreamProjectGridBuilder("A"), "1", false, "");
-
+        view.setBuildCard(new StandardBuildCard());
         jenkins.buildAndAssertSuccess(projectA);
 
         view.triggerManualBuild(1, "B", "A");
@@ -256,7 +257,7 @@ public class BuildPipelineTriggerTest {
         jenkins.getInstance().rebuildDependencyGraph();
 
         BuildPipelineView view = new BuildPipelineView("Pipeline", "Title", new DownstreamProjectGridBuilder("A"), "1", false, "");
-
+        view.setBuildCard(new StandardBuildCard());
         jenkins.buildAndAssertSuccess(projectA);
 
         view.triggerManualBuild(1, "B", "A");
@@ -273,6 +274,7 @@ public class BuildPipelineTriggerTest {
 
         // re-triggering the build should preserve upstream context (JENKINS-24883
         view.rerunBuild(projectB.getLastBuild().getExternalizableId());
+
         jenkins.waitUntilNoActivity();
         build = projectB.getLastBuild();
         upstreamCause = build.getCause(Cause.UpstreamCause.class);

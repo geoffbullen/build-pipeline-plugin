@@ -1,0 +1,143 @@
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:i="jelly:fmt">
+    <div class="build-card rounded {{build.status}} {{#if project.disabled}}disabled{{/if}}">
+        <div class="header">
+            <a href="${rootURL}/{{build.url}}" title="{{project.name}}">
+                {{#unless build.isPending}}
+                {{#unless build.isReadyToBeManuallyBuilt}}
+                {{#if build.displayName}}
+                {{build.displayName}}
+                {{else}}
+                #{{build.number}}
+                {{/if}}
+                {{/unless}}
+                {{/unless}}
+                {{#if project.displayName}}
+                {{project.displayName}}
+                {{else}}
+                {{project.name}}
+                {{/if}}
+            </a>
+        </div>
+        <div class="build-info">
+            <ul>
+                {{#if build.startDate}}
+                <li class="build-time" title="Start date: {{build.startDate}} {{build.startTime}}">{{build.startDate}} {{build.startTime}}</li>
+                {{else}}
+                <li class="build-time"><abbr title="Not Applicable">N/A</abbr></li>
+                {{/if}}
+
+                {{#if build.isBuilding}}
+                <li class="build-duration" title="Build duration: {{build.duration}}">{{build.duration}}</li>
+                {{else}}
+                {{#if build.isComplete}}
+                <li class="build-duration" title="Build duration: {{build.duration}}">{{build.duration}}</li>
+                {{else}}
+                <li class="build-duration"><abbr title="Not Applicable">N/A</abbr></li>
+                {{/if}}
+                {{/if}}
+
+                {{#if build.userId}}
+                <li class="build-user" title="User: {{build.userId}}">{{build.userId}}</li>
+                {{/if}}
+            </ul>
+        </div>
+        <div class="build-actions">
+            {{#unless project.disabled}}
+            <div class="status-bar" id="status-bar-{{id}}">
+                {{#if build.isBuilding}}
+                <div onclick="buildPipeline.fillDialog('${app.rootUrl}{{build.url}}console', 'Console output for {{project.name}} #{{build.number}}')">
+                    <table class="progress-bar" align="center">
+                        <tbody>
+                            <tr title="Estimated remaining time: {{build.estimatedRemainingTime}}">
+                                <td style="width: {{build.progress}}%" class="progress-bar-done" id="progress-bar-done{{id}}"></td>
+                                <td style="width: {{build.progressLeft}}%" class="progress-bar-left" id="progress-bar-left{{id}}"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                {{/if}}
+            </div>
+
+            <div class="icons" id="icons-{{id}}">
+                {{#if project.parameters.length}}
+                <j:set var="hasParameterIconUrl" value="${rootURL}/plugin/build-pipeline-plugin/images/has-parameter.png" />
+                <img title="This job has parameters" alt="This job has parameters" src="${hasParameterIconUrl}"/>
+                {{/if}}
+                {{#unless build.isPending}}
+                {{#unless build.isReadyToBeManuallyBuilt}}
+                <j:set var="consoleOutputIconUrl" value="${rootURL}/images/16x16/terminal.png" />
+                <j:choose>
+                    <j:when test="${from.newWindowConsoleOutputLinkStyle}">
+                        <a href="${rootURL}/{{build.url}}console" target="_blank">
+                            <img title="console" alt="console" src="${consoleOutputIconUrl}" />
+                        </a>
+                    </j:when>
+                    <j:when test="${from.thisWindowConsoleOutputLinkStyle}">
+                        <a href="${rootURL}/{{build.url}}console">
+                            <img title="console" alt="console" src="${consoleOutputIconUrl}" />
+                        </a>
+                    </j:when>
+                    <j:otherwise>
+                        <span onclick="buildPipeline.fillDialog('${app.rootUrl}{{build.url}}console', 'Console output for {{project.name}} #{{build.number}}')">
+                            <img title="console" alt="console" src="${consoleOutputIconUrl}" />
+                        </span>
+                    </j:otherwise>
+                </j:choose>
+                {{/unless}}
+                {{/unless}}
+
+                {{#if build.isRerunnable}}
+                {{#if build.isSuccess}}
+                {{#if ${!from.triggerOnlyLatestJob}}}
+                <j:if test="${from.hasBuildPermission()}">
+                    <span onclick="buildPipeline.showSpinner({{id}}); buildPipeline.rerunBuild({{id}}, '{{build.extId}}', [{{build.dependencyIds}}])">
+                        <img title="re-run" alt="re-run" src="${rootURL}/images/16x16/redo.png" />
+                    </span>
+                </j:if>
+                {{/if}}
+                {{else}}
+                {{#if ${from.triggerOnlyLatestJob}}}
+                {{#if build.isLatestBuild}}
+                {{#if build.isUpstreamBuildLatest}}
+                <span onclick="buildPipeline.showSpinner({{id}}); buildPipeline.rerunBuild({{id}}, '{{build.extId}}', [{{build.dependencyIds}}])">
+                    <img title="retry" alt="retry" src="${rootURL}/images/16x16/redo.png" />
+                </span>
+                {{/if}}
+                {{/if}}
+                {{else}}
+                {{#if build.isManual}}
+                <span onclick="buildPipeline.showSpinner({{id}}); buildPipeline.triggerBuild({{id}}, '{{upstream.projectName}}', {{upstream.buildNumber}}, '{{project.name}}', [{{build.dependencyIds}}])">
+                    <img title="retry" alt="retry" src="${rootURL}/images/16x16/clock.png" />
+                </span>
+                {{else}}
+                <span onclick="buildPipeline.showSpinner({{id}}); buildPipeline.rerunBuild({{id}}, '{{build.extId}}', [{{build.dependencyIds}}])">
+                    <img title="retry" alt="retry" src="${rootURL}/images/16x16/redo.png" />
+                </span>
+                {{/if}}
+                {{/if}}
+                {{/if}}
+                {{/if}}
+
+                {{#if build.isReadyToBeManuallyBuilt}}
+                {{#if ${from.triggerOnlyLatestJob}}}
+                {{#if build.isUpstreamBuildLatestSuccess}}
+                <span onclick="buildPipeline.showSpinner({{id}}); buildPipeline.triggerBuild({{id}}, '{{upstream.projectName}}', {{upstream.buildNumber}}, '{{project.name}}', [{{build.dependencyIds}}])">
+                    <img title="trigger" alt="trigger" src="${rootURL}/images/16x16/clock.png" />
+                </span>
+                {{/if}}
+                {{else}}
+                <span onclick="buildPipeline.showSpinner({{id}}); buildPipeline.triggerBuild({{id}}, '{{upstream.projectName}}', {{upstream.buildNumber}}, '{{project.name}}', [{{build.dependencyIds}}])">
+                    <img title="trigger" alt="trigger" src="${rootURL}/images/16x16/clock.png" />
+                </span>
+                {{/if}}
+                {{/if}}
+            </div>
+            {{/unless}}
+            {{#if project.disabled}}
+            <div class="icons" id="icons-{{id}}">
+                <span class="disabled"><img src="${rootURL}/images/16x16/warning.png" atl="disabled" title="disabled" /></span>
+            </div>
+            {{/if}}
+        </div>
+    </div>
+</j:jelly>
