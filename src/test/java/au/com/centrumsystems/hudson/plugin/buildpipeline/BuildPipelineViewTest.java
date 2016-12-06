@@ -400,7 +400,7 @@ public class BuildPipelineViewTest {
      * not set. This doesn't solve the root cause and it't only intended to make
      * our tests succeed.
      */
-    static class BuildPipelineViewFactory {
+    public static class BuildPipelineViewFactory {
         public static BuildPipelineView getBuildPipelineView(final String bpViewName, final String bpViewTitle, final ProjectGridBuilder gridBuilder,
                 final String noOfBuilds, final boolean triggerOnlyLatestJob) {
             return new BuildPipelineView(bpViewName, bpViewTitle, gridBuilder, noOfBuilds, triggerOnlyLatestJob, null) {
@@ -413,112 +413,4 @@ public class BuildPipelineViewTest {
         }
     }
 
-    @Test
-    @Issue("JENKINS-30801")
-    public void testRetriggerSuccessfulBuild() throws Exception {
-        final FreeStyleProject upstreamBuild = jenkins.createFreeStyleProject("upstream");
-        final FreeStyleProject downstreamBuild = jenkins.createFreeStyleProject("downstream");
-        upstreamBuild.getPublishersList().add(new BuildPipelineTrigger("downstream", null));
-        downstreamBuild.getBuildersList().add(new TestBuilder()
-        {
-            @Override
-            public boolean perform(AbstractBuild<?, ?> abstractBuild, Launcher launcher, BuildListener buildListener)
-                    throws InterruptedException, IOException
-            {
-                abstractBuild.addAction(new MockAction());
-                return true;
-            }
-        });
-
-        // Important; we must do this step to ensure that the dependency graphs
-        // are updated
-        Hudson.getInstance().rebuildDependencyGraph();
-
-        // mock the upstream build as being caused by SCM trigger
-        Cause mockScmTriggerCause = new SCMTrigger.SCMTriggerCause("mock");
-        upstreamBuild.scheduleBuild2(0, mockScmTriggerCause);
-        jenkins.waitUntilNoActivity();
-
-        // mock trigget the downstream build as being triggered by upstream
-        ParametersAction parametersAction = new ParametersAction(
-                Arrays.asList((ParameterValue)new StringParameterValue("foo", "bar")));
-        UpstreamCause upstreamCause = new hudson.model.Cause.UpstreamCause(
-                (Run<?, ?>) upstreamBuild.getLastBuild());
-        downstreamBuild.scheduleBuild2(0, upstreamCause, parametersAction);
-        jenkins.waitUntilNoActivity();
-
-        BuildPipelineView pipeline = BuildPipelineViewFactory.getBuildPipelineView("pipeline", "",
-                new DownstreamProjectGridBuilder(upstreamBuild.getFullName()), "1", false);
-        pipeline.setBuildCard(new StandardBuildCard());
-        jenkins.getInstance().addView(pipeline);
-        assertNotNull(downstreamBuild.getLastBuild());
-        // re-run the build as if we clicked re-run in the UI
-        pipeline.rerunBuild(downstreamBuild.getLastBuild().getExternalizableId());
-        jenkins.waitUntilNoActivity();
-
-        // MockAction is not copied from one run to another
-        assertEquals(1, downstreamBuild.getLastBuild().getActions(MockAction.class).size());
-        // upstream cause copied
-        assertEquals(1, downstreamBuild.getLastBuild().getCauses().size());
-        // parametersAction copied
-        assertNotNull(downstreamBuild.getLastBuild().getAction(ParametersAction.class));
-        StringParameterValue stringParam = (StringParameterValue) downstreamBuild.getLastBuild()
-                .getAction(ParametersAction.class).getParameter("foo");
-        assertEquals("bar", stringParam.value);
-        assertEquals(upstreamCause, downstreamBuild.getLastBuild().getCauses().get(0));
-        assertEquals(mockScmTriggerCause, upstreamCause.getUpstreamCauses().get(0));
-    }
-
-    @Test
-    public void testFilterUserIdCause() throws Exception {
-        final FreeStyleProject upstreamBuild = jenkins.createFreeStyleProject("upstream");
-        final FreeStyleProject downstreamBuild = jenkins.createFreeStyleProject("downstream");
-        upstreamBuild.getPublishersList().add(new BuildPipelineTrigger("downstream", null));
-        // Important; we must do this step to ensure that the dependency graphs
-        // are updated
-        Hudson.getInstance().rebuildDependencyGraph();
-        Cause mockUserIdCause = mock(Cause.UserIdCause.class);
-        upstreamBuild.scheduleBuild2(0, mockUserIdCause);
-        jenkins.waitUntilNoActivity();
-        UpstreamCause upstreamCause = new hudson.model.Cause.UpstreamCause(
-                (Run<?, ?>) upstreamBuild.getLastBuild());
-        downstreamBuild.scheduleBuild2(0, upstreamCause);
-        jenkins.waitUntilNoActivity();
-
-        BuildPipelineView pipeline = BuildPipelineViewFactory.getBuildPipelineView("pipeline", "",
-                new DownstreamProjectGridBuilder(upstreamBuild.getFullName()), "1", false);
-        pipeline.setBuildCard(new StandardBuildCard());
-        jenkins.getInstance().addView(pipeline);
-        assertNotNull(downstreamBuild.getLastBuild());
-        // re-run the build as if we clicked re-run in the UI
-        pipeline.rerunBuild(upstreamBuild.getLastBuild().getExternalizableId());
-        jenkins.waitUntilNoActivity();
-        assertEquals(2, upstreamBuild.getBuilds().size());
-        assertNotNull(upstreamBuild.getLastBuild().getCause(Cause.UserIdCause.class));
-        assertNotSame(upstreamBuild.getLastBuild().getCause(Cause.UserIdCause.class),
-                mockUserIdCause);
-    }
-
-    public static class MockAction implements Action, Serializable {
-
-        private static final long serialVersionUID = 5677631606354259250L;
-
-        @Override
-        public String getIconFileName()
-        {
-            return null;
-        }
-
-        @Override
-        public String getDisplayName()
-        {
-            return null;
-        }
-
-        @Override
-        public String getUrlName()
-        {
-            return null;
-        }
-    }
 }
