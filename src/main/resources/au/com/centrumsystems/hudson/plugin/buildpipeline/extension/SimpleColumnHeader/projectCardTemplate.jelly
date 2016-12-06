@@ -1,0 +1,14 @@
+<j:jelly xmlns:j="jelly:core"
+         xmlns:st="jelly:stapler"
+         xmlns:d="jelly:define"
+         xmlns:l="/lib/layout"
+         xmlns:t="/lib/hudson"
+         xmlns:f="/lib/form">
+
+    <div class="build-card rounded">
+        <div class="header">
+            <a href="${rootURL}/{{url}}" title="{{name}}">{{name}}</a>
+        </div>
+    </div>
+
+</j:jelly>

@@ -2,6 +2,8 @@ package au.com.centrumsystems.hudson.plugin.buildpipeline;
 
 import au.com.centrumsystems.hudson.plugin.buildpipeline.BuildPipelineView;
 import au.com.centrumsystems.hudson.plugin.buildpipeline.DownstreamProjectGridBuilder;
+import au.com.centrumsystems.hudson.plugin.buildpipeline.extension.NullColumnHeader;
+import au.com.centrumsystems.hudson.plugin.buildpipeline.extension.PipelineHeaderExtension;
 import au.com.centrumsystems.hudson.plugin.buildpipeline.testsupport.BuildCardComponent;
 import au.com.centrumsystems.hudson.plugin.buildpipeline.testsupport.PipelinePage;
 import hudson.model.FreeStyleProject;
@@ -59,7 +61,9 @@ public class BuildPipelineViewDisplayNameTest {
                 false, // parameters
                 false, //params in header
                 false, //definition header
-                1, null, null);
+                1, null, null, null, null);
+
+
 
         j.getInstance().addView(pipeline);
 

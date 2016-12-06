@@ -24,6 +24,10 @@
  */
 package au.com.centrumsystems.hudson.plugin.buildpipeline;
 
+import au.com.centrumsystems.hudson.plugin.buildpipeline.extension.BuildVariablesHeader;
+import au.com.centrumsystems.hudson.plugin.buildpipeline.extension.NullColumnHeader;
+import au.com.centrumsystems.hudson.plugin.buildpipeline.extension.SimpleColumnHeader;
+import au.com.centrumsystems.hudson.plugin.buildpipeline.extension.SimpleRowHeader;
 import hudson.Launcher;
 import hudson.model.*;
 import hudson.model.Cause.UpstreamCause;
@@ -126,11 +130,11 @@ public class BuildPipelineViewTest {
         jenkins.createFreeStyleProject(proj1);
 
 		// True
-		BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, new DownstreamProjectGridBuilder(proj1), noOfBuilds, true, true, false, false, false, 2, null, null);
+		BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, new DownstreamProjectGridBuilder(proj1), noOfBuilds, true, true, false, false, false, 2, null, null, null, null);
 		assertTrue("Failed to set AlwaysAllowManualTrigger flag", testView.isAlwaysAllowManualTrigger());
 
 		// False
-		testView = new BuildPipelineView(bpViewName, bpViewTitle, new DownstreamProjectGridBuilder(""), noOfBuilds, true, false, false, false, false, 2, null, null);
+		testView = new BuildPipelineView(bpViewName, bpViewTitle, new DownstreamProjectGridBuilder(""), noOfBuilds, true, false, false, false, false, 2, null, null, null, null);
 		assertFalse("Failed to unset AlwaysAllowManualTrigger flag", testView.isAlwaysAllowManualTrigger());
 	}
 
@@ -143,44 +147,66 @@ public class BuildPipelineViewTest {
         jenkins.createFreeStyleProject(proj1);
 
 		// True
-		BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, new DownstreamProjectGridBuilder(proj1), noOfBuilds, true, false, false, false, true, 2, null, null);
+		BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, new DownstreamProjectGridBuilder(proj1), noOfBuilds, true, false, false, false, true, 2, null, null, null, null);
 		assertTrue("Failed to set ShowPipelineDefinitionHeader flag", testView.isShowPipelineDefinitionHeader());
 
 		// False
-		testView = new BuildPipelineView(bpViewName, bpViewTitle, new DownstreamProjectGridBuilder(""), noOfBuilds, true, false, false, false, false, 2, null, null);
+		testView = new BuildPipelineView(bpViewName, bpViewTitle, new DownstreamProjectGridBuilder(""), noOfBuilds, true, false, false, false, false, 2, null, null, null, null);
 		assertFalse("Failed to unset ShowPipelineDefinitionHeader flag", testView.isShowPipelineDefinitionHeader());
 	}
 
     @Test
-    public void testShowPipelineParameters() throws IOException {
-        final String bpViewName = "MyTestView";
-        final String bpViewTitle = "MyTestViewTitle";
-        final String proj1 = "Proj1";
-        final String noOfBuilds = "5";
-        jenkins.createFreeStyleProject(proj1);
+    public void testMigration() throws IOException {
+        jenkins.createFreeStyleProject("Sample Project");
 
-		// True
-		BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, new DownstreamProjectGridBuilder(proj1), noOfBuilds, true, false, true, false, false, 2, null, null);
-		assertTrue("Failed to set ShowPipelineParameters flag", testView.isShowPipelineParameters());
+        BuildPipelineView testView = new BuildPipelineView("My Build Pipeline Name",
+                "My Build Pipeline Title", new DownstreamProjectGridBuilder("Sample Project"),
+                "3", false, false,
+                true /* showPipelineParameters */,
+                true /* showPipelineParametersInHeaders */,
+                true /* showPipelineDefinitionHeader */,
+                3,
+                null,
+                null,
+                null,
+                null);
+        testView.readResolve();
+        assertNotNull(testView.getColumnHeaders());
+        assertEquals(BuildVariablesHeader.class, testView.getColumnHeaders().getClass());
+        assertNotNull(testView.getRowHeaders());
+        assertEquals(BuildVariablesHeader.class, testView.getRowHeaders().getClass());
 
-		// False
-		testView = new BuildPipelineView(bpViewName, bpViewTitle, new DownstreamProjectGridBuilder(""), noOfBuilds, true, false, false, false, false, 2, null, null);
-		assertFalse("Failed to unset ShowPipelineParameters flag", testView.isShowPipelineParameters());
-	}
+        testView = new BuildPipelineView("My Build Pipeline Name",
+                "My Build Pipeline Title", new DownstreamProjectGridBuilder("Sample Project"),
+                "3", false, false,
+                false /* showPipelineParameters */,
+                true /* showPipelineParametersInHeaders */,
+                false /* showPipelineDefinitionHeader */,
+                3,
+                null,
+                null,
+                null,
+                null);
+        testView.readResolve();
+        assertNotNull(testView.getColumnHeaders());
+        assertEquals(NullColumnHeader.class, testView.getColumnHeaders().getClass());
+        assertNotNull(testView.getRowHeaders());
+        assertEquals(SimpleRowHeader.class, testView.getRowHeaders().getClass());
 
-    @Test
-    public void testShowPipelineParametersInHeaders() throws IOException {
-        final String bpViewName = "MyTestView";
-        final String bpViewTitle = "MyTestViewTitle";
-        final String proj1 = "Proj1";
-        final String noOfBuilds = "5";
-        jenkins.createFreeStyleProject(proj1);
-
-        BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, new DownstreamProjectGridBuilder(proj1), noOfBuilds, true, false, true, true, false, 2, null, null);
-        assertTrue("Failed to set ShowPipelineParametersInHeaders flag", testView.isShowPipelineParametersInHeaders());
-
-        testView = new BuildPipelineView(bpViewName, bpViewTitle, new DownstreamProjectGridBuilder(proj1), noOfBuilds, true, false, true, false, false, 2, null, null);
-        assertFalse("Failed to unset ShowPipelineParametersInHeaders flag", testView.isShowPipelineParametersInHeaders());
+        testView = new BuildPipelineView("My Build Pipeline Name",
+                "My Build Pipeline Title", new DownstreamProjectGridBuilder("Sample Project"),
+                "3", false, false,
+                false /* showPipelineParameters */,
+                false /* showPipelineParametersInHeaders */,
+                true /* showPipelineDefinitionHeader */,
+                3,
+                null,
+                null,
+                null,
+                null);
+        testView.readResolve();
+        assertNotNull(testView.getColumnHeaders());
+        assertEquals(SimpleColumnHeader.class, testView.getColumnHeaders().getClass());
     }
 
 	@Test

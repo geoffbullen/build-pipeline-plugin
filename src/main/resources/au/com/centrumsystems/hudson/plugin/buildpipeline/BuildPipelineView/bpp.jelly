@@ -19,33 +19,33 @@
 
 <script id="build-card-template" type="text/x-handlebars-template">
 <div class="build-card rounded {{build.status}} {{#if project.disabled}}disabled{{/if}}">
-    <div class="header">
-        <a href="${rootURL}/{{build.url}}" title="{{project.name}}">
-            {{#unless build.isPending}}
-                {{#unless build.isReadyToBeManuallyBuilt}}
-                    {{#if build.displayName}}
-                        {{build.displayName}}
-                    {{else}}
-                        #{{build.number}}
-                    {{/if}}
-                {{/unless}}
-            {{/unless}}
+                <div class="header">
+                    <a href="${rootURL}/{{build.url}}" title="{{project.name}}">
+                        {{#unless build.isPending}}
+                            {{#unless build.isReadyToBeManuallyBuilt}}
+                                {{#if build.displayName}}
+                                    {{build.displayName}}
+                                {{else}}
+                                    #{{build.number}}
+                                {{/if}}
+                            {{/unless}}
+                        {{/unless}}
             {{#if project.displayName}}
                 {{project.displayName}}
             {{else}}
-                {{project.name}}
+                        {{project.name}}
             {{/if}}
-		</a>
-    </div>
+                    </a>
+                </div>
     <div class="build-info">
         <ul>
             {{#if build.startDate}}
             <li class="build-time" title="Start date: {{build.startDate}} {{build.startTime}}">{{build.startDate}} {{build.startTime}}</li>
             {{else}}
             <li class="build-time"><abbr title="Not Applicable">N/A</abbr></li>
-            {{/if}}
+                {{/if}}
 
-            {{#if build.isBuilding}}
+                {{#if build.isBuilding}}
             <li class="build-duration" title="Build duration: {{build.duration}}">{{build.duration}}</li>
             {{else}}
                 {{#if build.isComplete}}
@@ -55,133 +55,116 @@
                 {{/if}}
             {{/if}}
 
-            {{#if build.userId}}
+                {{#if build.userId}}
             <li class="build-user" title="User: {{build.userId}}">{{build.userId}}</li>
-            {{/if}}
+                {{/if}}
         </ul>
     </div>
     <div class="build-actions">
-        {{#unless project.disabled}}
-        <div class="status-bar" id="status-bar-{{id}}">
-            {{#if build.isBuilding}}
+                {{#unless project.disabled}}
+                <div class="status-bar" id="status-bar-{{id}}">
+                    {{#if build.isBuilding}}
                 <div onclick="buildPipeline.fillDialog('${app.rootUrl}{{build.url}}console', 'Console output for {{project.name}} #{{build.number}}')">
-                    <table class="progress-bar" align="center">
-                        <tbody>
-                            <tr title="Estimated remaining time: {{build.estimatedRemainingTime}}">
-                                <td style="width: {{build.progress}}%" class="progress-bar-done" id="progress-bar-done{{id}}"></td>
-                                <td style="width: {{build.progressLeft}}%" class="progress-bar-left" id="progress-bar-left{{id}}"></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            {{/if}}
-        </div>
-
-        <div class="icons" id="icons-{{id}}">
-            {{#if project.parameters.length}}
-                <j:set var="hasParameterIconUrl" value="${rootURL}/plugin/build-pipeline-plugin/images/has-parameter.png" />
-                <img title="This job has parameters" alt="This job has parameters" src="${hasParameterIconUrl}"/>
-            {{/if}}
-            {{#unless build.isPending}}
-                {{#unless build.isReadyToBeManuallyBuilt}}
-                    <j:set var="consoleOutputIconUrl" value="${rootURL}/images/16x16/terminal.png" />
-                    <j:choose>
-                        <j:when test="${from.newWindowConsoleOutputLinkStyle}">
-                            <a href="${rootURL}/{{build.url}}console" target="_blank">
-                                <img title="console" alt="console" src="${consoleOutputIconUrl}" />
-                            </a>
-                        </j:when>
-                        <j:when test="${from.thisWindowConsoleOutputLinkStyle}">
-                            <a href="${rootURL}/{{build.url}}console">
-                                <img title="console" alt="console" src="${consoleOutputIconUrl}" />
-                            </a>
-                        </j:when>
-                        <j:otherwise>
-                            <span onclick="buildPipeline.fillDialog('${app.rootUrl}{{build.url}}console', 'Console output for {{project.name}} #{{build.number}}')">
-                                <img title="console" alt="console" src="${consoleOutputIconUrl}" />
-                            </span>
-                        </j:otherwise>
-                    </j:choose>
-                {{/unless}}
-            {{/unless}}
-
-            {{#if build.isRerunnable}}
-                {{#if build.isSuccess}}
-                    {{#if ${!from.triggerOnlyLatestJob}}}
-                    <j:if test="${from.hasBuildPermission()}">
-                    <span onclick="buildPipeline.showSpinner({{id}}); buildPipeline.rerunBuild({{id}}, '{{build.extId}}', [{{build.dependencyIds}}])">
-                        <img title="re-run" alt="re-run" src="${rootURL}/images/16x16/redo.png" />
-                    </span>
-                    </j:if>
+                            <table class="progress-bar" align="center">
+                                <tbody>
+                                    <tr title="Estimated remaining time: {{build.estimatedRemainingTime}}">
+                                        <td style="width: {{build.progress}}%" class="progress-bar-done" id="progress-bar-done{{id}}"></td>
+                                        <td style="width: {{build.progressLeft}}%" class="progress-bar-left" id="progress-bar-left{{id}}"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     {{/if}}
-                {{else}}
-                    {{#if ${from.triggerOnlyLatestJob}}}
-                        {{#if build.isLatestBuild}}
-                            {{#if build.isUpstreamBuildLatest}}
-                            <span onclick="buildPipeline.showSpinner({{id}}); buildPipeline.rerunBuild({{id}}, '{{build.extId}}', [{{build.dependencyIds}}])">
-                                <img title="retry" alt="retry" src="${rootURL}/images/16x16/redo.png" />
+                </div>
+
+                <div class="icons" id="icons-{{id}}">
+                    {{#if project.parameters.length}}
+                        <j:set var="hasParameterIconUrl" value="${rootURL}/plugin/build-pipeline-plugin/images/has-parameter.png" />
+                        <img title="This job has parameters" alt="This job has parameters" src="${hasParameterIconUrl}"/>
+                    {{/if}}
+                    {{#unless build.isPending}}
+                        {{#unless build.isReadyToBeManuallyBuilt}}
+                            <j:set var="consoleOutputIconUrl" value="${rootURL}/images/16x16/terminal.png" />
+                            <j:choose>
+                                <j:when test="${from.newWindowConsoleOutputLinkStyle}">
+                                    <a href="${rootURL}/{{build.url}}console" target="_blank">
+                                        <img title="console" alt="console" src="${consoleOutputIconUrl}" />
+                                    </a>
+                                </j:when>
+                                <j:when test="${from.thisWindowConsoleOutputLinkStyle}">
+                                    <a href="${rootURL}/{{build.url}}console">
+                                        <img title="console" alt="console" src="${consoleOutputIconUrl}" />
+                                    </a>
+                                </j:when>
+                                <j:otherwise>
+                            <span onclick="buildPipeline.fillDialog('${app.rootUrl}{{build.url}}console', 'Console output for {{project.name}} #{{build.number}}')">
+                                        <img title="console" alt="console" src="${consoleOutputIconUrl}" />
+                                    </span>
+                                </j:otherwise>
+                            </j:choose>
+                        {{/unless}}
+                    {{/unless}}
+
+                    {{#if build.isRerunnable}}
+                        {{#if build.isSuccess}}
+                            {{#if ${!from.triggerOnlyLatestJob}}}
+                            <j:if test="${from.hasBuildPermission()}">
+                    <span onclick="buildPipeline.showSpinner({{id}}); buildPipeline.rerunBuild({{id}}, '{{build.extId}}', [{{build.dependencyIds}}])">
+                                <img title="re-run" alt="re-run" src="${rootURL}/images/16x16/redo.png" />
                             </span>
+                            </j:if>
                             {{/if}}
-                        {{/if}}
-                    {{else}}
-                        {{#if build.isManual}}
+                        {{else}}
+                            {{#if ${from.triggerOnlyLatestJob}}}
+                                {{#if build.isLatestBuild}}
+                                    {{#if build.isUpstreamBuildLatest}}
+                            <span onclick="buildPipeline.showSpinner({{id}}); buildPipeline.rerunBuild({{id}}, '{{build.extId}}', [{{build.dependencyIds}}])">
+                                        <img title="retry" alt="retry" src="${rootURL}/images/16x16/redo.png" />
+                                    </span>
+                                    {{/if}}
+                                {{/if}}
+                            {{else}}
+                                {{#if build.isManual}}
                             <span onclick="buildPipeline.showSpinner({{id}}); buildPipeline.triggerBuild({{id}}, '{{upstream.projectName}}', {{upstream.buildNumber}}, '{{project.name}}', [{{build.dependencyIds}}])">
                                 <img title="retry" alt="retry" src="${rootURL}/images/16x16/clock.png" />
-                            </span>
-                        {{else}}
+                                    </span>
+                                {{else}}
                             <span onclick="buildPipeline.showSpinner({{id}}); buildPipeline.rerunBuild({{id}}, '{{build.extId}}', [{{build.dependencyIds}}])">
-                                <img title="retry" alt="retry" src="${rootURL}/images/16x16/redo.png" />
-                            </span>
+                                        <img title="retry" alt="retry" src="${rootURL}/images/16x16/redo.png" />
+                                    </span>
+                                {{/if}}
+                            {{/if}}
                         {{/if}}
                     {{/if}}
-                {{/if}}
-            {{/if}}
 
-            {{#if build.isReadyToBeManuallyBuilt}}
-                {{#if ${from.triggerOnlyLatestJob}}}
-                    {{#if build.isUpstreamBuildLatestSuccess}}
+                    {{#if build.isReadyToBeManuallyBuilt}}
+                        {{#if ${from.triggerOnlyLatestJob}}}
+                            {{#if build.isUpstreamBuildLatestSuccess}}
                     <span onclick="buildPipeline.showSpinner({{id}}); buildPipeline.triggerBuild({{id}}, '{{upstream.projectName}}', {{upstream.buildNumber}}, '{{project.name}}', [{{build.dependencyIds}}])">
-                        <img title="trigger" alt="trigger" src="${rootURL}/images/16x16/clock.png" />
-                    </span>
-                    {{/if}}
-                {{else}}
+                                <img title="trigger" alt="trigger" src="${rootURL}/images/16x16/clock.png" />
+                            </span>
+                            {{/if}}
+                        {{else}}
                 <span onclick="buildPipeline.showSpinner({{id}}); buildPipeline.triggerBuild({{id}}, '{{upstream.projectName}}', {{upstream.buildNumber}}, '{{project.name}}', [{{build.dependencyIds}}])">
-                    <img title="trigger" alt="trigger" src="${rootURL}/images/16x16/clock.png" />
-                </span>
+                            <img title="trigger" alt="trigger" src="${rootURL}/images/16x16/clock.png" />
+                        </span>
+                        {{/if}}
+                    {{/if}}
+                </div>
+                {{/unless}}
+                {{#if project.disabled}}
+                    <div class="icons" id="icons-{{id}}">
+                        <span class="disabled"><img src="${rootURL}/images/16x16/warning.png" atl="disabled" title="disabled" /></span>
+                    </div>
                 {{/if}}
-            {{/if}}
-        </div>
-        {{/unless}}
-        {{#if project.disabled}}
-            <div class="icons" id="icons-{{id}}">
-                <span class="disabled"><img src="${rootURL}/images/16x16/warning.png" atl="disabled" title="disabled" /></span>
-            </div>
-        {{/if}}
     </div>
 </div>
 </script>
 
 <script id="project-card-template" type="text/x-handlebars-template">
-<div class="build-card rounded">
-    <div class="header">
-        <a href="${rootURL}/{{url}}" title="{{name}}">{{name}}</a>
-    </div>
-    <j:if test="${from.isShowPipelineParametersInHeaders()}">
-        <div class="build-info">
-            {{#if lastSuccessfulBuildNumber}}
-            <ul>
-                <li>Health: <img src="${rootURL}/images/16x16/{{health}}" /></li>
-                <li>Build <abbr title="Number">No.</abbr>: <a href="${rootURL}/{{url}}{{lastSuccessfulBuildNumber}}">#{{lastSuccessfulBuildNumber}}</a></li>
-                {{#each lastSuccessfulBuildParams}}
-                    <li>{{paramName}}: {{paramValue}}</li>
-                {{/each}}
-            </ul>
-            {{else}}
-                Awaiting Execution
-            {{/if}}
-        </div>
-    </j:if>
-</div>
+    <st:include page="projectCardTemplate.jelly"
+                from="${from.getColumnHeaders()}"
+                it="${from}" />
 </script>
 
     <st:bind var="buildPipelineViewProxy" value="${from}" />
@@ -201,61 +184,61 @@
             <h1>Build Pipeline<j:if test="${!empty(from.getBuildViewTitle())}">: ${from.getBuildViewTitle()}</j:if></h1>
             <div>${from.getDescription()}</div>
 
-            <j:set var="buildPipelineForm" type="au.com.centrumsystems.hudson.plugin.buildpipeline.BuildPipelineForm" value="${from.getBuildPipelineForm()}" />
-            <j:set var="projectGrid" value="${buildPipelineForm.getProjectGrid()}" />
+      <j:set var="buildPipelineForm" type="au.com.centrumsystems.hudson.plugin.buildpipeline.BuildPipelineForm" value="${from.getBuildPipelineForm()}" />
+      <j:set var="projectGrid" value="${buildPipelineForm.getProjectGrid()}" />
 
             <div id="icon-bar">
                 <!-- If the user has the Build Project permission include a hyperlink to build the base project.-->
-                <j:set var="hasBuildPermission" type="boolean" value="${from.hasBuildPermission()}" />
-                <j:if test="${hasBuildPermission}">
-                    <div class="icon-container">
-                        <j:if test="${from.isProjectParameterized()}">
-                            <span class="pointer" onclick="buildPipeline.fillDialog('${app.rootUrl}${from.gridBuilder.firstJobLink}/build?delay=0sec', 'Starts the pipeline with parameters')">
-                                <img src="${rootURL}/images/24x24/clock.png" alt="Trigger a Pipeline" class="icon-with-caption"/>
+        <j:set var="hasBuildPermission" type="boolean" value="${from.hasBuildPermission()}" />
+        <j:if test="${hasBuildPermission}">
+            <div class="icon-container">
+            <j:if test="${from.isProjectParameterized()}">
+                <span class="pointer" onclick="buildPipeline.fillDialog('${app.rootUrl}${from.gridBuilder.firstJobLink}/build?delay=0sec', 'Starts the pipeline with parameters')">
+                    <img src="${rootURL}/images/24x24/clock.png" alt="Trigger a Pipeline" class="icon-with-caption"/>
                                 <span>Run</span>
-                            </span>
-                        </j:if>
-                        <j:if test="${!from.isProjectParameterized()}">
-                            <a id="trigger-pipeline-button" href='#' onclick="$('triggerPipelineForm').submit()">
-                                <img src="${rootURL}/images/24x24/clock.png" alt="Trigger a Pipeline" class="icon-with-caption"/>
+                </span>
+            </j:if>
+            <j:if test="${!from.isProjectParameterized()}">
+              <a id="trigger-pipeline-button" href='#' onclick="$('triggerPipelineForm').submit()">
+                <img src="${rootURL}/images/24x24/clock.png" alt="Trigger a Pipeline" class="icon-with-caption"/>
                                 <span>Run</span>
-                            </a>
-                        </j:if>
-                    </div>
-                </j:if>
+              </a>
+            </j:if>
+          </div>
+        </j:if>
 
                 <div class="icon-container">
                     <a href="builds">
                         <img src="${rootURL}/images/24x24/notepad.png" alt="Pipeline History" />
                         <span>History</span>
-                    </a>
-                </div>
+                        </a>
+                    </div>
 
                 <j:if test="${from.hasConfigurePermission()}">
                     <div class="icon-container">
                         <a href="configure">
                             <img src="${rootURL}/images/24x24/setting.png" alt="Configure" />
                             <span>Configure</span>
-                        </a>
-                    </div>
+                            </a>
+                        </div>
                     <div class="icon-container">
                         <a href="newJob">
                             <img src="${rootURL}/images/24x24/new-package.png" alt="Add Step" />
                             <span>Add Step</span>
-                        </a>
-                    </div>
+                            </a>
+                        </div>
                     <div class="icon-container">
                         <a href="delete">
                             <img src="${rootURL}/images/24x24/edit-delete.png" />
                             <span>Delete</span>
-                        </a>
-                    </div>
+                            </a>
+                        </div>
                     <div class="icon-container">
                         <a href="${rootURL}/manage">
                             <img src="${rootURL}/images/24x24/setting.png" />
                             <span>Manage</span>
-                        </a>
-                    </div>
+                            </a>
+                        </div>
                 </j:if>
             </div>
 
@@ -263,112 +246,13 @@
                 <st:include page="noJob.jelly" />
             </j:if>
 
-            <j:if test="${from.showPipelineDefinitionHeader}">
-            <div class="pipeline-wrapper header">
-                <div class="pipeline-info"></div>
-                <div class="pipeline">
-                    <table class="pipelines">
-                        <tbody>
-                        <j:forEach begin="${0}" end="${buildPipelineForm.getGridHeight() - 1}" indexVar="x">
-                            <tr class="project-pipeline">
-                                <j:forEach begin="${0}" end="${buildPipelineForm.getGridWidth() - 1}" indexVar="y">
-                                <j:set var="project" type="au.com.centrumsystems.hudson.plugin.buildpipeline.ProjectForm" value="${projectGrid.get(x,y)}"/>
-                                    <j:if test="${project != null}">
-                                        <!-- Checking if the cell to be added corresponds to the one containing build parameters. -->
-                                        <j:choose>
-                                            <j:when test="${(y == 0 &amp;&amp; x == 0)}">
-                                                <!-- Expanding the cell to multiple rows in order to fix an issue which stretches the UI. -->
-                                                <td id="project-${project.getId()}" rowspan="${buildPipelineForm.getGridHeight()}"></td>
-                                            </j:when>
-                                            <j:otherwise>
-                                                <td id="project-${project.getId()}"></td>
-                                            </j:otherwise>
-                                        </j:choose>
-                                        <script>
-                                            //save project proxies for future reference (being able to refresh project cards)
-                                            buildPipeline.projectProxies[${project.getId()}] = <st:bind value="${project}" />;
-                                            jQuery("#project-${project.getId()}").append(buildPipeline.projectCardTemplate(${project.asJSON()}));
-                                        </script>
-                                        <j:if test="${(y + 1 != buildPipelineForm.getGridWidth())}">
-                                            <td class="next">
-                                                <!-- Changing length to size() to get rid of arrows when there are no more child jobs.-->
-                                                <j:if test="${!(project.getDependencies().size() == 0)}">
-                                                <span class="status next">
-                                                    <img src="${rootURL}/images/24x24/next.png" />
-                                                </span>
-                                                </j:if>
-                                            </td>
-                                        </j:if>
-                                    </j:if>
-                                    <j:if test="${project == null}">
-                                        <!-- Skipping the "filler" td for the first column -->
-                                        <j:if test="${y != 0}">
-                                            <td></td>
-                                        </j:if>
-                                        <j:if test="${y + 1 != buildPipelineForm.getGridWidth()}">
-                                            <j:set var="nextIndex" value="${y + 1}"/>
-                                            <td class="next">
-                                                <j:if test="${projectGrid.get(x,nextIndex)!=null}">
-                                                <span class="status next">
-                                                    <img src="${rootURL}/images/24x24/next.png" />
-                                                </span>
-                                                </j:if>
-                                            </td>
-                                        </j:if>
-                                    </j:if>
-                                </j:forEach>
-                            </tr>
-                        </j:forEach>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            </j:if>
+            <st:include from="${from.getColumnHeaders()}" it="${from}"
+                        page="columnHeader.jelly"/>
 
             <j:forEach items="${buildPipelineForm.getBuildGrids()}" var="buildGrid" indexVar="i">
             <div class="pipeline-wrapper">
-                <div class="pipeline-info">
-                    <div class="revision rounded">
-                    <j:choose>
-                        <j:when test="${from.isShowPipelineParameters()}">
-                            <div class="title">Pipeline ${buildGrid.get(0,0).getRevision()}</div>
-                        </j:when>
-                        <j:otherwise>
-                            <div class="title">Pipeline</div>
-                        </j:otherwise>
-                    </j:choose>
-                    <j:choose>
-                        <j:when test="${from.isShowPipelineParameters()}">
-                            <j:choose>
-                                <j:when test="${buildGrid.get(0,0).getParameters().isEmpty()}">
-                                    <div class="description">No parameters</div>
-                                </j:when>
-                                <j:otherwise>
-                                    <div class="description" id="build-parameters-${buildGrid.get(0,0).getId()}">
-                                        <ul>
-                                        <j:forEach items="${buildGrid.get(0,0).getParameters().entrySet()}" var="buildParam" indexVar="buildParamCtr">
-                                            <li>${buildParam.getKey()}: ${buildParam.getValue()}</li>
-                                        </j:forEach>
-                                        </ul>
-                                    </div>
-                                    <script>
-                                        jQuery('#build-parameters-trigger-${buildGrid.get(0,0).getId()}').tooltip({
-                                            bodyHandler: function() {
-                                                return jQuery('#build-parameters-${buildGrid.get(0,0).getId()}').html();
-                                            }
-                                        });
-                                    </script>
-                                </j:otherwise>
-                            </j:choose>
-                        </j:when>
-                        <j:otherwise>
-                            <div id="buildNumber${buildGrid.get(0,0).getId()}">
-                                ${buildGrid.get(0,0).getRevision()}
-                            </div>
-                        </j:otherwise>
-                    </j:choose>
-                    </div>
-                </div>
+                <st:include from="${from.getRowHeaders()}" it="${from}"
+                            page="rowHeader.jelly"/>
 
                 <div class="pipeline">
                     <table class="pipelines">
@@ -403,10 +287,10 @@
                                             </j:if>
                                         </script>
                                         <j:if test="${(y + 1 != buildPipelineForm.getGridWidth())}">
-                                        <!-- Changing length to size() to get rid of arrows when there are no more child jobs.-->
+                                            <!-- Changing length to size() to get rid of arrows when there are no more child jobs.-->
                                         <td class="next">
                                         <j:if test="${!(build.getDependencies().size() == 0)}">
-                                            <span class="status next"><img src="${rootURL}/images/24x24/next.png" /></span>
+                                                    <span class="status next"><img src="${rootURL}/images/24x24/next.png" /></span>
                                         </j:if>
                                         </td>
                                         </j:if>
@@ -424,10 +308,10 @@
                                     </j:if>
                                 </j:forEach>
                             </tr>
-                            </j:forEach>
-                        </tbody>
-                    </table>
-                </div>
+                        </j:forEach>
+                    </tbody>
+            </table>
+        </div>
             </div>
             </j:forEach>
         </div>
