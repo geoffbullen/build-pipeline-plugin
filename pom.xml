@@ -6,7 +6,7 @@
         <version>1.619</version>
     </parent>
     <artifactId>build-pipeline-plugin</artifactId>
-    <version>1.5.5-SNAPSHOT</version>
+    <version>1.5.7-SNAPSHOT</version>
     <packaging>hpi</packaging>
     <name>Build Pipeline Plugin</name>
     <description>This plugin provides build pipeline functionality to Hudson and Jenkins. This allows a chain of jobs to be visualised in a new view.  Manual jobs in the pipeline can be triggered by a user with the appropriate permissions manually confirming.</description>
@@ -397,5 +397,16 @@
             <url>http://repo.jenkins-ci.org/public/</url>
         </pluginRepository>
     </pluginRepositories>
+
+    <distributionManagement>
+        <repository>
+            <id>repo.jenkins-ci.org</id>
+            <url>https://repo.jenkins-ci.org/releases</url>
+        </repository>
+        <snapshotRepository>
+             <id>maven.jenkins-ci.org</id>
+	     <url>https://repo.jenkins-ci.org/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
 
 </project>

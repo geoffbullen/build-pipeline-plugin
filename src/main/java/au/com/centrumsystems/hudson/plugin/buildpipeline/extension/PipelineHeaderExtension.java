@@ -24,11 +24,9 @@
  */
 package au.com.centrumsystems.hudson.plugin.buildpipeline.extension;
 
-import hudson.ExtensionList;
 import hudson.ExtensionPoint;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractDescribableImpl;
-import jenkins.model.Jenkins;
 
 import java.util.Map;
 
@@ -39,15 +37,7 @@ import java.util.Map;
  */
 public abstract class PipelineHeaderExtension
         extends AbstractDescribableImpl<PipelineHeaderExtension>
-        implements ExtensionPoint,
-        Comparable<PipelineHeaderExtension> {
-
-    /**
-     * @return all known <code>PipelineHeaderExtension</code>s
-     */
-    public static ExtensionList<PipelineHeaderExtension> all() {
-        return Jenkins.getInstance().getExtensionList(PipelineHeaderExtension.class);
-    }
+        implements ExtensionPoint {
 
     /**
      * @param build - the build to find parameters for
@@ -55,31 +45,9 @@ public abstract class PipelineHeaderExtension
      */
     public abstract Map<String, String> getParameters(AbstractBuild<?, ?> build);
 
-    /**
-     * @return whether this extension can be a Row header
-     */
-    public boolean appliesToRows() {
-        return true;
-    }
-
-    /**
-     * @return whether this extension can be a Column header
-     */
-    public boolean appliesToColumns() {
-        return true;
-    }
-
-    /**
-     * Return an index to where this should be displayed, relative to other options
-     *
-     * @return
-     *  the index - lower appears first in the list
-     */
-    public abstract long getIndex();
-
     @Override
-    public int compareTo(PipelineHeaderExtension o) {
-        return Long.compare(getIndex(), o.getIndex());
+    public PipelineHeaderExtensionDescriptor getDescriptor() {
+        return (PipelineHeaderExtensionDescriptor) super.getDescriptor();
     }
 
 }

@@ -1,6 +1,6 @@
 package au.com.centrumsystems.hudson.plugin.buildpipeline;
 
-import au.com.centrumsystems.hudson.plugin.util.BuildUtil;
+import au.com.centrumsystems.hudson.plugin.buildpipeline.extension.PipelineHeaderExtension;
 import hudson.Util;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
@@ -82,19 +82,24 @@ public class ProjectForm {
 
     /**
      * @param project
-     *            project
+     *            project\
+     * @param columnHeaders
+     *            the column headers describing how to get build parameters
      */
-    public ProjectForm(final AbstractProject<?, ?> project) {
-        this(project, new LinkedHashSet<AbstractProject<?, ?>>(Arrays.asList(project)));
+    public ProjectForm(final AbstractProject<?, ?> project, final PipelineHeaderExtension columnHeaders) {
+        this(project, columnHeaders, new LinkedHashSet<AbstractProject<?, ?>>(Arrays.asList(project)));
     }
 
     /**
      * @param project
      *            project
+     * @param columnHeaders
+     *            column headers to get build parameters from
      * @param parentPath
      *            already traversed projects
      */
-    private ProjectForm(final AbstractProject<?, ?> project, final Collection<AbstractProject<?, ?>> parentPath) {
+    private ProjectForm(final AbstractProject<?, ?> project, final PipelineHeaderExtension columnHeaders,
+                        final Collection<AbstractProject<?, ?>> parentPath) {
         final PipelineBuild pipelineBuild = new PipelineBuild(project.getLastBuild(), project, null);
 
         name = pipelineBuild.getProject().getFullName();
@@ -105,7 +110,7 @@ public class ProjectForm {
         for (final AbstractProject<?, ?> dependency : project.getDownstreamProjects()) {
             final Collection<AbstractProject<?, ?>> forkedPath = new LinkedHashSet<AbstractProject<?, ?>>(parentPath);
             if (forkedPath.add(dependency)) {
-                dependencies.add(new ProjectForm(dependency, forkedPath));
+                dependencies.add(new ProjectForm(dependency, columnHeaders, forkedPath));
             }
         }
         if (Hudson.getInstance().getPlugin("parameterized-trigger") != null) {
@@ -114,7 +119,7 @@ public class ProjectForm {
                     for (final AbstractProject<?, ?> dependency : config.getProjectList(project.getParent(), null)) {
                         final Collection<AbstractProject<?, ?>> forkedPath = new LinkedHashSet<AbstractProject<?, ?>>(parentPath);
                         if (forkedPath.add(dependency)) {
-                            final ProjectForm candidate = new ProjectForm(dependency, forkedPath);
+                            final ProjectForm candidate = new ProjectForm(dependency, columnHeaders, forkedPath);
                             // if subprojects come back as downstreams someday, no duplicates wanted
                             if (!dependencies.contains(candidate)) {
                                 dependencies.add(candidate);
@@ -128,7 +133,7 @@ public class ProjectForm {
 
         final AbstractBuild<?, ?> lastSuccessfulBuild = pipelineBuild.getProject().getLastSuccessfulBuild();
         lastSuccessfulBuildNumber = (null == lastSuccessfulBuild) ? "" : "" + lastSuccessfulBuild.getNumber();
-        lastSuccessfulBuildParams = BuildUtil.getUnsensitiveParameters(lastSuccessfulBuild);
+        lastSuccessfulBuildParams = columnHeaders.getParameters(lastSuccessfulBuild);
 
         this.project = project;
     }
@@ -138,11 +143,13 @@ public class ProjectForm {
      *
      * @param p
      *      project to be wrapped.
+     * @param columnHeaders
+ *          column headers to grab build parameters from
      * @return
      *      possibly null.
      */
-    public static ProjectForm as(AbstractProject<?, ?> p) {
-        return p != null ? new ProjectForm(p) : null;
+    public static ProjectForm as(AbstractProject<?, ?> p, PipelineHeaderExtension columnHeaders) {
+        return p != null ? new ProjectForm(p, columnHeaders) : null;
     }
 
     public String getName() {
@@ -243,7 +250,7 @@ public class ProjectForm {
      */
     @JavaScriptMethod
     public String asJSON() {
-        return ProjectJSONBuilder.asJSON(new ProjectForm(project));
+        return ProjectJSONBuilder.asJSON(this);
     }
 
 }

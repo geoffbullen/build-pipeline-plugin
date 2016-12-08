@@ -26,7 +26,6 @@ package au.com.centrumsystems.hudson.plugin.buildpipeline.extension;
 
 import hudson.Extension;
 import hudson.model.AbstractBuild;
-import hudson.model.Descriptor;
 import hudson.model.ParameterValue;
 import hudson.model.ParametersAction;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -72,21 +71,22 @@ public class ParametersActionHeader extends AbstractNameValueHeader {
         return retval;
     }
 
-    @Override
-    public long getIndex() {
-        return 1000;
-    }
 
     /**
      * Descriptor, since we show it in UI
      */
     @Extension
     public static class DescriptorImpl
-            extends Descriptor<PipelineHeaderExtension> {
+            extends PipelineHeaderExtensionDescriptor {
+
+        @Override
+        public long getIndex() {
+            return 1000;
+        }
 
         @Override
         public String getDisplayName() {
-            return "Parameters only";
+            return "Include parameters only";
         }
     }
 }
