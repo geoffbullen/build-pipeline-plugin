@@ -37,6 +37,8 @@ import java.util.Map;
 import static org.hamcrest.Matchers.hasKey;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -69,5 +71,14 @@ public class FilteredVariablesHeaderTest {
         assertThat(provider.getParameters(build), hasKey("foo"));
         assertThat(provider.getParameters(build), hasKey("password"));
         assertEquals("********", provider.getParameters(build).get("password"));
+    }
+
+    @Test
+    public void testNullConfig() {
+        FilteredVariablesHeader provider = new FilteredVariablesHeader(null);
+        AbstractBuild build = mock(AbstractBuild.class);
+        when(build.getBuildVariables()).thenReturn(new HashMap<String, String>());
+        assertNotNull(provider.getParameters(build));
+        assertTrue(provider.getParameters(build).isEmpty());
     }
 }
