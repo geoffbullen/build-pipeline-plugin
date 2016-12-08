@@ -1,14 +1,13 @@
 package au.com.centrumsystems.hudson.plugin.buildpipeline
 
-import au.com.centrumsystems.hudson.plugin.buildpipeline.PipelineBuild;
 import groovy.json.JsonBuilder
-import hudson.model.Cause;
-import hudson.model.Cause.UserIdCause;
-import hudson.model.Item;
+import hudson.model.Cause
+import hudson.model.Item
+import hudson.model.ItemGroup
 
 class BuildJSONBuilder {
 
-	static String asJSON(PipelineBuild pipelineBuild, Integer formId, Integer projectId, List<Integer> buildDependencyIds) {
+	static String asJSON(ItemGroup context, PipelineBuild pipelineBuild, Integer formId, Integer projectId, List<Integer> buildDependencyIds, ArrayList<String> params) {
 		def builder = new JsonBuilder()
 		def buildStatus = pipelineBuild.currentBuildResult
 		def root = builder {
@@ -26,7 +25,7 @@ class BuildJSONBuilder {
 				isSuccess(buildStatus == 'SUCCESS')
 				isReadyToBeManuallyBuilt(pipelineBuild.isReadyToBeManuallyBuilt())
 				isManualTrigger(pipelineBuild.isManualTrigger())
-				isRerunable(buildStatus != 'PENDING' && buildStatus != 'BUILDING' && !pipelineBuild.isReadyToBeManuallyBuilt())
+				isRerunnable(pipelineBuild.isRerunnable())
 				isLatestBuild(null != pipelineBuild.currentBuild?.number && pipelineBuild.currentBuild?.number == pipelineBuild.project.getLastBuild()?.number)
 				isUpstreamBuildLatest(null != pipelineBuild.upstreamBuild?.number && pipelineBuild.upstreamBuild?.number == pipelineBuild.upstreamPipelineBuild?.project?.getLastBuild()?.number)
 				isUpstreamBuildLatestSuccess(null != pipelineBuild.upstreamBuild?.number && pipelineBuild.upstreamBuild?.number == pipelineBuild.upstreamPipelineBuild?.project?.lastSuccessfulBuild?.number)
@@ -42,13 +41,15 @@ class BuildJSONBuilder {
 			}
 			project {
 				disabled(pipelineBuild.projectDisabled)
-				name(pipelineBuild.project.name)
+				name(pipelineBuild.project.getRelativeNameFromGroup(context))
+				displayName(pipelineBuild.project.displayName)
 				url(pipelineBuild.projectURL)
 				health(pipelineBuild.projectHealth)
 				id(projectId)
+				parameters(params)
 			}
 			upstream {
-				projectName(pipelineBuild.upstreamPipelineBuild?.project?.name)
+				projectName(pipelineBuild.upstreamPipelineBuild?.project?.getRelativeNameFromGroup(context))
 				buildNumber(pipelineBuild.upstreamBuild?.number)
 			}
 		}

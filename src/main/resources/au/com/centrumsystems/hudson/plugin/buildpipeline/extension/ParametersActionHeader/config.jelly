@@ -1,0 +1,14 @@
+<j:jelly xmlns:j="jelly:core"
+         xmlns:st="jelly:stapler"
+         xmlns:d="jelly:define"
+         xmlns:l="/lib/layout"
+         xmlns:t="/lib/hudson"
+         xmlns:f="/lib/form">
+
+    <f:description>
+        Show only build parameters, those defined in 'This Build Is Parameterized...' configuration. Obfuscates
+        sensitive values.
+    </f:description>
+
+</j:jelly>
+
