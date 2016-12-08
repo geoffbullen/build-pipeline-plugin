@@ -52,8 +52,7 @@ public class FilteredVariablesHeader
     @Override
     public Map<String, String> getParameters(AbstractBuild<?, ?> build) {
         final Map<String, String> returnValue = new HashMap<String, String>();
-        if (filteredVariables == null)
-        {
+        if (filteredVariables == null) {
             return returnValue;
         }
         if (build != null) {
