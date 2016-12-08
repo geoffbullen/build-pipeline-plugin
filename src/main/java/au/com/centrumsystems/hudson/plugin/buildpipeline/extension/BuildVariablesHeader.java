@@ -26,7 +26,6 @@ package au.com.centrumsystems.hudson.plugin.buildpipeline.extension;
 
 import hudson.Extension;
 import hudson.model.AbstractBuild;
-import hudson.model.Descriptor;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.util.HashMap;
@@ -38,7 +37,6 @@ import java.util.Set;
  *
  * @author dalvizu
  */
-@Extension
 public class BuildVariablesHeader extends AbstractNameValueHeader {
 
     /**
@@ -59,7 +57,6 @@ public class BuildVariablesHeader extends AbstractNameValueHeader {
                 if (retval.containsKey(paramName)) {
                     // We have the choice to hide the parameter or to replace it with special characters
                     retval.put(paramName, "********");
-                    //retval.remove(paramName);
                 }
             }
         }
@@ -67,17 +64,18 @@ public class BuildVariablesHeader extends AbstractNameValueHeader {
         return retval;
     }
 
-    @Override
-    public long getIndex() {
-        return 2000;
-    }
 
     /**
      * Descriptor, since we're in the UI
      */
     @Extension
     public static class DescriptorImpl
-            extends Descriptor<PipelineHeaderExtension> {
+            extends PipelineHeaderExtensionDescriptor {
+
+        @Override
+        public long getIndex() {
+            return 2000;
+        }
 
         @Override
         public String getDisplayName() {

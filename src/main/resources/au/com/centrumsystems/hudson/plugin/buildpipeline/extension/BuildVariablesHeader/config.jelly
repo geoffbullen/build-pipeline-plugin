@@ -7,7 +7,7 @@
 
     <f:description>
         Show all variables in the current build, and obfuscate sensitive values. Variables
-        are drawn from Build#getBuildVariables().
+        are drawn from <tt>Build#getBuildVariables()</tt>.
     </f:description>
 
 </j:jelly>

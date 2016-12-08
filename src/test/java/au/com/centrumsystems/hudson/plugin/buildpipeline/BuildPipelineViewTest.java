@@ -26,6 +26,7 @@ package au.com.centrumsystems.hudson.plugin.buildpipeline;
 
 import au.com.centrumsystems.hudson.plugin.buildpipeline.extension.BuildVariablesHeader;
 import au.com.centrumsystems.hudson.plugin.buildpipeline.extension.NullColumnHeader;
+import au.com.centrumsystems.hudson.plugin.buildpipeline.extension.PipelineHeaderExtension;
 import au.com.centrumsystems.hudson.plugin.buildpipeline.extension.SimpleColumnHeader;
 import au.com.centrumsystems.hudson.plugin.buildpipeline.extension.SimpleRowHeader;
 import hudson.Launcher;
@@ -482,6 +483,13 @@ public class BuildPipelineViewTest {
         assertNotNull(upstreamBuild.getLastBuild().getCause(Cause.UserIdCause.class));
         assertNotSame(upstreamBuild.getLastBuild().getCause(Cause.UserIdCause.class),
                 mockUserIdCause);
+    }
+
+    @Test
+    public void testDescriptorDiscovery() {
+        BuildPipelineView.DescriptorImpl descriptor = new BuildPipelineView.DescriptorImpl();
+        assertEquals(5, descriptor.getColumnHeaderDescriptors().size());
+        assertEquals(4, descriptor.getRowHeaderDescriptors().size());
     }
 
     public static class MockAction implements Action, Serializable {

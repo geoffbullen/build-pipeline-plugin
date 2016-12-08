@@ -1,5 +1,6 @@
 package au.com.centrumsystems.hudson.plugin.buildpipeline;
 
+import au.com.centrumsystems.hudson.plugin.buildpipeline.extension.PipelineHeaderExtension;
 import hudson.Extension;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
@@ -67,14 +68,16 @@ public class DownstreamProjectGridBuilder extends ProjectGridBuilder {
         private final ItemGroup context;
 
         /**
+         * @param columnHeaders
+         *            column headers to get build parameters from
          * @param context
          *            item group pipeline view belongs to, used to compute relative item names
          * @param start The first project to lead the pipeline.
          */
-        private GridImpl(ItemGroup context, AbstractProject<?, ?> start) {
+        private GridImpl(PipelineHeaderExtension columnHeaders, ItemGroup context, AbstractProject<?, ?> start) {
             this.context = context;
             this.start = start;
-            placeProjectInGrid(0, 0, ProjectForm.as(start));
+            placeProjectInGrid(0, 0, ProjectForm.as(start, columnHeaders));
         }
 
         /**
@@ -224,7 +227,7 @@ public class DownstreamProjectGridBuilder extends ProjectGridBuilder {
         } else {
             this.firstJobLink = "";
         }
-        return new GridImpl(owner.getOwnerItemGroup(), getFirstJob(owner));
+        return new GridImpl(owner.getColumnHeaders(), owner.getOwnerItemGroup(), getFirstJob(owner));
     }
 
     @Override
