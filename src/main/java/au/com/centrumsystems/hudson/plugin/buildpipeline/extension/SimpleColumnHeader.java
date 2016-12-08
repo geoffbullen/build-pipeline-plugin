@@ -26,7 +26,6 @@ package au.com.centrumsystems.hudson.plugin.buildpipeline.extension;
 
 import hudson.Extension;
 import hudson.model.AbstractBuild;
-import hudson.model.Descriptor;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.util.HashMap;
@@ -37,7 +36,6 @@ import java.util.Map;
  *
  * @author dalvizu
  */
-@Extension
 public class SimpleColumnHeader
     extends PipelineHeaderExtension {
 
@@ -54,22 +52,22 @@ public class SimpleColumnHeader
         return new HashMap<String, String>();
     }
 
-    @Override
-    public boolean appliesToRows() {
-        return false;
-    }
-
-    @Override
-    public long getIndex() {
-        return 100;
-    }
-
     /**
      * Descriptor since we're in the UI
      */
     @Extension
     public static class DescriptorImpl
-            extends Descriptor<PipelineHeaderExtension> {
+            extends PipelineHeaderExtensionDescriptor {
+
+        @Override
+        public boolean appliesToRows() {
+            return false;
+        }
+
+        @Override
+        public long getIndex() {
+            return 100;
+        }
 
         @Override
         public String getDisplayName() {

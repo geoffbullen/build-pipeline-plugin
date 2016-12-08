@@ -1,0 +1,31 @@
+<j:jelly xmlns:j="jelly:core"
+         xmlns:st="jelly:stapler"
+         xmlns:d="jelly:define"
+         xmlns:l="/lib/layout"
+         xmlns:t="/lib/hudson"
+         xmlns:f="/lib/form">
+
+    <f:entry title="${%Variable Names}"
+            field="filteredVariables">
+
+        <f:repeatable field="filteredVariables" add="${%Add Variable Name}">
+            <table width="100%">
+                <f:entry field="variableName">
+                    <f:textbox/>
+                </f:entry>
+            </table>
+            <div align="right">
+                <input type="button" value="Delete Variable Name" class="repeatable-delete" style="margin-left: 1em;" />
+            </div>
+        </f:repeatable>
+
+        <f:description>
+            Show specific variables in the current build, and obfuscate sensitive values. Variables
+            which can be shown are drawn from <tt>Build#getBuildVariables()</tt>.
+        </f:description>
+
+
+    </f:entry>
+
+</j:jelly>
+

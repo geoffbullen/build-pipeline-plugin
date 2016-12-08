@@ -27,6 +27,7 @@ package au.com.centrumsystems.hudson.plugin.buildpipeline;
 import au.com.centrumsystems.hudson.plugin.buildpipeline.extension.NullColumnHeader;
 import au.com.centrumsystems.hudson.plugin.buildpipeline.extension.PipelineHeaderExtension;
 import au.com.centrumsystems.hudson.plugin.buildpipeline.extension.BuildVariablesHeader;
+import au.com.centrumsystems.hudson.plugin.buildpipeline.extension.PipelineHeaderExtensionDescriptor;
 import au.com.centrumsystems.hudson.plugin.buildpipeline.extension.SimpleColumnHeader;
 import au.com.centrumsystems.hudson.plugin.buildpipeline.extension.SimpleRowHeader;
 import com.google.common.base.Splitter;
@@ -203,6 +204,8 @@ public class BuildPipelineView extends View {
         this.noOfDisplayedBuilds = noOfDisplayedBuilds;
         this.triggerOnlyLatestJob = triggerOnlyLatestJob;
         this.cssUrl = cssUrl;
+        this.rowHeaders = new NullColumnHeader();
+        this.columnHeaders = new SimpleRowHeader();
     }
 
     /**
@@ -766,28 +769,25 @@ public class BuildPipelineView extends View {
          * @return
          *      a filtered and ordered list of descriptors matching the condition
          */
-        public List<Descriptor<PipelineHeaderExtension>> filter(Function<PipelineHeaderExtension, Boolean> condition) {
-            final List<Descriptor<PipelineHeaderExtension>> result = new ArrayList<Descriptor<PipelineHeaderExtension>>();
+        public List<PipelineHeaderExtensionDescriptor> filter(Function<PipelineHeaderExtensionDescriptor, Boolean> condition) {
+            final List<PipelineHeaderExtensionDescriptor> result = new ArrayList<PipelineHeaderExtensionDescriptor>();
             final List<PipelineHeaderExtension> applicableExtensions = new ArrayList<PipelineHeaderExtension>();
-            for (PipelineHeaderExtension extension : PipelineHeaderExtension.all()) {
-                if (condition.apply(extension)) {
-                    applicableExtensions.add(extension);
+            for (PipelineHeaderExtensionDescriptor descriptor : PipelineHeaderExtensionDescriptor.all()) {
+                if (condition.apply(descriptor)) {
+                    result.add(descriptor);
                 }
             }
-            Collections.sort(applicableExtensions);
-            for (PipelineHeaderExtension extension : applicableExtensions) {
-                result.add(extension.getDescriptor());
-            }
+            Collections.sort(result);
             return result;
         }
 
         /**
          * @return a list of PipelineHeaderExtension descriptors which can be used as a row header
          */
-        public List<Descriptor<PipelineHeaderExtension>> getRowHeaderDescriptors() {
-            return filter(new Function<PipelineHeaderExtension, Boolean>() {
+        public List<PipelineHeaderExtensionDescriptor> getRowHeaderDescriptors() {
+            return filter(new Function<PipelineHeaderExtensionDescriptor, Boolean>() {
                 @Override
-                public Boolean apply(PipelineHeaderExtension extension) {
+                public Boolean apply(PipelineHeaderExtensionDescriptor extension) {
                     return extension.appliesToRows();
                 }
             });
@@ -796,11 +796,11 @@ public class BuildPipelineView extends View {
         /**
          * @return a list of PipelineHeaderExtension descriptors which can be used as column headers
          */
-        public List<Descriptor<PipelineHeaderExtension>> getColumnHeaderDescriptors() {
-            return filter(new Function<PipelineHeaderExtension, Boolean>() {
+        public List<PipelineHeaderExtensionDescriptor> getColumnHeaderDescriptors() {
+            return filter(new Function<PipelineHeaderExtensionDescriptor, Boolean>() {
 
                 @Override
-                public Boolean apply(PipelineHeaderExtension extension) {
+                public Boolean apply(PipelineHeaderExtensionDescriptor extension) {
                     return extension.appliesToColumns();
                 }
             });
