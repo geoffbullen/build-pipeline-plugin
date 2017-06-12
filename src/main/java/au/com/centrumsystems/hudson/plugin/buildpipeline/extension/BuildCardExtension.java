@@ -33,14 +33,15 @@ import hudson.ExtensionPoint;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractDescribableImpl;
 import hudson.model.AbstractProject;
-import hudson.model.Action;
-import hudson.model.Cause;
-import hudson.model.CauseAction;
-import hudson.model.Descriptor;
-import hudson.model.ItemGroup;
-import hudson.model.ParameterValue;
-import hudson.model.ParametersAction;
 import hudson.model.Run;
+import hudson.model.Cause;
+import hudson.model.Action;
+import hudson.model.CauseAction;
+import hudson.model.ParametersAction;
+import hudson.model.ItemGroup;
+import hudson.model.Item;
+import hudson.model.ParameterValue;
+import hudson.model.Descriptor;
 import hudson.plugins.parameterizedtrigger.AbstractBuildParameters;
 import hudson.plugins.parameterizedtrigger.BuildTrigger;
 import hudson.plugins.parameterizedtrigger.BuildTriggerConfig;
@@ -52,13 +53,14 @@ import jenkins.model.Jenkins;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.NoSuchElementException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.Set;
+import java.util.LinkedHashMap;
 
 /**
  * @author dalvizu
@@ -182,12 +184,12 @@ public abstract class BuildCardExtension
      */
     public int triggerManualBuild(ItemGroup pipelineContext, Integer upstreamBuildNumber, String triggerProjectName,
                                   String upstreamProjectName) {
-        final AbstractProject<?, ?> triggerProject =
-                (AbstractProject<?, ?>) Jenkins.getInstance().getItem(triggerProjectName, pipelineContext);
-        final AbstractProject<?, ?> upstreamProject =
-                (AbstractProject<?, ?>) Jenkins.getInstance().getItem(upstreamProjectName, pipelineContext);
+        final AbstractProject<?, ?> triggerProject = traverseItemGroup(pipelineContext, triggerProjectName);
+
+        final AbstractProject<?, ?> upstreamProject = traverseItemGroup(pipelineContext, upstreamProjectName);
 
         final AbstractBuild<?, ?> upstreamBuild = retrieveBuild(upstreamBuildNumber, upstreamProject);
+
 
         // Get parameters from upstream build
         if (upstreamBuild != null) {
@@ -199,6 +201,52 @@ public abstract class BuildCardExtension
         }
 
         return triggerBuild(triggerProject, upstreamBuild, buildParametersAction);
+    }
+
+    /**
+     * Begin a recursive search on ItemGroup
+     * @param groupToTraverse - the context that should be searched
+     * @param searchTerm - name of the item that is being looked for
+     * @return the project that matched the search term
+     */
+    private AbstractProject<?, ?> traverseItemGroup(ItemGroup groupToTraverse, String searchTerm)
+    {
+        final AbstractProject<?, ?> helperResult = traverseItemGroupHelper(groupToTraverse, searchTerm);
+        if (helperResult == null) {
+            throw new NoSuchElementException("Item with name " + searchTerm
+                    + " was not found in ItemGroup " + groupToTraverse.getFullDisplayName());
+
+        } else {
+            return helperResult;
+        }
+    }
+
+    /**
+     * Recursively search the ItemGroup tree
+     * @param groupToTraverse - the context that should be searched
+     * @param searchTerm - name of the item that is being looked for
+     * @return the project that matched the search term
+     */
+    private  AbstractProject<?, ?> traverseItemGroupHelper(ItemGroup groupToTraverse, String searchTerm)
+    {
+        final Iterator iterator = groupToTraverse.getItems().iterator();
+        while (iterator.hasNext()) {
+            final Item currentItem = (Item) iterator.next();
+
+            //base case
+            if (currentItem.getName().equals(searchTerm)) {
+                return (AbstractProject<?, ?>) currentItem;
+            }
+
+            //recursive case
+            if (currentItem instanceof ItemGroup) {
+                final AbstractProject<?, ?> resultOfSubfolder = traverseItemGroupHelper((ItemGroup) currentItem, searchTerm);
+                if (resultOfSubfolder != null) {
+                    return resultOfSubfolder;
+                }
+            }
+        }
+        return null;
     }
 
 
@@ -277,14 +325,17 @@ public abstract class BuildCardExtension
 
         List<AbstractBuildParameters> configs = null;
 
+
         final BuildPipelineTrigger manualTrigger = upstreamProjectPublishersList.get(BuildPipelineTrigger.class);
         if (manualTrigger != null) {
             LOGGER.fine("Found Manual Trigger (BuildPipelineTrigger) found in upstream project publisher list ");
             final Set<String> downstreamProjectsNames =
                     Sets.newHashSet(Splitter.on(",").trimResults().split(manualTrigger.getDownstreamProjectNames()));
+
             LOGGER.fine("Downstream project names: " + downstreamProjectsNames);
             // defect: requires full name in the trigger. But downstream is just fine!
-            if (downstreamProjectsNames.contains(project.getFullName())) {
+
+            if (downstreamProjectsNames.contains(project.getName())) {
                 configs = manualTrigger.getConfigs();
             } else {
                 LOGGER.warning("Upstream project had a Manual Trigger for projects [" + downstreamProjectsNames

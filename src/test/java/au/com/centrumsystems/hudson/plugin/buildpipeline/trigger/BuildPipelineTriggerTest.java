@@ -31,12 +31,7 @@ import static org.junit.Assert.assertThat;
 import au.com.centrumsystems.hudson.plugin.buildpipeline.BuildPipelineView;
 import au.com.centrumsystems.hudson.plugin.buildpipeline.DownstreamProjectGridBuilder;
 import au.com.centrumsystems.hudson.plugin.buildpipeline.extension.StandardBuildCard;
-import hudson.model.AbstractProject;
-import hudson.model.Cause;
-import hudson.model.Descriptor;
-import hudson.model.FreeStyleBuild;
-import hudson.model.FreeStyleProject;
-import hudson.model.Hudson;
+import hudson.model.*;
 import hudson.plugins.parameterizedtrigger.AbstractBuildParameters;
 import hudson.tasks.Publisher;
 import hudson.util.DescribableList;
@@ -44,12 +39,15 @@ import hudson.util.FormValidation;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.NoSuchElementException;
 
 import org.junit.Rule;
 import org.junit.Test;
 import org.jvnet.hudson.test.Bug;
 import org.jvnet.hudson.test.Issue;
 import org.jvnet.hudson.test.JenkinsRule;
+import org.jvnet.hudson.test.MockFolder;
+import org.mockito.Mock;
 
 import static org.junit.Assert.*;
 
@@ -244,6 +242,94 @@ public class BuildPipelineTriggerTest {
         assertEquals(Cause.UserIdCause.class.getName(), cause.getClass().getName());
         Cause.UpstreamCause upstreamCause = build.getCause(Cause.UpstreamCause.class);
         assertNotNull(upstreamCause);
+    }
+
+    @Test
+    public void testTriggerProjectInFolder()
+        throws Exception
+    {
+
+        //root folder
+        MockFolder folder1 = jenkins.createFolder("Folder1");
+        FreeStyleProject projectA = jenkins.createFreeStyleProject("A");
+
+        //  /folder1
+        folder1.createProject(MockFolder.class, "Folder2");
+        MockFolder folder2 = (MockFolder) folder1.getItem("Folder2");
+
+        //  /folder1/folder2
+        folder2.createProject(FreeStyleProject.class, "B");
+
+        projectA.getPublishersList().add(new BuildPipelineTrigger("B", null));
+        jenkins.getInstance().rebuildDependencyGraph();
+
+        BuildPipelineView view = new BuildPipelineView("Pipeline", "Title", new DownstreamProjectGridBuilder("A"), "1", false, "");
+        view.setBuildCard(new StandardBuildCard());
+        jenkins.buildAndAssertSuccess(projectA);
+
+        view.triggerManualBuild(1, "B", "A");
+        jenkins.waitUntilNoActivity();
+
+        FreeStyleProject projectB = (FreeStyleProject) folder2.getItem("B");
+        assertNotNull(projectB.getLastBuild());
+        FreeStyleBuild build = projectB.getLastBuild();
+        Cause.UserIdCause cause = build.getCause(Cause.UserIdCause.class);
+        assertNotNull(cause);
+        //Check that cause is of core class Cause.UserIdCause and not MyUserIdCause
+        assertEquals(Cause.UserIdCause.class.getName(), cause.getClass().getName());
+        Cause.UpstreamCause upstreamCause = build.getCause(Cause.UpstreamCause.class);
+        assertNotNull(upstreamCause);
+    }
+
+    @Test
+    public void testUpstreamProjectInFolder()
+            throws Exception
+    {
+
+        //root folder
+        MockFolder folder1 = jenkins.createFolder("Folder1");
+        FreeStyleProject projectB = jenkins.createFreeStyleProject("B");
+
+        //  /folder1
+        folder1.createProject(FreeStyleProject.class, "A");
+        FreeStyleProject projectA = (FreeStyleProject) folder1.getItem("A");
+
+        projectA.getPublishersList().add(new BuildPipelineTrigger("B", null));
+        jenkins.getInstance().rebuildDependencyGraph();
+
+        BuildPipelineView view = new BuildPipelineView("Pipeline", "Title", new DownstreamProjectGridBuilder("A"), "1", false, "");
+        view.setBuildCard(new StandardBuildCard());
+        jenkins.buildAndAssertSuccess(projectA);
+
+        view.triggerManualBuild(1, "B", "A");
+        jenkins.waitUntilNoActivity();
+
+        assertNotNull(projectB.getLastBuild());
+        FreeStyleBuild build = projectB.getLastBuild();
+        Cause.UserIdCause cause = build.getCause(Cause.UserIdCause.class);
+        assertNotNull(cause);
+        //Check that cause is of core class Cause.UserIdCause and not MyUserIdCause
+        assertEquals(Cause.UserIdCause.class.getName(), cause.getClass().getName());
+        Cause.UpstreamCause upstreamCause = build.getCause(Cause.UpstreamCause.class);
+        assertNotNull(upstreamCause);
+    }
+
+    @Test (expected = NoSuchElementException.class)
+    public void testUnableToFindProject()
+            throws Exception
+    {
+
+        //root folder
+        MockFolder folder1 = jenkins.createFolder("Folder1");
+        FreeStyleProject projectB = jenkins.createFreeStyleProject("B");
+
+
+        BuildPipelineView view = new BuildPipelineView("Pipeline", "Title", new DownstreamProjectGridBuilder("A"), "1", false, "");
+        view.setBuildCard(new StandardBuildCard());
+
+        view.triggerManualBuild(1, "B", "A");
+        jenkins.waitUntilNoActivity();
+
     }
 
     @Test
