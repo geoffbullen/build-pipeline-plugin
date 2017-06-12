@@ -37,12 +37,13 @@ import hudson.model.Action;
 import hudson.model.Cause;
 import hudson.model.CauseAction;
 import hudson.model.Descriptor;
+import hudson.model.Item;
 import hudson.model.ItemGroup;
+import hudson.model.Job;
 import hudson.model.ParameterValue;
 import hudson.model.ParametersAction;
 import hudson.model.Run;
 import hudson.plugins.parameterizedtrigger.AbstractBuildParameters;
-import hudson.plugins.parameterizedtrigger.BuildTrigger;
 import hudson.plugins.parameterizedtrigger.BuildTriggerConfig;
 import hudson.tasks.Publisher;
 import hudson.util.DescribableList;
@@ -183,11 +184,12 @@ public abstract class BuildCardExtension
     public int triggerManualBuild(ItemGroup pipelineContext, Integer upstreamBuildNumber, String triggerProjectName,
                                   String upstreamProjectName) {
         final AbstractProject<?, ?> triggerProject =
-                (AbstractProject<?, ?>) Jenkins.getInstance().getItem(triggerProjectName, pipelineContext);
+                                (AbstractProject<?, ?>) Jenkins.getInstance().getItem(triggerProjectName, pipelineContext);
         final AbstractProject<?, ?> upstreamProject =
-                (AbstractProject<?, ?>) Jenkins.getInstance().getItem(upstreamProjectName, pipelineContext);
+                                (AbstractProject<?, ?>) Jenkins.getInstance().getItem(upstreamProjectName, pipelineContext);
 
         final AbstractBuild<?, ?> upstreamBuild = retrieveBuild(upstreamBuildNumber, upstreamProject);
+
 
         // Get parameters from upstream build
         if (upstreamBuild != null) {
@@ -200,7 +202,6 @@ public abstract class BuildCardExtension
 
         return triggerBuild(triggerProject, upstreamBuild, buildParametersAction);
     }
-
 
     /**
      * Schedules a build to start.
@@ -233,7 +234,8 @@ public abstract class BuildCardExtension
         if (upstreamBuild != null) {
 
 
-            final List<AbstractBuildParameters> configs = retrieveUpstreamProjectTriggerConfig(triggerProject, upstreamBuild);
+            final List<AbstractBuildParameters> configs = retrieveUpstreamProjectTriggerConfig(triggerProject,
+                    upstreamBuild);
 
             if (configs == null) {
                 LOGGER.log(Level.SEVERE, "No upstream trigger found for this project: " + triggerProject.getFullDisplayName());
@@ -277,6 +279,19 @@ public abstract class BuildCardExtension
 
         List<AbstractBuildParameters> configs = null;
 
+        final hudson.tasks.BuildTrigger autoTrigger =
+                upstreamProjectPublishersList.get(hudson.tasks.BuildTrigger.class);
+        if (autoTrigger != null) {
+            LOGGER.fine("Found Hudson Trigger (BuildTrigger) found in upstream project publisher list ");
+            final String downstreamProjects = autoTrigger.getChildProjectsValue();
+            if (downstreamProjects.contains(project.getFullName())) {
+                configs = new ArrayList<AbstractBuildParameters>();
+            } else {
+                LOGGER.warning("Upstream project had a Hudson BuildTrigger for projects [" + downstreamProjects
+                        + "], but that did not include our project [" + project.getFullName() + "]");
+            }
+        }
+
         final BuildPipelineTrigger manualTrigger = upstreamProjectPublishersList.get(BuildPipelineTrigger.class);
         if (manualTrigger != null) {
             LOGGER.fine("Found Manual Trigger (BuildPipelineTrigger) found in upstream project publisher list ");
@@ -284,6 +299,7 @@ public abstract class BuildCardExtension
                     Sets.newHashSet(Splitter.on(",").trimResults().split(manualTrigger.getDownstreamProjectNames()));
             LOGGER.fine("Downstream project names: " + downstreamProjectsNames);
             // defect: requires full name in the trigger. But downstream is just fine!
+
             if (downstreamProjectsNames.contains(project.getFullName())) {
                 configs = manualTrigger.getConfigs();
             } else {
@@ -292,12 +308,18 @@ public abstract class BuildCardExtension
             }
         }
 
-        final BuildTrigger autoTrigger = upstreamProjectPublishersList.get(BuildTrigger.class);
-        if (autoTrigger != null) {
-            for (BuildTriggerConfig config : autoTrigger.getConfigs()) {
+        final hudson.plugins.parameterizedtrigger.BuildTrigger autoParameterizedTrigger =
+                upstreamProjectPublishersList.get(hudson.plugins.parameterizedtrigger.BuildTrigger.class);
+        if (autoParameterizedTrigger != null) {
+            LOGGER.fine("Found Parameterized Trigger (BuildTrigger) found in upstream project publisher list ");
+            for (BuildTriggerConfig config : autoParameterizedTrigger.getConfigs()) {
                 final Set<String> downstreamProjectsNames = Sets.newHashSet(Splitter.on(",").trimResults().split(config.getProjects()));
-                if (downstreamProjectsNames.contains(project.getFullName())) {
-                    configs = config.getConfigs();
+                for (String currentDownstreamName : downstreamProjectsNames) {
+                    final Job downstreamJob = (Job) Jenkins.getInstance().getItem(currentDownstreamName,
+                            upstreamBuild.getProject().getParent(), Item.class);
+                    if (downstreamJob != null && downstreamJob.getFullName().equals(project.getFullName())) {
+                        configs = config.getConfigs();
+                    }
                 }
             }
         }
