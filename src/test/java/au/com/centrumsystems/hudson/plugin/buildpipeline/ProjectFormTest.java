@@ -1,7 +1,10 @@
 package au.com.centrumsystems.hudson.plugin.buildpipeline;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.junit.Assert.assertThat;
+
+import au.com.centrumsystems.hudson.plugin.buildpipeline.extension.NullColumnHeader;
 import hudson.model.FreeStyleBuild;
 import hudson.model.FreeStyleProject;
 import hudson.tasks.BuildTrigger;
@@ -31,7 +34,7 @@ public class ProjectFormTest extends HudsonTestCase {
         waitUntilNoActivity();
 
         final PipelineBuild pb = new PipelineBuild(build1, project1, null);
-        final ProjectForm pf = new ProjectForm(project1);
+        final ProjectForm pf = new ProjectForm(project1, new NullColumnHeader());
         assertEquals(project1.getName(), pf.getName());
         assertEquals(pb.getCurrentBuildResult(), pf.getResult());
         assertEquals(pb.getProjectURL(), pf.getUrl());
@@ -48,9 +51,9 @@ public class ProjectFormTest extends HudsonTestCase {
         project1.getPublishersList().add(new BuildTrigger(proj2, false));
         hudson.rebuildDependencyGraph();
 
-        final ProjectForm pf = new ProjectForm(project1);
-        final ProjectForm pf1 = new ProjectForm(project1);
-        final ProjectForm pf2 = new ProjectForm(project2);
+        final ProjectForm pf = new ProjectForm(project1, new NullColumnHeader());
+        final ProjectForm pf1 = new ProjectForm(project1, new NullColumnHeader());
+        final ProjectForm pf2 = new ProjectForm(project2, new NullColumnHeader());
         final String proj3 = null;
         final ProjectForm pf3 = new ProjectForm(proj3);
 
@@ -59,5 +62,20 @@ public class ProjectFormTest extends HudsonTestCase {
         assertNotNull(pf);
         assertFalse(pf.equals(pf3));
 
+    }
+
+    @Test
+    public void testNoInfiniteRecursion() throws IOException {
+        final String proj1 = "Project1";
+        final String proj2 = "Project2";
+        final FreeStyleProject project1 = createFreeStyleProject(proj1);
+        final FreeStyleProject project2 = createFreeStyleProject(proj2);
+        project1.getPublishersList().add(new BuildTrigger(proj2, false));
+        project2.getPublishersList().add(new BuildTrigger(proj1, false));
+        hudson.rebuildDependencyGraph();
+
+        final ProjectForm form1 = new ProjectForm(project1, new NullColumnHeader());
+        assertThat(form1.getDependencies(), hasSize(1));
+        assertThat(form1.getDependencies().get(0).getDependencies(), hasSize(0));
     }
 }
