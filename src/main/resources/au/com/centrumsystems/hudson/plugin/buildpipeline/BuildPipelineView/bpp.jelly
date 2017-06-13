@@ -35,6 +35,11 @@
         var projectCardTemplateSource = jQuery("#project-card-template").html();
         var buildPipeline = new BuildPipeline(buildPipelineViewProxy, Handlebars.compile(buildCardTemplateSource), Handlebars.compile(projectCardTemplateSource), ${from.getRefreshFrequencyInMillis()});
     </script>
+
+    <st:include page="buildCardHelpers.jelly"
+                from="${from.getBuildCard()}"
+                it="${from}"/>
+
     <form method="post" action="gridBuilder/build" id="triggerPipelineForm" class="no-json"/>
     <form method="post" name="pipelineViewForm" action="manualExecution" id="manualExecutionForm">
 
@@ -129,7 +134,6 @@
                                             // generate build-card
                                             var buildData = ${build.asJSON()};
                                             jQuery("#build-${build.getId()}").append(buildPipeline.buildCardTemplate(buildData));
-
                                             // add build proxy to proxies for future use
                                             buildPipeline.buildProxies[${build.getId()}] = <st:bind value="${build}" />;
                                             <j:if test="${build.getStatus() == 'BUILDING'}">

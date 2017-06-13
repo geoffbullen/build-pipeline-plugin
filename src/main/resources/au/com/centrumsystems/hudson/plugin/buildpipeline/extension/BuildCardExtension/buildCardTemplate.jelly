@@ -1,4 +1,19 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:i="jelly:fmt">
+{{!--
+
+    This is a handlebars template compiled in bpp.jelly - it allows is used to template build cards. This form is passed
+    a JSON object which is a `au.com.centrumsystems.hudson.plugin.buildpipeline.BuildForm` turned into a JsonObject
+    through `BuildJSONBuilder`
+
+    This class has two stapler variables implicitly available: the `it` object referring to the `BuildPipelineView` object,
+    and the `from` object referring to the implementing `BuildCardExtension` object (e.g. `StandardBuildCard`)
+
+    Note that including JavaScript is a bit anathema to handlebars templating - if you really must add dynamic behavior
+    to a template, do that using handlebars helpers. Helpers can be attached in `buildCardHelpers.jelly`
+
+    See http://handlebarsjs.com/expressions.html#helpers
+
+--}}
 <div class="build-card rounded {{build.status}} {{#if project.disabled}}disabled{{/if}}">
     <div class="header">
         <a href="${rootURL}/{{build.url}}" title="{{project.name}}">
@@ -140,5 +155,4 @@
         {{/if}}
     </div>
 </div>
-
 </j:jelly>

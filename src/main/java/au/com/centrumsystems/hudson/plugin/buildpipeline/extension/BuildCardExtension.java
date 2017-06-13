@@ -61,6 +61,26 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * <p>
+ *   This class is an extension point for a plugin to provide their own behavior for the 'build cards'
+ *   that show up in the build pipeline plugin.
+ * </p>
+ *
+ * <p>
+ *   This base class encapsulates the logic for how builds can be re-run and how the upstream build is
+ *   found, allowing subclasses to override this behavior.
+ * </p>
+ *
+ * <p>
+ *   In addition, this class also defines the look-and-feel of the build cards so that they can be overridden.
+ *   These are defined in the following .jelly files:
+ * </p>
+ *
+ * <ul>
+ *    <li>buildCardTemplate.jelly</li>
+ *    <li>buildCardHelpers.jelly</li>
+ * </ul>
+ *
  * @author dalvizu
  */
 public abstract class BuildCardExtension
@@ -272,6 +292,7 @@ public abstract class BuildCardExtension
      */
     protected List<AbstractBuildParameters> retrieveUpstreamProjectTriggerConfig(final AbstractProject<?, ?> project,
                                                                                final AbstractBuild<?, ?> upstreamBuild) {
+        LOGGER.fine("Looking for triggers in the upstream project: " + upstreamBuild.getProject().getFullName());
         final DescribableList<Publisher, Descriptor<Publisher>> upstreamProjectPublishersList =
                 upstreamBuild.getProject().getPublishersList();
 
@@ -290,6 +311,8 @@ public abstract class BuildCardExtension
                 LOGGER.warning("Upstream project had a Manual Trigger for projects [" + downstreamProjectsNames
                         + "], but that did not include our project [" + project.getFullName() + "]");
             }
+        } else {
+            LOGGER.fine("No manual trigger found");
         }
 
         final BuildTrigger autoTrigger = upstreamProjectPublishersList.get(BuildTrigger.class);
