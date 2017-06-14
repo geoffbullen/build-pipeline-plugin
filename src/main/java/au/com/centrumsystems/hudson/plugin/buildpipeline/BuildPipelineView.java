@@ -188,8 +188,8 @@ public class BuildPipelineView extends View {
         this.noOfDisplayedBuilds = noOfDisplayedBuilds;
         this.triggerOnlyLatestJob = triggerOnlyLatestJob;
         this.cssUrl = cssUrl;
-        this.rowHeaders = new NullColumnHeader();
-        this.columnHeaders = new SimpleRowHeader();
+        this.rowHeaders = new SimpleRowHeader();
+        this.columnHeaders = new NullColumnHeader();
     }
 
     /**
