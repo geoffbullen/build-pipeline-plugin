@@ -41,6 +41,7 @@ import hudson.util.FormValidation;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.NoSuchElementException;
 
 
 import org.junit.Rule;

@@ -33,16 +33,16 @@ import hudson.ExtensionPoint;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractDescribableImpl;
 import hudson.model.AbstractProject;
-import hudson.model.Action;
+import hudson.model.ParametersAction;
+import hudson.model.Run;
 import hudson.model.Cause;
+import hudson.model.Action;
 import hudson.model.CauseAction;
 import hudson.model.Descriptor;
 import hudson.model.Item;
 import hudson.model.ItemGroup;
 import hudson.model.Job;
 import hudson.model.ParameterValue;
-import hudson.model.ParametersAction;
-import hudson.model.Run;
 import hudson.plugins.parameterizedtrigger.AbstractBuildParameters;
 import hudson.plugins.parameterizedtrigger.BuildTriggerConfig;
 import hudson.tasks.Publisher;
@@ -53,13 +53,13 @@ import jenkins.model.Jenkins;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.Set;
+import java.util.LinkedHashMap;
 
 /**
  * @author dalvizu
@@ -297,6 +297,7 @@ public abstract class BuildCardExtension
             LOGGER.fine("Found Manual Trigger (BuildPipelineTrigger) found in upstream project publisher list ");
             final Set<String> downstreamProjectsNames =
                     Sets.newHashSet(Splitter.on(",").trimResults().split(manualTrigger.getDownstreamProjectNames()));
+
             LOGGER.fine("Downstream project names: " + downstreamProjectsNames);
             // defect: requires full name in the trigger. But downstream is just fine!
 
