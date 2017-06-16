@@ -1,0 +1,131 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<build>
+  <actions>
+    <hudson.model.CauseAction>
+      <causes>
+        <au.com.centrumsystems.hudson.plugin.buildpipeline.BuildPipelineView_-MyUserIdCause plugin="build-pipeline-plugin@1.4.6-SNAPSHOT">
+          <userId>bill</userId>
+          <user>
+            <fullName>Bill</fullName>
+            <properties>
+              <hudson.model.PaneStatusProperties>
+                <collapsed/>
+              </hudson.model.PaneStatusProperties>
+              <jenkins.security.ApiTokenProperty>
+                <apiToken>zqhgv1MO6S/URSw9m3nluT585iGFYQf1o9n7t0gt/sX04Te1VucWSZnzOxxepbme</apiToken>
+              </jenkins.security.ApiTokenProperty>
+              <com.cloudbees.plugins.credentials.UserCredentialsProvider_-UserCredentialsProperty plugin="credentials@1.9.4">
+                <domainCredentialsMap class="hudson.util.CopyOnWriteMap$Hash"/>
+              </com.cloudbees.plugins.credentials.UserCredentialsProvider_-UserCredentialsProperty>
+              <hudson.model.MyViewsProperty>
+                <views>
+                  <hudson.model.AllView>
+                    <owner class="hudson.model.MyViewsProperty" reference="../../.."/>
+                    <name>All</name>
+                    <filterExecutors>false</filterExecutors>
+                    <filterQueue>false</filterQueue>
+                    <properties class="hudson.model.View$PropertyList"/>
+                  </hudson.model.AllView>
+                </views>
+              </hudson.model.MyViewsProperty>
+              <hudson.search.UserSearchProperty>
+                <insensitiveSearch>false</insensitiveSearch>
+              </hudson.search.UserSearchProperty>
+              <hudson.security.HudsonPrivateSecurityRealm_-Details>
+                <passwordHash>#jbcrypt:$2a$10$Kr4OK/gWKKkCWc3cUefmwuYX1baa.78FfzIyuN3FacaNKOuWxhlhm</passwordHash>
+              </hudson.security.HudsonPrivateSecurityRealm_-Details>
+              <hudson.tasks.Mailer_-UserProperty plugin="mailer@1.8">
+                <emailAddress>bill@bill.org</emailAddress>
+              </hudson.tasks.Mailer_-UserProperty>
+            </properties>
+          </user>
+          <outer-class>
+            <owner class="hudson.model.Hudson">
+              <disabledAdministrativeMonitors/>
+              <version>1.0</version>
+              <numExecutors>2</numExecutors>
+              <mode>NORMAL</mode>
+              <useSecurity>true</useSecurity>
+              <authorizationStrategy class="hudson.security.AuthorizationStrategy$Unsecured"/>
+              <securityRealm class="hudson.security.HudsonPrivateSecurityRealm">
+                <disableSignup>false</disableSignup>
+                <enableCaptcha>false</enableCaptcha>
+              </securityRealm>
+              <disableRememberMe>false</disableRememberMe>
+              <projectNamingStrategy class="jenkins.model.ProjectNamingStrategy$DefaultProjectNamingStrategy"/>
+              <workspaceDir>${JENKINS_HOME}/workspace/${ITEM_FULLNAME}</workspaceDir>
+              <buildsDir>${ITEM_ROOTDIR}/builds</buildsDir>
+              <markupFormatter class="hudson.markup.EscapedMarkupFormatter"/>
+              <jdks/>
+              <viewsTabBar class="hudson.views.DefaultViewsTabBar"/>
+              <myViewsTabBar class="hudson.views.DefaultMyViewsTabBar"/>
+              <clouds/>
+              <slaves/>
+              <scmCheckoutRetryCount>0</scmCheckoutRetryCount>
+              <views>
+                <hudson.model.AllView>
+                  <owner class="hudson.model.Hudson" reference="../../.."/>
+                  <name>All</name>
+                  <filterExecutors>false</filterExecutors>
+                  <filterQueue>false</filterQueue>
+                  <properties class="hudson.model.View$PropertyList"/>
+                </hudson.model.AllView>
+                <au.com.centrumsystems.hudson.plugin.buildpipeline.BuildPipelineView reference="../../.."/>
+              </views>
+              <primaryView>All</primaryView>
+              <slaveAgentPort>0</slaveAgentPort>
+              <label></label>
+              <nodeProperties/>
+              <globalNodeProperties/>
+            </owner>
+            <name>Pipeline</name>
+            <filterExecutors>false</filterExecutors>
+            <filterQueue>false</filterQueue>
+            <properties class="hudson.model.View$PropertyList"/>
+            <gridBuilder class="au.com.centrumsystems.hudson.plugin.buildpipeline.DownstreamProjectGridBuilder">
+              <firstJob>A</firstJob>
+              <firstJobLink>job/A/</firstJobLink>
+            </gridBuilder>
+            <noOfDisplayedBuilds>1</noOfDisplayedBuilds>
+            <buildViewTitle>Component</buildViewTitle>
+            <consoleOutputLinkStyle>Lightbox</consoleOutputLinkStyle>
+            <cssUrl></cssUrl>
+            <triggerOnlyLatestJob>false</triggerOnlyLatestJob>
+            <alwaysAllowManualTrigger>false</alwaysAllowManualTrigger>
+            <showPipelineParameters>false</showPipelineParameters>
+            <showPipelineParametersInHeaders>false</showPipelineParametersInHeaders>
+            <startsWithParameters>false</startsWithParameters>
+            <refreshFrequency>3</refreshFrequency>
+            <showPipelineDefinitionHeader>false</showPipelineDefinitionHeader>
+          </outer-class>
+        </au.com.centrumsystems.hudson.plugin.buildpipeline.BuildPipelineView_-MyUserIdCause>
+        <hudson.model.Cause_-UpstreamCause>
+          <upstreamProject>A</upstreamProject>
+          <upstreamUrl>job/A/</upstreamUrl>
+          <upstreamBuild>1</upstreamBuild>
+          <upstreamCauses>
+            <hudson.model.Cause_-UserIdCause>
+              <userId>bill</userId>
+            </hudson.model.Cause_-UserIdCause>
+          </upstreamCauses>
+        </hudson.model.Cause_-UpstreamCause>
+      </causes>
+    </hudson.model.CauseAction>
+    <hudson.model.ParametersAction>
+      <parameters class="java.util.Arrays$ArrayList">
+        <a class="hudson.model.ParameterValue-array"/>
+      </parameters>
+    </hudson.model.ParametersAction>
+  </actions>
+  <number>1</number>
+  <startTime>1420533680028</startTime>
+  <result>SUCCESS</result>
+  <duration>33</duration>
+  <charset>UTF-8</charset>
+  <keepLog>false</keepLog>
+  <builtOn></builtOn>
+  <hudsonVersion>1.554.2</hudsonVersion>
+  <scm class="hudson.scm.NullChangeLogParser"/>
+  <culprits class="com.google.common.collect.EmptyImmutableSortedSet"/>
+</build>
+
