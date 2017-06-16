@@ -293,28 +293,23 @@ public class BuildPipelineView extends View {
             if (selectedJob != null) {
                 gridBuilder = new DownstreamProjectGridBuilder(selectedJob);
             }
-        } else {
-            // safe to assume an existing install, check if we need to migrate
-            // header config
-            if (columnHeaders == null) {
-                if (!showPipelineDefinitionHeader) {
-                    columnHeaders = new NullColumnHeader();
-                } else if (showPipelineParametersInHeaders) {
-                    columnHeaders = new BuildVariablesHeader();
-                } else {
-                    columnHeaders = new SimpleColumnHeader();
-                }
-            }
-            if (rowHeaders == null) {
-                if (showPipelineParameters) {
-                    rowHeaders = new BuildVariablesHeader();
-                } else {
-                    rowHeaders = new SimpleRowHeader();
-                }
+        }
+        if (columnHeaders == null) {
+            if (!showPipelineDefinitionHeader) {
+                columnHeaders = new NullColumnHeader();
+            } else if (showPipelineParametersInHeaders) {
+                columnHeaders = new BuildVariablesHeader();
+            } else {
+                columnHeaders = new SimpleColumnHeader();
             }
         }
-
-
+        if (rowHeaders == null) {
+            if (showPipelineParameters) {
+                rowHeaders = new BuildVariablesHeader();
+            } else {
+                rowHeaders = new SimpleRowHeader();
+            }
+        }
         return this;
     }
 
@@ -996,18 +991,25 @@ public class BuildPipelineView extends View {
     
     @Override
     public boolean hasPermission(final Permission p) {
-        boolean display = true;
-        //tester la liste vide seulement en lecture
-        if (READ.name.equals(p.name)) {
-            if (isEmpty()) {
-                display = false;
+        try {
+            boolean display = true;
+            //tester la liste vide seulement en lecture
+            if (READ.name.equals(p.name)) {
+                if (isEmpty()) {
+                    display = false;
+                }
+            } else {
+                //Pas en lecture => permission standard
+                display = super.hasPermission(p);
             }
-        } else {
-            //Pas en lecture => permission standard
-            display = super.hasPermission(p);
-        }
 
-        return display;
+            return display;
+        } catch (Throwable t) {
+            // JENKINS-44324This can be called from jenkins just determinig if it needs to show the
+            // pipeline tab, so if there are any errors don't blow up
+            LOGGER.log(Level.SEVERE, "Error in hasPermission: ", t);
+            return false;
+        }
     }
 
     /**
