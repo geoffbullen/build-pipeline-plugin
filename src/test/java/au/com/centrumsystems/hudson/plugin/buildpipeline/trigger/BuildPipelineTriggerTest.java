@@ -31,7 +31,6 @@ import static org.junit.Assert.assertThat;
 import au.com.centrumsystems.hudson.plugin.buildpipeline.BuildPipelineView;
 import au.com.centrumsystems.hudson.plugin.buildpipeline.DownstreamProjectGridBuilder;
 import au.com.centrumsystems.hudson.plugin.buildpipeline.extension.StandardBuildCard;
-import hudson.EnvVars;
 import hudson.model.*;
 import hudson.plugins.parameterizedtrigger.*;
 
@@ -41,7 +40,6 @@ import hudson.util.FormValidation;
 
 import java.io.IOException;
 import java.util.Collections;
-import java.util.NoSuchElementException;
 
 
 import org.junit.Rule;
@@ -50,9 +48,6 @@ import org.jvnet.hudson.test.*;
 
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 /**
  * BuildPipelineTrigger test class
@@ -259,7 +254,6 @@ public class BuildPipelineTriggerTest {
         //  /Folder1
         final String projUp = "upstream";
         folder1.createProject(FreeStyleProject.class, projUp);
-        //FreeStyleProject upstreamProject = (FreeStyleProject) folder1.getItem(projUp);
         FreeStyleProject upstreamProject = jenkins.createFreeStyleProject(projUp);
 
         //  /Folder2
@@ -272,10 +266,11 @@ public class BuildPipelineTriggerTest {
         upstreamProject.getPublishersList().add(new hudson.plugins.parameterizedtrigger.BuildTrigger(notFakeConfig));
         jenkins.getInstance().rebuildDependencyGraph();
 
-        BuildPipelineView view = new BuildPipelineView("Pipeline", "Title", new DownstreamProjectGridBuilder("upstream"), "1", false, "");
+        BuildPipelineView view = new BuildPipelineView("Pipeline", "Title", new DownstreamProjectGridBuilder(projUp), "1", false, "");
         view.setBuildCard(new StandardBuildCard());
         jenkins.buildAndAssertSuccess(upstreamProject);
 
+        assertNull(downstreamProject.getLastBuild());
         view.triggerManualBuild(1, downstreamProject.getFullName(), upstreamProject.getFullName());
 
         jenkins.waitUntilNoActivity();
@@ -311,10 +306,11 @@ public class BuildPipelineTriggerTest {
         upstreamProject.getPublishersList().add(new hudson.tasks.BuildTrigger(downstreamProject.getFullName(), false));
         jenkins.getInstance().rebuildDependencyGraph();
 
-        BuildPipelineView view = new BuildPipelineView("Pipeline", "Title", new DownstreamProjectGridBuilder("upstream"), "1", false, "");
+        BuildPipelineView view = new BuildPipelineView("Pipeline", "Title", new DownstreamProjectGridBuilder(projUp), "1", false, "");
         view.setBuildCard(new StandardBuildCard());
         jenkins.buildAndAssertSuccess(upstreamProject);
 
+        assertNull(downstreamProject.getLastBuild());
         view.triggerManualBuild(1, downstreamProject.getFullName(), upstreamProject.getFullName());
 
         jenkins.waitUntilNoActivity();
