@@ -24,11 +24,11 @@ public class BuildPipelineViewConstructorTest {
     @Test
     public void testAlwaysAllowManualTrigger() throws IOException {
         // True
-        BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, gridBuilder, noOfBuilds, true, true, false, false, false, 2, null, null, null, null);
+        BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, gridBuilder, noOfBuilds, true, true, false, false, false, 2, null, null, null, null, null);
         assertTrue(testView.isAlwaysAllowManualTrigger());
 
         // False
-        testView = new BuildPipelineView(bpViewName, bpViewTitle, nullGridBuilder, noOfBuilds, true, false, false, false, false, 2, null, null, null, null);
+        testView = new BuildPipelineView(bpViewName, bpViewTitle, nullGridBuilder, noOfBuilds, true, false, false, false, false, 2, null, null, null, null, null);
         assertFalse(testView.isAlwaysAllowManualTrigger());
     }
 
@@ -36,7 +36,7 @@ public class BuildPipelineViewConstructorTest {
     public void testRefreshFrequency() throws IOException {
 
         // False
-        final BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, nullGridBuilder, noOfBuilds, true, false, false, false, false, 2, null, null, null, null);
+        final BuildPipelineView testView = new BuildPipelineView(bpViewName, bpViewTitle, nullGridBuilder, noOfBuilds, true, false, false, false, false, 2, null, null, null, null, null);
         assertThat(testView.getRefreshFrequency(), is(2));
         assertThat(testView.getRefreshFrequencyInMillis(), is(2000));
     }

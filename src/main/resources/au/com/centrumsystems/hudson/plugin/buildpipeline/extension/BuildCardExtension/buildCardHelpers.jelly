@@ -1,0 +1,22 @@
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:i="jelly:fmt">
+    <!--
+        This file is included once in the build pipeline file - it is intended to allow a BuildCardExtension to contribute
+        any 'global' scripts or assets to the build pipeline. This includes the ability to add a Handlebars helper
+        (if you really, really must be using JS in a handlebars template).
+
+        By default we just include helpers to append script tags to your build card
+    -->
+    <![CDATA[
+
+    <script type="text/javascript">
+        Handlebars.registerHelper('startScript', function() {
+            return new Handlebars.SafeString("<scr" + "ipt>");
+        });
+
+        Handlebars.registerHelper('endScript', function() {
+            return new Handlebars.SafeString("</scr" + "ipt>");
+        });
+    </script>
+
+    ]]>
+</j:jelly>

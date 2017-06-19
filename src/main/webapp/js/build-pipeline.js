@@ -56,7 +56,7 @@ BuildPipeline.prototype = {
 	updateBuildCardFromJSON : function(buildAsJSON, fadeIn) {
 		var buildPipeline = this;
 		jQuery("#build-" + buildAsJSON.id).empty();
-		jQuery(buildPipeline.buildCardTemplate(buildAsJSON)).hide().appendTo("#build-" + buildAsJSON.id).fadeIn(fadeIn ? 1000 : 0);
+		jQuery("#build-" + buildAsJSON.id).hide().append(buildPipeline.buildCardTemplate(buildAsJSON)).fadeIn(fadeIn ? 1000 : 0);
 	},
 	updateProjectCardFromJSON : function(projectAsJSON, fadeIn) {
 		var buildPipeline = this;
