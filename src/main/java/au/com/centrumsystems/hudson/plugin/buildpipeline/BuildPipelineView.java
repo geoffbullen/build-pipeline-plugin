@@ -298,9 +298,9 @@ public class BuildPipelineView extends View {
             } else {
                 rowHeaders = new SimpleRowHeader();
             }
-            if (buildCard == null) {
-                buildCard = new StandardBuildCard();
-            }
+        }
+        if (buildCard == null) {
+            buildCard = new StandardBuildCard();
         }
         return this;
     }
