@@ -222,6 +222,24 @@ public class BuildPipelineViewTest {
         assertEquals(SimpleColumnHeader.class, testView.getColumnHeaders().getClass());
         assertNotNull(testView.getBuildCard());
         assertEquals(StandardBuildCard.class, testView.getBuildCard().getClass());
+
+        testView = new BuildPipelineView("My Build Pipeline Name",
+                "My Build Pipeline Title", new DownstreamProjectGridBuilder("Sample Project"),
+                "3", false, false,
+                false /* showPipelineParameters */,
+                false /* showPipelineParametersInHeaders */,
+                true /* showPipelineDefinitionHeader */,
+                3,
+                null,
+                null,
+                new SimpleColumnHeader(),
+                new SimpleRowHeader(),
+                null);
+        testView.readResolve();
+        assertNotNull(testView.getColumnHeaders());
+        assertEquals(SimpleColumnHeader.class, testView.getColumnHeaders().getClass());
+        assertNotNull(testView.getBuildCard());
+        assertEquals(StandardBuildCard.class, testView.getBuildCard().getClass());
     }
 
 	@Test
