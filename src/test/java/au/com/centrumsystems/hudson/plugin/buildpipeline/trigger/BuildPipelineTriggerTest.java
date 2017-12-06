@@ -244,7 +244,7 @@ public class BuildPipelineTriggerTest {
 
     @Test
     @Issue("JENKINS-23532")
-    public void testTriggerProjectInFolderUsingParameteriezedTrigger()
+    public void testTriggerProjectInFolderUsingParameteriezedTriggerAndFullPath()
         throws Exception
     {
         //root folder
@@ -254,7 +254,7 @@ public class BuildPipelineTriggerTest {
         //  /Folder1
         final String projUp = "upstream";
         folder1.createProject(FreeStyleProject.class, projUp);
-        FreeStyleProject upstreamProject = jenkins.createFreeStyleProject(projUp);
+        final FreeStyleProject upstreamProject = (FreeStyleProject) folder1.getItem(projUp);
 
         //  /Folder2
         final String projDown = "downstream";
@@ -286,7 +286,51 @@ public class BuildPipelineTriggerTest {
     }
 
     @Test
-    public void testTriggerProjectInFolderUsingHudsonTrigger()
+    public void testTriggerProjectInFolderUsingParameteriezedTriggerAndRelativePath()
+            throws Exception
+    {
+        //root folder
+        MockFolder folder1 = jenkins.createFolder("Folder1");
+        MockFolder folder2 = jenkins.createFolder("Folder2");
+
+        //  /Folder1
+        final String projUp = "upstream";
+        folder1.createProject(FreeStyleProject.class, projUp);
+        final FreeStyleProject upstreamProject = (FreeStyleProject) folder1.getItem(projUp);
+
+        //  /Folder2
+        final String projDown = "downstream";
+        folder2.createProject(FreeStyleProject.class, projDown);
+        FreeStyleProject downstreamProject = (FreeStyleProject) folder2.getItem(projDown);
+
+        BuildTriggerConfig notFakeConfig = new BuildTriggerConfig("../Folder2/downstream", ResultCondition.ALWAYS, false,
+                Collections.singletonList((AbstractBuildParameters) new CurrentBuildParameters()));
+        upstreamProject.getPublishersList().add(new hudson.plugins.parameterizedtrigger.BuildTrigger(notFakeConfig));
+        jenkins.getInstance().rebuildDependencyGraph();
+
+        BuildPipelineView view = new BuildPipelineView("Pipeline", "Title", new DownstreamProjectGridBuilder(projUp), "1", false, "");
+        view.setBuildCard(new StandardBuildCard());
+        jenkins.buildAndAssertSuccess(upstreamProject);
+
+        upstreamProject.getFullName();
+
+        assertNull(downstreamProject.getLastBuild());
+        view.triggerManualBuild(1, downstreamProject.getFullName(), upstreamProject.getFullName());
+
+        jenkins.waitUntilNoActivity();
+
+        assertNotNull(downstreamProject.getLastBuild());
+        FreeStyleBuild build = downstreamProject.getLastBuild();
+        Cause.UserIdCause cause = build.getCause(Cause.UserIdCause.class);
+        assertNotNull(cause);
+        //Check that cause is of core class Cause.UserIdCause and not MyUserIdCause
+        assertEquals(Cause.UserIdCause.class.getName(), cause.getClass().getName());
+        Cause.UpstreamCause upstreamCause = build.getCause(Cause.UpstreamCause.class);
+        assertNotNull(upstreamCause);
+    }
+
+    @Test
+    public void testTriggerProjectInFolderUsingHudsonTriggerWithFullPath()
         throws Exception
     {
         //root folder
@@ -304,6 +348,123 @@ public class BuildPipelineTriggerTest {
         FreeStyleProject downstreamProject = (FreeStyleProject) folder2.getItem(projDown);
 
         upstreamProject.getPublishersList().add(new hudson.tasks.BuildTrigger(downstreamProject.getFullName(), false));
+        jenkins.getInstance().rebuildDependencyGraph();
+
+        BuildPipelineView view = new BuildPipelineView("Pipeline", "Title", new DownstreamProjectGridBuilder(projUp), "1", false, "");
+        view.setBuildCard(new StandardBuildCard());
+        jenkins.buildAndAssertSuccess(upstreamProject);
+
+        assertNull(downstreamProject.getLastBuild());
+        view.triggerManualBuild(1, downstreamProject.getFullName(), upstreamProject.getFullName());
+
+        jenkins.waitUntilNoActivity();
+
+        assertNotNull(downstreamProject.getLastBuild());
+        FreeStyleBuild build = downstreamProject.getLastBuild();
+        Cause.UserIdCause cause = build.getCause(Cause.UserIdCause.class);
+        assertNotNull(cause);
+        assertEquals(Cause.UserIdCause.class.getName(), cause.getClass().getName());
+        Cause.UpstreamCause upstreamCause = build.getCause(Cause.UpstreamCause.class);
+        assertNotNull(upstreamCause);
+    }
+
+    @Test
+    public void testTriggerProjectInFolderUsingHudsonTriggerWithRelativePath()
+            throws Exception
+    {
+        //root folder
+        MockFolder folder1 = jenkins.createFolder("Folder1");
+        MockFolder folder2 = jenkins.createFolder("Folder2");
+
+        //  /folder1
+        final String projUp = "upstream";
+        folder1.createProject(FreeStyleProject.class, projUp);
+        FreeStyleProject upstreamProject = (FreeStyleProject) folder1.getItem(projUp);
+
+        //  /folder2
+        final String projDown = "downstream";
+        folder2.createProject(FreeStyleProject.class, projDown);
+        FreeStyleProject downstreamProject = (FreeStyleProject) folder2.getItem(projDown);
+
+        upstreamProject.getPublishersList().add(new hudson.tasks.BuildTrigger("../Folder2/downstream", false));
+        jenkins.getInstance().rebuildDependencyGraph();
+
+        BuildPipelineView view = new BuildPipelineView("Pipeline", "Title", new DownstreamProjectGridBuilder(projUp), "1", false, "");
+        view.setBuildCard(new StandardBuildCard());
+        jenkins.buildAndAssertSuccess(upstreamProject);
+
+        assertNull(downstreamProject.getLastBuild());
+        view.triggerManualBuild(1, downstreamProject.getFullName(), upstreamProject.getFullName());
+
+        jenkins.waitUntilNoActivity();
+
+        assertNotNull(downstreamProject.getLastBuild());
+        FreeStyleBuild build = downstreamProject.getLastBuild();
+        Cause.UserIdCause cause = build.getCause(Cause.UserIdCause.class);
+        assertNotNull(cause);
+        assertEquals(Cause.UserIdCause.class.getName(), cause.getClass().getName());
+        Cause.UpstreamCause upstreamCause = build.getCause(Cause.UpstreamCause.class);
+        assertNotNull(upstreamCause);
+    }
+
+    @Test
+    public void testTriggerProjectInFolderUsingBuildPipelineTriggerWithFullPath()
+            throws Exception
+    {
+        //root folder
+        MockFolder folder1 = jenkins.createFolder("Folder1");
+        MockFolder folder2 = jenkins.createFolder("Folder2");
+
+        //  /folder1
+        final String projUp = "upstream";
+        folder1.createProject(FreeStyleProject.class, projUp);
+        FreeStyleProject upstreamProject = (FreeStyleProject) folder1.getItem(projUp);
+
+        //  /folder2
+        final String projDown = "downstream";
+        folder2.createProject(FreeStyleProject.class, projDown);
+        FreeStyleProject downstreamProject = (FreeStyleProject) folder2.getItem(projDown);
+
+        upstreamProject.getPublishersList().add(new BuildPipelineTrigger("../Folder2/downstream", null));
+        jenkins.getInstance().rebuildDependencyGraph();
+
+        BuildPipelineView view = new BuildPipelineView("Pipeline", "Title", new DownstreamProjectGridBuilder(projUp), "1", false, "");
+        view.setBuildCard(new StandardBuildCard());
+        jenkins.buildAndAssertSuccess(upstreamProject);
+
+        assertNull(downstreamProject.getLastBuild());
+        view.triggerManualBuild(1, downstreamProject.getFullName(), upstreamProject.getFullName());
+
+        jenkins.waitUntilNoActivity();
+
+        assertNotNull(downstreamProject.getLastBuild());
+        FreeStyleBuild build = downstreamProject.getLastBuild();
+        Cause.UserIdCause cause = build.getCause(Cause.UserIdCause.class);
+        assertNotNull(cause);
+        assertEquals(Cause.UserIdCause.class.getName(), cause.getClass().getName());
+        Cause.UpstreamCause upstreamCause = build.getCause(Cause.UpstreamCause.class);
+        assertNotNull(upstreamCause);
+    }
+
+    @Test
+    public void testTriggerProjectInFolderUsingBuildPipelineTriggerWithRelativePath()
+            throws Exception
+    {
+        //root folder
+        MockFolder folder1 = jenkins.createFolder("Folder1");
+        MockFolder folder2 = jenkins.createFolder("Folder2");
+
+        //  /folder1
+        final String projUp = "upstream";
+        folder1.createProject(FreeStyleProject.class, projUp);
+        FreeStyleProject upstreamProject = (FreeStyleProject) folder1.getItem(projUp);
+
+        //  /folder2
+        final String projDown = "downstream";
+        folder2.createProject(FreeStyleProject.class, projDown);
+        FreeStyleProject downstreamProject = (FreeStyleProject) folder2.getItem(projDown);
+
+        upstreamProject.getPublishersList().add(new BuildPipelineTrigger(downstreamProject.getFullName(), null));
         jenkins.getInstance().rebuildDependencyGraph();
 
         BuildPipelineView view = new BuildPipelineView("Pipeline", "Title", new DownstreamProjectGridBuilder(projUp), "1", false, "");
@@ -356,6 +517,50 @@ public class BuildPipelineTriggerTest {
         jenkins.waitUntilNoActivity();
         build = projectB.getLastBuild();
         upstreamCause = build.getCause(Cause.UpstreamCause.class);
+        assertNotNull(upstreamCause);
+    }
+
+    @Test
+    public void testParseDownstreamJobs()
+            throws Exception
+    {
+        //root folder
+        MockFolder folder1 = jenkins.createFolder("Folder1");
+        MockFolder folder2 = jenkins.createFolder("Folder2");
+
+        //  /folder1
+        final String projUp = "upstream";
+        folder1.createProject(FreeStyleProject.class, projUp);
+        FreeStyleProject upstreamProject = (FreeStyleProject) folder1.getItem(projUp);
+
+        //  /folder2
+        final String projDown = "downstream";
+        folder2.createProject(FreeStyleProject.class, projDown);
+        FreeStyleProject downstreamProject = (FreeStyleProject) folder2.getItem(projDown);
+
+        FreeStyleProject firstDownstreamProject = jenkins.createFreeStyleProject("firstDownstreamProject");
+        folder2.createProject(FreeStyleProject.class, "thirdDownstreamProject");
+        FreeStyleProject thirdDownstreamProject = (FreeStyleProject) folder2.getItem("thirdDownstreamProject");
+
+        upstreamProject.getPublishersList().add(new hudson.tasks.BuildTrigger("../firstDownstreamProject," +
+                "../Folder2/downstream, ../Folder2/thirdDownstreamProject", false));
+        jenkins.getInstance().rebuildDependencyGraph();
+
+        BuildPipelineView view = new BuildPipelineView("Pipeline", "Title", new DownstreamProjectGridBuilder(projUp), "1", false, "");
+        view.setBuildCard(new StandardBuildCard());
+        jenkins.buildAndAssertSuccess(upstreamProject);
+
+        assertNull(downstreamProject.getLastBuild());
+        view.triggerManualBuild(1, downstreamProject.getFullName(), upstreamProject.getFullName());
+
+        jenkins.waitUntilNoActivity();
+
+        assertNotNull(downstreamProject.getLastBuild());
+        FreeStyleBuild build = downstreamProject.getLastBuild();
+        Cause.UserIdCause cause = build.getCause(Cause.UserIdCause.class);
+        assertNotNull(cause);
+        assertEquals(Cause.UserIdCause.class.getName(), cause.getClass().getName());
+        Cause.UpstreamCause upstreamCause = build.getCause(Cause.UpstreamCause.class);
         assertNotNull(upstreamCause);
     }
 }
