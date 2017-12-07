@@ -39,9 +39,7 @@ import hudson.model.Cause;
 import hudson.model.Action;
 import hudson.model.CauseAction;
 import hudson.model.Descriptor;
-import hudson.model.Item;
 import hudson.model.ItemGroup;
-import hudson.model.Job;
 import hudson.model.ParameterValue;
 import hudson.plugins.parameterizedtrigger.AbstractBuildParameters;
 import hudson.plugins.parameterizedtrigger.BuildTriggerConfig;
@@ -52,8 +50,6 @@ import jenkins.model.Jenkins;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
