@@ -39,9 +39,7 @@ import hudson.model.Cause;
 import hudson.model.Action;
 import hudson.model.CauseAction;
 import hudson.model.Descriptor;
-import hudson.model.Item;
 import hudson.model.ItemGroup;
-import hudson.model.Job;
 import hudson.model.ParameterValue;
 import hudson.plugins.parameterizedtrigger.AbstractBuildParameters;
 import hudson.plugins.parameterizedtrigger.BuildTriggerConfig;
@@ -304,11 +302,12 @@ public abstract class BuildCardExtension
                 upstreamProjectPublishersList.get(hudson.tasks.BuildTrigger.class);
         if (autoTrigger != null) {
             LOGGER.fine("Found Hudson Trigger (BuildTrigger) found in upstream project publisher list ");
-            final String downstreamProjects = autoTrigger.getChildProjectsValue();
-            if (downstreamProjects.contains(project.getFullName())) {
+            final Set<String> downstreamProjectNames =
+                    Sets.newHashSet(Splitter.on(",").trimResults().split(autoTrigger.getChildProjectsValue()));
+            if (triggerIncludes(upstreamBuild.getProject(), project, downstreamProjectNames)) {
                 configs = new ArrayList<AbstractBuildParameters>();
             } else {
-                LOGGER.warning("Upstream project had a Hudson BuildTrigger for projects [" + downstreamProjects
+                LOGGER.warning("Upstream project had a Hudson BuildTrigger for projects [" + downstreamProjectNames
                         + "], but that did not include our project [" + project.getFullName() + "]");
             }
         }
@@ -320,9 +319,8 @@ public abstract class BuildCardExtension
                     Sets.newHashSet(Splitter.on(",").trimResults().split(manualTrigger.getDownstreamProjectNames()));
 
             LOGGER.fine("Downstream project names: " + downstreamProjectsNames);
-            // defect: requires full name in the trigger. But downstream is just fine!
 
-            if (downstreamProjectsNames.contains(project.getFullName())) {
+            if (triggerIncludes(upstreamBuild.getProject(), project, downstreamProjectsNames)) {
                 configs = manualTrigger.getConfigs();
             } else {
                 LOGGER.warning("Upstream project had a Manual Trigger for projects [" + downstreamProjectsNames
@@ -338,17 +336,30 @@ public abstract class BuildCardExtension
             LOGGER.fine("Found Parameterized Trigger (BuildTrigger) found in upstream project publisher list ");
             for (BuildTriggerConfig config : autoParameterizedTrigger.getConfigs()) {
                 final Set<String> downstreamProjectsNames = Sets.newHashSet(Splitter.on(",").trimResults().split(config.getProjects()));
-                for (String currentDownstreamName : downstreamProjectsNames) {
-                    final Job downstreamJob = (Job) Jenkins.getInstance().getItem(currentDownstreamName,
-                            upstreamBuild.getProject().getParent(), Item.class);
-                    if (downstreamJob != null && downstreamJob.getFullName().equals(project.getFullName())) {
-                        configs = config.getConfigs();
-                    }
+                if (triggerIncludes(upstreamBuild.getProject(), project, downstreamProjectsNames)) {
+                    configs = config.getConfigs();
+                } else {
+                    LOGGER.warning("Upstream project had a Parameterized Trigger (BuildTrigger) for project [" + downstreamProjectsNames
+                            + "], but that did not include our project [" + project.getFullName() + "]");
                 }
+
             }
         }
 
         return configs;
+    }
+
+    /**
+     * Test whether the downstreamProject is a member of the upstreamProject's list of downstream projects
+     * @param upstreamProject the upstream project, the project that contains the set of downstream projects
+     * @param downstreamProject the downstream project, the project that we are searching for
+     * @param downstreamProjectNames upstreamProject's list of projects that it will trigger
+     * @return whether we find downstreamProject in downstreamProjectNames
+     */
+    private boolean triggerIncludes(AbstractProject upstreamProject, AbstractProject downstreamProject, Set<String> downstreamProjectNames)
+    {
+        return downstreamProjectNames.contains(downstreamProject.getFullName())
+                || downstreamProjectNames.contains(downstreamProject.getRelativeNameFrom(upstreamProject));
     }
 
     /**
