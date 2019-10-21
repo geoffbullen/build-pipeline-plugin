@@ -24,37 +24,36 @@
  */
 package au.com.centrumsystems.hudson.plugin.buildpipeline;
 
+import au.com.centrumsystems.hudson.plugin.buildpipeline.extension.BuildCardExtension;
+import au.com.centrumsystems.hudson.plugin.buildpipeline.extension.NullColumnHeader;
+import au.com.centrumsystems.hudson.plugin.buildpipeline.extension.PipelineHeaderExtension;
+import au.com.centrumsystems.hudson.plugin.buildpipeline.extension.BuildVariablesHeader;
+import au.com.centrumsystems.hudson.plugin.buildpipeline.extension.PipelineHeaderExtensionDescriptor;
+import au.com.centrumsystems.hudson.plugin.buildpipeline.extension.SimpleColumnHeader;
+import au.com.centrumsystems.hudson.plugin.buildpipeline.extension.SimpleRowHeader;
+import au.com.centrumsystems.hudson.plugin.buildpipeline.extension.StandardBuildCard;
 import com.google.common.collect.Iterables;
+
 import hudson.Extension;
-import hudson.model.Action;
 import hudson.model.Item;
-import hudson.model.ParameterValue;
-import hudson.model.TaskListener;
 import hudson.model.TopLevelItem;
-import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.Cause;
-import hudson.model.Cause.UserIdCause;
-import hudson.model.CauseAction;
+import hudson.model.Descriptor;
 import hudson.model.Descriptor.FormException;
 import hudson.model.Hudson;
-import hudson.model.ParametersAction;
-import hudson.model.Run;
-import hudson.model.User;
 import hudson.model.View;
 import hudson.model.ViewDescriptor;
-import hudson.plugins.parameterizedtrigger.AbstractBuildParameters;
-import hudson.util.LogTaskListener;
+import hudson.security.Permission;
 import hudson.util.ListBoxModel;
+import jenkins.model.Jenkins;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedHashMap;
+import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -65,13 +64,12 @@ import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 import org.kohsuke.stapler.bind.JavaScriptMethod;
 
-import au.com.centrumsystems.hudson.plugin.buildpipeline.trigger.BuildPipelineTrigger;
-import au.com.centrumsystems.hudson.plugin.util.BuildUtil;
 import au.com.centrumsystems.hudson.plugin.util.ProjectUtil;
 
 /**
- * This view displays the set of jobs that are related based on their upstream\downstream relationships as a pipeline. Each build pipeline
- * becomes a row on the view.
+ * This view displays the set of jobs that are related
+ * based on their upstream\downstream relationships as a pipeline. Each
+ * build pipeline becomes a row on the view.
  *
  * @author Centrum Systems
  *
@@ -95,17 +93,56 @@ public class BuildPipelineView extends View {
     /** buildViewTitle. */
     private String buildViewTitle = ""; //$NON-NLS-1$
 
+    /** consoleOutputLinkStyle. */
+    private String consoleOutputLinkStyle = LinkStyle.LIGHTBOX;
+
+    /** URL for custom CSS file */
+    private String cssUrl = "";
+
     /** Indicates whether only the latest job will be triggered. **/
     private boolean triggerOnlyLatestJob;
 
     /** alwaysAllowManualTrigger. */
     private boolean alwaysAllowManualTrigger = true;
 
-    /** showPipelineParameters. */
+    /**
+     * Whether to show pipeline parameter in the revision box
+     * @deprecated - replaced with revisionBoxParameterProvider, keep in place
+     * to migrate data
+     */
+    @Deprecated
     private boolean showPipelineParameters = true;
-    
-    /** showPipelineParametersInHeaders */
+
+    /**
+     * What to show as a row header for pipelines
+     */
+    private PipelineHeaderExtension rowHeaders;
+
+    /**
+     * Whether to show pipeline parameters in the header box
+     * @deprecated  - replaced with columnHeaders, keep in place
+     * to migrate data
+     */
+    @Deprecated
     private boolean showPipelineParametersInHeaders;
+
+    /**
+     * What to show as a column headers for jobs in the pipeline
+     */
+    private PipelineHeaderExtension columnHeaders;
+
+    /**
+     * What to show as a build card in the pipeline
+     */
+    private BuildCardExtension buildCard;
+
+    /**
+     * @deprecated
+     *
+     * Don't need an input from UI store this
+     */
+    @Deprecated    
+    private boolean startsWithParameters;
 
     /**
      * Frequency at which the Build Pipeline Plugin updates the build cards in seconds
@@ -115,91 +152,16 @@ public class BuildPipelineView extends View {
     /** showPipelineDefinitionHeader. */
     private boolean showPipelineDefinitionHeader;
 
-    /*
-     * Keep feature flag properties in one place so that it is easy to refactor them out later.
-     */
-    /* Feature flags - START */
-
-    /** Indicates whether the progress bar should be displayed */
-    private boolean displayProgressBar;
-
-    /* Feature flags - END */
-
     /** A Logger object is used to log messages */
     private static final Logger LOGGER = Logger.getLogger(BuildPipelineView.class.getName());
-    /** Constant that represents the Stapler Request upstream build number. */
-    private static final String REQ_UPSTREAM_BUILD_NUMBER = "upstreamBuildNumber"; //$NON-NLS-1$
-    /** Constant that represents the Stapler Request trigger project name. */
-    private static final String REQ_TRIGGER_PROJECT_NAME = "triggerProjectName"; //$NON-NLS-1$
-    /** Constant that represents the Stapler Request upstream project name. */
-    private static final String REQ_UPSTREAM_PROJECT_NAME = "upstreamProjectName"; //$NON-NLS-1$
 
     /**
-     * An instance of {@link Cause.UserIdCause} related to the current user. Must be transient, or xstream will include it in the
-     * serialization
+     * An instance of {@link Cause.UserIdCause} related to the current user.
+     * Just kept for backwards comparability.
+     * @deprecated Use Cause.UserIdCause instead
      */
-    private class MyUserIdCause extends Cause.UserIdCause {
-        /**
-         * user
-         */
-        private User user;
-
-        /**
-         *
-         */
-        public MyUserIdCause() {
-            try {
-                // this block can generate a CyclicGraphDetector.CycleDetectedException
-                // in cases that I haven't quite figured out yet
-                // also an org.acegisecurity.AccessDeniedException when the user
-                // is not logged in
-                user = Hudson.getInstance().getMe();
-            } catch (final Exception e) {
-                // do nothing
-                LOGGER.fine(e.getMessage());
-            }
-        }
-
-        @Override
-        public String getUserId() {
-            return (null == user) ? null : user.getId();
-        }
-
-        @Override
-        public String getUserName() {
-            return (null == user) ? null : user.getDisplayName();
-        }
-
-        @Override
-        public String toString() {
-            return getUserName();
-        }
-
-        @Override
-        public int hashCode() {
-            if (getUserId() == null) {
-                return super.hashCode();
-            } else {
-                return getUserId().hashCode();
-            }
-        }
-
-        @Override
-        public boolean equals(final Object o) {
-            if (null == o) {
-                return false;
-            }
-            if (!(o instanceof Cause.UserIdCause)) {
-                return false;
-            }
-
-            return hashCode() == o.hashCode();
-        }
-
-        @Override
-        public void print(final TaskListener listener) {
-            // do nothing
-        }
+    @Deprecated
+    private static class MyUserIdCause extends Cause.UserIdCause {
     }
 
     /**
@@ -214,16 +176,20 @@ public class BuildPipelineView extends View {
      *            a count of the number of builds displayed on the view
      * @param triggerOnlyLatestJob
      *            Indicates whether only the latest job will be triggered.
+     * @param cssUrl
+     *            URL for the custom CSS file.
      */
-    @DataBoundConstructor
     public BuildPipelineView(final String name, final String buildViewTitle,
              final ProjectGridBuilder gridBuilder, final String noOfDisplayedBuilds,
-             final boolean triggerOnlyLatestJob) {
+             final boolean triggerOnlyLatestJob, final String cssUrl) {
         super(name, Hudson.getInstance());
         this.buildViewTitle = buildViewTitle;
         this.gridBuilder = gridBuilder;
         this.noOfDisplayedBuilds = noOfDisplayedBuilds;
         this.triggerOnlyLatestJob = triggerOnlyLatestJob;
+        this.cssUrl = cssUrl;
+        this.rowHeaders = new SimpleRowHeader();
+        this.columnHeaders = new NullColumnHeader();
     }
 
     /**
@@ -243,23 +209,41 @@ public class BuildPipelineView extends View {
      * @param showPipelineParameters
      *            Indicates whether pipeline parameter values should be shown.
      * @param showPipelineParametersInHeaders
-     *            Indicates whether the pipeline headers should show the 
+     *            Indicates whether the pipeline headers should show the
      *            pipeline parameter values for the last successful instance.
      * @param showPipelineDefinitionHeader
      *            Indicates whether the pipeline headers should be shown.
      * @param refreshFrequency
      *            Frequency at which the build pipeline plugin refreshes build cards
+     * @param cssUrl
+     *            URL for the custom CSS file.
+     * @param selectedJob
+     *            the first job name in the pipeline. it can be set to null when gridBuilder is passed.
+     * @param columnHeaders
+     *            see {@link #columnHeaders}
+     * @param rowHeaders
+     *            see {@link #rowHeaders}
+     * @param buildCard
+     *            see {@link #buildCard}
      */
     @DataBoundConstructor
     public BuildPipelineView(final String name, final String buildViewTitle, final ProjectGridBuilder gridBuilder,
             final String noOfDisplayedBuilds,
             final boolean triggerOnlyLatestJob, final boolean alwaysAllowManualTrigger, final boolean showPipelineParameters,
-            final boolean showPipelineParametersInHeaders, final boolean showPipelineDefinitionHeader, final int refreshFrequency) {
-        this(name, buildViewTitle, gridBuilder, noOfDisplayedBuilds, triggerOnlyLatestJob);
+            final boolean showPipelineParametersInHeaders, final boolean showPipelineDefinitionHeader,
+            final int refreshFrequency, final String cssUrl, final String selectedJob,
+            final PipelineHeaderExtension columnHeaders,
+            final PipelineHeaderExtension rowHeaders,
+            final BuildCardExtension buildCard) {
+        this(name, buildViewTitle, gridBuilder, noOfDisplayedBuilds, triggerOnlyLatestJob, cssUrl);
         this.alwaysAllowManualTrigger = alwaysAllowManualTrigger;
         this.showPipelineParameters = showPipelineParameters;
         this.showPipelineParametersInHeaders = showPipelineParametersInHeaders;
         this.showPipelineDefinitionHeader = showPipelineDefinitionHeader;
+        this.selectedJob = selectedJob;
+        this.columnHeaders = columnHeaders;
+        this.rowHeaders = rowHeaders;
+        this.buildCard = buildCard;
         //not exactly understanding the lifecycle here, but I want a default of 3
         //(this is what the class variable is set to 3, if it's 0, set it to default, refresh of 0 does not make sense anyway)
         if (refreshFrequency < 1) {
@@ -267,16 +251,56 @@ public class BuildPipelineView extends View {
         } else {
             this.refreshFrequency = refreshFrequency;
         }
+
+        //for remote api support
+        if (this.gridBuilder == null) {
+            if (this.selectedJob != null) {
+                this.gridBuilder = new DownstreamProjectGridBuilder(this.selectedJob);
+            }
+        }
+        
+        if (this.selectedJob == null) {
+            if (this.gridBuilder != null && this.gridBuilder instanceof DownstreamProjectGridBuilder) {
+                this.selectedJob = ((DownstreamProjectGridBuilder) this.gridBuilder).getFirstJob();
+            }
+        }
+
     }
 
     /**
+     * Migrate old data, set new fields
+     *
+     * @see
+     *      <a href="https://wiki.jenkins-ci.org/display/JENKINS/Hint+on+retaining+backward+compatibility">
+     *          Jenkins wiki entry on the subject</a>
+     *
      * @return
      *      must be always 'this'
      */
     protected Object readResolve() {
-        if (gridBuilder == null && selectedJob != null) {
-            gridBuilder = new DownstreamProjectGridBuilder(selectedJob);
-            selectedJob = null;
+        if (gridBuilder == null) {
+            if (selectedJob != null) {
+                gridBuilder = new DownstreamProjectGridBuilder(selectedJob);
+            }
+        }
+        if (columnHeaders == null) {
+            if (!showPipelineDefinitionHeader) {
+                columnHeaders = new NullColumnHeader();
+            } else if (showPipelineParametersInHeaders) {
+                columnHeaders = new BuildVariablesHeader();
+            } else {
+                columnHeaders = new SimpleColumnHeader();
+            }
+        }
+        if (rowHeaders == null) {
+            if (showPipelineParameters) {
+                rowHeaders = new BuildVariablesHeader();
+            } else {
+                rowHeaders = new SimpleRowHeader();
+            }
+        }
+        if (buildCard == null) {
+            buildCard = new StandardBuildCard();
         }
         return this;
     }
@@ -308,6 +332,37 @@ public class BuildPipelineView extends View {
         return getGridBuilder().hasBuildPermission(this);
     }
 
+    /**
+     * Checks if this build starts with parameters
+     * @return - true: The build has parameters; false: Does not have parameters
+     */ 
+    public boolean isProjectParameterized() {
+        return getGridBuilder().startsWithParameters(this);
+    }
+
+    public PipelineHeaderExtension getColumnHeaders() {
+        return columnHeaders;
+    }
+
+    public void setColumnHeaders(PipelineHeaderExtension columnHeaders) {
+        this.columnHeaders = columnHeaders;
+    }
+
+    public PipelineHeaderExtension getRowHeaders() {
+        return rowHeaders;
+    }
+
+    public void setRowHeaders(PipelineHeaderExtension rowHeaders) {
+        this.rowHeaders = rowHeaders;
+    }
+
+    public BuildCardExtension getBuildCard() {
+        return buildCard;
+    }
+
+    public void setBuildCard(BuildCardExtension buildCard) {
+        this.buildCard = buildCard;
+    }
     /**
      * Checks whether the user has Configure permission for the current project.
      *
@@ -346,16 +401,22 @@ public class BuildPipelineView extends View {
     public boolean hasDownstreamProjects(final AbstractProject<?, ?> currentProject) {
         return (getDownstreamProjects(currentProject).size() > 0);
     }
-
+    
     /**
      * Returns BuildPipelineForm containing the build pipeline to display.
      *
      * @return - Representation of the projects and their related builds making up the build pipeline view
-     * @throws URISyntaxException
-     *             {@link URISyntaxException}
      */
-    public BuildPipelineForm getBuildPipelineForm() throws URISyntaxException {
+    public BuildPipelineForm getBuildPipelineForm() {
+        if (noOfDisplayedBuilds == null) {
+          return null;
+        }
+
         final int maxNoOfDisplayBuilds = Integer.valueOf(noOfDisplayedBuilds);
+
+        if (gridBuilder == null)  {
+          return null;
+        }
 
         final ProjectGrid project = gridBuilder.build(this);
         if (project.isEmpty()) {
@@ -393,198 +454,21 @@ public class BuildPipelineView extends View {
      */
     @JavaScriptMethod
     public int triggerManualBuild(final Integer upstreamBuildNumber, final String triggerProjectName, final String upstreamProjectName) {
-        final AbstractProject<?, ?> triggerProject = (AbstractProject<?, ?>) super.getJob(triggerProjectName);
-        final AbstractProject<?, ?> upstreamProject = (AbstractProject<?, ?>) super.getJob(upstreamProjectName);
-
-        final AbstractBuild<?, ?> upstreamBuild = retrieveBuild(upstreamBuildNumber, upstreamProject);
-
-        // Get parameters from upstream build
-        if (upstreamBuild != null) {
-            LOGGER.fine("Getting parameters from upstream build " + upstreamBuild.getExternalizableId()); //$NON-NLS-1$
-        }
-        Action buildParametersAction = null;
-        if (upstreamBuild != null) {
-            buildParametersAction = BuildUtil.getAllBuildParametersAction(upstreamBuild, triggerProject);
-        }
-
-        return triggerBuild(triggerProject, upstreamBuild, buildParametersAction);
+        return buildCard.triggerManualBuild(getOwnerItemGroup(), upstreamBuildNumber, triggerProjectName, upstreamProjectName);
     }
 
     /**
-     * @param triggerProjectName
-     *            the triggerProjectName
-     * @return the number of re-tried build
-     */
-    @JavaScriptMethod
-    public int retryBuild(final String triggerProjectName) {
-        LOGGER.fine("Retrying build again: " + triggerProjectName); //$NON-NLS-1$
-        final AbstractProject<?, ?> triggerProject = (AbstractProject<?, ?>) super.getJob(triggerProjectName);
-        triggerProject.scheduleBuild(new MyUserIdCause());
-
-        return triggerProject.getNextBuildNumber();
-    }
-
-    /**
+     * Re-run a project, passing in the CauseActions from the previous completed {@link hudson.model.Run} so
+     * that the new run will appear in the same pipeline.
+     *
      * @param externalizableId
-     *            the externalizableId
+     *            the externalizableId of the Run. See {@link hudson.model.Run#getExternalizableId()}
      * @return the number of re-run build
      */
     @JavaScriptMethod
     public int rerunBuild(final String externalizableId) {
-        LOGGER.fine("Running build again: " + externalizableId); //$NON-NLS-1$
-        final AbstractBuild<?, ?> triggerBuild = (AbstractBuild<?, ?>) Run.fromExternalizableId(externalizableId);
-        final AbstractProject<?, ?> triggerProject = triggerBuild.getProject();
-        final Future<?> future = triggerProject.scheduleBuild2(triggerProject.getQuietPeriod(), new MyUserIdCause(),
-                removeUserIdCauseActions(triggerBuild.getActions()));
-
-        AbstractBuild<?, ?> result = triggerBuild;
-        try {
-            result = (AbstractBuild<?, ?>) future.get();
-        } catch (final InterruptedException e) {
-            e.printStackTrace();
-        } catch (final ExecutionException e) {
-            e.printStackTrace();
-        }
-
-        return result.getNumber();
-    }
-
-    /**
-     * Given an AbstractProject and a build number the associated AbstractBuild will be retrieved.
-     *
-     * @param buildNo
-     *            - Build number
-     * @param project
-     *            - AbstractProject
-     * @return The AbstractBuild associated with the AbstractProject and build number.
-     */
-    @SuppressWarnings("unchecked")
-    private AbstractBuild<?, ?> retrieveBuild(final int buildNo, final AbstractProject<?, ?> project) {
-        AbstractBuild<?, ?> build = null;
-
-        if (project != null) {
-            for (final AbstractBuild<?, ?> tmpUpBuild : (List<AbstractBuild<?, ?>>) project.getBuilds()) {
-                if (tmpUpBuild.getNumber() == buildNo) {
-                    build = tmpUpBuild;
-                    break;
-                }
-            }
-        }
-
-        return build;
-    }
-
-    /**
-     * Schedules a build to start.
-     *
-     * The build will take an upstream build as its Cause and a set of ParametersAction from the upstream build.
-     *
-     * @param triggerProject
-     *            - Schedule a build to start on this AbstractProject
-     * @param upstreamBuild
-     *            - The upstream AbstractBuild that will be used as a Cause for the triggerProject's build.
-     * @param buildParametersAction
-     *            - The upstream ParametersAction that will be used as an Action for the triggerProject's build.
-     * @return next build number
-     */
-    private int triggerBuild(final AbstractProject<?, ?> triggerProject, final AbstractBuild<?, ?> upstreamBuild,
-            final Action buildParametersAction) {
-        LOGGER.fine("Triggering build for project: " + triggerProject.getFullDisplayName()); //$NON-NLS-1$
-        final Cause.UpstreamCause upstreamCause = (null == upstreamBuild) ? null : new Cause.UpstreamCause((Run<?, ?>) upstreamBuild);
-        final List<Action> buildActions = new ArrayList<Action>();
-        buildActions.add(new CauseAction(new MyUserIdCause()));
-        ParametersAction parametersAction =
-                buildParametersAction instanceof ParametersAction
-                        ? (ParametersAction) buildParametersAction : new ParametersAction();
-
-        if (upstreamBuild != null) {
-
-            final BuildPipelineTrigger trigger = upstreamBuild.getProject().getPublishersList().get(BuildPipelineTrigger.class);
-
-            final List<AbstractBuildParameters> configs = trigger.getConfigs();
-
-            for (final AbstractBuildParameters config : configs) {
-                try {
-                    final Action action = config.getAction(upstreamBuild, new LogTaskListener(LOGGER, Level.INFO));
-                    if (action instanceof ParametersAction) {
-                        parametersAction = mergeParameters(parametersAction, (ParametersAction) action);
-                    } else {
-                        buildActions.add(action);
-                    }
-                } catch (final IOException e) {
-                    LOGGER.log(Level.SEVERE, "I/O exception while adding build parameter", e); //$NON-NLS-1$
-                } catch (final InterruptedException e) {
-                    LOGGER.log(Level.SEVERE, "Adding build parameter was interrupted", e); //$NON-NLS-1$
-                } catch (final AbstractBuildParameters.DontTriggerException e) {
-                    LOGGER.log(Level.FINE, "Not triggering : " + config); //$NON-NLS-1$
-                }
-            }
-        }
-
-        buildActions.add(parametersAction);
-
-        triggerProject.scheduleBuild(triggerProject.getQuietPeriod(), upstreamCause, buildActions.toArray(new Action[buildActions.size()]));
-        return triggerProject.getNextBuildNumber();
-    }
-
-    /**
-     * From parameterized trigger plugin src/main/java/hudson/plugins/parameterizedtrigger/BuildTriggerConfig.java
-     *
-     * @param base
-     *      One of the two parameters to merge.
-     * @param overlay
-     *      The other parameters to merge
-     * @return
-     *      Result of the merge.
-     */
-    private static ParametersAction mergeParameters(final ParametersAction base, final ParametersAction overlay) {
-        final LinkedHashMap<String, ParameterValue> params = new LinkedHashMap<String, ParameterValue>();
-        for (final ParameterValue param : base.getParameters()) {
-            params.put(param.getName(), param);
-        }
-        for (final ParameterValue param : overlay.getParameters()) {
-            params.put(param.getName(), param);
-        }
-        return new ParametersAction(params.values().toArray(new ParameterValue[params.size()]));
-    }
-
-    /**
-     * Checks whether the given {@link Action} contains a reference to a {@link UserIdCause} object.
-     *
-     * @param buildAction
-     *            the action to check.
-     * @return <code>true</code> if the action has a reference to a userId cause.
-     */
-    private boolean isUserIdCauseAction(final Action buildAction) {
-        boolean retval = false;
-        if (buildAction instanceof CauseAction) {
-            for (final Cause cause : ((CauseAction) buildAction).getCauses()) {
-                if (cause instanceof UserIdCause) {
-                    retval = true;
-                    break;
-                }
-            }
-        }
-        return retval;
-    }
-
-    /**
-     * Removes any UserId cause action from the given actions collection. This is used by downstream builds that inherit upstream actions.
-     * The downstream build can be initiated by another user that is different from the user who initiated the upstream build, so the
-     * downstream build needs to remove the old user action inherited from upstream, and add its own.
-     *
-     * @param actions
-     *            a collection of build actions.
-     * @return a collection of build actions with all UserId causes removed.
-     */
-    private List<Action> removeUserIdCauseActions(final List<Action> actions) {
-        final List<Action> retval = new ArrayList<Action>();
-        for (final Action action : actions) {
-            if (!isUserIdCauseAction(action)) {
-                retval.add(action);
-            }
-        }
-        return retval;
+        LOGGER.info("Running build again: " + externalizableId); //$NON-NLS-1$
+        return buildCard.rerunBuild(externalizableId);
     }
 
     /**
@@ -637,6 +521,92 @@ public class BuildPipelineView extends View {
             return options;
         }
 
+        /**
+         * @param condition
+         *       if true, return it as part of the returned list
+         * @return
+         *      a filtered and ordered list of descriptors matching the condition
+         */
+        public List<PipelineHeaderExtensionDescriptor> filter(Function<PipelineHeaderExtensionDescriptor, Boolean> condition) {
+            final List<PipelineHeaderExtensionDescriptor> result = new ArrayList<PipelineHeaderExtensionDescriptor>();
+            final List<PipelineHeaderExtension> applicableExtensions = new ArrayList<PipelineHeaderExtension>();
+            for (PipelineHeaderExtensionDescriptor descriptor : PipelineHeaderExtensionDescriptor.all()) {
+                if (condition.apply(descriptor)) {
+                    result.add(descriptor);
+                }
+            }
+            Collections.sort(result);
+            return result;
+        }
+
+        /**
+         * @return a list of PipelineHeaderExtension descriptors which can be used as a row header
+         */
+        public List<PipelineHeaderExtensionDescriptor> getRowHeaderDescriptors() {
+            return filter(new Function<PipelineHeaderExtensionDescriptor, Boolean>() {
+                @Override
+                public Boolean apply(PipelineHeaderExtensionDescriptor extension) {
+                    return extension.appliesToRows();
+                }
+            });
+        }
+
+        /**
+         * @return a list of PipelineHeaderExtension descriptors which can be used as column headers
+         */
+        public List<PipelineHeaderExtensionDescriptor> getColumnHeaderDescriptors() {
+            return filter(new Function<PipelineHeaderExtensionDescriptor, Boolean>() {
+
+                @Override
+                public Boolean apply(PipelineHeaderExtensionDescriptor extension) {
+                    return extension.appliesToColumns();
+                }
+            });
+        }
+
+        /**
+         * @return a list of BuildCardExtension descriptors
+         */
+        public List<Descriptor<BuildCardExtension>> getBuildCardDescriptors() {
+            final List<Descriptor<BuildCardExtension>> result = new ArrayList<Descriptor<BuildCardExtension>>();
+            for (BuildCardExtension extension : BuildCardExtension.all()) {
+                result.add(extension.getDescriptor());
+            }
+            return result;
+        }
+
+        /**
+         * Display Console Output Link Style Items in the Edit View Page
+         *
+         * @return ListBoxModel
+         */
+        public ListBoxModel doFillConsoleOutputLinkStyleItems() {
+            final hudson.util.ListBoxModel options = new hudson.util.ListBoxModel();
+            options.add(LinkStyle.LIGHTBOX);
+            options.add(LinkStyle.NEW_WINDOW);
+            options.add(LinkStyle.THIS_WINDOW);
+            return options;
+        }
+    }
+
+    /**
+     * A function which accepts an argument and returns a result. Necessary to parameterize behavior,
+     * because we do not require JDK8 yet.
+     *
+     * @see <a href="http://docs.oracle.com/javase/8/docs/api/java/util/function/Function.html">
+     *     JDK8 java.lang.Function
+     *     </a>
+     */
+    public interface Function<F, T> {
+
+        /**
+         * Applies this function to the argument
+         * @param input
+         *  an input
+         * @return
+         *  a result
+         */
+        T apply(F input);
     }
 
     public String getBuildViewTitle() {
@@ -647,12 +617,36 @@ public class BuildPipelineView extends View {
         this.buildViewTitle = buildViewTitle;
     }
 
+    public String getCssUrl() {
+        return cssUrl;
+    }
+
+    public void setCssUrl(final String cssUrl) {
+        this.cssUrl = cssUrl;
+    }
+
     public String getNoOfDisplayedBuilds() {
         return noOfDisplayedBuilds;
     }
 
     public void setNoOfDisplayedBuilds(final String noOfDisplayedBuilds) {
         this.noOfDisplayedBuilds = noOfDisplayedBuilds;
+    }
+
+    public String getConsoleOutputLinkStyle() {
+        return consoleOutputLinkStyle;
+    }
+
+    public void setConsoleOutputLinkStyle(String consoleOutputLinkStyle) {
+        this.consoleOutputLinkStyle = consoleOutputLinkStyle;
+    }
+
+    public boolean isNewWindowConsoleOutputLinkStyle() {
+        return LinkStyle.NEW_WINDOW.equals(consoleOutputLinkStyle);
+    }
+
+    public boolean isThisWindowConsoleOutputLinkStyle() {
+        return LinkStyle.THIS_WINDOW.equals(consoleOutputLinkStyle);
     }
 
     public boolean isTriggerOnlyLatestJob() {
@@ -677,30 +671,6 @@ public class BuildPipelineView extends View {
 
     public void setAlwaysAllowManualTrigger(final boolean alwaysAllowManualTrigger) {
         this.alwaysAllowManualTrigger = alwaysAllowManualTrigger;
-    }
-
-    public boolean isShowPipelineParameters() {
-        return showPipelineParameters;
-    }
-
-    public String getShowPipelineParameters() {
-        return Boolean.toString(showPipelineParameters);
-    }
-
-    public void setShowPipelineParameters(final boolean showPipelineParameters) {
-        this.showPipelineParameters = showPipelineParameters;
-    }
-
-    public boolean isShowPipelineParametersInHeaders() {
-        return showPipelineParametersInHeaders;
-    }
-    
-    public String getShowPipelineParametersInHeaders() {
-        return Boolean.toString(showPipelineParametersInHeaders);
-    }
-    
-    public void setShowPipelineParametersInHeaders(final boolean showPipelineParametersInHeaders) {
-        this.showPipelineParametersInHeaders = showPipelineParametersInHeaders;
     }
 
     public int getRefreshFrequency() {
@@ -729,7 +699,23 @@ public class BuildPipelineView extends View {
 
     @Override
     public Collection<TopLevelItem> getItems() {
-        return Hudson.getInstance().getItems();
+        final Collection<TopLevelItem> items = new ArrayList<TopLevelItem>();
+        final BuildPipelineForm buildPipelineForm = getBuildPipelineForm();
+        if (buildPipelineForm != null) {
+            final ProjectGrid grid = buildPipelineForm.getProjectGrid();
+            for (int row = 0; row < grid.getRows(); row++) {
+                for (int col = 0; col < grid.getColumns(); col++) {
+                    final ProjectForm form = grid.get(row, col);
+                    if (form != null) {
+                        final Item item = Jenkins.getInstance().getItem(form.getName(), getOwnerItemGroup());
+                        if (item != null && item instanceof TopLevelItem) {
+                            items.add((TopLevelItem) item);
+                        }
+                    }
+                }
+            }
+        }
+        return items;
     }
 
     @Override
@@ -752,7 +738,9 @@ public class BuildPipelineView extends View {
     public void onJobRenamed(final Item item, final String oldName, final String newName) {
         LOGGER.fine(String.format("Renaming job: %s -> %s", oldName, newName));
         try {
-            gridBuilder.onJobRenamed(this, item, oldName, newName);
+            if (gridBuilder != null) {
+                gridBuilder.onJobRenamed(this, item, oldName, newName);
+            }
         } catch (IOException e) {
             LOGGER.log(Level.WARNING, "Failed to handle onJobRenamed", e);
         }
@@ -761,5 +749,51 @@ public class BuildPipelineView extends View {
     @Override
     public Item doCreateItem(final StaplerRequest req, final StaplerResponse rsp) throws IOException, ServletException {
         return Hudson.getInstance().doCreateItem(req, rsp);
+    }
+
+    /**
+     * A class that groups together the console output link style options
+     */
+    private static final class LinkStyle {
+        /** lightbox link style option */
+        static final String LIGHTBOX = "Lightbox"; //$NON-NLS-1$
+        /** new window link style option */
+        static final String NEW_WINDOW = "New Window"; //$NON-NLS-1$
+        /** this window link style option */
+        static final String THIS_WINDOW = "This Window"; //$NON-NLS-1$
+    }
+    
+    @Override
+    public boolean hasPermission(final Permission p) {
+        try {
+            boolean display = true;
+            //tester la liste vide seulement en lecture
+            if (READ.name.equals(p.name)) {
+                if (isEmpty()) {
+                    display = false;
+                }
+            } else {
+                //Pas en lecture => permission standard
+                display = super.hasPermission(p);
+            }
+
+            return display;
+        } catch (Throwable t) {
+            // JENKINS-44324This can be called from jenkins just determinig if it needs to show the
+            // pipeline tab, so if there are any errors don't blow up
+            LOGGER.log(Level.SEVERE, "Error in hasPermission: ", t);
+            return false;
+        }
+    }
+
+    /**
+     * determine if this view is empty
+     * @return true if this view contains zero items
+     */
+    private boolean isEmpty() {
+        if (noOfDisplayedBuilds == null || gridBuilder == null) {
+            return true;
+        }
+        return gridBuilder.build(this).isEmpty();
     }
 }

@@ -1,0 +1,37 @@
+<j:jelly xmlns:j="jelly:core"
+         xmlns:st="jelly:stapler"
+         xmlns:d="jelly:define"
+         xmlns:l="/lib/layout"
+         xmlns:t="/lib/hudson"
+         xmlns:f="/lib/form">
+
+    <div class="pipeline-info">
+        <div class="revision rounded">
+            <div class="title">Pipeline ${buildGrid.get(0,0).getRevision()}</div>
+            <j:choose>
+                <j:when test="${buildGrid.get(0,0).getParameters().isEmpty()}">
+                    <div class="description">No parameters</div>
+                </j:when>
+                <j:otherwise>
+                    <div class="description" id="build-parameters-${buildGrid.get(0,0).getId()}">
+                        <ul>
+                            <j:forEach items="${it.getRowHeaders().getParameters(buildGrid.get(0,0).getCurrentBuild()).entrySet()}" var="buildParam" indexVar="buildParamCtr">
+                                <li>${buildParam.getKey()}: ${buildParam.getValue()}</li>
+                            </j:forEach>
+                        </ul>
+                    </div>
+                    <script>
+                        jQuery('#build-parameters-trigger-${buildGrid.get(0,0).getId()}').tooltip({
+                            bodyHandler: function() {
+                                return jQuery('#build-parameters-${buildGrid.get(0,0).getId()}').html();
+                            }
+                        });
+                    </script>
+                </j:otherwise>
+            </j:choose>
+        </div>
+    </div>
+
+
+</j:jelly>
+

@@ -11,25 +11,26 @@ BuildPipeline.prototype = {
 	showProgress : function(id, dependencies) {
 		var buildPipeline = this;
 		var intervalId = setInterval(function(){
-			buildPipeline.buildProxies[id].asJSON(function(data){
-				var buildData = jQuery.parseJSON(data.responseObject());
-				if (buildData.build.progress > 0) {
-					buildPipeline.updateBuildCardFromJSON(buildData, false);
-				} else {
-					buildPipeline.updateBuildCardFromJSON(buildData, true);
-                    if (!jQuery.isEmptyObject(buildPipeline.projectProxies)) {
-                        buildPipeline.updateProjectCard(buildData.project.id);
+            if (isPageVisible()) {
+			    buildPipeline.buildProxies[id].asJSON(function(data){
+                    var buildData = jQuery.parseJSON(data.responseObject());
+                    if (buildData.build.progress > 0) {
+                        buildPipeline.updateBuildCardFromJSON(buildData, false);
+                    } else {
+                        buildPipeline.updateBuildCardFromJSON(buildData, true);
+                        if (!jQuery.isEmptyObject(buildPipeline.projectProxies)) {
+                            buildPipeline.updateProjectCard(buildData.project.id);
+                        }
+                        clearInterval(intervalId);
+                        //refresh all build cards since some statuses will be invalid for older builds
+                        buildPipeline.updateAllBuildCards(dependencies);
+                        // trigger all dependency tracking
+                        jQuery.each(dependencies, function(){
+                            jQuery("#pipelines").trigger("show-status-" + this);
+                        });
                     }
-					clearInterval(intervalId);
-                    //refresh all build cards since some statuses will be invalid for older builds
-                    buildPipeline.updateAllBuildCards(dependencies);
-                    // trigger all dependency tracking
-                    jQuery.each(dependencies, function(){
-                        jQuery("#pipelines").trigger("show-status-" + this);
-                    });
-
-				}
-			});
+                });
+            }
 		}, buildPipeline.refreshFrequency);
 	},
 	updateBuildCard : function(id) {
@@ -55,7 +56,7 @@ BuildPipeline.prototype = {
 	updateBuildCardFromJSON : function(buildAsJSON, fadeIn) {
 		var buildPipeline = this;
 		jQuery("#build-" + buildAsJSON.id).empty();
-		jQuery(buildPipeline.buildCardTemplate(buildAsJSON)).hide().appendTo("#build-" + buildAsJSON.id).fadeIn(fadeIn ? 1000 : 0);
+		jQuery("#build-" + buildAsJSON.id).hide().append(buildPipeline.buildCardTemplate(buildAsJSON)).fadeIn(fadeIn ? 1000 : 0);
 	},
 	updateProjectCardFromJSON : function(projectAsJSON, fadeIn) {
 		var buildPipeline = this;
@@ -77,12 +78,6 @@ BuildPipeline.prototype = {
 	triggerBuild : function(id, upstreamProjectName, upstreamBuildNumber, triggerProjectName, dependencyIds) {
 		var buildPipeline = this;
 		buildPipeline.viewProxy.triggerManualBuild(upstreamBuildNumber, triggerProjectName, upstreamProjectName, function(data){
-			buildPipeline.updateNextBuildAndShowProgress(id, data.responseObject(), dependencyIds);
-		});
-	},
-	retryBuild : function(id, triggerProjectName, dependencyIds) {
-		var buildPipeline = this;
-		buildPipeline.viewProxy.retryBuild(triggerProjectName, function(data){
 			buildPipeline.updateNextBuildAndShowProgress(id, data.responseObject(), dependencyIds);
 		});
 	},

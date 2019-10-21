@@ -333,6 +333,35 @@ public class PipelineBuildTest extends HudsonTestCase {
         assertFalse(pipelineBuildWithoutPermission.isReadyToBeManuallyBuilt());
     }
 
+    public void testTwoUpstreamRebuild() throws Exception {
+        FreeStyleProject a = createFreeStyleProject("A");
+        FreeStyleProject b = createFreeStyleProject("B");
+        FreeStyleProject c = createFreeStyleProject("C");
+
+        a.getPublishersList().add(new BuildTrigger("C", false));
+        b.getPublishersList().add(new BuildTrigger("C", false));
+
+        Hudson.getInstance().rebuildDependencyGraph();
+
+        FreeStyleBuild buildB = buildAndAssertSuccess(b);
+
+        waitUntilNoActivity();
+
+
+        FreeStyleBuild buildC = c.getLastBuild();
+
+        assertNotNull(buildC);
+
+        PipelineBuild pipelineBuild = new PipelineBuild(buildC, c, buildB);
+        PipelineBuild upstream = pipelineBuild.getUpstreamPipelineBuild();
+        assertEquals("1", upstream.getCurrentBuildNumber());
+        assertEquals(b.getFullName(),  upstream.getProject().getFullName());
+        assertFalse(upstream.isManualTrigger());
+
+
+
+    }
+
 }
 
 
