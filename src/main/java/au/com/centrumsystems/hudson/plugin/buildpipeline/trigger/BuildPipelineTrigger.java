@@ -24,6 +24,7 @@
  */
 package au.com.centrumsystems.hudson.plugin.buildpipeline.trigger;
 
+import au.com.centrumsystems.hudson.plugin.buildpipeline.FormValidations;
 import hudson.Extension;
 import hudson.Launcher;
 import hudson.PluginWrapper;
@@ -307,15 +308,15 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
                 some = true;
                 final Item item = Jenkins.getInstance().getItemByFullName(projectName);
                 if (item == null) {
-                    return FormValidation.error(Messages.BuildTrigger_NoSuchProject(projectName,
-                            AbstractProject.findNearest(projectName, project.getParent()).getRelativeNameFrom(project)));
+                    String nearestProjectName = AbstractProject.findNearest(projectName, project.getParent()).getRelativeNameFrom(project);
+                    return FormValidations.noSuchProject(projectName, nearestProjectName);
                 }
                 if (!(item instanceof AbstractProject)) {
-                    return FormValidation.error(Messages.BuildTrigger_NotBuildable(projectName));
+                    return FormValidations.notBuildable(projectName);
                 }
             }
             if (!some) {
-                return FormValidation.error(Messages.BuildTrigger_NoProjectSpecified());
+                return FormValidations.noProjectSpecified();
             }
             return FormValidation.ok();
         }
@@ -363,4 +364,5 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
             }
         }
     }
+
 }

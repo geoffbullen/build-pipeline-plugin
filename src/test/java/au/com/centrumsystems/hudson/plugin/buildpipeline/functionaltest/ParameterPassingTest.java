@@ -3,7 +3,6 @@ package au.com.centrumsystems.hudson.plugin.buildpipeline.functionaltest;
 import au.com.centrumsystems.hudson.plugin.buildpipeline.testsupport.PipelineWebDriverTestBase;
 import au.com.centrumsystems.hudson.plugin.buildpipeline.trigger.BuildPipelineTrigger;
 import com.google.common.base.Optional;
-import com.google.common.base.Predicate;
 import hudson.model.FreeStyleBuild;
 import hudson.model.FreeStyleProject;
 import hudson.model.ParametersAction;
@@ -15,10 +14,10 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.support.ui.FluentWait;
 
+import java.time.Duration;
 import java.util.Arrays;
 
 import static hudson.model.Result.FAILURE;
-import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
@@ -65,12 +64,8 @@ public class ParameterPassingTest extends PipelineWebDriverTestBase {
     private void waitForBuild2ToFail() {
         new FluentWait<FreeStyleProject>(secondJob)
                 .ignoring(IllegalStateException.class)
-                .withTimeout(10, SECONDS)
-                .until(new Predicate<FreeStyleProject>() {
-                    public boolean apply(FreeStyleProject input) {
-                        return buildNumbered(2, input).getResult() == FAILURE;
-                    }
-                });
+                .withTimeout(Duration.ofSeconds(10))
+                .until(input -> buildNumbered(2, input).getResult() == FAILURE);
     }
 
     private void assertParameterValueIsPresentInBuild(FreeStyleBuild build) {

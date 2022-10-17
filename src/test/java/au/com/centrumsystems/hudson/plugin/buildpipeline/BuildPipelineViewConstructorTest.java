@@ -10,9 +10,14 @@ import hudson.model.TopLevelItem;
 
 import java.io.IOException;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.jvnet.hudson.test.JenkinsRule;
 
 public class BuildPipelineViewConstructorTest {
+
+    @Rule
+    public JenkinsRule jenkins = new JenkinsRule();
 
     final String bpViewName = "MyTestView";
     final String bpViewTitle = "MyTestViewTitle";
@@ -40,7 +45,7 @@ public class BuildPipelineViewConstructorTest {
         assertThat(testView.getRefreshFrequency(), is(2));
         assertThat(testView.getRefreshFrequencyInMillis(), is(2000));
     }
-    
+
     /**
      * This is a factory to create an instance of the class under test. This helps to avoid a NPE in View.java when calling
      * getOwnerItemGroup and it's not set. This doesn't solve the root cause and it't only intended to make our tests succeed.
