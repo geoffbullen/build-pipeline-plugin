@@ -592,6 +592,8 @@ public class BuildPipelineView extends View {
      * A function which accepts an argument and returns a result. Necessary to parameterize behavior,
      * because we do not require JDK8 yet.
      *
+     * @param <F> type of the function
+     * @param <T> type returned by apply
      * @see <a href="http://docs.oracle.com/javase/8/docs/api/java/util/function/Function.html">
      *     JDK8 java.lang.Function
      *     </a>
