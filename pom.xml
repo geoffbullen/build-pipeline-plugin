@@ -27,7 +27,6 @@
     <properties>
         <code.coverage.percentage>50</code.coverage.percentage>
         <checkstyle.rules.file>checkstyle_rules.xml</checkstyle.rules.file>
-        <pmd.config.file>pmd_rules.xml</pmd.config.file>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <groovy.version>1.8.6</groovy.version>
         <selenium.version>4.1.4</selenium.version>
@@ -234,28 +233,6 @@
                     <propertyExpansion>basedir=${basedir}</propertyExpansion>
                     <consoleOutput>true</consoleOutput>
                     <includeTestSourceDirectory>false</includeTestSourceDirectory>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-pmd-plugin</artifactId>
-                <version>2.7.1</version>
-                <!--$NO-MVN-MAN-VER$ -->
-                <configuration>
-                    <rulesets>
-                        <ruleset>${pmd.config.file}</ruleset>
-                    </rulesets>
-                    <excludes>
-                        <exclude>**/generated-sources/**</exclude>
-                    </excludes>
-                    <failOnViolation>false</failOnViolation>
                 </configuration>
                 <executions>
                     <execution>
