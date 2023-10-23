@@ -356,7 +356,9 @@ public abstract class BuildCardExtension
      * @param downstreamProjectNames upstreamProject's list of projects that it will trigger
      * @return whether we find downstreamProject in downstreamProjectNames
      */
-    private boolean triggerIncludes(AbstractProject upstreamProject, AbstractProject downstreamProject, Set<String> downstreamProjectNames) {
+    private boolean triggerIncludes(AbstractProject upstreamProject,
+                                    AbstractProject downstreamProject,
+                                    Set<String> downstreamProjectNames) {
         return downstreamProjectNames.contains(downstreamProject.getFullName())
                 || downstreamProjectNames.contains(downstreamProject.getRelativeNameFrom(upstreamProject));
     }
