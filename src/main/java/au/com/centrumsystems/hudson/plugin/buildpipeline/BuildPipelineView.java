@@ -529,7 +529,6 @@ public class BuildPipelineView extends View {
          */
         public List<PipelineHeaderExtensionDescriptor> filter(Function<PipelineHeaderExtensionDescriptor, Boolean> condition) {
             final List<PipelineHeaderExtensionDescriptor> result = new ArrayList<PipelineHeaderExtensionDescriptor>();
-            final List<PipelineHeaderExtension> applicableExtensions = new ArrayList<PipelineHeaderExtension>();
             for (PipelineHeaderExtensionDescriptor descriptor : PipelineHeaderExtensionDescriptor.all()) {
                 if (condition.apply(descriptor)) {
                     result.add(descriptor);
