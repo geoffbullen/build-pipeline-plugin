@@ -43,7 +43,6 @@ import hudson.model.listeners.ItemListener;
 import hudson.plugins.parameterizedtrigger.AbstractBuildParameters;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.BuildStepMonitor;
-import hudson.tasks.Messages;
 import hudson.tasks.Notifier;
 import hudson.tasks.Publisher;
 import hudson.util.FormValidation;
@@ -308,7 +307,8 @@ public class BuildPipelineTrigger extends Notifier implements DependecyDeclarer 
                 some = true;
                 final Item item = Jenkins.getInstance().getItemByFullName(projectName);
                 if (item == null) {
-                    String nearestProjectName = AbstractProject.findNearest(projectName, project.getParent()).getRelativeNameFrom(project);
+                    final String nearestProjectName =
+                        AbstractProject.findNearest(projectName, project.getParent()).getRelativeNameFrom(project);
                     return FormValidations.noSuchProject(projectName, nearestProjectName);
                 }
                 if (!(item instanceof AbstractProject)) {
