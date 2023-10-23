@@ -251,7 +251,7 @@ public class PipelineBuild {
      * @return - String representing the build result
      */
     private String getBuildResult(final AbstractBuild<?, ?> build) {
-        String buildResult;
+        final String buildResult;
         // If AbstractBuild exists determine its current status
         if (build != null) {
             if (build.isBuilding()) {
@@ -307,7 +307,7 @@ public class PipelineBuild {
         @SuppressWarnings("rawtypes")
         final List<AbstractProject> upstreamProjects = getProject().getUpstreamProjects();
         AbstractProject<?, ?> previousProject = null;
-        String upstreamBuildName;
+        final String upstreamBuildName;
         final PipelineBuild previousPB = new PipelineBuild();
         if (this.upstreamBuild != null) {
             upstreamBuildName = this.upstreamBuild.getProject().getName();
@@ -404,7 +404,7 @@ public class PipelineBuild {
      * @return pipeline verison
      */
     public String getPipelineVersion() {
-        String version;
+        final String version;
         if (currentBuild != null) {
             final String displayName = currentBuild.getDisplayName();
             if (displayName == null || displayName.trim().length() == 0) {
