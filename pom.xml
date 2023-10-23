@@ -32,7 +32,7 @@
         <groovy.version>1.8.6</groovy.version>
         <selenium.version>4.1.4</selenium.version>
         <exclude.tests>**/functionaltest/*.java</exclude.tests>
-        <jenkins.version>2.337</jenkins.version>
+        <jenkins.version>2.361.4</jenkins.version>
     </properties>
     <developers>
         <developer>
@@ -51,19 +51,14 @@
         <dependencies>
             <dependency>
                 <groupId>io.jenkins.tools.bom</groupId>
-                <artifactId>bom-2.332.x</artifactId>
-                <version>1370.vfa_e23fe119c3</version>
+                <artifactId>bom-2.361.x</artifactId>
+                <version>2102.v854b_fec19c92</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
     <dependencies>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
@@ -103,12 +98,7 @@
             <!-- enables mocking of classes without default constructor (together with CGLIB) -->
             <groupId>org.objenesis</groupId>
             <artifactId>objenesis</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <!-- only necessary if Hamcrest matchers are used -->
-            <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest-core</artifactId>
+            <version>3.3</version>
             <scope>test</scope>
         </dependency>
         <dependency>
