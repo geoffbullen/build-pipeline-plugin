@@ -37,7 +37,7 @@
                                             <!-- Changing length to size() to get rid of arrows when there are no more child jobs.-->
                                             <j:if test="${!(project.getDependencies().size() == 0)}">
                                                 <span class="status next">
-                                                    <img src="${rootURL}/images/24x24/next.png" />
+                                                    <l:icon src="icon-next icon-md" />
                                                 </span>
                                             </j:if>
                                         </td>
@@ -53,7 +53,7 @@
                                         <td class="next">
                                             <j:if test="${projectGrid.get(x,nextIndex)!=null}">
                                                 <span class="status next">
-                                                    <img src="${rootURL}/images/24x24/next.png" />
+                                                    <l:icon src="icon-next icon-md" />
                                                 </span>
                                             </j:if>
                                         </td>
