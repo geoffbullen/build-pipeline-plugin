@@ -10,6 +10,7 @@
       Eclipse plug-in.
       -->
     <suppress checks="." files=".*[\\/]grammars[\\/]Generated[a-zA-Z]*\.java"/>
+    <suppress checks="." files=".*generated-sources.*"/>
     <suppress checks="." files=".*[\\/]src[\\/]test[\\/]"/>
     <suppress checks="." files=".*[\\/]checkstyle[\\/]gui[\\/]"/>
     <suppress checks="ParameterNumberCheck"  files="BuildPipelineView.java"/>

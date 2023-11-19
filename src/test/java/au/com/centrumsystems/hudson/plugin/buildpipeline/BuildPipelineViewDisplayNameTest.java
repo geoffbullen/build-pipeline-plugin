@@ -18,6 +18,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.time.Duration;
+
 import static org.junit.Assert.*;
 
 public class BuildPipelineViewDisplayNameTest {
@@ -29,7 +31,7 @@ public class BuildPipelineViewDisplayNameTest {
     @Before
     public void before() {
         webDriver = new FirefoxDriver();
-        WebDriverWait wait = new WebDriverWait(webDriver, 30);
+        WebDriverWait wait = new WebDriverWait(webDriver, Duration.ofSeconds(30));
     }
 
     @After

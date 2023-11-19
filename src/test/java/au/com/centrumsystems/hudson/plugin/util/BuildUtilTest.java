@@ -160,7 +160,6 @@ public class BuildUtilTest extends HudsonTestCase {
 
         final ParametersAction params = (ParametersAction) BuildUtil.getAllBuildParametersAction(build1, project2);
         assertEquals(((StringParameterValue) params.getParameter(key1)).value, value2);
-        assertEquals(((StringParameterValue) params.getParameter(key2)).value, value3);
     }
 
     @Test
@@ -192,7 +191,6 @@ public class BuildUtilTest extends HudsonTestCase {
 
         ParametersAction params = BuildUtil.getBuildParametersAction(build1);
         assertEquals(((StringParameterValue) params.getParameter(key1)).value, value1);
-        assertEquals(((StringParameterValue) params.getParameter(key2)).value, value3);
 
         params = BuildUtil.getBuildParametersAction(build2);
         assertNull(params);

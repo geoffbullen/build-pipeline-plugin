@@ -4,9 +4,10 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
+import java.time.Duration;
+
 import static au.com.centrumsystems.hudson.plugin.buildpipeline.testsupport.TestUtils.elementIsPresent;
 import static au.com.centrumsystems.hudson.plugin.buildpipeline.testsupport.TestUtils.waitForElement;
-import static java.util.concurrent.TimeUnit.SECONDS;
 
 public class BuildCardComponent {
 
@@ -45,8 +46,7 @@ public class BuildCardComponent {
     public BuildCardComponent waitForStatus(String status) {
         waitForElement(
                 By.xpath(".//table[contains(@class, '" + status + "')]"),
-                cardWebElement,
-                20, SECONDS);
+                cardWebElement, Duration.ofSeconds(20));
         return this;
     }
 

@@ -24,12 +24,14 @@
  */
 package au.com.centrumsystems.hudson.plugin.buildpipeline.trigger;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
 
 import au.com.centrumsystems.hudson.plugin.buildpipeline.BuildPipelineView;
 import au.com.centrumsystems.hudson.plugin.buildpipeline.DownstreamProjectGridBuilder;
+import au.com.centrumsystems.hudson.plugin.buildpipeline.FormValidations;
 import au.com.centrumsystems.hudson.plugin.buildpipeline.extension.StandardBuildCard;
 import hudson.model.*;
 import hudson.plugins.parameterizedtrigger.*;
@@ -167,8 +169,8 @@ public class BuildPipelineTriggerTest {
         final BuildPipelineTrigger.DescriptorImpl di = new BuildPipelineTrigger.DescriptorImpl();
 
         assertEquals(FormValidation.ok(), di.doCheckDownstreamProjectNames(upstreamProject, proj1));
-        assertThat(FormValidation.error("No such project ‘" + proj2 + "’. Did you mean ‘" + proj1 + "’?").toString(), is(di
-                .doCheckDownstreamProjectNames(upstreamProject, proj2).toString()));
+        assertThat(FormValidations.noSuchProject(proj2, proj1).toString(),
+            equalTo(di.doCheckDownstreamProjectNames(upstreamProject, proj2).toString()));
     }
 
     @Test

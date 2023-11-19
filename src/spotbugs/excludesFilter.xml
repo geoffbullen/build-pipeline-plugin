@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter>
+  <!--
+    Exclusions in this section have been triaged and determined to be
+    false positives.
+  -->
+  <Match>
+    <Class name="au.com.centrumsystems.hudson.plugin.buildpipeline.BuildPipelineView$MyUserIdCause" />
+  </Match>
+  <Match>
+    <Bug pattern="SE_NO_SERIALVERSIONID" />
+    <Or>
+      <Class name="au.com.centrumsystems.hudson.plugin.buildpipeline.BuildJSONBuilder$_asJSON_closure1" />
+      <Class name="au.com.centrumsystems.hudson.plugin.buildpipeline.BuildJSONBuilder$_asJSON_closure1_closure2" />
+      <Class name="au.com.centrumsystems.hudson.plugin.buildpipeline.BuildJSONBuilder$_asJSON_closure1_closure3" />
+      <Class name="au.com.centrumsystems.hudson.plugin.buildpipeline.BuildJSONBuilder$_asJSON_closure1_closure4" />
+    </Or>
+  </Match>
+
+  <!--
+    Here lies technical debt. Exclusions in this section have not yet
+    been triaged. When working on this section, pick an exclusion to
+    triage, then:
+
+    - Add a @SuppressFBWarnings(value = "[...]", justification = "[...]")
+      annotation if it is a false positive.  Indicate the reason why
+      it is a false positive, then remove the exclusion from this
+      section.
+
+    - If it is not a false positive, fix the bug, then remove the
+      exclusion from this section.
+  -->
+  <Match>
+    <Bug pattern="NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE" />
+    <Class name="au.com.centrumsystems.hudson.plugin.buildpipeline.BuildPipelineForm" />
+    <Method name="&lt;init&gt;" />
+  </Match>
+  <Match>
+    <Bug pattern="NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE" />
+    <Class name="au.com.centrumsystems.hudson.plugin.buildpipeline.extension.BuildCardExtension" />
+    <Method name="rerunBuild" />
+  </Match>
+  <Match>
+    <Bug pattern="NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE" />
+    <Class name="au.com.centrumsystems.hudson.plugin.buildpipeline.trigger.BuildPipelineTrigger$DescriptorImpl" />
+    <Method name="doCheckDownstreamProjectNames" />
+  </Match>
+  <Match>
+    <Bug pattern="DM_BOXED_PRIMITIVE_FOR_PARSING" />
+    <Class name="au.com.centrumsystems.hudson.plugin.buildpipeline.BuildPipelineView" />
+    <Method name="getBuildPipelineForm" />
+  </Match>
+  <Match>
+    <Bug pattern="SE_NO_SERIALVERSIONID" />
+    <Or>
+      <Class name="au.com.centrumsystems.hudson.plugin.buildpipeline.ProjectJSONBuilder$_asJSON_closure1" />
+      <Class name="au.com.centrumsystems.hudson.plugin.buildpipeline.ProjectJSONBuilder$_asJSON_closure2" />
+      <Class name="au.com.centrumsystems.hudson.plugin.buildpipeline.ProjectJSONBuilder$_asJSON_closure1_closure3" />
+      <Class name="au.com.centrumsystems.hudson.plugin.buildpipeline.ProjectJSONBuilder$_asJSON_closure1_closure3" />
+    </Or>
+  </Match>
+</FindBugsFilter>

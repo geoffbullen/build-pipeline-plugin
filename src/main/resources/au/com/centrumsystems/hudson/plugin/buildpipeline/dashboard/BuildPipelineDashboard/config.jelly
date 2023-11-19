@@ -11,6 +11,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 -->
 
+<?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
     <!-- st:include page="au/com/centrumsystems/hudson/plugin/buildpipeline/BuildPipelineView/configure-entries.jelly" / -->
     <!-- TODO: this is code duplication from configure-entries.jelly -->

@@ -1,3 +1,4 @@
+<?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:i="jelly:fmt">
 {{!--
 
@@ -80,21 +81,21 @@
             {{/if}}
             {{#unless build.isPending}}
                 {{#unless build.isReadyToBeManuallyBuilt}}
-                    <j:set var="consoleOutputIconUrl" value="${rootURL}/images/16x16/terminal.png" />
+                    <j:set var="consoleOutputIconUrl" value="icon-terminal" />
                     <j:choose>
                         <j:when test="${it.newWindowConsoleOutputLinkStyle}">
                             <a href="${rootURL}/{{build.url}}console" target="_blank">
-                                <img title="console" alt="console" src="${consoleOutputIconUrl}" />
+                                <l:icon src="${consoleOutputIconUrl} icon-sm" alt="console" />
                             </a>
                         </j:when>
                         <j:when test="${it.thisWindowConsoleOutputLinkStyle}">
                             <a href="${rootURL}/{{build.url}}console">
-                                <img title="console" alt="console" src="${consoleOutputIconUrl}" />
+                                <l:icon src="${consoleOutputIconUrl} icon-sm" alt="console" />
                             </a>
                         </j:when>
                         <j:otherwise>
                             <span onclick="buildPipeline.fillDialog('${app.rootUrl}{{build.url}}console', 'Console output for {{project.name}} #{{build.number}}')">
-                                <img title="console" alt="console" src="${consoleOutputIconUrl}" />
+                                <l:icon src="${consoleOutputIconUrl} icon-sm" alt="console" />
                             </span>
                         </j:otherwise>
                     </j:choose>
@@ -106,7 +107,7 @@
                     {{#if ${!it.triggerOnlyLatestJob}}}
                     <j:if test="${it.hasBuildPermission()}">
                     <span onclick="buildPipeline.showSpinner({{id}}); buildPipeline.rerunBuild({{id}}, '{{build.extId}}', [{{build.dependencyIds}}])">
-                        <img title="re-run" alt="re-run" src="${rootURL}/images/16x16/redo.png" />
+                        <l:icon src="icon-clock icon-sm" alt="re-run" />
                     </span>
                     </j:if>
                     {{/if}}
@@ -115,18 +116,18 @@
                         {{#if build.isLatestBuild}}
                             {{#if build.isUpstreamBuildLatest}}
                             <span onclick="buildPipeline.showSpinner({{id}}); buildPipeline.rerunBuild({{id}}, '{{build.extId}}', [{{build.dependencyIds}}])">
-                                <img title="retry" alt="retry" src="${rootURL}/images/16x16/redo.png" />
+                                <l:icon src="icon-clock icon-sm" alt="retry" />
                             </span>
                             {{/if}}
                         {{/if}}
                     {{else}}
                         {{#if build.isManual}}
                             <span onclick="buildPipeline.showSpinner({{id}}); buildPipeline.triggerBuild({{id}}, '{{upstream.projectName}}', {{upstream.buildNumber}}, '{{project.name}}', [{{build.dependencyIds}}])">
-                                <img title="retry" alt="retry" src="${rootURL}/images/16x16/clock.png" />
+                                <l:icon src="icon-clock icon-sm" alt="retry" />
                             </span>
                         {{else}}
                             <span onclick="buildPipeline.showSpinner({{id}}); buildPipeline.rerunBuild({{id}}, '{{build.extId}}', [{{build.dependencyIds}}])">
-                                <img title="retry" alt="retry" src="${rootURL}/images/16x16/redo.png" />
+                                <l:icon src="icon-clock icon-sm" alt="retry" />
                             </span>
                         {{/if}}
                     {{/if}}
@@ -137,12 +138,12 @@
                 {{#if ${it.triggerOnlyLatestJob}}}
                     {{#if build.isUpstreamBuildLatestSuccess}}
                     <span onclick="buildPipeline.showSpinner({{id}}); buildPipeline.triggerBuild({{id}}, '{{upstream.projectName}}', {{upstream.buildNumber}}, '{{project.name}}', [{{build.dependencyIds}}])">
-                        <img title="trigger" alt="trigger" src="${rootURL}/images/16x16/clock.png" />
+                        <l:icon src="icon-clock icon-sm" alt="trigger" />
                     </span>
                     {{/if}}
                 {{else}}
                 <span onclick="buildPipeline.showSpinner({{id}}); buildPipeline.triggerBuild({{id}}, '{{upstream.projectName}}', {{upstream.buildNumber}}, '{{project.name}}', [{{build.dependencyIds}}])">
-                    <img title="trigger" alt="trigger" src="${rootURL}/images/16x16/clock.png" />
+                    <l:icon src="icon-clock icon-sm" alt="trigger" />
                 </span>
                 {{/if}}
             {{/if}}
@@ -150,7 +151,7 @@
         {{/unless}}
         {{#if project.disabled}}
             <div class="icons" id="icons-{{id}}">
-                <span class="disabled"><img src="${rootURL}/images/16x16/warning.png" atl="disabled" title="disabled" /></span>
+                <span class="disabled"><l:icon src="icon-warning icon-sm" alt="disabled" /></span>
             </div>
         {{/if}}
     </div>
