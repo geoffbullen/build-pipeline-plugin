@@ -78,7 +78,7 @@
         <dependency>
             <groupId>org.jenkins-ci.main</groupId>
             <artifactId>jenkins-test-harness</artifactId>
-            <version>2.5</version>
+            <version>2109.v930e1e518c15</version>
         </dependency>
         <dependency>
             <groupId>org.jenkins-ci.plugins</groupId>
