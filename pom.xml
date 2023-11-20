@@ -282,9 +282,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <additionalOptions>
-                        <additionalOption>-Xdoclint:none</additionalOption>
-                    </additionalOptions>
+                    <failOnError>false</failOnError>
                 </configuration>
             </plugin>
         </plugins>
